@@ -38,6 +38,7 @@ import com.nyotek.dot.admin.repository.NSLanguageRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 import com.nyotek.dot.admin.repository.network.responses.ServiceCapabilitiesDataItem
@@ -405,7 +406,7 @@ object NSUtilities {
         capabilityAdapter.updateData(capabilities, dataItem?.capabilities?: arrayListOf())
     }
 
-    fun setFleet(activity: Activity, layoutFleets: LayoutRecycleViewFixBinding, fleetList: MutableList<FleetData>, dataItem: ServiceCapabilitiesDataItem? = null, callback: NSCapabilityListCallback) {
+    fun setFleet(activity: Activity, layoutFleets: LayoutRecycleViewFixBinding, fleetList: MutableList<FleetServiceResponse>, callback: NSCapabilityListCallback) {
         val selectedCapabilities: MutableList<String> = arrayListOf()
         layoutFleets.rvCommonView.layoutManager = GridLayoutManager(activity, 2)
         val fleetAdapter = NSFleetServiceRecycleAdapter(object : NSFleetServiceCallback {
@@ -423,7 +424,7 @@ object NSUtilities {
 
         })
         layoutFleets.rvCommonView.adapter = fleetAdapter
-        fleetAdapter.setSubList(dataItem?.fleets?: arrayListOf())
+        //fleetAdapter.setSubList(dataItem?.fleets?: arrayListOf())
         fleetAdapter.setData(fleetList)
         layoutFleets.rvCommonView.isNestedScrollingEnabled = false
 

@@ -13,6 +13,14 @@ data class FleetSingleResponse(
 	val data: FleetData? = null
 )
 
+data class FleetServiceResponse(
+	@field:SerializedName("fleet_data")
+	val data: FleetData? = null,
+
+	@field:SerializedName("is_selected")
+	val isSelected: Boolean = false
+)
+
 data class FleetData(
 
 	@field:SerializedName("logo_scale")

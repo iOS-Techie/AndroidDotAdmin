@@ -21,8 +21,10 @@ import com.nyotek.dot.admin.databinding.LayoutCommonSpinnerBinding
 import com.nyotek.dot.admin.databinding.LayoutServiceItemBinding
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.repository.network.responses.ServiceCapabilitiesDataItem
+
 
 var fleetItemList: MutableList<FleetData> = arrayListOf()
 var capabilityItemList: MutableList<CapabilitiesDataItem> = arrayListOf()
@@ -94,11 +96,16 @@ class NSServiceManagementRecycleAdapter(
                     list.sortBy { it }
                     layoutFleets.cbCheck.isChecked = capabilityItem.fleets == list
 
+                    val fleetResponse: MutableList<FleetServiceResponse> = arrayListOf()
+                    for (fResponse in fleetItemList) {
+                        val fleetServiceResponse = FleetServiceResponse(fResponse, capabilityItem.fleets.contains(fResponse.vendorId))
+                        fleetResponse.add(fleetServiceResponse)
+                    }
+
                     NSUtilities.setFleet(
                         activity,
                         layoutFleets,
-                        fleetItemList,
-                        capabilityItem,
+                        fleetResponse,
                         object :
                             NSCapabilityListCallback {
                             override fun onCapability(capabilities: MutableList<String>) {

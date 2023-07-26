@@ -6,12 +6,13 @@ import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.databinding.LayoutCapabilitiesVehicleBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 
 private var selectedList: MutableList<String> = arrayListOf()
 
 class NSFleetServiceRecycleAdapter(
     private val callback: NSFleetServiceCallback
-) : BaseViewBindingAdapter<LayoutCapabilitiesVehicleBinding, FleetData>(
+) : BaseViewBindingAdapter<LayoutCapabilitiesVehicleBinding, FleetServiceResponse>(
 
     bindingInflater = { inflater, parent, attachToParent ->
         LayoutCapabilitiesVehicleBinding.inflate(inflater, parent, attachToParent)
@@ -20,19 +21,19 @@ class NSFleetServiceRecycleAdapter(
     onBind = { binding, response, _ ->
         with(binding) {
             response.apply {
-                ColorResources.setCardBackground(viewStatus, 100f, 0, if (response.isActive) ColorResources.getGreenColor() else ColorResources.getGrayColor())
-                tvCapabilitiesTitle.getMapValue(response.name)
+                ColorResources.setCardBackground(viewStatus, 100f, 0, if (response.data?.isActive == true) ColorResources.getGreenColor() else ColorResources.getGrayColor())
+                response.data?.name?.let { tvCapabilitiesTitle.getMapValue(it) }
 
-                if (selectedList.contains(response.vendorId)) {
+                if (response.isSelected) {
                     cbCapability.isChecked = true
-                    callback.onItemSelect(response, !cbCapability.isChecked)
+                    callback.onItemSelect(response.data!!, !cbCapability.isChecked)
                 } else {
                     cbCapability.isChecked = false
                 }
 
                 clCapabilities.setOnClickListener {
                     cbCapability.isChecked = !cbCapability.isChecked
-                    callback.onItemSelect(response, !cbCapability.isChecked)
+                    callback.onItemSelect(response.data!!, !cbCapability.isChecked)
                 }
             }
         }
