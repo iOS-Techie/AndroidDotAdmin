@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.nyotek.dot.admin.widgets.NSConstraintLayout android:id="@+id/cl_sign_up_bg" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.signup.NSSignUpFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        style="@style/LayoutWidthHeightZero"
+        android:layout_width="@dimen/_178sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.725"
+        app:cardCornerRadius="@dimen/_15sdp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                android:id="@+id/tv_login_title"
+                style="@style/LoginHeadingFontsWrap"
+                android:fontFamily="@font/archivo_bold"
+                android:textSize="@dimen/_11sdp"
+                android:layout_marginTop="@dimen/_21sdp"
+                android:includeFontPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                android:id="@+id/tv_login_sub_title"
+                style="@style/LoginSubFontsWrap"
+                android:fontFamily="@font/circular_std_book"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:textSize="@dimen/_7sdp"
+                android:alpha="0.6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_login_title" />
+
+            <com.nyotek.dot.admin.widgets.NSConstraintLayout
+                android:id="@+id/cl_email"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
+                app:layout_constraintWidth_percent="0.85"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_login_sub_title">
+
+                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                    android:id="@+id/et_email"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    style="@style/LoginFontsZeroWrap"
+                    android:autofillHints="emailAddress"
+                    android:gravity="start|center_vertical"
+                    android:background="@null"
+                    android:fontFamily="@font/archivo_medium"
+                    android:textSize="@dimen/_7sdp"
+                    android:includeFontPadding="false"
+                    android:inputType="textEmailAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.nyotek.dot.admin.widgets.ImageIconView
+                    android:id="@+id/iv_user"
+                    android:layout_width="@dimen/_7sdp"
+                    android:layout_height="@dimen/_7sdp"
+                    android:src="@drawable/ic_user"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </com.nyotek.dot.admin.widgets.NSConstraintLayout>
+
+            <com.nyotek.dot.admin.widgets.NSConstraintLayout
+                android:id="@+id/cl_username"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
+                app:layout_constraintWidth_percent="0.85"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_email">
+
+                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                    android:id="@+id/et_user_name"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    style="@style/LoginFontsZeroWrap"
+                    android:autofillHints="username"
+                    android:gravity="start|center_vertical"
+                    android:background="@null"
+                    android:fontFamily="@font/archivo_medium"
+                    android:textSize="@dimen/_7sdp"
+                    android:includeFontPadding="false"
+                    android:inputType="textPersonName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.nyotek.dot.admin.widgets.ImageIconView
+                    android:id="@+id/iv_username"
+                    android:layout_width="@dimen/_7sdp"
+                    android:layout_height="@dimen/_7sdp"
+                    android:src="@drawable/ic_user"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </com.nyotek.dot.admin.widgets.NSConstraintLayout>
+
+            <com.nyotek.dot.admin.widgets.NSConstraintLayout
+                android:id="@+id/cl_password"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
+                app:layout_constraintWidth_percent="0.85"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_username">
+
+                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                    android:id="@+id/et_password"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    style="@style/LoginFontsZeroWrap"
+                    android:autofillHints="emailAddress"
+                    android:gravity="start|center_vertical"
+                    android:background="@null"
+                    android:fontFamily="@font/archivo_medium"
+                    android:textSize="@dimen/_7sdp"
+                    android:inputType="textPassword"
+                    android:includeFontPadding="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.nyotek.dot.admin.widgets.ImageIconView
+                    android:id="@+id/iv_password"
+                    android:layout_width="@dimen/_7sdp"
+                    android:layout_height="@dimen/_7sdp"
+                    android:src="@drawable/ic_password"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </com.nyotek.dot.admin.widgets.NSConstraintLayout>
+
+            <com.nyotek.dot.admin.widgets.NSButton
+                android:id="@+id/btn_login"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_marginTop="@dimen/_13sdp"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_8sdp"
+                android:fontFamily="@font/archivo_bold"
+                app:layout_constraintWidth_percent="0.85"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_password"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_bottom_login"
+                style="@style/LayoutWidthHeightZero"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_login">
+
+                <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                    android:id="@+id/tv_not_yet_register"
+                    style="@style/LoginSubFontsWrap"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:alpha="0.6"
+                    android:textSize="@dimen/_7sdp"
+                    android:includeFontPadding="false"
+                    android:fontFamily="@font/archivo_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tv_sign_up"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constrainedWidth="true" />
+
+                <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                    android:id="@+id/tv_sign_up"
+                    style="@style/LoginSubFontsWrap"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:paddingHorizontal="@dimen/_2sdp"
+                    android:textSize="@dimen/_7sdp"
+                    android:includeFontPadding="false"
+                    android:fontFamily="@font/archivo_medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@id/tv_not_yet_register"
+                    app:layout_constrainedWidth="true" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</com.nyotek.dot.admin.widgets.NSConstraintLayout>

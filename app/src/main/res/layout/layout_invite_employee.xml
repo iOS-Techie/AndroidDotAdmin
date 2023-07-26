@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/_139sdp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_round_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_invite_employee_title"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_16sdp"
+            android:fontFamily="@font/archivo_medium"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/_6sdp"
+            android:paddingEnd="0dp"
+            android:textSize="@dimen/_5sdp"
+            tools:text="Invite Employee"
+            app:layout_constraintEnd_toStartOf="@id/iv_close_employee"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_close_employee"
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:contentDescription="@string/description"
+            android:src="@drawable/ic_close"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_invite_employee_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_invite_employee_title" />
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="@color/line_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_invite_employee_title" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_employee_role"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_line">
+
+            <com.nyotek.dot.admin.widgets.NSConstraintLayout
+                android:id="@+id/cl_role_spinner"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_14sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Spinner
+                    android:id="@+id/spinner_role"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@null"
+                    android:fontFamily="@font/archivo_regular"
+                    android:textSize="@dimen/_5sdp"
+                    android:textAlignment="viewStart"
+                    android:paddingHorizontal="@dimen/_6sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <ImageView
+                    android:id="@+id/iv_spinner_ico_role"
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="0dp"
+                    android:alpha="0.5"
+                    app:layout_constraintDimensionRatio="W,1:1"
+                    android:src="@drawable/ic_spinner_drop_down"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/spinner_role"
+                    app:layout_constraintBottom_toBottomOf="@id/spinner_role"/>
+
+            </com.nyotek.dot.admin.widgets.NSConstraintLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingHorizontal="@dimen/_1sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                    android:id="@+id/tv_role_name_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:alpha="0.5"
+                    android:background="@color/white"
+                    android:fontFamily="@font/archivo_medium"
+                    android:textSize="@dimen/_5sdp"
+                    tools:text="Select Platform" />
+            </RelativeLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rl_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_employee_role">
+
+            <include android:id="@+id/layout_user"
+                layout="@layout/layout_common_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <com.nyotek.dot.admin.widgets.ImageIconView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/ic_search"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_4sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.nyotek.dot.admin.widgets.NSConstraintLayout
+            android:id="@+id/cl_user_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginHorizontal="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rl_search">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_user_list"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:clipToPadding="false"/>
+
+        </com.nyotek.dot.admin.widgets.NSConstraintLayout>
+
+        <View
+            android:id="@+id/view_line_second"
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:background="@color/line_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_user_list" />
+
+        <com.nyotek.dot.admin.widgets.NSWhiteTextView
+            android:id="@+id/tv_send_invite"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:gravity="center"
+            android:textSize="@dimen/_5sdp"
+            android:paddingHorizontal="@dimen/_5sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_cancel_app"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_line_second" />
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_cancel_app"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:gravity="center"
+            android:textSize="@dimen/_5sdp"
+            tools:text="Cancel"
+            android:paddingHorizontal="@dimen/_5sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_send_invite"
+            app:layout_constraintTop_toBottomOf="@id/view_line_second" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

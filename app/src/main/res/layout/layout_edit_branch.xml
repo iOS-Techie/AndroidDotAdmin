@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/white_round_12"
+        app:layout_constraintWidth_percent="0.65"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_branch_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Edit Branch"
+            android:gravity="top"
+            android:textSize="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:textAppearance="@style/CommonTextSemiBold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/_6sdp"
+            android:background="@color/line_divider"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/tv_branch_title"
+            app:layout_constraintTop_toTopOf="@id/tv_branch_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_branch_title"/>
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_branch_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:alpha="0.6"
+            android:textSize="@dimen/_4sdp"
+            android:visibility="visible"
+            android:textAppearance="@style/CommonTextRegular"
+            android:paddingHorizontal="@dimen/_5sdp"
+            app:layout_constraintStart_toEndOf="@id/view_line"
+            app:layout_constraintTop_toTopOf="@id/tv_branch_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_branch_title"/>
+
+        <ImageView
+            android:id="@+id/switch_service"
+            android:layout_width="@dimen/_13sdp"
+            android:layout_height="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_1sdp"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/tv_branch_active"
+            android:src="@drawable/ic_switch_off"
+            app:layout_constraintTop_toTopOf="@id/tv_branch_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_branch_title"/>
+
+
+        <View
+            android:id="@+id/view_line_divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/line_divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_branch_title"/>
+
+        <include android:id="@+id/layout_name"
+            layout="@layout/layout_common_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            app:layout_constraintStart_toEndOf="@id/layout_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/layout_address"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_line_divider"/>
+
+
+        <include android:id="@+id/layout_address"
+            layout="@layout/layout_common_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            app:layout_constraintStart_toEndOf="@id/layout_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_name"/>
+
+        <View
+            android:id="@+id/view_line_divider2"
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="@color/line_divider"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_address"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_line_divider2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="MissingConstraints">
+
+
+        <com.nyotek.dot.admin.widgets.NSWhiteTextView
+            android:id="@+id/tv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_14sdp"
+            android:gravity="center"
+            android:textSize="@dimen/_5sdp"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp" />
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_14sdp"
+            android:gravity="center"
+            android:textSize="@dimen/_5sdp"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_5sdp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

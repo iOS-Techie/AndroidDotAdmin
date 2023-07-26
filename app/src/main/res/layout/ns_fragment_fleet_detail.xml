@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fleets.detail.NSFleetDetailFragment">
+
+    <include android:id="@+id/layout_home_header"
+        layout="@layout/layout_home_header"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/LayoutWidthHeightMatchWrap"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_home_header"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_vendor_form"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_round_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                android:id="@+id/tv_create_fleet_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Vendor"
+                android:gravity="top"
+                android:textSize="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_4sdp"
+                android:paddingHorizontal="@dimen/_6sdp"
+                android:textAppearance="@style/CommonTextSemiBold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <View
+                android:id="@+id/view_line_first"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/_6sdp"
+                android:background="@color/line_divider"
+                app:layout_constraintStart_toEndOf="@id/tv_create_fleet_title"
+                app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                android:id="@+id/tv_fleet_created_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:textSize="@dimen/_4sdp"
+                android:textAppearance="@style/CommonTextRegular"
+                android:paddingHorizontal="@dimen/_5sdp"
+                app:layout_constraintStart_toEndOf="@id/view_line_first"
+                app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
+
+            <View
+                android:id="@+id/view_line"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/_6sdp"
+                android:background="@color/line_divider"
+                app:layout_constraintStart_toEndOf="@id/tv_fleet_created_date"
+                app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                android:id="@+id/tv_fleet_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Active"
+                android:gravity="top"
+                android:alpha="0.6"
+                android:textSize="@dimen/_4sdp"
+                android:textAppearance="@style/CommonTextRegular"
+                android:paddingHorizontal="@dimen/_5sdp"
+                app:layout_constraintStart_toEndOf="@id/view_line"
+                app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
+
+            <ImageView
+                android:id="@+id/switch_service"
+                android:layout_width="@dimen/_13sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_1sdp"
+                app:layout_constraintStart_toEndOf="@+id/tv_fleet_active"
+                android:src="@drawable/ic_switch_off"
+                app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_12sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_5sdp"
+                android:minWidth="@dimen/_28sdp"
+                android:paddingHorizontal="@dimen/_3sdp"
+                android:layout_marginEnd="@dimen/_3sdp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/tv_save"
+                app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
+
+            <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                android:id="@+id/tv_save"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_12sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_2sdp"
+                android:minWidth="@dimen/_28sdp"
+                android:layout_marginEnd="@dimen/_3sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title" />
+
+            <View
+                android:id="@+id/view_line_divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/line_divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_create_fleet_title"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_brand_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_7sdp"
+                android:layout_marginStart="@dimen/_7sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_line_divider">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_brand_logo"
+                    android:layout_width="@dimen/_45sdp"
+                    android:layout_height="@dimen/_45sdp"
+                    app:cardCornerRadius="@dimen/_5sdp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@android:color/transparent">
+
+                    <ImageView
+                        android:id="@+id/iv_brand_logo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                        android:id="@+id/tv_edit_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/black_alpha_corner_round"
+                        android:fontFamily="@font/archivo_medium"
+                        android:textSize="@dimen/_4sdp"
+                        android:padding="@dimen/_2sdp"
+                        tools:text="Edit"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_gravity="bottom"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                android:id="@+id/tv_size_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/black_corner_round"
+                android:fontFamily="@font/archivo_regular"
+                android:textSize="@dimen/_3sdp"
+                android:padding="@dimen/_1sdp"
+                tools:text="200X200px"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_2sdp"
+                app:layout_constraintEnd_toEndOf="@id/rl_brand_logo"
+                app:layout_constraintTop_toTopOf="@id/rl_brand_logo"
+                />
+
+            <View
+                android:id="@+id/view_line_vertical_divider"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/line_divider"
+                android:layout_marginStart="@dimen/_7sdp"
+                app:layout_constraintBottom_toTopOf="@id/view_line_fill_fit_divider"
+                app:layout_constraintStart_toEndOf="@id/rl_brand_logo"
+                app:layout_constraintTop_toBottomOf="@id/tv_create_fleet_title" />
+
+            <View
+                android:id="@+id/view_line_horizontal_divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/line_divider"
+                app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rl_brand_logo" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_check_fill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                app:layout_constraintEnd_toStartOf="@id/view_line_check_box"
+                app:layout_constraintTop_toBottomOf="@id/view_line_horizontal_divider">
+
+                <RelativeLayout
+                    android:id="@+id/rl_fill"
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <CheckBox
+                        android:id="@+id/cb_fill"
+                        android:layout_width="@dimen/_6sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:button="@drawable/checkbox_fill_fix"
+                        android:clickable="false"/>
+
+                </RelativeLayout>
+
+                <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                    android:id="@+id/tv_fill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/CommonTextRegular"
+                    android:textSize="@dimen/_5sdp"
+                    tools:text="Fill"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    app:layout_constraintStart_toEndOf="@id/rl_fill"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/view_line_check_box"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/line_divider"
+                android:layout_marginVertical="@dimen/_1sdp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/view_line_vertical_divider"
+                app:layout_constraintTop_toTopOf="@id/cl_check_fill"
+                app:layout_constraintBottom_toBottomOf="@id/cl_check_fill"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_check_fit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:focusable="true"
+                android:clickable="true"
+                app:layout_constraintStart_toEndOf="@id/view_line_check_box"
+                app:layout_constraintTop_toTopOf="@id/cl_check_fill"
+                app:layout_constraintBottom_toBottomOf="@+id/cl_check_fill">
+
+                <RelativeLayout
+                    android:id="@+id/rl_fit"
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <CheckBox
+                        android:id="@+id/cb_fit"
+                        android:layout_width="@dimen/_6sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:button="@drawable/checkbox_fill_fix"
+                        android:clickable="false"/>
+
+                </RelativeLayout>
+
+                <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                    android:id="@+id/tv_fit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/CommonTextRegular"
+                    android:textSize="@dimen/_5sdp"
+                    tools:text="Fit"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    app:layout_constraintStart_toEndOf="@id/rl_fit"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/view_line_fill_fit_divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/line_divider"
+                android:layout_marginTop="@dimen/_3sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_check_fill" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_service_list"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_6sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
+                app:layout_constraintTop_toBottomOf="@id/view_line_horizontal_divider"/>
+
+            <include android:id="@+id/layout_name"
+                layout="@layout/layout_common_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                app:layout_constraintEnd_toStartOf="@id/layout_slogan"
+                app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
+                app:layout_constraintTop_toBottomOf="@id/view_line_divider"/>
+
+            <include android:id="@+id/layout_slogan"
+                layout="@layout/layout_common_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:layout_constraintStart_toEndOf="@id/layout_name"
+                app:layout_constraintEnd_toStartOf="@id/layout_tags"
+                app:layout_constraintTop_toBottomOf="@id/view_line_divider"/>
+
+            <include android:id="@+id/layout_tags"
+                layout="@layout/layout_tag_text"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                app:layout_constraintStart_toEndOf="@id/layout_slogan"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_line_divider"
+                app:layout_constraintBottom_toTopOf="@id/view_line_horizontal_divider"/>
+
+            <include android:id="@+id/layout_url"
+                layout="@layout/layout_common_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:layout_constraintEnd_toStartOf="@id/layout_address"
+                app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
+                app:layout_constraintTop_toBottomOf="@id/layout_name"
+                app:layout_constraintBottom_toBottomOf="@id/layout_tags"/>
+
+            <include android:id="@+id/layout_address"
+                layout="@layout/layout_common_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:layout_constraintBottom_toBottomOf="@id/layout_tags"
+                app:layout_constraintEnd_toStartOf="@id/layout_tags"
+                app:layout_constraintStart_toEndOf="@id/layout_url"
+                app:layout_constraintTop_toBottomOf="@id/layout_name"/>
+
+            <View
+                android:id="@+id/view_address"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toStartOf="@id/layout_address"
+                app:layout_constraintTop_toTopOf="@id/layout_address"
+                app:layout_constraintBottom_toBottomOf="@id/layout_address"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_top_tab"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_17sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/white_round_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_vendor_form">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_service"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_17sdp"
+                app:tabMode="auto"
+                app:tabGravity="fill"
+                app:tabIndicatorHeight="@dimen/_1sdp"
+                app:tabRippleColor="@null"
+                app:tabIndicatorFullWidth="false"
+                app:tabMinWidth="@dimen/_40sdp"
+                app:tabTextAppearance="@style/ServiceCustomTabText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/fleet_pager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_top_tab"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_select_address"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:background="@color/background_alpha_black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include android:id="@+id/layout_select_address"
+            layout="@layout/layout_select_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

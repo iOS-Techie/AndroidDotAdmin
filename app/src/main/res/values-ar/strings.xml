@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="cancel">الغاء</string>
+    <string name="ok">موافق</string>
+    <string name="no_network_available">لا يوجد شبكة متاحة</string>
+    <string name="networkUnreachable_title">حدث خطأ مؤقتًا في اتصالك بالشبكة. يرجى التأكد من الشبكة ثم المحاولة مرة أخرى.</string>
+    <string name="loading_please_wait">جاري التحميل يرجى الانتظار…</string>
+    <string name="gps_enable">تمكين GPS</string>
+    <string name="gps_network_not_enabled">لا يوجد وصول إلى الموقع</string>
+    <string name="location_permission">إذن الموقع مطلوب</string>
+    <string name="location_permission_description">يحتاج هذا التطبيق إلى إذن الموقع ، يرجى قبول استخدام وظائف الموقع</string>
+    <string name="no_notification_available">لا يوجد إعلام متاح</string>
+    <string name="open_location_settings">موقع الجهاز متوقف ، يرجى تشغيله لمتابعة استخدام هذا التطبيق</string>
+    <string name="please_turn_on_gps">يرجى تشغيل GPS</string>
+    <string name="description">Description</string>
+</resources>

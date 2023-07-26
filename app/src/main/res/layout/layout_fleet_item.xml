@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/LayoutWidthHeightMatchWrap"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_7sdp"
+    android:layout_marginStart="@dimen/_6sdp"
+    android:background="@drawable/white_round_10"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/LayoutWidthHeightZeroWrap"
+        android:minHeight="@dimen/_62sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_driver_top"
+            style="@style/LayoutWidthHeightZeroWrap"
+            android:layout_height="@dimen/_12sdp"
+            android:paddingStart="@dimen/_4sdp"
+            android:paddingEnd="@dimen/_2sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                android:id="@+id/tv_item_active"
+                style="@style/LayoutWidthHeightWrap"
+                android:alpha="0.6"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:textAppearance="@style/CommonTextMedium"
+                android:textSize="@dimen/_4sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Active" />
+
+            <ImageView
+                android:id="@+id/switch_fleet"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:src="@drawable/ic_switch_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/view_line_driver"
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="@color/line_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_driver_top" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_img"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            app:cardCornerRadius="@dimen/_5sdp"
+            app:cardElevation="0dp"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:layout_constraintDimensionRatio="W,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_line_driver"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <ImageView
+                android:id="@+id/iv_vendor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_place_holder_img"
+                android:contentDescription="@string/description" />
+
+        </androidx.cardview.widget.CardView>
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_item_title"
+            style="@style/LayoutWidthHeightZeroWrap"
+            android:layout_marginBottom="@dimen/_3sdp"
+            android:gravity="center"
+            android:lines="1"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:textAppearance="@style/CommonTextMedium"
+            android:textSize="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@id/card_img"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="@color/line_divider"
+            android:layout_marginTop="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_item_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.nyotek.dot.admin.widgets.NSConstraintLayout
+            android:id="@+id/cl_view_more_vendor"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_11sdp"
+            android:background="@drawable/half_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/view_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                style="@style/LayoutWidthHeightWrap"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="UseCompoundDrawables">
+
+                <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                    android:id="@+id/tv_view_more"
+                    style="@style/LayoutWidthHeightWrap"
+                    android:textAppearance="@style/CommonTextRegular"
+                    android:textSize="@dimen/_4ssp"
+                    android:gravity="center_vertical|end"
+                    android:lines="1"
+                    android:paddingHorizontal="@dimen/_2sdp"
+                    tools:text="View More"/>
+
+                <com.nyotek.dot.admin.widgets.ImageIconView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:src="@drawable/ic_arrow"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/description" />
+
+            </LinearLayout>
+
+        </com.nyotek.dot.admin.widgets.NSConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

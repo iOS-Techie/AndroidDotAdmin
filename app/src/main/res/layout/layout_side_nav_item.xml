@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.nyotek.dot.admin.widgets.NSConstraintLayout android:id="@+id/cl_item" android:layout_width="match_parent"
+    android:layout_height="@dimen/_16sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/iv_icon_nav"
+        android:layout_width="@dimen/_6sdp"
+        android:layout_height="@dimen/_6sdp"
+        android:src="@drawable/ic_user_fund"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline_start"
+        app:layout_constraintBottom_toTopOf="@id/view_line_nav"
+        android:contentDescription="@string/description" />
+
+    <com.nyotek.dot.admin.widgets.NSWhiteTextView
+        android:id="@+id/tv_nav_sub_title"
+        style="@style/LayoutWidthHeightWrap"
+        android:textAppearance="@style/CommonTextInter600"
+        android:textSize="@dimen/_4ssp"
+        android:text="Vendor"
+        android:layout_marginStart="@dimen/_4sdp"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_nav"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_line_nav"/>
+
+    <ImageView
+        android:id="@+id/iv_side_arrow"
+        android:layout_width="@dimen/_3sdp"
+        android:layout_height="@dimen/_6sdp"
+        android:background="@drawable/ic_side_nav_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_line_nav"
+        android:contentDescription="@string/description" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.08"/>
+
+    <View
+        android:id="@+id/view_line_nav"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/line_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</com.nyotek.dot.admin.widgets.NSConstraintLayout>

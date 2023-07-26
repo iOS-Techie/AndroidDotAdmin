@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fleets.vehicle.NSVehicleFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_vehicle_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/white_round_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cl_map"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_vehicle_title"
+            style="@style/LayoutWidthHeightWrap"
+            android:gravity="center_vertical|start"
+            android:paddingStart="@dimen/_4sdp"
+            android:paddingEnd="0dp"
+            android:textAlignment="viewStart"
+            android:paddingVertical="@dimen/_7sdp"
+            android:textAppearance="@style/CommonTextSemiBold"
+            android:textSize="@dimen/_6ssp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Branch list" />
+
+        <com.nyotek.dot.admin.widgets.NSWhiteTextView
+            android:id="@+id/tv_create_vehicle"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_12sdp"
+            android:gravity="center"
+            android:minWidth="@dimen/_45sdp"
+            android:textAppearance="@style/CommonTextMedium"
+            android:textSize="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_vehicle_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_vehicle_title"
+            app:layout_constraintVertical_bias="0.516"
+            tools:text="Create Branch" />
+
+        <View
+            android:id="@+id/view_line_branch"
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="@color/line_divider_theme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_vehicle_title" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srl_refresh"
+            style="@style/LayoutWidthHeightZero"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_line_branch"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_vehicle_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/white_round_12"
+                tools:listitem="@layout/layout_vehicle_list_item"
+                />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_map"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:background="@drawable/white_round_12"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cl_vehicle_list"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:cardCornerRadius="@dimen/_5sdp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.mapbox.maps.MapView
+                android:id="@+id/map_fragment_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

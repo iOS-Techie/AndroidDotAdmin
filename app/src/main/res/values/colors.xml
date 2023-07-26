@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_500">#FF001D53</color>
+    <color name="purple_700">#FFFAF4</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="green">#14C25A</color>
+
+    <color name="gray_4b4b4a">#4b4b4a</color>
+    <color name="white_d2d4db">#d2d4db</color>
+    <color name="blue_03_alpha">#66001d53</color>
+    <color name="profile_background">#F1F5FF</color>
+    <color name="background_alpha_black">#33000000</color>
+
+    <color name="dialog_button_text">#1E82FF</color>
+    <color name="line_divider">#EAEFFC</color>
+    <color name="line_divider_theme">#D8DFF0</color>
+
+    <color name="primary">#001D52</color>
+    <color name="background">#EEF1F8</color>
+    <color name="gray_light">#C1C1C1</color>
+
+</resources>

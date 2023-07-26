@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LayoutWidthHeightMatchWrap"
+    android:layout_height="@dimen/_19sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/_6sdp"
+    android:layout_marginStart="@dimen/_6sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_capabilities"
+        style="@style/LayoutWidthHeightZero"
+        android:paddingHorizontal="@dimen/_7sdp"
+        android:background="@drawable/white_round_4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_capabilities_title"
+            style="@style/LayoutWidthHeightZeroWrap"
+            android:gravity="start"
+            android:lines="1"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/_4sdp"
+            android:textAppearance="@style/CommonTextInter600"
+            android:textSize="@dimen/_6sdp"
+            android:textAlignment="viewStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_active_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Employee 01" />
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
+            android:id="@+id/tv_active_title"
+            style="@style/LayoutWidthHeightWrap"
+            android:gravity="start"
+            android:lines="1"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/_4sdp"
+            android:textAppearance="@style/CommonTextInter400"
+            android:textSize="@dimen/_5sdp"
+            android:textAlignment="viewStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/switch_service"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Employee 01" />
+
+        <ImageView
+            android:id="@+id/switch_service"
+            android:layout_width="@dimen/_12sdp"
+            android:layout_height="@dimen/_7sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:src="@drawable/ic_switch_off"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/view_divider_dashboard"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.nyotek.dot.admin.widgets.NSViewLine
+            android:id="@+id/view_divider_dashboard"
+            android:layout_width="0.8dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            app:layout_constraintEnd_toStartOf="@id/iv_edit"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/iv_edit"
+            android:layout_width="@dimen/_7sdp"
+            android:layout_height="@dimen/_7sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_delete"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="@dimen/_7sdp"
+            android:layout_height="@dimen/_7sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:visibility="gone"
+            android:src="@drawable/ic_delete_user"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="cancel">Stornieren</string>
+    <string name="ok">OK</string>
+    <string name="no_network_available">Kein Netzwerk verfügbar</string>
+    <string name="networkUnreachable_title">Irgendetwas stimmt vorübergehend nicht mit Ihrer Netzwerkverbindung. Bitte vergewissern Sie sich, dass Sie mit dem Internet verbunden sind, und versuchen Sie es dann erneut.</string>
+    <string name="loading_please_wait">Laden, bitte warten…</string>
+    <string name="gps_enable">GPS aktivieren</string>
+    <string name="gps_network_not_enabled">Kein Standortzugriff</string>
+    <string name="location_permission">Standortgenehmigung erforderlich</string>
+    <string name="location_permission_description">Diese App benötigt die Standortberechtigung, bitte stimmen Sie der Verwendung der Standortfunktion zu</string>
+    <string name="no_notification_available">Keine Benachrichtigung verfügbar</string>
+    <string name="open_location_settings">Der Gerätestandort ist deaktiviert. Bitte schalten Sie ihn ein, um diese App weiterhin zu verwenden</string>
+    <string name="please_turn_on_gps">Bitte GPS einschalten</string>
+    <string name="description">Description</string>
+</resources>

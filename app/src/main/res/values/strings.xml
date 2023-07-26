@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="no_network_available">No Network Available</string>
+    <string name="networkUnreachable_title">Something temporarily wrong with your network connection. please make sure you are connected to the internet and then try again.</string>
+    <string name="loading_please_wait" translatable="false">Loading, please wait…</string>
+    <string name="gps_enable">Gps Enable</string>
+    <string name="gps_network_not_enabled">No location access</string>
+    <string name="location_permission">Location Permission Needed</string>
+    <string name="location_permission_description">This app needs the Location permission, please accept to use location functionality</string>
+    <string name="no_notification_available">No Notification Available</string>
+    <string name="open_location_settings">Device location is turned off, please turn on to continue use this app.</string>
+    <string name="please_turn_on_gps">Please turn on GPS</string>
+    <string name="description">Description</string>
+    <string name="location_title" tools:ignore="MissingTranslation">Locations</string>
+    <string name="search_hint" tools:ignore="MissingTranslation">Search</string>
+    <string name="slash">/</string>
+
+</resources>

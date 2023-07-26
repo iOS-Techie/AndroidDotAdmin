@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.nyotek.dot.admin.widgets.NSPrimaryTextView android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/archivo_regular"
+    android:textSize="@dimen/_4sdp"
+    android:imeOptions="actionNext"
+    android:textAlignment="center"
+    android:gravity="center"
+    android:layout_gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

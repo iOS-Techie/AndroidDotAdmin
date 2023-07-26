@@ -1,0 +1,186 @@
+{
+  "project_info": {
+    "project_number": "379412389638",
+    "project_id": "nyohub-prod-352718",
+    "storage_bucket": "nyohub-prod-352718.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379412389638:android:4af60b6fe35bf41f080887",
+        "android_client_info": {
+          "package_name": "com.nyotek.dot.prod.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379412389638-msmmjc81l6gnppas8irqgv2t5cemq3e6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyotek.dot.prod.driver",
+            "certificate_hash": "493b11888e248af4d688db4a96347ba921c64b0e"
+          }
+        },
+        {
+          "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh0swPBjwmSGKyGGrySuxqg0Zx3If7lKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379412389638-38bf53vjsd8d0plrb75ned10alioq482.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nyotek.hubz.prod.vendor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379412389638:android:1b17b5f17af3299f080887",
+        "android_client_info": {
+          "package_name": "com.nyotek.hubz.prod.admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379412389638-tioqpn3un4kdc372s21pfmoh5knsd041.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyotek.hubz.prod.admin",
+            "certificate_hash": "493b11888e248af4d688db4a96347ba921c64b0e"
+          }
+        },
+        {
+          "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh0swPBjwmSGKyGGrySuxqg0Zx3If7lKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379412389638-38bf53vjsd8d0plrb75ned10alioq482.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nyotek.hubz.prod.vendor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379412389638:android:6bcc505e7e47121a080887",
+        "android_client_info": {
+          "package_name": "com.nyotek.hubz.prod.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379412389638-rhikmd2sar055igkb9c1k7g2u3hrn9c8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyotek.hubz.prod.customer",
+            "certificate_hash": "493b11888e248af4d688db4a96347ba921c64b0e"
+          }
+        },
+        {
+          "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh0swPBjwmSGKyGGrySuxqg0Zx3If7lKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379412389638-38bf53vjsd8d0plrb75ned10alioq482.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nyotek.hubz.prod.vendor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379412389638:android:56416439c572b76c080887",
+        "android_client_info": {
+          "package_name": "com.nyotek.hubz.prod.fulfillment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379412389638-kcrri24qdkur415g5imjknqra4ca3ern.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyotek.hubz.prod.fulfillment",
+            "certificate_hash": "493b11888e248af4d688db4a96347ba921c64b0e"
+          }
+        },
+        {
+          "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh0swPBjwmSGKyGGrySuxqg0Zx3If7lKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379412389638-9kk32fgs3nhadv4v8hd6kaufuf5khum8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379412389638-38bf53vjsd8d0plrb75ned10alioq482.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nyotek.hubz.prod.vendor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

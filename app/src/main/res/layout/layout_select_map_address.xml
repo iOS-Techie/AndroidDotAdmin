@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/bubble_view" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/_2sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="@dimen/_130sdp"
+        android:layout_height="@dimen/_180sdp"
+        android:background="@android:color/transparent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="@dimen/_8sdp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_20sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/iv_back_address"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:padding="@dimen/_1sdp"
+                        android:src="@drawable/ic_back_arrow"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                        android:id="@+id/tv_header_title"
+                        style="@style/LayoutWidthHeightWrap"
+                        android:gravity="center"
+                        android:textAppearance="@style/CommonTextMedium"
+                        android:textSize="@dimen/_6ssp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:text="Driver Management" />
+
+                    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                        android:id="@+id/tv_address_done"
+                        style="@style/LayoutWidthHeightWrap"
+                        android:gravity="center"
+                        android:layout_marginEnd="@dimen/_6sdp"
+                        android:textAppearance="@style/CommonTextRegular"
+                        android:textSize="@dimen/_5ssp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:text="Driver Management" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/nsv_add_address"
+                    style="@style/LayoutWidthHeightZero"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:paddingBottom="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/cl_header"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.nyotek.dot.admin.widgets.NSBlackTextView
+                            android:id="@+id/tv_address_title"
+                            style="@style/LayoutWidthHeightWrap"
+                            android:textSize="@dimen/_5sdp"
+                            android:textAppearance="@style/CommonTextMedium"
+                            android:layout_marginTop="@dimen/_4sdp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.nyotek.dot.admin.widgets.NSBlackTextView
+                            android:id="@+id/tv_address_lat"
+                            style="@style/LayoutWidthHeightWrap"
+                            android:textSize="@dimen/_4sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:textAppearance="@style/CommonTextRegular"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_address_title" />
+
+                        <com.nyotek.dot.admin.widgets.NSBlackTextView
+                            android:id="@+id/tv_address_long"
+                            style="@style/LayoutWidthHeightWrap"
+                            android:textSize="@dimen/_4sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:textAppearance="@style/CommonTextRegular"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_address_lat" />
+
+                        <RelativeLayout
+                            android:id="@+id/rl_address_form"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:paddingTop="@dimen/_2sdp"
+                            android:paddingBottom="0dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_address_long">
+
+                            <com.nyotek.dot.admin.widgets.NSTextInputLayout
+                                android:id="@+id/til_address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_16sdp"
+                                android:layout_alignParentTop="true"
+                                app:hintTextAppearance="@style/TextInputStyle"
+                                android:background="@android:color/transparent">
+
+                                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                                    android:id="@+id/et_address"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingTop="@dimen/_2sdp"
+                                    android:paddingBottom="0dp"
+                                    android:autofillHints="postalAddress"
+                                    android:includeFontPadding="false"
+                                    android:inputType="text"
+                                    android:background="@null"
+                                    android:paddingHorizontal="@dimen/_6sdp"
+                                    android:textAlignment="viewStart"
+                                    android:visibility="visible"
+                                    android:textSize="@dimen/_6sdp"/>
+
+                            </com.nyotek.dot.admin.widgets.NSTextInputLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rl_city_form"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:paddingTop="@dimen/_2sdp"
+                            android:paddingBottom="0dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rl_address_form">
+
+                            <com.nyotek.dot.admin.widgets.NSTextInputLayout
+                                android:id="@+id/til_city"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_16sdp"
+                                android:layout_alignParentTop="true"
+                                app:hintTextAppearance="@style/TextInputStyle"
+                                android:background="@android:color/transparent">
+
+                                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                                    android:id="@+id/et_city"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingTop="@dimen/_2sdp"
+                                    android:paddingBottom="0dp"
+                                    android:autofillHints="text"
+                                    android:includeFontPadding="false"
+                                    android:inputType="text"
+                                    android:background="@null"
+                                    android:paddingHorizontal="@dimen/_6sdp"
+                                    android:textAlignment="viewStart"
+                                    android:visibility="visible"
+                                    android:textSize="@dimen/_6sdp"/>
+
+                            </com.nyotek.dot.admin.widgets.NSTextInputLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rl_country_form"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:paddingTop="@dimen/_2sdp"
+                            android:paddingBottom="0dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rl_city_form">
+
+                            <com.nyotek.dot.admin.widgets.NSTextInputLayout
+                                android:id="@+id/til_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_16sdp"
+                                android:layout_alignParentTop="true"
+                                app:hintTextAppearance="@style/TextInputStyle"
+                                android:background="@android:color/transparent">
+
+                                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                                    android:id="@+id/et_country"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingTop="@dimen/_2sdp"
+                                    android:paddingBottom="0dp"
+                                    android:importantForAutofill="no"
+                                    android:includeFontPadding="false"
+                                    android:inputType="text"
+                                    android:background="@null"
+                                    android:paddingHorizontal="@dimen/_6sdp"
+                                    android:textAlignment="viewStart"
+                                    android:visibility="visible"
+                                    android:textSize="@dimen/_6sdp"/>
+
+                            </com.nyotek.dot.admin.widgets.NSTextInputLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rl_state_form"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:paddingTop="@dimen/_2sdp"
+                            android:paddingBottom="0dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rl_country_form">
+
+                            <com.nyotek.dot.admin.widgets.NSTextInputLayout
+                                android:id="@+id/til_state"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_16sdp"
+                                android:layout_alignParentTop="true"
+                                app:hintTextAppearance="@style/TextInputStyle"
+                                android:background="@android:color/transparent">
+
+                                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                                    android:id="@+id/et_state"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingTop="@dimen/_2sdp"
+                                    android:paddingBottom="0dp"
+                                    android:importantForAutofill="no"
+                                    android:includeFontPadding="false"
+                                    android:inputType="text"
+                                    android:background="@null"
+                                    android:paddingHorizontal="@dimen/_6sdp"
+                                    android:textAlignment="viewStart"
+                                    android:visibility="visible"
+                                    android:textSize="@dimen/_6sdp"/>
+
+                            </com.nyotek.dot.admin.widgets.NSTextInputLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rl_postal_code_form"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:paddingTop="@dimen/_2sdp"
+                            android:paddingBottom="0dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rl_state_form">
+
+                            <com.nyotek.dot.admin.widgets.NSTextInputLayout
+                                android:id="@+id/til_postal_code"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_16sdp"
+                                android:layout_alignParentTop="true"
+                                app:hintTextAppearance="@style/TextInputStyle"
+                                android:background="@android:color/transparent">
+
+                                <com.nyotek.dot.admin.widgets.NSCommonEditText
+                                    android:id="@+id/et_postal_code"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingTop="@dimen/_2sdp"
+                                    android:paddingBottom="0dp"
+                                    android:importantForAutofill="no"
+                                    android:includeFontPadding="false"
+                                    android:inputType="number"
+                                    android:background="@null"
+                                    android:paddingHorizontal="@dimen/_6sdp"
+                                    android:textAlignment="viewStart"
+                                    android:visibility="visible"
+                                    android:textSize="@dimen/_6sdp"/>
+
+                            </com.nyotek.dot.admin.widgets.NSTextInputLayout>
+
+                        </RelativeLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            style="@style/LayoutWidthHeightZeroWrap"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rl_postal_code_form">
+
+                            <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                                android:id="@+id/btn_save_address"
+                                style="@style/LayoutWidthHeightWrap"
+                                android:layout_height="@dimen/_11sdp"
+                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:minWidth="@dimen/_52sdp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_6sdp"
+                                android:gravity="center"
+                                android:fontFamily="@font/archivo_medium"
+                                android:paddingHorizontal="@dimen/_5sdp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.core.widget.NestedScrollView>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/cl_header"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        style="@style/LayoutWidthHeightZero"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                         <!--<androidx.fragment.app.FragmentContainerView
+                             android:id="@+id/map_fragment"
+                             android:name="com.google.android.gms.maps.SupportMapFragment"
+                             android:layout_width="0dp"
+                             android:layout_height="match_parent"
+                             app:layout_constraintBottom_toTopOf="@+id/guideline"
+                             app:layout_constraintEnd_toEndOf="parent"
+                             app:layout_constraintStart_toStartOf="parent"
+                             app:layout_constraintTop_toTopOf="parent" />-->
+
+                        <ImageView
+                            android:id="@+id/iv_current_location"
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:layout_marginBottom="@dimen/_2sdp"
+                            android:clickable="true"
+                            android:contentDescription="@string/location_title"
+                            android:elevation="@dimen/_2sdp"
+                            android:focusable="true"
+                            android:src="@drawable/ic_locator"
+                            app:layout_constraintBottom_toTopOf="@id/guideline"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/cl_top_map_view"
+                            style="@style/LayoutWidthHeightZeroWrap"
+                            android:layout_height="@dimen/_16sdp"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.nyotek.dot.admin.widgets.NSBlackTextView
+                                android:id="@+id/tv_search"
+                                style="@style/LoginSubFontsZeroWrap"
+                                android:layout_marginEnd="@dimen/_6sdp"
+                                android:gravity="center_vertical|start"
+                                android:hint="@string/search_hint"
+                                android:lines="1"
+                                android:ellipsize="end"
+                                android:minHeight="@dimen/_20sdp"
+                                android:paddingHorizontal="@dimen/_6sdp"
+                                android:textAlignment="viewStart"
+                                android:textColorHint="#757575"
+                                android:textSize="@dimen/_6sdp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/iv_add"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <com.nyotek.dot.admin.widgets.ImageIconView
+                                android:id="@+id/iv_add"
+                                android:layout_width="@dimen/_7sdp"
+                                android:layout_height="@dimen/_7sdp"
+                                android:layout_marginEnd="@dimen/_6sdp"
+                                android:contentDescription="@string/description"
+                                android:src="@drawable/ic_add"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="UseAppTint" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            style="@style/LayoutWidthHeightZeroWrap"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:background="@drawable/background_round_five"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/cl_top_map_view">
+
+                            <RelativeLayout
+                                android:id="@+id/rl_segment_bg"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:alpha="0.4"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="UseAppTint" />
+
+                            <com.nyotek.dot.admin.widgets.NSBlackTextView
+                                android:id="@+id/tv_standard"
+                                style="@style/LayoutWidthHeightZeroWrap"
+                                android:layout_marginVertical="@dimen/_1sdp"
+                                android:layout_marginStart="@dimen/_1sdp"
+                                android:gravity="center"
+                                android:paddingHorizontal="@dimen/_2sdp"
+                                android:paddingVertical="@dimen/_3sdp"
+                                android:textSize="@dimen/_6sdp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/view_line"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <View
+                                android:id="@+id/view_line"
+                                android:layout_width="0.8dp"
+                                android:layout_height="0dp"
+                                android:layout_marginVertical="@dimen/_5sdp"
+                                android:alpha="0.6"
+                                android:visibility="invisible"
+                                android:paddingHorizontal="@dimen/_10sdp"
+                                android:paddingVertical="@dimen/_5sdp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/tv_satellite"
+                                app:layout_constraintStart_toEndOf="@id/tv_standard"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <com.nyotek.dot.admin.widgets.NSBlackTextView
+                                android:id="@+id/tv_satellite"
+                                style="@style/LayoutWidthHeightZeroWrap"
+                                android:layout_marginVertical="@dimen/_1sdp"
+                                android:gravity="center"
+                                android:paddingHorizontal="@dimen/_2sdp"
+                                android:paddingVertical="@dimen/_3sdp"
+                                android:textSize="@dimen/_6sdp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/view_line2"
+                                app:layout_constraintStart_toEndOf="@id/view_line"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <View
+                                android:id="@+id/view_line2"
+                                android:layout_width="0.8dp"
+                                android:layout_height="0dp"
+                                android:layout_marginVertical="@dimen/_5sdp"
+                                android:alpha="0.6"
+                                android:paddingHorizontal="@dimen/_10sdp"
+                                android:paddingVertical="@dimen/_5sdp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/tv_hybrid"
+                                app:layout_constraintStart_toEndOf="@id/tv_satellite"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <com.nyotek.dot.admin.widgets.NSBlackTextView
+                                android:id="@+id/tv_hybrid"
+                                style="@style/LayoutWidthHeightZeroWrap"
+                                android:layout_marginVertical="@dimen/_1sdp"
+                                android:layout_marginEnd="@dimen/_1sdp"
+                                android:gravity="center"
+                                android:paddingHorizontal="@dimen/_2sdp"
+                                android:paddingVertical="@dimen/_3sdp"
+                                android:textSize="@dimen/_6sdp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/view_line2"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <com.nyotek.dot.admin.widgets.ImageIconView
+                            android:id="@+id/iv_gps"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="@dimen/_14sdp"
+                            android:contentDescription="@string/gps_enable"
+                            android:src="@drawable/gps"
+                            app:layout_constraintBottom_toTopOf="@+id/guideline"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintGuide_percent="1" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

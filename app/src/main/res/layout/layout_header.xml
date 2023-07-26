@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.nyotek.dot.admin.widgets.NSConstraintLayout android:id="@+id/cl_header_top"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_25sdp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.nyotek.dot.admin.widgets.ImageIconView
+        android:id="@+id/iv_brand_icon"
+        android:layout_width="@dimen/_29sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:gravity="center"
+        android:visibility="visible"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:paddingHorizontal="@dimen/_3sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/app_admin_name" />
+
+    <com.nyotek.dot.admin.widgets.NSViewLine
+        android:id="@+id/view_line_header"
+        android:layout_width="@dimen/_1sdp"
+        android:layout_height="@dimen/_17sdp"
+        android:layout_marginStart="@dimen/_9sdp"
+        app:layout_constraintStart_toEndOf="@id/iv_brand_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_back"
+        style="@style/LayoutWidthHeightWrap"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_marginStart="@dimen/_6sdp"
+        app:layout_constraintStart_toEndOf="@id/view_line_header"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.nyotek.dot.admin.widgets.ImageIconView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/_7sdp"
+            android:layout_height="@dimen/_7sdp"
+            android:src="@drawable/ic_back"
+            android:gravity="center"
+            android:visibility="visible"
+            android:paddingVertical="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/app_admin_name"
+            tools:ignore="UseAppTint" />
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_header_title"
+            style="@style/LayoutWidthHeightZeroWrap"
+            android:textSize="@dimen/_5sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:includeFontPadding="false"
+            android:fontFamily="@font/archivo_semi_bold"
+            app:layout_constraintStart_toEndOf="@id/iv_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.nyotek.dot.admin.widgets.ImageIconView
+        android:id="@+id/iv_settings"
+        android:layout_width="@dimen/_7sdp"
+        android:layout_height="@dimen/_7sdp"
+        android:src="@drawable/ic_settings_s"
+        android:paddingVertical="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/app_admin_name" />
+
+</com.nyotek.dot.admin.widgets.NSConstraintLayout>
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <!--<string name="accepted">Accepted</string>
+
+
+    <string name="default_error_title">Something went wrong! please try again!</string>
+    <string name="email_address">Email Address</string>
+    <string name="invalid_email_title">Please enter valid Email Address!</string>
+    <string name="invalid_password_title">Please enter valid Password, enter at least 8 character!</string>
+    <string name="last_name">Last Name</string>
+    <string name="logo">Logo</string>
+    <string name="national_id_number">National ID Number</string>
+    <string name="networkUnreachable_title">Something temporarily wrong with your network connection. please make sure you are connected to the internet and then try again.</string>
+    <string name="new_">New</string>
+    <string name="next">Next</string>
+    <string name="no_file_selected">No file Selected</string>
+    <string name="no_item">No Item</string>
+    <string name="no_network_available">No Network Available</string>
+    <string name="not_refresh_token">Refresh token not found!</string>
+    <string name="notification_setting_title">Notification Settings</string>
+    <string name="notification_title">Notifications</string>
+    <string name="orders">Orders</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="please_select_address">Please Select Address</string>
+    <string name="selected_item">Selected Item</string>
+    <string name="select">Select</string>
+    <string name="something_went_wrong">Internal Server Error, Please Try Again Later</string>
+    <string name="success">Success</string>
+    <string name="wallet_id_not_found">Wallet ID not found</string>
+    <string name="you_have_account">You have an account?</string>-->
+</resources>

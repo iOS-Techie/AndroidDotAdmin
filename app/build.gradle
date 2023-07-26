@@ -1,0 +1,183 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    flavorDimensions "dotadmin"
+    productFlavors {
+        development {
+            dimension "dotadmin"
+            versionCode 1
+            versionName "1.0"
+            applicationId "com.nyotek.dot.dev.admin"
+            applicationIdSuffix ""
+            resValue "string", "app_admin_name", "DoT Admin"
+            resValue "string", "app_small_name", "DoT"
+            buildConfigField 'String', 'THEME_APP_ID', '"01H4JPH7T5C3X2SSK6GMBA64TA"'
+            //resValue "string", "google_maps_key", "AIzaSyAqBC69DrGebSCfErb2wkQqj2snhgDV2Do"
+            resValue "string", "google_maps_key", "AIzaSyBymt1KFpCEHBcIKpnNTn-RTQNn5w3L8gs"
+            resValue "string", "google_address_place_key", "AIzaSyA0r_pAMfx2lue7adrySY73VCoI2raIDqs"
+            buildConfigField 'String', 'BASE_URL_MAIN', ' " https://prod.hubz.nyotek.com/" '
+            buildConfigField 'String', 'BASE_URL_DEBUG', ' " https://dev.hubz.nyotek.com/" '
+            buildConfigField 'String', 'BASE_URL_THEME', ' "http://34.91.213.39:6080/" '
+            buildConfigField 'String', 'BASE_URL_LOCATION', ' "http://34.141.193.1:8082/" '
+            buildConfigField 'String', 'BASE_URL_FLEET', ' "http://34.141.193.1:8091/" '
+            buildConfigField 'boolean', 'IS_BASE_URL_DEBUG', "true"
+            buildConfigField 'String', 'PREFERENCE', ' "DoTAdmin" '
+            buildConfigField 'String', 'MAIL_ID', ' "test@gmail.com" '
+            buildConfigField 'String', 'PHONE_NUMBER', ' "+12373629297" '
+            buildConfigField 'String', 'MAPBOX_ACCESS_TOKEN', '"pk.eyJ1Ijoic2FtaXJtYWthZGlhIiwiYSI6ImNsamR1bXI5aDAxeDUzaHM0OXRsdTd0eGcifQ.GNB16ObUGEn47z78QL1FQg"'
+
+        }
+        production {
+            dimension "dotadmin"
+            versionCode 1
+            versionName "1.0"
+            applicationId "com.nyotek.dot.prod.admin"
+            applicationIdSuffix ""
+            resValue "string", "app_admin_name", "DoT Admin"
+            resValue "string", "app_small_name", "DoT"
+            buildConfigField 'String', 'THEME_APP_ID', '"01GEFEB5FQYJNDFVQJ56182R9S"'
+            resValue "string", "google_maps_key", "AIzaSyBymt1KFpCEHBcIKpnNTn-RTQNn5w3L8gs"
+            resValue "string", "google_address_place_key", "AIzaSyA0r_pAMfx2lue7adrySY73VCoI2raIDqs"
+            buildConfigField 'String', 'BASE_URL_MAIN', ' " https://prod.hubz.nyotek.com/" '
+            buildConfigField 'String', 'BASE_URL_DEBUG', ' " https://dev.hubz.nyotek.com/" '
+            buildConfigField 'String', 'BASE_URL_THEME', ' "http://34.91.213.39:6080/" '
+            buildConfigField 'String', 'BASE_URL_LOCATION', ' "http://34.141.193.1:8082/" '
+            buildConfigField 'String', 'BASE_URL_FLEET', ' "http://34.141.193.1:8091/" '
+            buildConfigField 'boolean', 'IS_BASE_URL_DEBUG', "false"
+            buildConfigField 'String', 'PREFERENCE', ' "DoTAdmin" '
+            buildConfigField 'String', 'MAIL_ID', ' "test@gmail.com" '
+            buildConfigField 'String', 'PHONE_NUMBER', ' "+12373629297" '
+            buildConfigField 'String', 'MAPBOX_ACCESS_TOKEN', '"pk.eyJ1Ijoic2FtaXJtYWthZGlhIiwiYSI6ImNsamR1bXI5aDAxeDUzaHM0OXRsdTd0eGcifQ.GNB16ObUGEn47z78QL1FQg"'
+        }
+    }
+    namespace 'com.nyotek.dot.admin'
+
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
+    }
+}
+
+ext {
+    appcompatVersion = '1.4.1'
+    ktxVersion = '1.7.0'
+    constraintLayoutVersion = '2.1.3'
+    eventBusVersion = '3.3.1'
+    materialDesignVersion = '1.5.0'
+    retrofitVersion = '2.9.0'
+    multiDexVersion = '2.0.1'
+    sdpVersion = '1.1.0'
+    loggingVersion = '5.0.0-alpha.8'
+    lifeCycleVersion = '2.5.0'
+    phoneNumberVersion = "2.5.4"
+    libPhoneNumber = "8.12.41"
+    authApiPhoneVersion = '18.0.1'
+    playServicesMapVersion = '18.0.2'
+    playServicesLocationVersion = '19.0.1'
+    mapVersion = "3.3.0"
+    roomVersion = '2.4.3'
+    dagger_version = "2.40"
+    playServicesMapVersion = '18.0.2'
+    mapVersion = "3.3.0"
+    googlePlaces = '3.0.0'
+    activityKtx = '1.5.0'
+    fragmentKtx = '1.5.0'
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // Event bus
+    implementation "org.greenrobot:eventbus:$eventBusVersion"
+
+    // MultiDex
+    implementation "androidx.multidex:multidex:$multiDexVersion"
+    // Retrofit library
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    //Sdp
+    implementation "com.intuit.sdp:sdp-android:$sdpVersion"
+    implementation "com.intuit.ssp:ssp-android:$sdpVersion"
+    // For Logging purpose
+    implementation "com.squareup.okhttp3:logging-interceptor:$loggingVersion"
+   /* //Process lifecycle observer
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
+    annotationProcessor "androidx.lifecycle:lifecycle-common-java8:$lifeCycleVersion"*/
+
+    implementation 'com.github.bumptech.glide:glide:4.14.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.1'
+
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-config'
+    //implementation "com.github.skydoves:powermenu:2.2.0"
+    implementation "com.google.android.libraries.places:places:$googlePlaces"
+
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
+
+    implementation project(':imagepicker')
+    implementation 'com.github.franmontiel:LocaleChanger:1.1'
+
+    //implementation project(':filepicker')
+    //implementation project(':colorpickerview')
+    implementation 'com.github.pvarry:android-json-viewer:v1.1'
+    implementation 'com.github.MasayukiSuda:BubbleLayout:v1.2.2'
+
+    implementation "com.mapbox.maps:android:10.15.0-beta.1"
+    
+    //for marshalling - googlemaps for get current location (error if not this)
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+}

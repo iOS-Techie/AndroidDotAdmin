@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.daasuu.bl.BubbleLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="12dp"
+    android:padding="@dimen/_6sdp"
+    app:bl_arrowDirection="right_center"
+    app:bl_arrowHeight="@dimen/_10sdp"
+    app:bl_arrowPosition="@dimen/_8sdp"
+    app:bl_arrowWidth="@dimen/_7sdp"
+    app:bl_bubbleColor="@android:color/holo_blue_light"
+    app:bl_cornersRadius="@dimen/_8sdp">
+
+    <RelativeLayout
+        android:layout_width="@dimen/_130sdp"
+        android:layout_height="@dimen/_180sdp"/>
+
+
+</com.daasuu.bl.BubbleLayout>
