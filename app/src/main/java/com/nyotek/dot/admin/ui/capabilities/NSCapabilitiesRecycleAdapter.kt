@@ -19,7 +19,7 @@ class NSCapabilitiesRecycleAdapter(
         LayoutCapabilitiesBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _ ->
+    onBind = { binding, response, _,_ ->
         binding.apply {
             response.apply {
 

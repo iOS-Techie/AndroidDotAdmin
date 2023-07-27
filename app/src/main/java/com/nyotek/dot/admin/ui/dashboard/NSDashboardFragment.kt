@@ -5,16 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
-import com.google.gson.Gson
 import com.nyotek.dot.admin.common.*
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSSideNavigationSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
 import com.nyotek.dot.admin.common.utils.linear
+import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardBinding
 import com.nyotek.dot.admin.repository.network.responses.NSNavigationResponse
@@ -24,7 +23,6 @@ import com.nyotek.dot.admin.ui.dashboard.tabs.DashboardMainTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.FleetTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.ServicesTabFragment
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
-import com.nyotek.dot.admin.ui.settings.NSSettingActivity
 import com.nyotek.dot.admin.ui.settings.NSSettingViewModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -110,23 +108,23 @@ class NSDashboardFragment : NSFragment(), NSBackClickCallback {
                     setNavigationItem()
                     linear(activity)
                     navigationAdapter =
-                        NSSideNavigationRecycleAdapter(isLanguageSelected(), navItemList,
-                            object : NSSideNavigationSelectCallback {
-                                override fun onItemSelect(
-                                    navResponse: NSNavigationResponse,
-                                    position: Int
-                                ) {
-                                    navResponse.apply {
-                                        NSApplication.getInstance().setSelectedNavigationType(type)
-                                        dashboardBinding.dashboardPager.setCurrentItem(
-                                            position,
-                                            false
-                                        )
-                                    }
-                                    navigationAdapter?.updateNavigation()
+                        NSSideNavigationRecycleAdapter(isLanguageSelected(), object : NSSideNavigationSelectCallback {
+                            override fun onItemSelect(
+                                navResponse: NSNavigationResponse,
+                                position: Int
+                            ) {
+                                navResponse.apply {
+                                    NSApplication.getInstance().setSelectedNavigationType(type)
+                                    dashboardBinding.dashboardPager.setCurrentItem(
+                                        position,
+                                        false
+                                    )
                                 }
-                            })
+                                notifyAdapter(navigationAdapter!!)
+                            }
+                        })
                     adapter = navigationAdapter
+                    navigationAdapter?.setData(navItemList)
                     isNestedScrollingEnabled = false
                     setupViewPager(requireActivity(), dashboardBinding.dashboardPager)
                 }

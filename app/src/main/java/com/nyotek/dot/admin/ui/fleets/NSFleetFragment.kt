@@ -163,8 +163,6 @@ class NSFleetFragment : NSFragment(), NSFileUploadCallback, NSFleetFilterCallbac
                     layoutManager = GridLayoutManager(activity, 5)
                     fleetRecycleAdapter =
                         NSFleetManagementRecycleAdapter(
-                            requireActivity(),
-                            isLanguageSelected(),
                             object :
                                 NSFleetDetailCallback {
                                 override fun onItemSelect(model: FleetData) {
@@ -203,15 +201,15 @@ class NSFleetFragment : NSFragment(), NSFileUploadCallback, NSFleetFilterCallbac
             val filterTypes = getFilterSelectedTypes(filterList)
             if (filterTypes.isNotEmpty()) {
                 if (searchText.isEmpty()) {
-                    fleetRecycleAdapter?.updateData(fleetItemList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<FleetData>)
+                    fleetRecycleAdapter?.setData(fleetItemList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<FleetData>)
                 } else {
-                    fleetRecycleAdapter?.updateData(fleetItemList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) && getLngValue(it.name).lowercase().contains(searchText.lowercase())} as MutableList<FleetData>)
+                    fleetRecycleAdapter?.setData(fleetItemList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) && getLngValue(it.name).lowercase().contains(searchText.lowercase())} as MutableList<FleetData>)
                 }
             } else {
                 if (searchText.isEmpty()) {
-                    fleetRecycleAdapter?.updateData(fleetItemList)
+                    fleetRecycleAdapter?.setData(fleetItemList)
                 } else {
-                    fleetRecycleAdapter?.updateData(fleetItemList.filter { getLngValue(it.name).lowercase().contains(searchText.lowercase())} as MutableList<FleetData>)
+                    fleetRecycleAdapter?.setData(fleetItemList.filter { getLngValue(it.name).lowercase().contains(searchText.lowercase())} as MutableList<FleetData>)
                 }
             }
         }
@@ -355,7 +353,8 @@ class NSFleetFragment : NSFragment(), NSFileUploadCallback, NSFleetFilterCallbac
     private fun setServiceListForCreateFleet(isUserDetail: Boolean) {
         with(fleetViewModel) {
             if (isUserDetail) {
-                serviceHorizontalAdapter?.updateData2(serviceItemList, fleetViewModel.createCompanyRequest)
+                serviceHorizontalAdapter?.setCreateCompanyData(serviceItemList, fleetViewModel.createCompanyRequest)
+                serviceHorizontalAdapter?.setData(serviceItemList)
             }
         }
     }

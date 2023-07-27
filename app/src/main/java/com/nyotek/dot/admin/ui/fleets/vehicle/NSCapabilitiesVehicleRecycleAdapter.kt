@@ -7,11 +7,8 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.nyotek.dot.admin.common.BaseAdapter
 import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
-import com.nyotek.dot.admin.common.utils.NSUtilities
-import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.databinding.LayoutCapabilitiesVehicleBinding

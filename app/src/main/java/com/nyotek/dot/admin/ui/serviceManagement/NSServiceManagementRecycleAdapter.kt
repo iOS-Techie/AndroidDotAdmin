@@ -42,7 +42,7 @@ class NSServiceManagementRecycleAdapter(
         LayoutServiceItemBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource ->
+    onBind = { binding, response, stringResource, _ ->
         with(binding) {
             response.apply {
                 var selectedCapabilityId: String? = null

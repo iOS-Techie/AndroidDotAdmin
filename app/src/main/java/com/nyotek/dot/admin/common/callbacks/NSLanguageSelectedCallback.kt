@@ -8,5 +8,5 @@ interface NSLanguageSelectedCallback {
     /**
      * Invoked when the side navigation item click
      */
-    fun onItemSelect(language: String)
+    fun onItemSelect(language: String, isNotify: Boolean = false)
 }

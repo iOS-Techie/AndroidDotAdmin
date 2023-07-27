@@ -1,87 +1,40 @@
 package com.nyotek.dot.admin.ui.fleets.employee
 
-import android.app.Activity
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.nyotek.dot.admin.common.BaseAdapter
-import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
+import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeCallback
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeSwitchEnableDisableCallback
+import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
-import com.nyotek.dot.admin.common.utils.NSUtilities
-import com.nyotek.dot.admin.common.utils.getLngValue
-import com.nyotek.dot.admin.common.utils.notifyAdapter
+import com.nyotek.dot.admin.common.utils.getMapValue
+import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.databinding.LayoutEmployeeListBinding
 import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
 import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 
+private var jobMap: HashMap<String, JobListDataItem> = hashMapOf()
 class NSEmployeeRecycleAdapter(
-    private val activity: Activity,
     private val callback: NSEmployeeCallback,
     private val switchEnableDisableCallback: NSEmployeeSwitchEnableDisableCallback,
     private val branchItemSelect: NSVehicleSelectCallback
-) : BaseAdapter() {
-    private val itemList: MutableList<EmployeeDataItem> = arrayListOf()
-    private var jobMap: HashMap<String, JobListDataItem> = hashMapOf()
+) : BaseViewBindingAdapter<LayoutEmployeeListBinding, EmployeeDataItem>(
 
-    fun updateData(userList: MutableList<EmployeeDataItem>, map: HashMap<String, JobListDataItem>) {
-        clearData()
-        jobMap = map
-        itemList.addAll(userList)
-        notifyAdapter(this)
-    }
+    bindingInflater = { inflater, parent, attachToParent ->
+        LayoutEmployeeListBinding.inflate(inflater, parent, attachToParent)
+    },
 
-    fun notifyData() {
-        notifyAdapter(this)
-    }
-
-    fun clearData() {
-        itemList.clear()
-        notifyAdapter(this)
-    }
-
-    override fun onCreateView(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutEmployeeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return NSVendorManagementViewHolder(view)
-    }
-
-    override fun onBindView(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is NSVendorManagementViewHolder) {
-            holder.bind(itemList[holder.absoluteAdapterPosition])
-        }
-    }
-
-    override fun getItemCounts(): Int {
-        return itemList.size
-    }
-
-    /**
-     * The view holder for driver list
-     *
-     * @property binding The driver list view binding
-     */
-    inner class NSVendorManagementViewHolder(private val binding: LayoutEmployeeListBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        /**
-         * To bind the order details view into Recycler view with given data
-         *
-         * @param response The order details
-         */
-        fun bind(response: EmployeeDataItem) {
-            with(binding) {
-
-                tvDescription.text = getLngValue(jobMap[response.titleId]?.name)
+    onBind = { binding, response, _, _ ->
+        with(binding) {
+            response.apply {
+                tvDescription.getMapValue(jobMap[response.titleId]?.name?: hashMapOf())
                 tvEmployeeTitle.text = response.userId
 
-                NSUtilities.switchEnableDisable(switchService, response.isActive)
+                switchService.switchEnableDisable(isActive)
                 ColorResources.setBackground(clEmployeeItem, if (response.isEmployeeSelected) ColorResources.getBackgroundColor() else ColorResources.getWhiteColor())
 
                 switchService.setOnClickListener {
-                    NSUtilities.switchEnableDisable(switchService, !response.isActive)
-                    switchEnableDisableCallback.switch(response.vendorId!!, response.userId!!, !response.isActive)
-                    response.isActive = !response.isActive
+                    isActive = !isActive
+                    switchService.switchEnableDisable(isActive)
+                    switchEnableDisableCallback.switch(vendorId!!,  userId!!, isActive)
                 }
 
                 ivDelete.setOnClickListener {
@@ -97,5 +50,9 @@ class NSEmployeeRecycleAdapter(
                 }
             }
         }
+    }
+) {
+    fun setJob(map: HashMap<String, JobListDataItem>) {
+        jobMap = map
     }
 }

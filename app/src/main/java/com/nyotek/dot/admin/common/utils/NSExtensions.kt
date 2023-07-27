@@ -26,10 +26,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.franmontiel.localechanger.LocaleChanger
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.DelayedClickListener
 import com.nyotek.dot.admin.common.NSApplication
+import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSDateTimeHelper
 import com.nyotek.dot.admin.common.NSLog
 import com.nyotek.dot.admin.common.SafeClickListener
@@ -410,6 +415,20 @@ fun ImageView.setCircleImage(resource: Int = 0, url: String? = null) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).circleCrop().into(this)
 }
 
+fun ImageView.glide(resource: Int = 0, url: String? = null) {
+    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).into(this)
+}
+
+fun ImageView.glide200(resource: Int = 0, url: String? = null, scale: String?) {
+    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).apply(
+        RequestOptions().transform(
+            if (scale.equals(NSConstants.FILL)) CenterCrop() else FitCenter(),
+            RoundedCorners(20)
+        ).override(200, 200)
+    ).placeholder(R.drawable.ic_place_holder_img)
+        .error(R.drawable.ic_place_holder_img).into(this)
+}
+
 fun getLngValue(hashMap: Map<String, String>?): String {
     if (hashMap != null) {
         val languageCode = getLocalLanguage().lowercase()
@@ -560,4 +579,8 @@ fun EditText.addOnTextChangedListener(
     }
 
     addTextChangedListener(textWatcher)
+}
+
+fun View.setAlphaP6(isActive: Boolean) {
+    alpha = if (isActive) 1f else 0.6f
 }

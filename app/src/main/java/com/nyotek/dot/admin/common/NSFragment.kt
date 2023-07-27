@@ -40,6 +40,7 @@ open class NSFragment : Fragment() {
     val pref = NSApplication.getInstance().getPrefs()
     var stringResource = NSApplication.getInstance().getStringModel()
     var viewModelMain: NSViewModel? = null
+    private var languageAdapter: NSLanguageRecycleAdapter? = null
 
     var fleetManagementFragmentChangeCallback: NSFragmentChangeCallback? = object : NSFragmentChangeCallback {
         override fun setFragment(previousFragmentName: String, fragment: Fragment, isBackStack: Boolean,  bundle: Bundle) {
@@ -311,10 +312,11 @@ open class NSFragment : Fragment() {
                 }
 
                 rvLanguage.layoutManager = LinearLayoutManager(activity)
-                val profileAdapter =
-                    NSLanguageRecycleAdapter(languageList, pref, object :
+                languageAdapter =
+                    NSLanguageRecycleAdapter(pref, object :
                         NSLanguageSelectCallback {
                         override fun onPosition(position: Int) {
+                            notifyAdapter(languageAdapter!!)
                             selectLanguageBottomSheet!!.dismiss()
                             pref.isLanguageSelected = true
 
@@ -330,7 +332,8 @@ open class NSFragment : Fragment() {
                             )
                         }
                     })
-                rvLanguage.adapter = profileAdapter
+                rvLanguage.adapter = languageAdapter
+                languageAdapter?.setData(languageList)
                 rvLanguage.isNestedScrollingEnabled = false
 
                 // dismiss dialog

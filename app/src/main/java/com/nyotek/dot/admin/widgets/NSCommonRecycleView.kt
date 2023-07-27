@@ -10,6 +10,7 @@ import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
 import com.nyotek.dot.admin.common.callbacks.NSLocalLanguageCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 
@@ -44,9 +45,12 @@ class NSCommonRecycleView : RecyclerView {
         languageTitleRecycleAdapter =
             NSLanguageCommonRecycleAdapter(context, object :
                 NSLanguageSelectedCallback {
-                override fun onItemSelect(language: String) {
+                override fun onItemSelect(language: String, isNotify: Boolean) {
                     selectedLanguage = language
                     languageSelectCallback?.onItemSelect(language)
+                    if (isNotify) {
+                        notifyAdapter()
+                    }
                 }
             })
         adapter = languageTitleRecycleAdapter
@@ -56,7 +60,7 @@ class NSCommonRecycleView : RecyclerView {
     }
 
     fun notifyAdapter() {
-        languageTitleRecycleAdapter?.notifyAdapter()
+        languageTitleRecycleAdapter?.notifyDataSetChanged()
     }
 
     private fun getLocalLanguageList() {
@@ -84,7 +88,7 @@ class NSCommonRecycleView : RecyclerView {
                 mainList.add(local)
             }
         }
-        languageTitleRecycleAdapter?.updateData(mainList)
+        setAdapterData(mainList)
     }
 
     private fun setAdapter(list: MutableList<LanguageSelectModel>) {
@@ -92,6 +96,11 @@ class NSCommonRecycleView : RecyclerView {
             selectedLanguage = list[0].locale?:""
             list[0].isSelected = true
         }
-        languageTitleRecycleAdapter?.updateData(list)
+        setAdapterData(list)
+    }
+
+    private fun setAdapterData(list: MutableList<LanguageSelectModel>) {
+        languageTitleRecycleAdapter?.setData(list)
+        languageTitleRecycleAdapter?.setItem()
     }
 }

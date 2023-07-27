@@ -383,7 +383,8 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
                 fleetBinding.layoutSlogan.rvLanguageTitle.refreshAdapter()
             }
         })
-        serviceHorizontalAdapter?.updateData(serviceList, fleetDetailViewModel.fleetModel)
+        serviceHorizontalAdapter?.setFleetData(serviceList, fleetDetailViewModel.fleetModel)
+        serviceHorizontalAdapter?.setData(serviceList)
         /*if (!isFragmentAdded) {
             isFragmentAdded = true
             setFragmentList()

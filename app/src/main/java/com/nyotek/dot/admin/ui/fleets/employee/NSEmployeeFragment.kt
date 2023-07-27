@@ -17,7 +17,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.maps.GoogleMap
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
@@ -27,13 +26,15 @@ import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
-import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeCallback
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeSwitchEnableDisableCallback
 import com.nyotek.dot.admin.common.callbacks.NSSpinnerSelectCallback
+import com.nyotek.dot.admin.common.callbacks.NSUserClickCallback
+import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutInviteEmployeeBinding
@@ -46,7 +47,6 @@ import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 import com.nyotek.dot.admin.ui.common.NSUserViewModel
-import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleFragment
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -156,7 +156,7 @@ class NSEmployeeFragment : NSFragment() {
                 with(rvEmployeeList) {
                     layoutManager = LinearLayoutManager(activity)
                     empAdapter =
-                        NSEmployeeRecycleAdapter(requireActivity(),object : NSEmployeeCallback {
+                        NSEmployeeRecycleAdapter(object : NSEmployeeCallback {
                             override fun onClick(
                                 employeeData: EmployeeDataItem,
                                 isDelete: Boolean
@@ -186,7 +186,8 @@ class NSEmployeeFragment : NSFragment() {
                         })
                     adapter = empAdapter
                     isNestedScrollingEnabled = false
-                    empAdapter?.updateData(list, vendorViewModel.jobTitleMap)
+                    empAdapter?.setJob(vendorViewModel.jobTitleMap)
+                    empAdapter?.setData(list)
                 }
             }
         }
@@ -221,7 +222,7 @@ class NSEmployeeFragment : NSFragment() {
                     viewLifecycleOwner
                 ) { searchList ->
                     searchUserList = searchList
-                    employeeUserSearchRecycleAdapter?.updateData(searchUserList)
+                    employeeUserSearchRecycleAdapter?.setData(searchUserList)
                 }
             }
         }
@@ -420,7 +421,7 @@ class NSEmployeeFragment : NSFragment() {
                         override fun afterTextChanged(s: Editable?) {
                             clUserList.setVisibility(s.toString().isNotEmpty())
                             if ((s?:"").isEmpty()) {
-                                employeeUserSearchRecycleAdapter?.updateData(arrayListOf())
+                                employeeUserSearchRecycleAdapter?.setData(arrayListOf())
                             } else {
                                 userManagementViewModel.search(s.toString(), false)
                             }
@@ -482,7 +483,11 @@ class NSEmployeeFragment : NSFragment() {
             with(rvUserList) {
                 layoutManager = LinearLayoutManager(activity)
                 employeeUserSearchRecycleAdapter =
-                    NSEmployeeUserSearchRecycleAdapter()
+                    NSEmployeeUserSearchRecycleAdapter(object : NSUserClickCallback{
+                        override fun onUserSelect() {
+                            notifyAdapter(employeeUserSearchRecycleAdapter!!)
+                        }
+                    })
                 adapter = employeeUserSearchRecycleAdapter
                 isNestedScrollingEnabled = false
             }

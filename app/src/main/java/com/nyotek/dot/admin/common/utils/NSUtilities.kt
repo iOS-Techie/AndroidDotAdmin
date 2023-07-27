@@ -157,7 +157,7 @@ object NSUtilities {
         var selectedLanguage: String? = null
         recycleView.notifyAdapter()
         recycleView.languageSelectCallback = object : NSLanguageSelectedCallback {
-            override fun onItemSelect(language: String) {
+            override fun onItemSelect(language: String, isNotify: Boolean) {
                 selectedLanguage = language
                 edtText.setText(getLngValueWithLanguage(title, language))
                 edtText.setSelection(edtText.length())

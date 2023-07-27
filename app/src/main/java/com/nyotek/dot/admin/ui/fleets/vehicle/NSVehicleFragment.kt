@@ -136,7 +136,7 @@ class NSVehicleFragment : NSFragment(), NSFileUploadCallback {
                 with(rvVehicleList) {
                     layoutManager = LinearLayoutManager(activity)
                     vehicleRecycleAdapter =
-                        NSVehicleRecycleAdapter(requireContext(), object : NSEditVehicleCallback {
+                        NSVehicleRecycleAdapter(object : NSEditVehicleCallback {
                             override fun editVehicle(response: VehicleDataItem, position: Int) {
                                 val bundle = bundleOf(NSConstants.VEHICLE_DETAIL_KEY to Gson().toJson(response), NSConstants.FLEET_DETAIL_KEY to strVehicleDetail)
                                 fleetManagementFragmentChangeCallback?.setFragment(
@@ -158,7 +158,7 @@ class NSVehicleFragment : NSFragment(), NSFileUploadCallback {
                         })
                     adapter = vehicleRecycleAdapter
                     isNestedScrollingEnabled = false
-                    vehicleRecycleAdapter?.updateData(branchList)
+                    vehicleRecycleAdapter?.setData(branchList)
                     //setVendorList(true)
                 }
             }

@@ -14,12 +14,10 @@ import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.NSLog
-import com.nyotek.dot.admin.common.callbacks.NSLogoSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSSettingSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentSettingsBinding
-import com.nyotek.dot.admin.repository.network.responses.NSCommonResponse
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -114,7 +112,6 @@ class NSSettingFragment : NSFragment() {
                 rvSettings.layoutManager = LinearLayoutManager(activity)
                 settingAdapter =
                     NSSettingRecycleAdapter(
-                        profileItemList,
                         isLanguageSelected(),
                         object : NSSettingSelectCallback {
                             override fun onPosition(title: String) {
@@ -122,6 +119,8 @@ class NSSettingFragment : NSFragment() {
                             }
                         })
                 rvSettings.adapter = settingAdapter
+                settingAdapter?.setItemSize(profileItemList.size)
+                settingAdapter?.setData(profileItemList)
                 rvSettings.isNestedScrollingEnabled = false
             }
         }
@@ -136,14 +135,9 @@ class NSSettingFragment : NSFragment() {
             with(settingModel) {
                 val layoutManager = GridLayoutManager(activity, 2)
                 rvSettingsUsers.layoutManager = layoutManager
-                settingRecycleAdapter =
-                    NSSettingsUserRecycleAdapter(activity, object : NSLogoSelectCallback {
-                        override fun onItemSelect(model: NSCommonResponse, position: Int) {
-                        }
-                    })
-
+                settingRecycleAdapter = NSSettingsUserRecycleAdapter()
                 rvSettingsUsers.adapter = settingRecycleAdapter
-                settingRecycleAdapter?.updateData(settingUserList)
+                settingRecycleAdapter?.setData(settingUserList)
             }
         }
     }

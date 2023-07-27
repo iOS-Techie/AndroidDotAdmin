@@ -11,7 +11,7 @@ import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 
 open class BaseViewBindingAdapter<T : ViewBinding, D>(
     private val bindingInflater: (LayoutInflater, ViewGroup, Boolean) -> T,
-    private val onBind: (T, D, StringResourceResponse) -> Unit
+    private val onBind: (T, D, StringResourceResponse, Int) -> Unit
 ) : RecyclerView.Adapter<BaseViewBindingAdapter<T, D>.ViewHolder>() {
     var stringResource = NSApplication.getInstance().getStringModel()
     private var data: MutableList<D> = arrayListOf()
@@ -22,6 +22,10 @@ open class BaseViewBindingAdapter<T : ViewBinding, D>(
 
     fun getData(): MutableList<D> {
         return data
+    }
+
+    fun clearData() {
+        data.clear()
     }
 
     fun setData(newData: List<D>) {
@@ -41,7 +45,7 @@ open class BaseViewBindingAdapter<T : ViewBinding, D>(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        onBind(holder.binding, item, stringResource)
+        onBind(holder.binding, item, stringResource, position)
     }
 
     override fun getItemCount(): Int = data.size
