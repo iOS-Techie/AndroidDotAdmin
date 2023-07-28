@@ -72,8 +72,11 @@ class NSApiErrorHandler {
         const val ERROR_VEHICLE_UPDATE_NOTES = "error_vehicle_update_notes"
         const val ERROR_VEHICLE_UPDATE_CAPABILITY = "error_vehicle_update_capability"
         const val ERROR_VEHICLE_DETAIL = "error_vehicle_detail"
+        const val ERROR_DRIVER_VEHICLE_DETAIL = "error_driver_vehicle_detail"
         const val ERROR_ASSIGN_VEHICLE_DETAIL = "error_assign_vehicle_detail"
         const val ERROR_SERVICE_FLEET_UPDATE = "error_update_fleets_update"
+        const val ERROR_ASSIGN_VEHICLE_DRIVER = "error_assign_vehicle_driver"
+        const val ERROR_DRIVER_LOCATION = "error_driver_locations"
 
         /**
          * To get the error messages from API endpoints

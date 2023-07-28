@@ -42,6 +42,10 @@ class ImageIconView : AppCompatImageView {
                     ColorResources.setCardBackground(this, getRadius(5f), 0, ColorResources.getPrimaryColor())
                     setColorFilter(ColorResources.getWhiteColor())
                 }
+                R.id.ic_driver_detail_user -> {
+                    ColorResources.setCardBackground(this, getRadius(5f), 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
+
+                }
                 else -> {
                     setColorFilter(ColorResources.getPrimaryColor())
                 }

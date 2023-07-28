@@ -7,6 +7,8 @@ package com.nyotek.dot.admin.common
 class NSConstants {
     companion object {
         const val KEY_ALERT_EMPLOYEE_DELETE = "alertButtonEmployeeDelete"
+        const val KEY_ALERT_EMPLOYEE_VEHICLE_DELETE = "alertButtonEmployeeVehicleDelete"
+        const val KEY_ALERT_EMPLOYEE_VEHICLE_DELETE_DETAIL = "alertButtonEmployeeVehicleDeleteDetail"
         const val KEY_ALERT_CAPABILITIES_DELETE = "alertButtonCapabilitiesDelete"
         const val UNKNOWN_HOST_EXCEPTION = "Unable to reach server"
         const val KEY_ALERT_BUTTON_POSITIVE = "alertButtonPositive"
@@ -30,7 +32,9 @@ class NSConstants {
         //Keys
         const val USER_DETAIL_KEY = "user_detail_key"
         const val FLEET_DETAIL_KEY = "fleet_detail_key"
+        const val Job_TITLE_LIST_KEY = "job_title_list_key"
         const val VEHICLE_DETAIL_KEY = "vendor_detail_key"
+        const val DRIVER_DETAIL_KEY = "driver_detail_key"
         var IS_LANGUAGE_UPDATE = false
 
         const val FILL = "fill"

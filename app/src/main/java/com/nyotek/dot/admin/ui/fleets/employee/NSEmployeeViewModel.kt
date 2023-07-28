@@ -2,11 +2,14 @@ package com.nyotek.dot.admin.ui.fleets.employee
 
 import android.app.Application
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSEmployeeRepository
+import com.nyotek.dot.admin.repository.NSFleetRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
@@ -17,23 +20,35 @@ import com.nyotek.dot.admin.repository.network.responses.NSEmployeeResponse
 import com.nyotek.dot.admin.repository.network.responses.NSListJobTitleResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserDetail
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
+import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
 
 class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
+    var employeeList: MutableList<EmployeeDataItem> = arrayListOf()
     var jobTitleList: MutableList<JobListDataItem> = arrayListOf()
     var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
     var isEmployeeListAvailable = NSSingleLiveEvent<MutableList<EmployeeDataItem>>()
+    var isDriverLocationAvailable = NSSingleLiveEvent<FleetDataItem?>()
     var strVendorDetail: String? = null
     var vendorModel: FleetData? = null
     var vendorId: String? = null
     var selectedEmployeeData: EmployeeDataItem? = null
     var employeeEditRequest: NSEmployeeEditRequest = NSEmployeeEditRequest()
     var searchUserList: MutableList<NSUserDetail> = arrayListOf()
+    var strJobTitle: String? = null
 
     fun getVendorDetail() {
         if (!strVendorDetail.isNullOrEmpty()) {
             vendorModel = Gson().fromJson(strVendorDetail, FleetData::class.java)
             vendorId = vendorModel?.vendorId
             getJobTitleList(true, vendorModel?.serviceIds?: arrayListOf())
+        }
+    }
+
+    fun getJobTitleListFromString() {
+        if (strJobTitle?.isNotEmpty() == true) {
+            val listType = object : TypeToken<MutableList<JobListDataItem>>() {}.type
+            jobTitleList = Gson().fromJson(strJobTitle, listType)
         }
     }
 
@@ -103,6 +118,8 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     private fun getEmployeeList(vendorId: String?) {
         if (!vendorId.isNullOrEmpty()) {
             NSEmployeeRepository.getEmployeeList(vendorId, this)
+        } else {
+            isProgressShowing.value = false
         }
     }
 
@@ -154,6 +171,13 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
         NSEmployeeRepository.addEmployee(vendorId, userId, titleId, this)
     }
 
+    fun getDriverLocation(driverId: String?) {
+        if (driverId?.isNotEmpty() == true) {
+            isProgressShowing.value = true
+            NSFleetRepository.getDriverLocations(driverId, this)
+        }
+    }
+
     override fun apiResponse(data: Any) {
 
         when (data) {
@@ -168,6 +192,10 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
             }
             is NSEmployeeAddDeleteBlankDataResponse -> {
                 getEmployeeList(vendorId)
+            }
+            is FleetLocationResponse -> {
+                isProgressShowing.value = false
+                isDriverLocationAvailable.value = data.fleetDataItem
             }
         }
     }

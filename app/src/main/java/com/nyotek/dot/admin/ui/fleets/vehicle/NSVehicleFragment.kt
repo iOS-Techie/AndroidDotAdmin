@@ -153,7 +153,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                 }
 
                 srlRefresh.setOnRefreshListener {
-                    getVehicleList(false)
+                    getVehicleList(viewModel.ownerId, false)
                 }
             }
         }
@@ -311,7 +311,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                                             progress.gone()
                                             dialog.dismiss()
                                             if (isSuccess) {
-                                                getVehicleList(true)
+                                                getVehicleList(ownerId, true)
                                             }
                                         }
                                     })

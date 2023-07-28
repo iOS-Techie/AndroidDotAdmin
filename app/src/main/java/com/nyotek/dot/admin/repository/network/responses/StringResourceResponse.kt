@@ -505,6 +505,9 @@ data class StringResourceResponse(
 	@field:SerializedName("select_employee_role")
 	val selectEmployeeRole  : String = "",
 
+	@field:SerializedName("select_vehicle")
+	val selectVehicle  : String = "",
+
 	@field:SerializedName("theme")
 	val theme: String = "",
 

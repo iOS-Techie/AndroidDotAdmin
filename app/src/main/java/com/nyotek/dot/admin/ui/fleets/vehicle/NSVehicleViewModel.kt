@@ -13,10 +13,14 @@ import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleResponse
 import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
+import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleBlankDataResponse
+import com.nyotek.dot.admin.repository.network.responses.VehicleData
 
 class NSVehicleViewModel(application: Application) : NSViewModel(application) {
     var isVehicleListAvailable = NSSingleLiveEvent<MutableList<VehicleDataItem>>()
+    var isVehicleDetailAvailable = NSSingleLiveEvent<VehicleData?>()
     var ownerId: String? = null
     var strVehicleDetail: String? = null
     var fleetModel: FleetData? = null
@@ -26,7 +30,7 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
         if (!strVehicleDetail.isNullOrEmpty()) {
             fleetModel = Gson().fromJson(strVehicleDetail, FleetData::class.java)
             ownerId = fleetModel?.vendorId
-            getVehicleList(true)
+            getVehicleList(ownerId,true)
         }
     }
 
@@ -35,14 +39,32 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
      *
      * @param isShowProgress
      */
-    fun getVehicleList(isShowProgress: Boolean) {
-        if (ownerId != null) {
+    fun getVehicleList(refId: String?, isShowProgress: Boolean) {
+        if (refId != null) {
             if (isShowProgress) {
                 isProgressShowing.value = true
             }
-            NSVehicleRepository.getVehicleList(ownerId!!, this)
+            NSVehicleRepository.getVehicleList(refId, this)
         }
     }
+
+    fun getAssignVehicleDriver(driverId: String?, fleetId: String, isShowProgress: Boolean) {
+        if (driverId != null) {
+            if (isShowProgress) {
+                isProgressShowing.value = true
+            }
+            NSVehicleRepository.getAssignVehicleDriver(driverId, fleetId, this)
+        }
+    }
+
+    fun getDriverVehicleDetail(vehicleId: String?) {
+        if (vehicleId != null) {
+            isProgressShowing.value = true
+            NSVehicleRepository.getDriverVehicleDetail(vehicleId, this)
+        }
+    }
+
+
 
     /**
      * Get user detail
@@ -111,6 +133,15 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
             }
             is NSVehicleBlankDataResponse -> {
                 isProgressShowing.value = false
+            }
+            is NSAssignVehicleDriverResponse -> {
+                getDriverVehicleDetail(data.data?.vehicleId)
+            }
+            is NSDriverVehicleDetailResponse -> {
+                isProgressShowing.value = false
+                if (data.data != null) {
+                    isVehicleDetailAvailable.value = data.data
+                }
             }
         }
     }

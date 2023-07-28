@@ -682,6 +682,17 @@ class NSApiManager {
     }
 
     /**
+     * To call the disable employee service data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getDriverLocation(driverId: String, callback: NSRetrofitCallback<FleetLocationResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedLocationClient.getDriverLocation(driverId), callback)
+        }
+    }
+
+    /**
      * To call the disable Capabilities data API
      *
      * @param callback  The callback for the result
@@ -793,13 +804,24 @@ class NSApiManager {
 
 
     /**
-     * To call the enable service data API
+     * To call the vehicle list data API
      *
      * @param callback  The callback for the result
      */
     suspend fun vehicleList(refId: String, callback: NSRetrofitCallback<NSVehicleResponse>) {
         if (isNetwork(callback)) {
             request(authorisedFleetClient.vehicleList(refId), callback)
+        }
+    }
+
+    /**
+     * To call the assign vehicle list data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getAssignVehicleDriver(driverId: String, fleetId: String, callback: NSRetrofitCallback<NSAssignVehicleDriverResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedFleetClient.getAssignVehicleByDriver(driverId, fleetId), callback)
         }
     }
 
@@ -859,7 +881,7 @@ class NSApiManager {
     }
 
     /**
-     * To call the update vehicle detail data API
+     * To call the vehicle detail data API
      *
      * @param callback  The callback for the result
      */
@@ -870,11 +892,22 @@ class NSApiManager {
     }
 
     /**
+     * To call the get driver vehicle detail data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getDriverVehicleDetail(id: String, callback: NSRetrofitCallback<NSDriverVehicleDetailResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedFleetClient.getDriverVehicleDetail(id), callback)
+        }
+    }
+
+    /**
      * To call the assign vehicle detail data API
      *
      * @param callback  The callback for the result
      */
-    suspend fun assignVehicle(request: NSAssignVehicleRequest, callback: NSRetrofitCallback<NSVehicleBlankDataResponse>) {
+    suspend fun assignVehicle(request: NSAssignVehicleRequest, callback: NSRetrofitCallback<NSVehicleAssignBlankDataResponse>) {
         if (isNetwork(callback)) {
             request(authorisedFleetClient.assignVehicle(request), callback)
         }
@@ -1000,6 +1033,9 @@ interface RTApiInterface {
     @GET("location")
     suspend fun getFleetLocation(@Query("fleet_id") fieldId: String): retrofit2.Response<FleetLocationResponse>
 
+    @GET("location/driver/{driver_id}")
+    suspend fun getDriverLocation(@Path("driver_id") driverId: String): retrofit2.Response<FleetLocationResponse>
+
     @GET("/capability/list")
     suspend fun getCapabilities(): retrofit2.Response<NSCapabilitiesResponse>
 
@@ -1033,6 +1069,12 @@ interface RTApiInterface {
     @GET("vehicle/list/admin")
     suspend fun vehicleList(@Query("ref_id") id: String): retrofit2.Response<NSVehicleResponse>
 
+    @GET("driver/{driver_id}/fleet/{fleet_id}/vehicle")
+    suspend fun getAssignVehicleByDriver(@Path("driver_id") id: String, @Path("fleet_id") fleetId: String): retrofit2.Response<NSAssignVehicleDriverResponse>
+
+    @GET("vehicle/{vehicle_id}")
+    suspend fun getDriverVehicleDetail(@Path("vehicle_id") id: String): retrofit2.Response<NSDriverVehicleDetailResponse>
+
     @PATCH("vehicle/admin/disable")
     suspend fun disableVehicle(@Body vendorRequest: NSVehicleEnableDisableRequest): retrofit2.Response<NSVehicleBlankDataResponse>
 
@@ -1052,6 +1094,6 @@ interface RTApiInterface {
     suspend fun getVehicleDetail(@Path("vehicle_id") id: String): retrofit2.Response<NSVehicleDetailResponse>
 
     @POST("driver/vehicle")
-    suspend fun assignVehicle(@Body request: NSAssignVehicleRequest): retrofit2.Response<NSVehicleBlankDataResponse>
+    suspend fun assignVehicle(@Body request: NSAssignVehicleRequest): retrofit2.Response<NSVehicleAssignBlankDataResponse>
 
 }

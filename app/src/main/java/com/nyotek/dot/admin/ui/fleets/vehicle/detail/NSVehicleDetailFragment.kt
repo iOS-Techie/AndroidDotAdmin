@@ -9,6 +9,7 @@ import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.BrandLogoHelper
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
+import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.OnTextUpdateHelper
 import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
@@ -18,6 +19,9 @@ import com.nyotek.dot.admin.common.callbacks.NSItemSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSOnTextChangeCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
+import com.nyotek.dot.admin.common.utils.setVisibility
+import com.nyotek.dot.admin.common.utils.setVisibilityIn
 import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.common.utils.visible
@@ -95,6 +99,7 @@ class NSVehicleDetailFragment :
             isEmployeeListAvailable.observe(
                 viewLifecycleOwner
             ) { list ->
+                employeeList = list
                 setUpdateDriverList(list)
             }
         }
@@ -104,6 +109,15 @@ class NSVehicleDetailFragment :
                 viewLifecycleOwner
             ) { response ->
                 setVehicleDetail(response)
+            }
+
+            isVehicleAssign.observe(
+                viewLifecycleOwner
+            ) {
+                if (it) {
+                    setUpdateDriverList(employeeViewModel.employeeList)
+                    //vehicleViewModel.getDriverVehicleDetail(employeeDataItem?.vehicleId )
+                }
             }
         }
     }
@@ -122,8 +136,7 @@ class NSVehicleDetailFragment :
                 stringResource.apply {
                     layoutHomeHeader.tvHeaderTitle.text = vehicleDetails
                     tvVehicleTitle.text = vehicleDetails
-                    tvVehicleActive.text =
-                        if (vehicleDataItem?.isActive == true) active else inActive
+                    tvVehicleActive.status(vehicleDataItem?.isActive == true)
                     layoutManufacturer.tvCommonTitle.text = manufacturer
                     layoutManufacturerYear.tvCommonTitle.text = manufacturerYear
                     layoutLoadCapacity.tvCommonTitle.text = loadCapacity
@@ -212,7 +225,7 @@ class NSVehicleDetailFragment :
             NSUtilities.setSpinner(activity, spinner.spinnerAppSelect, nameList, idList, object :
                 NSItemSelectCallback {
                 override fun onItemSelect(selectedId: String) {
-                    if (selectedId != viewModel.driverId) {
+                    if (selectedId != viewModel.driverId && selectedId.isNotEmpty()) {
                         viewModel.driverId = selectedId
                         viewModel.assignVehicle(selectedId)
                     }
@@ -228,7 +241,14 @@ class NSVehicleDetailFragment :
             tvUserTitle.text = viewModel.driverId
             tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
 
+            val isVisible = viewModel.driverId?.isNotEmpty() == true
+            clVehicleItem.setVisibility(isVisible)
+            viewLineTextSub.setVisibilityIn(isVisible)
         }
+    }
+
+    private fun setDriverDetail() {
+
     }
 
 
@@ -274,6 +294,16 @@ class NSVehicleDetailFragment :
                     )
                 }
 
+                ivDelete.setSafeOnClickListener {
+                    showCommonDialog(
+                        title = "",
+                        message = stringResource.doYouWantToDelete,
+                        alertKey = NSConstants.KEY_ALERT_EMPLOYEE_VEHICLE_DELETE_DETAIL,
+                        positiveButton = stringResource.ok,
+                        negativeButton = stringResource.cancel
+                    )
+                }
+
                 OnTextUpdateHelper(
                     layoutNotes.edtValue,
                     vehicleDataItem?.additionalNote ?: "",
@@ -300,6 +330,19 @@ class NSVehicleDetailFragment :
     override fun onFileUrl(url: String, width: Int, height: Int) {
         viewModel.apply {
             updateVehicleImage(url)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
+        viewModel.apply {
+            if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_POSITIVE && event.alertKey == NSConstants.KEY_ALERT_EMPLOYEE_VEHICLE_DELETE_DETAIL) {
+                //This is use for delete vehicle for use this api not send to vehicleId and capability to delete
+                driverId?.let {
+                    assignVehicle(
+                        it, capabilities = arrayListOf())
+                }
+            }
         }
     }
 }

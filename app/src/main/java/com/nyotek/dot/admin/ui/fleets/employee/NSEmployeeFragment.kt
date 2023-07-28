@@ -11,7 +11,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
@@ -45,6 +47,7 @@ import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 import com.nyotek.dot.admin.ui.common.NSUserViewModel
+import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -234,7 +237,8 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
 
     private fun employeeEditDelete(employeeData: EmployeeDataItem, isEdit: Boolean) {
         if (isEdit) {
-            showEditEmployeeDialog(employeeData)
+            editEmployeeData(employeeData)
+            //showEditEmployeeDialog(employeeData)
         } else {
             showCommonDialog(
                 title = "",
@@ -242,6 +246,21 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                 alertKey = NSConstants.KEY_ALERT_EMPLOYEE_DELETE,
                 positiveButton = stringResource.ok,
                 negativeButton = stringResource.cancel
+            )
+        }
+    }
+
+    private fun editEmployeeData(response: EmployeeDataItem) {
+        viewModel.apply {
+            val bundle = bundleOf(
+                NSConstants.DRIVER_DETAIL_KEY to Gson().toJson(response),
+                NSConstants.FLEET_DETAIL_KEY to strVendorDetail,
+                NSConstants.Job_TITLE_LIST_KEY to Gson().toJson(jobTitleList)
+            )
+            fleetManagementFragmentChangeCallback?.setFragment(
+                this@NSEmployeeFragment.javaClass.simpleName,
+                NSDriverDetailFragment.newInstance(bundle),
+                true, bundle
             )
         }
     }

@@ -9,6 +9,9 @@ import com.nyotek.dot.admin.repository.network.requests.NSVehicleEnableDisableRe
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleUpdateImageRequest
+import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
+import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
+import com.nyotek.dot.admin.repository.network.responses.NSVehicleAssignBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleResponse
@@ -240,18 +243,77 @@ object NSVehicleRepository : BaseRepository() {
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             apiManager.assignVehicle(request, object :
-                NSRetrofitCallback<NSVehicleBlankDataResponse>(
+                NSRetrofitCallback<NSVehicleAssignBlankDataResponse>(
                     viewModelCallback,
                     NSApiErrorHandler.ERROR_ASSIGN_VEHICLE_DETAIL
                 ) {
                 override fun <T> onResponse(response: Response<T>) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModelCallback.onSuccess(response.body()?:NSVehicleBlankDataResponse())
+                        viewModelCallback.onSuccess(response.body()?:NSVehicleAssignBlankDataResponse())
                     }
                 }
 
                 override fun onRefreshToken() {
                     assignVehicle(request, viewModelCallback)
+                }
+            })
+        }
+    }
+
+    /**
+     * To get assign vehicle driver data API
+     *
+     * @param viewModelCallback The callback to communicate back to the view model
+     */
+    fun getAssignVehicleDriver(
+        driverId: String,
+        fleetId: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val callback = object :
+                NSRetrofitCallback<NSAssignVehicleDriverResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_ASSIGN_VEHICLE_DRIVER
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body()?: NSAssignVehicleDriverResponse())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    getAssignVehicleDriver(driverId, fleetId, viewModelCallback)
+                }
+            }
+
+            apiManager.getAssignVehicleDriver(driverId, fleetId, callback)
+        }
+    }
+
+    /**
+     * To get driver vehicle details API
+     *
+     * @param viewModelCallback The callback to communicate back to the view model
+     */
+    fun getDriverVehicleDetail(
+        id: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiManager.getDriverVehicleDetail(id, object :
+                NSRetrofitCallback<NSDriverVehicleDetailResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_DRIVER_VEHICLE_DETAIL
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body()?:NSDriverVehicleDetailResponse())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    getDriverVehicleDetail(id, viewModelCallback)
                 }
             })
         }

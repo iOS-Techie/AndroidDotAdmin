@@ -48,7 +48,7 @@ data class FleetData(
     var tags: List<String>? = arrayListOf(),
 
 	@field:SerializedName("vendor_id")
-	val vendorId: String? = null,
+	var vendorId: String? = null,
 
 	@field:SerializedName("name")
 	val name: HashMap<String, String> = hashMapOf(),

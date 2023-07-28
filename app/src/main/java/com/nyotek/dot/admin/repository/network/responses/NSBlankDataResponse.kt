@@ -53,3 +53,9 @@ data class NSVehicleBlankDataResponse(
     @Expose
     var errors: String? = null
 )
+
+data class NSVehicleAssignBlankDataResponse(
+    @SerializedName("errors")
+    @Expose
+    var errors: String? = null
+)

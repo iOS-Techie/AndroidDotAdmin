@@ -289,6 +289,14 @@ fun View.setVisibility(isVisible: Boolean) {
     }
 }
 
+fun View.setVisibilityIn(isVisible: Boolean) {
+    if (isVisible) {
+        this.visible()
+    } else {
+        this.invisible()
+    }
+}
+
 /**
  * To set the [Group] visibility based on the input value. It won't set [Group.INVISIBLE]
  *
@@ -531,7 +539,7 @@ fun TextView.status(isActive: Boolean) {
     }
 }
 
-fun TextView.getMapValue(label: HashMap<String, String>) {
+fun TextView.getMapValue(label: HashMap<String, String>?) {
     this.text = getLngValue(label)
 }
 
@@ -589,12 +597,12 @@ fun View.setAlphaP6(isActive: Boolean) {
     alpha = if (isActive) 1f else 0.6f
 }
 
-fun ViewPager2.setPager(activity: FragmentActivity, list: MutableList<Fragment>, callback: NSOnPageChangeCallback? = null) {
+fun ViewPager2.setPager(activity: FragmentActivity, list: MutableList<Fragment>, callback: NSOnPageChangeCallback? = null, page: Int = list.size) {
     val pager = NSViewPagerAdapter(activity)
     pager.setFragment(list)
     adapter = pager
     isUserInputEnabled = false
-    offscreenPageLimit = list.size
+    offscreenPageLimit = page
     registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)

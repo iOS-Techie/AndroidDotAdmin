@@ -33,4 +33,8 @@ data class EmployeeDataItem(
 
 	@field:SerializedName("is_employee_selected")
 	var isEmployeeSelected: Boolean = false,
+
+	//Set not from API
+	@field:SerializedName("vehicle_id_driver")
+	var vehicleId: String? = null
 )
