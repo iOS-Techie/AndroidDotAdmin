@@ -3,31 +3,31 @@ package com.nyotek.dot.admin.ui.settings
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.franmontiel.localechanger.utils.ActivityRecreationHelper
 import com.nyotek.dot.admin.BuildConfig
+import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.NSFragment
-import com.nyotek.dot.admin.common.NSLog
 import com.nyotek.dot.admin.common.callbacks.NSSettingSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
+import com.nyotek.dot.admin.common.utils.setupWithAdapter
+import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentSettingsBinding
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class NSSettingFragment : NSFragment() {
-    private val settingModel: NSSettingViewModel by lazy {
+class NSSettingFragment : BaseViewModelFragment<NSSettingViewModel, NsFragmentSettingsBinding>() {
+
+    override val viewModel: NSSettingViewModel by lazy {
         ViewModelProvider(this)[NSSettingViewModel::class.java]
     }
-    private var _binding: NsFragmentSettingsBinding? = null
-    private val profileBinding get() = _binding!!
+
     private var settingAdapter: NSSettingRecycleAdapter? = null
     private var settingRecycleAdapter: NSSettingsUserRecycleAdapter? = null
 
@@ -40,26 +40,52 @@ class NSSettingFragment : NSFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            with(settingModel) {
+            with(viewModel) {
                 strUserDetail = it.getString(NSConstants.USER_DETAIL_KEY)
             }
         }
     }
 
-    override fun onCreateView(
+    override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = NsFragmentSettingsBinding.inflate(inflater, container, false)
+        container: ViewGroup?
+    ): NsFragmentSettingsBinding {
+        return NsFragmentSettingsBinding.inflate(inflater, container, false)
+    }
+
+    override fun setupViews() {
+        super.setupViews()
         initUI()
         viewCreated()
         setListener()
-        return profileBinding.root
+    }
+
+    override fun observeViewModel() {
+        super.observeViewModel()
+        with(viewModel) {
+
+            isLogout.observe(
+                viewLifecycleOwner
+            ) {
+                NSLanguageConfig.logout()
+                switchActivity(
+                    NSLoginActivity::class.java,
+                    flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                )
+            }
+
+            isSettingUserAvailable.observe(
+                viewLifecycleOwner
+            ) { isSettingUsers ->
+                if (isSettingUsers) {
+                    setMainUserAdapter()
+                }
+            }
+        }
     }
 
     private fun initUI() {
-        profileBinding.apply {
+        binding.apply {
             stringResource.apply {
                 tvSettingTitle.text = setting
                 tvBackSettings.text = back
@@ -83,33 +109,28 @@ class NSSettingFragment : NSFragment() {
      *
      */
     private fun viewCreated() {
-        with(profileBinding) {
-            settingModel.getJsonUserDetail(activity)
-            baseObserveViewModel(settingModel)
-            observeViewModel()
-            setProfileAdapter()
-        }
+        viewModel.getJsonUserDetail(activity)
+        baseObserveViewModel(viewModel)
+        observeViewModel()
+        setSettingAdapter()
     }
 
     private fun setListener() {
-        with(profileBinding) {
-            with(settingModel) {
-                tvBackSettings.setOnClickListener {
-                    onBackPress()
-                }
+        with(binding) {
+            tvBackSettings.setSafeOnClickListener {
+                onBackPress()
             }
         }
     }
 
     /**
-     * Set profile adapter
+     * Set setting adapter
      *
      */
-    private fun setProfileAdapter() {
-        with(profileBinding) {
-            with(settingModel) {
+    private fun setSettingAdapter() {
+        with(binding) {
+            with(viewModel) {
                 getProfileListData(activity)
-                rvSettings.layoutManager = LinearLayoutManager(activity)
                 settingAdapter =
                     NSSettingRecycleAdapter(
                         isLanguageSelected(),
@@ -118,7 +139,7 @@ class NSSettingFragment : NSFragment() {
                                 onClickProfile(title)
                             }
                         })
-                rvSettings.adapter = settingAdapter
+                rvSettings.setupWithAdapter(settingAdapter!!)
                 settingAdapter?.setItemSize(profileItemList.size)
                 settingAdapter?.setData(profileItemList)
                 rvSettings.isNestedScrollingEnabled = false
@@ -127,16 +148,17 @@ class NSSettingFragment : NSFragment() {
     }
 
     /**
-     * Set profile adapter
+     * Set setting user adapter
      *
      */
     private fun setMainUserAdapter() {
-        with(profileBinding) {
-            with(settingModel) {
-                val layoutManager = GridLayoutManager(activity, 2)
-                rvSettingsUsers.layoutManager = layoutManager
+        with(binding) {
+            with(viewModel) {
                 settingRecycleAdapter = NSSettingsUserRecycleAdapter()
-                rvSettingsUsers.adapter = settingRecycleAdapter
+                rvSettingsUsers.setupWithAdapterAndCustomLayoutManager(
+                    settingRecycleAdapter!!,
+                    GridLayoutManager(activity, 2)
+                )
                 settingRecycleAdapter?.setData(settingUserList)
             }
         }
@@ -153,9 +175,11 @@ class NSSettingFragment : NSFragment() {
                 selectLanguage -> {
                     showDialogLanguageSelect()
                 }
+
                 contactUs -> {
                     showDialogCallEmailAction(BuildConfig.PHONE_NUMBER, BuildConfig.MAIL_ID)
                 }
+
                 logout -> {
                     showLogoutDialog(
                         logout,
@@ -164,34 +188,8 @@ class NSSettingFragment : NSFragment() {
                         yes
                     )
                 }
+
                 else -> {}
-            }
-        }
-    }
-
-    /**
-     * To observe the view model for data changes
-     */
-    private fun observeViewModel() {
-        with(settingModel) {
-
-            isLogout.observe(
-                viewLifecycleOwner
-            ) { isLogout ->
-                NSLog.d(tagLog, "observeViewModel: $isLogout")
-                NSLanguageConfig.logout()
-                switchActivity(
-                    NSLoginActivity::class.java,
-                    flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                )
-            }
-
-            isSettingUserAvailable.observe(
-                viewLifecycleOwner
-            ) { isSettingUsers ->
-                if (isSettingUsers) {
-                    setMainUserAdapter()
-                }
             }
         }
     }
@@ -199,7 +197,7 @@ class NSSettingFragment : NSFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
         if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_NEGATIVE && event.alertKey == NSConstants.LOGOUT_CLICK) {
-            with(settingModel) {
+            with(viewModel) {
                 logout(true)
             }
         }

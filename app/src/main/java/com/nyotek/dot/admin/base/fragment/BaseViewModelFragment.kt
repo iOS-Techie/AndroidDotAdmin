@@ -46,6 +46,10 @@ abstract class BaseViewModelFragment<VM : ViewModel, VB : ViewBinding> : NSFragm
         // Perform any fragment-specific setup here
     }
 
+    open fun loadFragment(bundle: Bundle?) {
+        // Perform any fragment-specific setup here
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

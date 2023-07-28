@@ -1,38 +1,58 @@
 package com.nyotek.dot.admin.ui.signup
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.nyotek.dot.admin.common.NSFragment
+import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentSignUpBinding
 import com.nyotek.dot.admin.ui.dashboard.NSDashboardActivity
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
 
-class NSSignUpFragment : NSFragment() {
-    private val signUpViewModel: NSSignUpViewModel by lazy {
+class NSSignUpFragment : BaseViewModelFragment<NSSignUpViewModel, NsFragmentSignUpBinding>() {
+
+    override val viewModel: NSSignUpViewModel by lazy {
         ViewModelProvider(this)[NSSignUpViewModel::class.java]
     }
-    private var _binding: NsFragmentSignUpBinding? = null
-    private val signUpBinding get() = _binding!!
 
     companion object {
         fun newInstance() = NSSignUpFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = NsFragmentSignUpBinding.inflate(inflater, container, false)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): NsFragmentSignUpBinding {
+        return NsFragmentSignUpBinding.inflate(inflater, container, false)
+    }
+
+    override fun setupViews() {
+        super.setupViews()
         initUI()
         viewCreated()
         setListener()
-        return signUpBinding.root
+    }
+
+    override fun observeViewModel() {
+        super.observeViewModel()
+        with(viewModel) {
+            isLoginSuccess.observe(
+                viewLifecycleOwner
+            ) { isLogin ->
+                if (isLogin) {
+                    switchActivity(
+                        NSDashboardActivity::class.java,
+                        flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    )
+                }
+            }
+        }
     }
 
     private fun initUI() {
-        signUpBinding.apply {
+        binding.apply {
             stringResource.apply {
                 tvLoginTitle.text = signUp
                 tvLoginSubTitle.text = enterYourCredentials
@@ -50,7 +70,7 @@ class NSSignUpFragment : NSFragment() {
      * View created
      */
     private fun viewCreated() {
-        baseObserveViewModel(signUpViewModel)
+        baseObserveViewModel(viewModel)
         observeViewModel()
 
         /*with(loginViewModel) {
@@ -64,37 +84,19 @@ class NSSignUpFragment : NSFragment() {
      * Set listener
      */
     private fun setListener() {
-        with(signUpBinding) {
-            with(signUpViewModel) {
-                btnLogin.setOnClickListener {
+        with(binding) {
+            with(viewModel) {
+                btnLogin.setSafeOnClickListener {
                     strEmail = etEmail.text.toString()
                     strPassword = etPassword.text.toString()
                     login()
                  }
 
-                clBottomLogin.setOnClickListener {
+                clBottomLogin.setSafeOnClickListener {
                     switchActivity(
                         NSLoginActivity::class.java
                     )
                     finish()
-                }
-            }
-        }
-    }
-
-    /**
-     * To observe the view model for data changes
-     */
-    private fun observeViewModel() {
-        with(signUpViewModel) {
-            isLoginSuccess.observe(
-                viewLifecycleOwner
-            ) { isLogin ->
-                if (isLogin) {
-                    switchActivity(
-                        NSDashboardActivity::class.java,
-                        flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    )
                 }
             }
         }

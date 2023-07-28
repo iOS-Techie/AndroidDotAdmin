@@ -33,8 +33,6 @@ class NSFleetViewModel(application: Application) : NSViewModel(application) {
     var isFleetListAvailable = NSSingleLiveEvent<Boolean>()
     var createCompanyRequest: NSCreateCompanyRequest = NSCreateCompanyRequest()
     var urlToUpload: String = ""
-    var serviceItemList: MutableList<NSGetServiceListData> = arrayListOf()
-    var isServiceListAvailable = NSSingleLiveEvent<Boolean>()
     var selectedFilterList: MutableList<ActiveInActiveFilter> = arrayListOf()
 
     /**
@@ -107,15 +105,6 @@ class NSFleetViewModel(application: Application) : NSViewModel(application) {
 
     override fun apiResponse(data: Any) {
         when (data) {
-            is NSGetServiceListResponse -> {
-                isProgressShowing.value = false
-                serviceItemList.clear()
-                if (data.data.isValidList()) {
-                    serviceItemList.addAll(data.data)
-                }
-                serviceItemList.sortByDescending { it.serviceId }
-                isServiceListAvailable.value = serviceItemList.isValidList()
-            }
             is NSCreateCompanyResponse -> {
                 createCompanyRequest = NSCreateCompanyRequest()
                 urlToUpload = ""

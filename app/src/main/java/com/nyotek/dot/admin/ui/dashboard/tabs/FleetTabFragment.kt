@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.widget.ViewPager2
 import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.NSVendorCall
-import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
+import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
+import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.databinding.FragmentFleetTabBinding
 import com.nyotek.dot.admin.ui.fleets.NSFleetFragment
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
@@ -53,34 +52,19 @@ class FleetTabFragment : NSFragment() {
         mFragmentList.add(NSFleetFragment.newInstance())
         mFragmentList.add(NSFleetDetailFragment.newInstance(bundleOf()))
         mFragmentList.add(NSVehicleDetailFragment.newInstance(bundleOf()))
-        setupViewPager(requireActivity(), binding.fleetPager)
-    }
 
-    /**
-     * Setup view pager
-     *
-     * @param activity set Fragment Activity
-     * @param viewPager set fragments in viewpager
-     */
-    private fun setupViewPager(activity: FragmentActivity, viewPager: ViewPager2) {
-        try {
-            val adapter = NSViewPagerAdapter(activity)
-            adapter.setFragment(mFragmentList)
-            viewPager.adapter = adapter
-            viewPager.isUserInputEnabled = false
-            viewPager.offscreenPageLimit = 2
-            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
+        binding.fleetPager.setPager(
+            requireActivity(),
+            mFragmentList,
+            object : NSOnPageChangeCallback {
+                override fun onPageChange(position: Int) {
                     pageIndex = position
-                    if (mFragmentList[position] is NSFleetFragment) {
-                        (mFragmentList[position] as NSFleetFragment).loadFragment()
+                    val fragment = mFragmentList[position]
+                    if (fragment is NSFleetFragment) {
+                        fragment.loadFragment()
                     }
                 }
             })
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

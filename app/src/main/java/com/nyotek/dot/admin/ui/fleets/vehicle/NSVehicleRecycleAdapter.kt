@@ -2,7 +2,7 @@ package com.nyotek.dot.admin.ui.fleets.vehicle
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.callbacks.NSEditVehicleCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchEnableDisableCallback
+import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
 import com.nyotek.dot.admin.common.utils.glide
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -12,7 +12,7 @@ import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 
 class NSVehicleRecycleAdapter(
     private val editVehicleCallback: NSEditVehicleCallback,
-    private val switchEnableDisableCallback: NSSwitchEnableDisableCallback,
+    private val switchEnableDisableCallback: NSSwitchCallback,
     private val vehicleItemSelect: NSVehicleSelectCallback
 ) : BaseViewBindingAdapter<LayoutVehicleListItemBinding, VehicleDataItem>(
 

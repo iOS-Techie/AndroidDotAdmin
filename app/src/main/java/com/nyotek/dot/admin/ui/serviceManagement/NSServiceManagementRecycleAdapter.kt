@@ -1,7 +1,6 @@
 package com.nyotek.dot.admin.ui.serviceManagement
 
 import android.app.Activity
-import android.widget.Spinner
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSDateTimeHelper
@@ -9,11 +8,10 @@ import com.nyotek.dot.admin.common.callbacks.NSCapabilityListCallback
 import com.nyotek.dot.admin.common.callbacks.NSItemSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSServiceCapabilityCallback
 import com.nyotek.dot.admin.common.callbacks.NSServiceCapabilityUpdateCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchEnableDisableCallback
+import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
-import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
@@ -35,7 +33,7 @@ class NSServiceManagementRecycleAdapter(
     private val activity: Activity,
     private val viewModel: NSServiceManagementViewModel,
     private val callback: NSServiceCapabilityUpdateCallback,
-    private val switchEnableDisableCallback: NSSwitchEnableDisableCallback
+    private val switchEnableDisableCallback: NSSwitchCallback
 ) : BaseViewBindingAdapter<LayoutServiceItemBinding, NSGetServiceListData>(
 
     bindingInflater = { inflater, parent, attachToParent ->

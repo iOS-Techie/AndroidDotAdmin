@@ -6,26 +6,27 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.BrandLogoHelper
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.NSDateTimeHelper
-import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.NSServiceConfig
-import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.callbacks.NSLocalLanguageListCallback
 import com.nyotek.dot.admin.common.callbacks.NSOnAddressSelectCallback
 import com.nyotek.dot.admin.common.utils.NSAddressConfig
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
+import com.nyotek.dot.admin.common.utils.setPager
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
+import com.nyotek.dot.admin.common.utils.status
+import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentFleetDetailBinding
 import com.nyotek.dot.admin.repository.network.requests.NSCreateFleetAddressRequest
@@ -33,27 +34,28 @@ import com.nyotek.dot.admin.repository.network.requests.NSFleetLogoUpdateRequest
 import com.nyotek.dot.admin.repository.network.responses.AddressData
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
-import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.ui.fleets.NSFleetViewModel
-import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleFragment
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeFragment
 import com.nyotek.dot.admin.ui.fleets.map.NSMapViewModel
+import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleFragment
 
 
-class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
-    private val fleetDetailViewModel: NSFleetDetailViewModel by lazy {
+class NSFleetDetailFragment :
+    BaseViewModelFragment<NSFleetDetailViewModel, NsFragmentFleetDetailBinding>(),
+    NSFileUploadCallback {
+
+    override val viewModel: NSFleetDetailViewModel by lazy {
         ViewModelProvider(this)[NSFleetDetailViewModel::class.java]
     }
+
     private val mapViewModel: NSMapViewModel by lazy {
         ViewModelProvider(this)[NSMapViewModel::class.java]
     }
+
     private val fleetViewModel: NSFleetViewModel by lazy {
         ViewModelProvider(this)[NSFleetViewModel::class.java]
     }
-    private var _binding: NsFragmentFleetDetailBinding? = null
-    private val fleetBinding get() = _binding!!
-    private var selectedLatLng: LatLng? = null
-    private var serviceHorizontalAdapter: NSFleetServiceListRecycleAdapter? = null
+
     private var isFragmentAdded: Boolean = false
     private val brandLogoHelper: BrandLogoHelper = BrandLogoHelper(this, callback = this)
 
@@ -63,41 +65,71 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
         }
     }
 
-    override fun onCreateView(
+    override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = NsFragmentFleetDetailBinding.inflate(inflater, container, false)
-        baseObserveViewModel(mapViewModel)
-        baseObserveViewModel(fleetDetailViewModel)
-        observeViewModel()
-        setFleetTopBox()
-        pageChangeListener()
-        return fleetBinding.root
+        container: ViewGroup?
+    ): NsFragmentFleetDetailBinding {
+        return NsFragmentFleetDetailBinding.inflate(inflater, container, false)
     }
 
-    fun loadFragment(bundle: Bundle?) {
+    override fun setupViews() {
+        super.setupViews()
+        baseObserveViewModel(mapViewModel)
+        baseObserveViewModel(viewModel)
+        baseObserveViewModel(fleetViewModel)
+        observeViewModel()
+        setFleetDetailBox()
+        pageChangeListener()
+    }
+
+    override fun loadFragment(bundle: Bundle?) {
+        super.loadFragment(bundle)
         removeAllViews()
         arguments = bundle
         arguments?.let {
-            with(fleetDetailViewModel) {
+            with(viewModel) {
                 getFleetDetail(it.getString(NSConstants.FLEET_DETAIL_KEY))
             }
         }
         initUI()
-        viewCreated()
         setListener()
     }
 
+    override fun observeViewModel() {
+        super.observeViewModel()
+        with(viewModel) {
+            isFleetDataAvailable.observe(
+                viewLifecycleOwner
+            ) { fleetData ->
+                setFleetDetailFromJson(fleetData)
+            }
+
+            mapViewModel.isFleetLocationListAvailable.observe(
+                viewLifecycleOwner
+            ) { fleetData ->
+                setFleetLocationList(fleetData)
+            }
+
+            isAllDataUpdateAvailable.observe(
+                viewLifecycleOwner
+            ) { isAllDataUpdate ->
+                if (isAllDataUpdate) {
+                    Toast.makeText(
+                        requireContext(),
+                        stringResource.updatedSuccessfully,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
     private fun initUI() {
-        fleetBinding.apply {
+        binding.apply {
             stringResource.apply {
                 setLayoutHeader(
                     layoutHomeHeader,
                     fleetDetail,
-                    isProfile = false,
-                    isSearch = false,
                     isBack = true
                 )
                 tvCreateFleetTitle.text = fleets
@@ -109,8 +141,8 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
     }
 
     private fun removeAllViews() {
-        fleetBinding.apply {
-            fleetDetailViewModel.apply {
+        binding.apply {
+            viewModel.apply {
                 isFragmentAdded = false
                 tvSizeTitle.gone()
                 NSApplication.getInstance().removeAllMapLocalLanguage()
@@ -123,7 +155,6 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
                 layoutAddress.edtValue.text = ""
                 cbFill.isChecked = true
                 cbFit.isChecked = false
-                serviceHorizontalAdapter?.clearData()
                 fleetModel = null
                 selectedFleetId = ""
                 isEnableFleet = false
@@ -139,15 +170,16 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
     }
 
     private fun pageChangeListener() {
-        fleetBinding.apply {
-            fleetDetailViewModel.apply {
+        binding.apply {
+            viewModel.apply {
                 fleetPager.registerOnPageChangeCallback(object :
                     ViewPager2.OnPageChangeCallback() {
                     override fun onPageSelected(position: Int) {
                         super.onPageSelected(position)
-                        fleetBinding.fleetPager.visible()
-                        if (mFragmentList[position] is NSVehicleFragment) {
-                            (mFragmentList[position] as NSVehicleFragment).loadFragment(arguments)
+                        binding.fleetPager.visible()
+                        val fragment = mFragmentList[position]
+                        if (fragment is NSVehicleFragment) {
+                            fragment.loadFragment(arguments)
                         }
                     }
                 })
@@ -156,107 +188,126 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
     }
 
     /**
-     * View created
-     */
-    private fun viewCreated() {
-        NSUtilities.clearFilter(NSApplication.getInstance().getFilterOrderTypes())
-    }
-
-    /**
      * Set listener
      */
     private fun setListener() {
-        with(fleetBinding) {
-            with(fleetDetailViewModel) {
+        with(binding) {
+            with(viewModel) {
 
-                layoutHomeHeader.ivBack.setOnClickListener {
+                layoutHomeHeader.ivBack.setSafeOnClickListener {
                     onBackPress()
                 }
 
-                clCheckFill.setOnClickListener {
-                    fleetModel?.logoScale = NSConstants.FILL
-                    cbFit.isChecked = false
-                    cbFill.isChecked = true
-                    updateFleetLogoScale(NSConstants.FILL)
-                    brandLogoHelper.setBrandLogo(false, fleetModel?.logo ?: "", fleetModel?.logoScale.equals(NSConstants.FILL))
+                clCheckFill.setSafeOnClickListener {
+                    setFillFit(true)
                 }
 
-                clCheckFit.setOnClickListener {
-                    fleetModel?.logoScale = NSConstants.FIT
-                    cbFit.isChecked = true
-                    cbFill.isChecked = false
-                    updateFleetLogoScale(NSConstants.FIT)
-                    brandLogoHelper.setBrandLogo(false, fleetModel?.logo ?: "", fleetModel?.logoScale.equals(NSConstants.FILL))
+                clCheckFit.setSafeOnClickListener {
+                    setFillFit(false)
                 }
 
-                layoutAddress.edtValue.setOnClickListener {
-                    NSAddressConfig.showAddressDialog(requireActivity(), mapViewModel, false, fleetBinding.viewAddress, fleetDetailViewModel.addressDetailModel?: AddressData(), fleetDetailViewModel.fleetModel?.vendorId?:"", fleetDetailViewModel.fleetModel?.addressId?:"", fleetDetailViewModel.fleetModel?.serviceIds?: arrayListOf(), object : NSOnAddressSelectCallback {
-                        override fun onItemSelect(
-                            addressData: AddressData?,
-                            isFromEditBranch: Boolean
-                        ) {
-                            fleetDetailViewModel.addressDetailModel = addressData
-                            fleetBinding.layoutAddress.edtValue.text = addressData?.addr1
-                        }
-                    })
+                layoutAddress.edtValue.setSafeOnClickListener {
+                    setAddress()
                 }
 
-                rlSelectAddress.setOnClickListener {
+                rlSelectAddress.setSafeOnClickListener {
                     rlSelectAddress.gone()
                 }
 
-                layoutName.edtValue.onFocusChangeListener =
-                    View.OnFocusChangeListener { _, hasFocus ->
-                        if (!hasFocus) {
-                            updatePosition = 0
-                            updateData(updatePosition)
-                        }
-                        manageFocus(name = hasFocus)
-                    }
+                setEditTextFocusChange(layoutName.edtValue, 0)
+                setEditTextFocusChange(layoutSlogan.edtValue, 1)
+                setEditTextFocusChange(layoutUrl.edtValue, 2)
+                setEditTextFocusChange(layoutTags.edtValue, 3)
 
-                layoutSlogan.edtValue.onFocusChangeListener =
-                    View.OnFocusChangeListener { _, hasFocus ->
-                        if (!hasFocus) {
-                            updatePosition = 1
-                            updateData(updatePosition)
-                        }
-                        manageFocus(slogan = hasFocus)
-                    }
-
-                layoutUrl.edtValue.onFocusChangeListener =
-                    View.OnFocusChangeListener { _, hasFocus ->
-                        if (!hasFocus) {
-                            updatePosition = 2
-                            updateData(updatePosition)
-                        }
-                        manageFocus(slogan = hasFocus)
-                    }
-
-                layoutTags.edtValue.onFocusChangeListener =
-                    View.OnFocusChangeListener { _, hasFocus ->
-                        if (!hasFocus) {
-                            updatePosition = 3
-                            updateData(updatePosition)
-                        }
-                        manageFocus(tags = hasFocus)
-                    }
-
-                tvSave.setOnClickListener {
-                    isProgressVisible = true
-                    isProgressShowing.value = true
+                tvSave.setSafeOnClickListener {
                     updateServiceIds()
                 }
             }
         }
     }
 
-    private fun setFleetTopBox() {
-        fleetBinding.apply {
-            fleetDetailViewModel.apply {
-                serviceHorizontalAdapter = NSServiceConfig.setFleetDetail(requireActivity(), false, layoutName, layoutUrl, layoutAddress, layoutSlogan, layoutTags, tvFill, tvFit, tvEditTitle, rlBrandLogo, rvServiceList)
+    private fun setEditTextFocusChange(editText: EditText, position: Int) {
+        viewModel.apply {
+            editText.onFocusChangeListener =
+                View.OnFocusChangeListener { _, hasFocus ->
+                    if (!hasFocus) {
+                        updatePosition = position
+                        updateData(updatePosition)
+                    }
+                    manageFocus(name = hasFocus)
+                }
+        }
+    }
+    private fun setFillFit(isFill: Boolean) {
+        binding.apply {
+            viewModel.apply {
+                val status = if (isFill) NSConstants.FILL else NSConstants.FIT
+                fleetModel?.logoScale = status
+                cbFit.isChecked = !isFill
+                cbFill.isChecked = isFill
+                updateFleetLogoScale(status)
+                brandLogoHelper.setBrandLogo(
+                    false,
+                    fleetModel?.logo ?: "",
+                    status == NSConstants.FILL
+                )
+            }
+        }
+    }
+
+    private fun setAddress() {
+        binding.apply {
+            viewModel.apply {
+                fleetModel?.apply {
+                    NSAddressConfig.showAddressDialog(
+                        requireActivity(),
+                        mapViewModel,
+                        false,
+                        binding.viewAddress,
+                        addressDetailModel ?: AddressData(),
+                        vendorId ?: "",
+                        addressId ?: "",
+                        serviceIds,
+                        object : NSOnAddressSelectCallback {
+                            override fun onItemSelect(
+                                addressData: AddressData?,
+                                isFromEditBranch: Boolean
+                            ) {
+                                addressDetailModel = addressData
+                                layoutAddress.edtValue.text = addressData?.addr1
+                            }
+                        })
+                }
+            }
+        }
+    }
+
+    private fun setFleetDetailBox() {
+        binding.apply {
+            viewModel.apply {
+                NSServiceConfig.setFleetDetail(
+                    requireActivity(),
+                    false,
+                    layoutName,
+                    layoutUrl,
+                    layoutAddress,
+                    layoutSlogan,
+                    layoutTags,
+                    tvFill,
+                    tvFit,
+                    tvEditTitle,
+                    rlBrandLogo,
+                    rvServiceList
+                )
 
                 rlBrandLogo.setOnClickListener {
-                    brandLogoHelper.openImagePicker(activity, ivBrandLogo, tvSizeTitle, true, fleetModel?.logoScale.equals(NSConstants.FILL))
+                    brandLogoHelper.openImagePicker(
+                        activity,
+                        ivBrandLogo,
+                        tvSizeTitle,
+                        true,
+                        fleetModel?.logoScale.equals(NSConstants.FILL)
+                    )
                 }
             }
         }
@@ -265,83 +316,88 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
     private fun updateData(position: Int) {
         when (position) {
             0 -> {
-                fleetDetailViewModel.updateName()
+                viewModel.updateName()
             }
+
             1 -> {
-                fleetDetailViewModel.updateSlogan()
+                viewModel.updateSlogan()
             }
+
             2 -> {
-                fleetDetailViewModel.updateUrl()
+                viewModel.updateUrl()
             }
+
             3 -> {
-                val tags = fleetBinding.layoutTags.edtValue.text.toString()
+                val tags = binding.layoutTags.edtValue.text.toString()
                 val list: List<String> = tags.split(" ")
-                fleetDetailViewModel.fleetModel?.tags = list
-                fleetDetailViewModel.updateTags()
+                viewModel.fleetModel?.tags = list
+                viewModel.updateTags()
             }
         }
     }
 
     private fun setFleetDetailFromJson(fleetModel: FleetData?) {
-        fleetBinding.apply {
-            fleetModel?.apply {
-                val createdDate =
-                    stringResource.createdDate + " : " + NSDateTimeHelper.getServiceDateView(created)
-                tvFleetCreatedDate.text = createdDate
-                tvFleetActive.text =
-                    if (isActive) stringResource.active else stringResource.inActive
-                NSUtilities.switchEnableDisable(switchService, isActive)
+        viewModel.apply {
+            binding.apply {
+                fleetModel?.apply {
+                    tvFleetCreatedDate.text = getCreatedDate(created)
+                    tvFleetActive.status(isActive)
+                    switchService.switchEnableDisable(isActive)
 
-                brandLogoHelper.setBrandLogo(false, logo ?: "", logoScale.equals(NSConstants.FILL))
+                    brandLogoHelper.setBrandLogo(
+                        false,
+                        logo ?: "",
+                        logoScale.equals(NSConstants.FILL)
+                    )
 
-                cbFill.isChecked = logoScale.equals(NSConstants.FILL)
-                cbFit.isChecked = !logoScale.equals(NSConstants.FILL)
-
-
-                layoutTags.edtValue.gravity = Gravity.START
-
-                var tagsList = ""
-                for (tagsItem in tags?: arrayListOf()) {
-                    tagsList += "$tagsItem "
-                }
-
-                layoutTags.edtValue.hint = stringResource.enterTag
-                layoutTags.edtValue.setText(tagsList)
-
-                NSUtilities.setLanguageText(layoutUrl.edtValue, fleetDetailViewModel.fleetModel, true)
-                layoutUrl.edtValue.setText(url)
-                NSUtilities.setLanguageText(layoutName.edtValue, layoutName.rvLanguageTitle, name)
-                NSUtilities.setLanguageText(
-                    layoutSlogan.edtValue,
-                    layoutSlogan.rvLanguageTitle,
-                    slogan
-                )
-
-                switchService.setOnClickListener {
-                    NSUtilities.switchEnableDisable(switchService, !isActive)
-                    fleetDetailViewModel.selectedFleetId = vendorId
-                    fleetDetailViewModel.isEnableFleet = !isActive
-                    fleetViewModel.fleetEnableDisable(vendorId, !isActive, true)
-                    isActive = !isActive
-                    tvFleetActive.text = if (isActive) stringResource.active else stringResource.inActive
-                }
-
-                layoutAddress.edtValue.ellipsize = TextUtils.TruncateAt.END
+                    //Logo Fill Fit
+                    val scale = logoScale.equals(NSConstants.FILL)
+                    cbFill.isChecked = scale
+                    cbFit.isChecked = !scale
 
 
-                fleetDetailViewModel.apply {
-                    layoutAddress.edtValue.text = addressDetailModel?.addr1 ?: ""
-                    selectedLatLng =
-                        LatLng(addressDetailModel?.lat ?: 0.0, addressDetailModel?.lng ?: 0.0)
-                    //getServiceList(true)
-                    mapViewModel.getFleetLocations(fleetModel.vendorId,true)
+                    //Tags
+                    layoutTags.edtValue.gravity = Gravity.START
+                    val tagsList = tags?.joinToString(" ")?.trim()
+                    layoutTags.edtValue.hint = stringResource.enterTag
+                    layoutTags.edtValue.setText(tagsList)
+
+                    NSUtilities.setLanguageText(layoutUrl.edtValue, viewModel.fleetModel, true)
+                    layoutUrl.edtValue.setText(url)
+                    NSUtilities.setLanguageText(
+                        layoutName.edtValue,
+                        layoutName.rvLanguageTitle,
+                        name
+                    )
+                    NSUtilities.setLanguageText(
+                        layoutSlogan.edtValue,
+                        layoutSlogan.rvLanguageTitle,
+                        slogan
+                    )
+
+                    switchService.setOnClickListener {
+                        isActive = !isActive
+                        switchService.switchEnableDisable(isActive)
+                        viewModel.selectedFleetId = vendorId
+                        viewModel.isEnableFleet = isActive
+                        fleetViewModel.fleetEnableDisable(vendorId, isActive, true)
+                        tvFleetActive.status(isActive)
+                    }
+
+                    layoutAddress.edtValue.ellipsize = TextUtils.TruncateAt.END
+
+                    viewModel.apply {
+                        layoutAddress.edtValue.text = addressDetailModel?.addr1 ?: ""
+                        //getServiceList(true)
+                        mapViewModel.getFleetLocations(fleetModel.vendorId, true)
+                    }
                 }
             }
         }
     }
 
     private fun setFragmentList(fleetData: FleetDataItem?) {
-        fleetDetailViewModel.apply {
+        viewModel.apply {
             stringResource.apply {
                 mFragmentList.clear()
                 mFragmentTitleList.clear()
@@ -350,45 +406,22 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
                 mFragmentTitleList.add(employee)
                 mFragmentTitleList.add(vehicle)
             }
-            fleetBinding.fleetPager.invisible()
-            setupViewPager(requireActivity(), fleetBinding.fleetPager)
+            binding.fleetPager.invisible()
+            setupViewPager(requireActivity(), binding.fleetPager)
         }
     }
 
     private fun setupViewPager(activity: FragmentActivity, viewPager: ViewPager2) {
         try {
-            fleetDetailViewModel.apply {
-                val adapter = NSViewPagerAdapter(activity)
-                adapter.setFragment(mFragmentList)
-                viewPager.adapter = adapter
-                viewPager.isUserInputEnabled = false
-                viewPager.offscreenPageLimit = mFragmentList.size
-                TabLayoutMediator(fleetBinding.tabService, viewPager
+            viewModel.apply {
+                binding.fleetPager.setPager(activity, mFragmentList)
+                TabLayoutMediator(
+                    binding.tabService, viewPager
                 ) { tab, position -> tab.text = mFragmentTitleList[position] }.attach()
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    /**
-     * Set user list data
-     *
-     * @param serviceList when data available it's true
-     */
-    private fun setServiceList(serviceList: MutableList<NSGetServiceListData>) {
-        NSServiceConfig.getListFromLocal(fleetDetailViewModel.fleetModel?.serviceIds?: arrayListOf(), object : NSLocalLanguageListCallback {
-            override fun onItemGet() {
-                fleetBinding.layoutName.rvLanguageTitle.refreshAdapter()
-                fleetBinding.layoutSlogan.rvLanguageTitle.refreshAdapter()
-            }
-        })
-        serviceHorizontalAdapter?.setFleetData(serviceList, fleetDetailViewModel.fleetModel)
-        serviceHorizontalAdapter?.setData(serviceList)
-        /*if (!isFragmentAdded) {
-            isFragmentAdded = true
-            setFragmentList()
-        }*/
     }
 
     /**
@@ -403,48 +436,8 @@ class NSFleetDetailFragment : NSFragment(), NSFileUploadCallback {
         }
     }
 
-    /**
-     * To observe the view model for data changes
-     */
-    private fun observeViewModel() {
-        with(fleetDetailViewModel) {
-            with(fleetBinding) {
-
-                isFleetDataAvailable.observe(
-                    viewLifecycleOwner
-                ) { fleetData ->
-                    setFleetDetailFromJson(fleetData)
-                }
-
-                isServiceListAvailable.observe(
-                    viewLifecycleOwner
-                ) { serviceList ->
-                    setServiceList(serviceList)
-                }
-
-                mapViewModel.isFleetLocationListAvailable.observe(
-                    viewLifecycleOwner
-                ) { fleetData ->
-                    setFleetLocationList(fleetData)
-                }
-
-                isAllDataUpdateAvailable.observe(
-                    viewLifecycleOwner
-                ) { isAllDataUpdate ->
-                    if (isAllDataUpdate) {
-                        Toast.makeText(
-                            requireContext(),
-                            stringResource.updatedSuccessfully,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }
-    }
-
     override fun onFileUrl(url: String, width: Int, height: Int) {
-        fleetDetailViewModel.apply {
+        viewModel.apply {
             fleetLogoUpdateRequest.logoHeight = height
             fleetLogoUpdateRequest.logoWidth = width
             fleetLogoUpdateRequest.logo = url

@@ -3,7 +3,7 @@ package com.nyotek.dot.admin.ui.fleets
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.callbacks.NSFleetDetailCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchEnableDisableCallback
+import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glide200
 import com.nyotek.dot.admin.common.utils.status
@@ -13,7 +13,7 @@ import com.nyotek.dot.admin.repository.network.responses.FleetData
 
 class NSFleetManagementRecycleAdapter(
     private val fleetDetailCallback: NSFleetDetailCallback,
-    private val switchEnableDisableCallback: NSSwitchEnableDisableCallback
+    private val switchEnableDisableCallback: NSSwitchCallback
 ) : BaseViewBindingAdapter<LayoutFleetItemBinding, FleetData>(
 
     bindingInflater = { inflater, parent, attachToParent ->

@@ -100,7 +100,7 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
      * Get employee list
      *
      */
-    fun getEmployeeList(vendorId: String?) {
+    private fun getEmployeeList(vendorId: String?) {
         if (!vendorId.isNullOrEmpty()) {
             NSEmployeeRepository.getEmployeeList(vendorId, this)
         }
@@ -135,11 +135,11 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
      *
      * @param isShowProgress
      */
-    fun employeeEdit(isShowProgress: Boolean) {
+    fun employeeEdit(isShowProgress: Boolean, request: NSEmployeeEditRequest) {
         if (isShowProgress) {
             isProgressShowing.value = true
         }
-        NSEmployeeRepository.editEmployee(employeeEditRequest, this)
+        NSEmployeeRepository.editEmployee(request, this)
     }
 
     /**
@@ -167,7 +167,6 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                 isProgressShowing.value = false
             }
             is NSEmployeeAddDeleteBlankDataResponse -> {
-                employeeEditRequest = NSEmployeeEditRequest()
                 getEmployeeList(vendorId)
             }
         }

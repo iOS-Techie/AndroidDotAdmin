@@ -35,7 +35,6 @@ class NSApplication : Application() {
     private var selectedNavigationType: String? = null
     private lateinit var themeModel: NSGetThemeData
     private var apiFailCode: Int = 0
-    private var filterOrderItemTypes: HashMap<String, Boolean> = hashMapOf()
     private lateinit var stringResource: StringResourceResponse
     private var capabilityList: MutableList<CapabilitiesDataItem> = arrayListOf()
     private var fleetLanguageList: MutableList<LanguageSelectModel> = arrayListOf()
@@ -81,15 +80,6 @@ class NSApplication : Application() {
 
     fun getFleetLanguageList(): MutableList<LanguageSelectModel> {
         return fleetLanguageList
-    }
-
-    /**
-     * To get instance of Resource Model
-     */
-    fun getFilterOrderTypes(): HashMap<String, Boolean> = filterOrderItemTypes
-
-    fun setFilterOrderType(filter: HashMap<String, Boolean>) {
-        filterOrderItemTypes = filter
     }
 
     fun getCapabilityItemList(): HashMap<String, ServiceCapabilitiesDataItem> = capabilityItemList

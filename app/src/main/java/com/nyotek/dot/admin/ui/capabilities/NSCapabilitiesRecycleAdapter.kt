@@ -2,7 +2,7 @@ package com.nyotek.dot.admin.ui.capabilities
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchEnableDisableCallback
+import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.status
@@ -12,7 +12,7 @@ import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 
 class NSCapabilitiesRecycleAdapter(
     private val callback: NSCapabilitiesCallback,
-    private val switchEnableDisableCallback: NSSwitchEnableDisableCallback
+    private val switchEnableDisableCallback: NSSwitchCallback
 ) : BaseViewBindingAdapter<LayoutCapabilitiesBinding, CapabilitiesDataItem>(
 
     bindingInflater = { inflater, parent, attachToParent ->

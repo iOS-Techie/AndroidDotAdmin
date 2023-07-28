@@ -997,7 +997,7 @@ interface RTApiInterface {
     @PATCH("employees/update_employee_title")
     suspend fun employeeEdit(@Body employeeRequest: NSEmployeeEditRequest): retrofit2.Response<NSEmployeeAddDeleteBlankDataResponse>
 
-    @GET("api/location")
+    @GET("location")
     suspend fun getFleetLocation(@Query("fleet_id") fieldId: String): retrofit2.Response<FleetLocationResponse>
 
     @GET("/capability/list")

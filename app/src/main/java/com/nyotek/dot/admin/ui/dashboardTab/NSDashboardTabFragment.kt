@@ -1,17 +1,15 @@
 package com.nyotek.dot.admin.ui.dashboardTab
 
 import android.content.pm.PackageManager
-import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSApplication
-import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardTabBinding
@@ -21,31 +19,55 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class NSDashboardTabFragment : NSFragment() {
-    private val mapViewModel: NSMapViewModel by lazy {
-        ViewModelProvider(this)[NSMapViewModel::class.java]
-    }
-    private var _binding: NsFragmentDashboardTabBinding? = null
-    private val binding get() = _binding!!
+class NSDashboardTabFragment :
+    BaseViewModelFragment<NSMapViewModel, NsFragmentDashboardTabBinding>() {
+
     private var isFragmentLoad: Boolean = false
     private var mapBoxView: MapBoxView? = null
 
+    override val viewModel: NSMapViewModel by lazy {
+        ViewModelProvider(this)[NSMapViewModel::class.java]
+    }
+    
     companion object {
         fun newInstance() = NSDashboardTabFragment()
     }
 
-    override fun onCreateView(
+    override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        container: ViewGroup?
+    ): NsFragmentDashboardTabBinding {
         mapBoxView = MapBoxView(requireContext())
-        _binding = NsFragmentDashboardTabBinding.inflate(inflater, container, false)
-        baseObserveViewModel(mapViewModel)
+        return NsFragmentDashboardTabBinding.inflate(inflater, container, false)
+    }
+
+    override fun setupViews() {
+        super.setupViews()
+        baseObserveViewModel(viewModel)
         observeViewModel()
         initMapBox()
         initUI()
-        return binding.root
+    }
+
+    override fun observeViewModel() {
+        super.observeViewModel()
+        with(viewModel) {
+            isFleetLocationListAvailable.observe(
+                viewLifecycleOwner
+            ) { fleetData ->
+                mapBoxView?.initMapView(
+                    requireContext(), binding.mapView,
+                    fleetData
+                )
+            }
+        }
+    }
+
+    override fun loadFragment() {
+        super.loadFragment()
+        getCurrentLocation()
+        isFragmentLoad = true
+        viewModel.getFleetLocations("", true)
     }
 
     /***
@@ -68,23 +90,10 @@ class NSDashboardTabFragment : NSFragment() {
             stringResource.apply {
                 setLayoutHeader(
                     layoutHomeHeader,
-                    dashboard,
-                    isProfile = false,
-                    isSearch = false,
-                    isBack = false
+                    dashboard
                 )
             }
         }
-    }
-
-    /**
-     * Load fragment when dashboard tab select
-     *
-     */
-    fun loadFragment() {
-        getCurrentLocation()
-        isFragmentLoad = true
-        mapViewModel.getFleetLocations("",true)
     }
 
     /**
@@ -107,7 +116,7 @@ class NSDashboardTabFragment : NSFragment() {
     }
 
     /**
-     *get current location of user
+     * get current location of user
      */
     private fun getCurrentLocation() {
         if (NSApplication.getInstance().getPermissionHelper()
@@ -120,7 +129,7 @@ class NSDashboardTabFragment : NSFragment() {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun getCurrentLocation(event: NSAddress) {
-        mapViewModel.getFleetLocations("",false)
+        viewModel.getFleetLocations("", false)
         val address = event.addresses[0].getAddressLine(0).toString()
         if (address.isNotEmpty()) {
             event.locationResult.lastLocation?.apply {
@@ -139,21 +148,6 @@ class NSDashboardTabFragment : NSFragment() {
                     Toast.makeText(requireActivity(), "permission denied", Toast.LENGTH_LONG).show()
                 }
                 return
-            }
-        }
-    }
-
-    /**
-     * To observe the view model for data changes
-     */
-    private fun observeViewModel() {
-        with(mapViewModel) {
-            isFleetLocationListAvailable.observe(
-                viewLifecycleOwner
-            ) { fleetData ->
-                mapBoxView?.initMapView(requireContext(), binding.mapView,
-                    fleetData
-                )
             }
         }
     }

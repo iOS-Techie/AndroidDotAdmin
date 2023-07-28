@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.widget.ViewPager2
 import com.nyotek.dot.admin.common.NSFragment
-import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
+import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
+import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.databinding.FragmentCapabilitiesTabBinding
 import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesFragment
 
@@ -25,9 +24,12 @@ class CapabilitiesTabFragment : NSFragment() {
         fun newInstance() = CapabilitiesTabFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentCapabilitiesTabBinding.inflate(inflater, container, false)
-       // setFragmentList()
         return binding.root
     }
 
@@ -45,34 +47,18 @@ class CapabilitiesTabFragment : NSFragment() {
     private fun setFragmentList() {
         mFragmentList.clear()
         mFragmentList.add(NSCapabilitiesFragment.newInstance())
-        setupViewPager(requireActivity(), binding.capabilitiesPager)
-    }
-
-    /**
-     * Setup view pager
-     *
-     * @param activity fragment Activity
-     * @param viewPager set fragments in viewpager
-     */
-    private fun setupViewPager(activity: FragmentActivity, viewPager: ViewPager2) {
-        try {
-            val adapter = NSViewPagerAdapter(activity)
-            adapter.setFragment(mFragmentList)
-            viewPager.adapter = adapter
-            viewPager.isUserInputEnabled = false
-            viewPager.offscreenPageLimit = 3
-            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
+        binding.capabilitiesPager.setPager(
+            requireActivity(),
+            mFragmentList,
+            object : NSOnPageChangeCallback {
+                override fun onPageChange(position: Int) {
                     pageIndex = position
-                    if (mFragmentList[position] is NSCapabilitiesFragment) {
-                        (mFragmentList[position] as NSCapabilitiesFragment).loadFragment()
+                    val fragment = mFragmentList[position]
+                    if (fragment is NSCapabilitiesFragment) {
+                        fragment.loadFragment()
                     }
                 }
             })
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun onBackClick(callback: NSBackClickCallback) {

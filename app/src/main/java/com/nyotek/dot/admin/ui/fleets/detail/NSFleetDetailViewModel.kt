@@ -3,6 +3,7 @@ package com.nyotek.dot.admin.ui.fleets.detail
 import android.app.Application
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
+import com.nyotek.dot.admin.common.NSDateTimeHelper
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSAddressRepository
@@ -39,7 +40,6 @@ class NSFleetDetailViewModel(application: Application) : NSViewModel(application
     var updatePosition = 0
     var isProgressVisible = false
 
-    var isServiceListAvailable = NSSingleLiveEvent<MutableList<NSGetServiceListData>>()
     var isAllDataUpdateAvailable = NSSingleLiveEvent<Boolean>()
 
     val mFragmentList: MutableList<Fragment> = ArrayList()
@@ -134,12 +134,18 @@ class NSFleetDetailViewModel(application: Application) : NSViewModel(application
 
     fun updateServiceIds() {
         fleetModel?.vendorId?.let {
+            isProgressVisible = true
+            isProgressShowing.value = true
             NSFleetRepository.updateFleetServiceIds(
                 it,
                 fleetModel?.serviceIds?: arrayListOf(),
                 this
             )
         }
+    }
+
+    fun getCreatedDate(date: String?): String {
+        return stringResource.createdDate + " : " + NSDateTimeHelper.getServiceDateView(date)
     }
 
     fun updateFleetLogo() {
@@ -165,11 +171,6 @@ class NSFleetDetailViewModel(application: Application) : NSViewModel(application
                 //isProgressShowing.value = false
                 addressDetailModel = data.data
                 isFleetDataAvailable.value = fleetModel
-            }
-            is NSGetServiceListResponse -> {
-                isProgressShowing.value = false
-                data.data.sortByDescending { it.serviceId }
-                isServiceListAvailable.value = data.data
             }
             is NSUpdateFleetLogoResponse -> {
                 isProgressVisible = false

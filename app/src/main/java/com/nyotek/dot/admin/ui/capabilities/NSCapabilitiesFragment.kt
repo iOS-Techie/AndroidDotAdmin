@@ -11,7 +11,7 @@ import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
 import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
 import com.nyotek.dot.admin.common.callbacks.NSSuccessFailCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchEnableDisableCallback
+import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.gone
@@ -141,7 +141,7 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                                         adapterCapabilityItemSelect(model, isDelete)
                                     }
                                 },
-                                object : NSSwitchEnableDisableCallback {
+                                object : NSSwitchCallback {
                                     override fun switch(serviceId: String, isEnable: Boolean) {
                                         capabilityEnableDisable(serviceId, isEnable)
                                     }

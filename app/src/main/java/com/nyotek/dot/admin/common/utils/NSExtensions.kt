@@ -22,9 +22,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.widget.Group
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.FitCenter
@@ -37,8 +39,10 @@ import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSDateTimeHelper
 import com.nyotek.dot.admin.common.NSLog
+import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.SafeClickListener
 import com.nyotek.dot.admin.common.SingleClickListener
+import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -583,4 +587,18 @@ fun EditText.addOnTextChangedListener(
 
 fun View.setAlphaP6(isActive: Boolean) {
     alpha = if (isActive) 1f else 0.6f
+}
+
+fun ViewPager2.setPager(activity: FragmentActivity, list: MutableList<Fragment>, callback: NSOnPageChangeCallback? = null) {
+    val pager = NSViewPagerAdapter(activity)
+    pager.setFragment(list)
+    adapter = pager
+    isUserInputEnabled = false
+    offscreenPageLimit = list.size
+    registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            callback?.onPageChange(position)
+        }
+    })
 }

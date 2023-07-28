@@ -56,8 +56,8 @@
             android:layout_width="@dimen/_13sdp"
             android:layout_height="@dimen/_8sdp"
             android:layout_marginStart="@dimen/_1sdp"
-            app:layout_constraintStart_toEndOf="@+id/tv_fleet_active"
             android:src="@drawable/ic_switch_off"
+            app:layout_constraintStart_toEndOf="@+id/tv_fleet_active"
             app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
             app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
 
@@ -238,12 +238,12 @@
 
                 <CheckBox
                     android:id="@+id/cb_fit"
-                    android:layout_width="@dimen/_6sdp"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/_6sdp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
                     android:button="@drawable/checkbox_fill_fix"
-                    android:clickable="false"/>
+                    android:clickable="false"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
 
             </RelativeLayout>
 

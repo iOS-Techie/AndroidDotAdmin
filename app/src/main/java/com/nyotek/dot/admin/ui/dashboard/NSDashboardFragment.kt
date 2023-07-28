@@ -1,19 +1,21 @@
 package com.nyotek.dot.admin.ui.dashboard
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.*
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
+import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import com.nyotek.dot.admin.common.callbacks.NSSideNavigationSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
-import com.nyotek.dot.admin.common.utils.linear
 import com.nyotek.dot.admin.common.utils.notifyAdapter
+import com.nyotek.dot.admin.common.utils.setPager
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
+import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardBinding
 import com.nyotek.dot.admin.repository.network.responses.NSNavigationResponse
@@ -29,53 +31,82 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-class NSDashboardFragment : NSFragment(), NSBackClickCallback {
-    private val dashboardViewModel: NSDashboardViewModel by lazy {
-        ViewModelProvider(this)[NSDashboardViewModel::class.java]
-    }
+class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragmentDashboardBinding>(), NSBackClickCallback {
+
+    private var navigationAdapter: NSSideNavigationRecycleAdapter? = null
+
     private val settingModel: NSSettingViewModel by lazy {
         ViewModelProvider(this)[NSSettingViewModel::class.java]
     }
-    private var _binding: NsFragmentDashboardBinding? = null
-    private val dashboardBinding get() = _binding!!
-    private var navigationAdapter: NSSideNavigationRecycleAdapter? = null
+
+    override val viewModel: NSDashboardViewModel by lazy {
+        ViewModelProvider(this)[NSDashboardViewModel::class.java]
+    }
 
     companion object {
         fun newInstance() = NSDashboardFragment()
     }
 
-    override fun onCreateView(
+    override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = NsFragmentDashboardBinding.inflate(inflater, container, false)
+        container: ViewGroup?
+    ): NsFragmentDashboardBinding {
+        return NsFragmentDashboardBinding.inflate(inflater, container, false)
+    }
+
+    override fun setupViews() {
+        super.setupViews()
         viewCreated()
         setListener()
-        return dashboardBinding.root
+    }
+
+    override fun observeViewModel() {
+        super.observeViewModel()
+        viewModel.apply {
+            isUserAvailableAvailable.observe(
+                viewLifecycleOwner
+            ) { userData ->
+                setUserDetail(userData)
+            }
+        }
+
+        settingModel.apply {
+            isLogout.observe(
+                viewLifecycleOwner
+            ) {
+                NSLanguageConfig.logout()
+                switchActivity(
+                    NSLoginActivity::class.java,
+                    flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                )
+            }
+        }
     }
 
     /**
      * View created
      */
     private fun viewCreated() {
-        baseObserveViewModel(dashboardViewModel)
+        baseObserveViewModel(viewModel)
         baseObserveViewModel(settingModel)
         observeViewModel()
         setNavigationAdapter()
-        dashboardViewModel.apply {
-            dashboardBinding.apply {
+        setViewText()
+    }
+
+    private fun setViewText() {
+        viewModel.apply {
+            binding.apply {
                 setDashboard()
                 tvUserTitle.text = stringResource.logout
             }
         }
-        //dashboardViewModel.getUserMainDetail()
     }
 
     private fun setListener() {
-        dashboardBinding.apply {
-            dashboardViewModel.apply {
-                clLogout.setOnClickListener {
+        binding.apply {
+            viewModel.apply {
+                clLogout.setSafeOnClickListener {
                     stringResource.apply {
                         showLogoutDialog(
                             logout,
@@ -102,34 +133,36 @@ class NSDashboardFragment : NSFragment(), NSBackClickCallback {
      *
      */
     private fun setNavigationAdapter() {
-        with(dashboardBinding) {
-            with(dashboardViewModel) {
+        with(binding) {
+            with(viewModel) {
                 with(rvNavList) {
                     setNavigationItem()
-                    linear(activity)
                     navigationAdapter =
                         NSSideNavigationRecycleAdapter(isLanguageSelected(), object : NSSideNavigationSelectCallback {
                             override fun onItemSelect(
                                 navResponse: NSNavigationResponse,
                                 position: Int
                             ) {
-                                navResponse.apply {
-                                    NSApplication.getInstance().setSelectedNavigationType(type)
-                                    dashboardBinding.dashboardPager.setCurrentItem(
-                                        position,
-                                        false
-                                    )
-                                }
-                                notifyAdapter(navigationAdapter!!)
+                                sideNavigationItemClick(navResponse, position)
                             }
                         })
-                    adapter = navigationAdapter
+                    setupWithAdapter(navigationAdapter!!)
                     navigationAdapter?.setData(navItemList)
-                    isNestedScrollingEnabled = false
-                    setupViewPager(requireActivity(), dashboardBinding.dashboardPager)
+                    setupViewPager(requireActivity(), binding.dashboardPager)
                 }
             }
         }
+    }
+
+    private fun sideNavigationItemClick(navResponse: NSNavigationResponse, position: Int) {
+        navResponse.apply {
+            NSApplication.getInstance().setSelectedNavigationType(type)
+            binding.dashboardPager.setCurrentItem(
+                position,
+                false
+            )
+        }
+        navigationAdapter?.let { notifyAdapter(it) }
     }
 
     // Add Fragments to Tabs
@@ -137,33 +170,33 @@ class NSDashboardFragment : NSFragment(), NSBackClickCallback {
         try {
             var isVendorAdded = false
             var isServiceManagerAdded = false
-            val adapter = NSViewPagerAdapter(activity)
-            adapter.setFragment(dashboardViewModel.mFragmentList)
-            viewPager.adapter = adapter
-            viewPager.isUserInputEnabled = false
-            viewPager.offscreenPageLimit = dashboardViewModel.mFragmentList.size
-            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    dashboardViewModel.selectedPage = position
-                    if (dashboardViewModel.mFragmentList[position] is CapabilitiesTabFragment) {
-                        NSApplication.getInstance().setSelectedNavigationType(NSConstants.CAPABILITIES_TAB)
-                        (dashboardViewModel.mFragmentList[position] as CapabilitiesTabFragment).setFragment()
-                    } else if (dashboardViewModel.mFragmentList[position] is FleetTabFragment && !isVendorAdded) {
-                        isVendorAdded = true
-                        (dashboardViewModel.mFragmentList[position] as FleetTabFragment).setFragment()
-                        NSApplication.getInstance().setSelectedNavigationType(NSConstants.FLEETS_TAB)
-                    } else if (dashboardViewModel.mFragmentList[position] is ServicesTabFragment && !isServiceManagerAdded) {
-                        isServiceManagerAdded = true
-                        NSApplication.getInstance().setSelectedNavigationType(NSConstants.SERVICE_TAB)
-                        (dashboardViewModel.mFragmentList[position] as ServicesTabFragment).setFragment()
-                    } else if (dashboardViewModel.mFragmentList[position] is DashboardMainTabFragment) {
-                        NSApplication.getInstance().setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
-                        //(dashboardViewModel.mFragmentList[position] as DashboardMainTabFragment).setFragment()
+            viewModel.apply {
+                viewPager.setPager(activity, mFragmentList, object : NSOnPageChangeCallback {
+                    override fun onPageChange(position: Int) {
+                        selectedPage = position
+                        val fragment = mFragmentList[position]
+                        val instance = NSApplication.getInstance()
+
+                        if (fragment is CapabilitiesTabFragment) {
+                            instance.setSelectedNavigationType(NSConstants.CAPABILITIES_TAB)
+                            fragment.setFragment()
+                        } else if (fragment is FleetTabFragment && !isVendorAdded) {
+                            isVendorAdded = true
+                            fragment.setFragment()
+                            instance.setSelectedNavigationType(NSConstants.FLEETS_TAB)
+                        } else if (fragment is ServicesTabFragment && !isServiceManagerAdded) {
+                            isServiceManagerAdded = true
+                            instance.setSelectedNavigationType(NSConstants.SERVICE_TAB)
+                            fragment.setFragment()
+                        } else if (fragment is DashboardMainTabFragment) {
+                            instance.setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
+                        }
                     }
-                }
-            })
+
+                })
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -175,7 +208,7 @@ class NSDashboardFragment : NSFragment(), NSBackClickCallback {
      * @param userDetail
      */
     private fun setUserDetail(userDetail: NSUserDetailResponse) {
-        dashboardBinding.apply {
+        binding.apply {
             setDashboard()
             tvUserTitle.text = userDetail.data?.username
 
@@ -185,29 +218,6 @@ class NSDashboardFragment : NSFragment(), NSBackClickCallback {
                     bundleOf(NSConstants.USER_DETAIL_KEY to Gson().toJson(userDetail))
                 )
             }*/
-        }
-    }
-
-    private fun observeViewModel() {
-        with(dashboardViewModel) {
-            isUserAvailableAvailable.observe(
-                viewLifecycleOwner
-            ) { userData ->
-                setUserDetail(userData)
-            }
-        }
-
-        settingModel.apply {
-            isLogout.observe(
-                viewLifecycleOwner
-            ) { isLogout ->
-                NSLog.d(tagLog, "observeViewModel: $isLogout")
-                NSLanguageConfig.logout()
-                switchActivity(
-                    NSLoginActivity::class.java,
-                    flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                )
-            }
         }
     }
 
@@ -231,13 +241,19 @@ class NSDashboardFragment : NSFragment(), NSBackClickCallback {
      *
      */
     private fun setFragmentBack() {
-        dashboardViewModel.apply {
-            if (mFragmentList[dashboardBinding.dashboardPager.currentItem] is ServicesTabFragment) {
-                (mFragmentList[dashboardBinding.dashboardPager.currentItem] as ServicesTabFragment).onBackClick(this@NSDashboardFragment)
-            } else if (mFragmentList[dashboardBinding.dashboardPager.currentItem] is FleetTabFragment) {
-                (mFragmentList[dashboardBinding.dashboardPager.currentItem] as FleetTabFragment).onBackClick(this@NSDashboardFragment)
-            } else if (mFragmentList[dashboardBinding.dashboardPager.currentItem] is CapabilitiesTabFragment) {
-                (mFragmentList[dashboardBinding.dashboardPager.currentItem] as CapabilitiesTabFragment).onBackClick(this@NSDashboardFragment)
+        viewModel.apply {
+            when (val fragment = mFragmentList[binding.dashboardPager.currentItem]) {
+                is ServicesTabFragment -> {
+                    fragment.onBackClick(this@NSDashboardFragment)
+                }
+
+                is FleetTabFragment -> {
+                    fragment.onBackClick(this@NSDashboardFragment)
+                }
+
+                is CapabilitiesTabFragment -> {
+                    fragment.onBackClick(this@NSDashboardFragment)
+                }
             }
         }
     }

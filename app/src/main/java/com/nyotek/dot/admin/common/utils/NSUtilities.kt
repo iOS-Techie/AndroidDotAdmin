@@ -82,13 +82,6 @@ object NSUtilities {
         activity.startActivity(intent)
     }
 
-    fun clearFilter(map: HashMap<String, Boolean>) {
-        for (entry in map.entries) {
-            entry.setValue(false)
-        }
-        NSApplication.getInstance().setFilterOrderType(map)
-    }
-
     fun switchEnableDisable(imageView: ImageView, isEnable: Boolean) {
         imageView.setImageResource(if (isEnable) R.drawable.ic_switch_on else R.drawable.ic_switch_off)
     }

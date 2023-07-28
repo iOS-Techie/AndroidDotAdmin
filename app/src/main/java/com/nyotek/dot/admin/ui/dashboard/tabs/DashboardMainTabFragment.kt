@@ -5,12 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.widget.ViewPager2
 import com.nyotek.dot.admin.common.NSFragment
-import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
+import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.databinding.FragmentDashboardMainTabBinding
 import com.nyotek.dot.admin.ui.dashboardTab.NSDashboardTabFragment
 
@@ -39,10 +38,6 @@ class DashboardMainTabFragment : NSFragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onResume() {
         super.onResume()
         onEventBus(true)
@@ -51,18 +46,6 @@ class DashboardMainTabFragment : NSFragment() {
     override fun onPause() {
         super.onPause()
         onEventBus(false)
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     private fun onEventBus(isRegister: Boolean) {
@@ -78,34 +61,19 @@ class DashboardMainTabFragment : NSFragment() {
     private fun setFragmentList() {
         mFragmentList.clear()
         mFragmentList.add(NSDashboardTabFragment.newInstance())
-        setupViewPager(requireActivity(), binding.dashboardPager)
-    }
 
-    /**
-     * Setup view pager
-     *
-     * @param activity fragment Activity
-     * @param viewPager set fragments in viewpager
-     */
-    private fun setupViewPager(activity: FragmentActivity, viewPager: ViewPager2) {
-        try {
-            val adapter = NSViewPagerAdapter(activity)
-            adapter.setFragment(mFragmentList)
-            viewPager.adapter = adapter
-            viewPager.isUserInputEnabled = false
-            viewPager.offscreenPageLimit = 3
-            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
+        binding.dashboardPager.setPager(
+            requireActivity(),
+            mFragmentList,
+            object : NSOnPageChangeCallback {
+                override fun onPageChange(position: Int) {
                     pageIndex = position
-                    if (mFragmentList[position] is NSDashboardTabFragment) {
-                        (mFragmentList[position] as NSDashboardTabFragment).loadFragment()
+                    val fragment = mFragmentList[position]
+                    if (fragment is NSDashboardTabFragment) {
+                        fragment.loadFragment()
                     }
                 }
             })
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun onBackClick(callback: NSBackClickCallback) {

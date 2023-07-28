@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.widget.ViewPager2
 import com.nyotek.dot.admin.common.NSFragment
-import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
+import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
+import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.databinding.FragmentServicesTabBinding
 import com.nyotek.dot.admin.ui.serviceManagement.NSServiceManagementFragment
 
@@ -44,34 +43,19 @@ class ServicesTabFragment : NSFragment() {
     private fun setFragmentList() {
         mFragmentList.clear()
         mFragmentList.add(NSServiceManagementFragment.newInstance())
-        setupViewPager(requireActivity(), binding.servicesPager)
-    }
 
-    /**
-     * Setup view pager
-     *
-     * @param activity fragment Activity
-     * @param viewPager set fragment in viewpager
-     */
-    private fun setupViewPager(activity: FragmentActivity, viewPager: ViewPager2) {
-        try {
-            val adapter = NSViewPagerAdapter(activity)
-            adapter.setFragment(mFragmentList)
-            viewPager.adapter = adapter
-            viewPager.isUserInputEnabled = false
-            viewPager.offscreenPageLimit = 3
-            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
+        binding.servicesPager.setPager(
+            requireActivity(),
+            mFragmentList,
+            object : NSOnPageChangeCallback {
+                override fun onPageChange(position: Int) {
                     pageIndex = position
-                    if (mFragmentList[position] is NSServiceManagementFragment) {
-                        (mFragmentList[position] as NSServiceManagementFragment).loadFragment()
+                    val fragment = mFragmentList[position]
+                    if (fragment is NSServiceManagementFragment) {
+                        fragment.loadFragment()
                     }
                 }
             })
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun onBackClick(callback: NSBackClickCallback) {

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.FilterHelper
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.callbacks.NSSwitchEnableDisableCallback
+import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.callbacks.NSFleetFilterCallback
 import com.nyotek.dot.admin.common.callbacks.NSServiceCapabilityUpdateCallback
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
@@ -235,7 +235,7 @@ class NSServiceManagementFragment :
                                 }
 
                             },
-                            object : NSSwitchEnableDisableCallback {
+                            object : NSSwitchCallback {
                                 override fun switch(serviceId: String, isEnable: Boolean) {
                                     serviceEnableDisable(serviceId, isEnable, true)
                                 }
@@ -258,16 +258,18 @@ class NSServiceManagementFragment :
         with(viewModel) {
             serviceRecycleAdapter?.apply {
                 val filterTypes = getFilterSelectedTypes(filterList)
+
                 if (filterTypes.isNotEmpty()) {
 
-                    setAdapterData(searchText, serviceItemList.filter {
-                        filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) && it.name?.lowercase()
-                            ?.contains(searchText.lowercase()) == true
+                    val filter = serviceItemList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<NSGetServiceListData>
+                    setAdapterData(searchText, if (searchText.isEmpty()) filter else filter.filter {
+                        it.name
+                            ?.lowercase()?.contains(searchText.lowercase()) == true
                     } as MutableList<NSGetServiceListData>)
 
                 } else {
 
-                    setAdapterData(searchText, serviceItemList.filter {
+                    setAdapterData(searchText, if (searchText.isEmpty()) serviceItemList else serviceItemList.filter {
                         it.name?.lowercase()?.contains(searchText.lowercase()) == true
                     } as MutableList<NSGetServiceListData>)
 
