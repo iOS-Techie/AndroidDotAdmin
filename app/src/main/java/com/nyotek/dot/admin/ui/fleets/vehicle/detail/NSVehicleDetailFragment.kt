@@ -19,6 +19,7 @@ import com.nyotek.dot.admin.common.callbacks.NSItemSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSOnTextChangeCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setVisibilityIn
@@ -147,7 +148,7 @@ class NSVehicleDetailFragment :
                     spinner.tvCommonTitle.text = updateDriver
                     Glide.with(activity.applicationContext).load(vehicleDataItem?.vehicleImg)
                         .into(layoutLogo.ivBrandLogo)
-
+                    clVehicleItem.gone()
                     layoutManufacturer.edtValue.setText(vehicleDataItem?.manufacturer)
                     layoutManufacturerYear.edtValue.setText(vehicleDataItem?.manufacturingYear)
                     layoutModel.edtValue.setText(vehicleDataItem?.model)
@@ -238,19 +239,14 @@ class NSVehicleDetailFragment :
             }
 
             val empResponse = employeeList.find { it.userId == viewModel.driverId }
-            tvUserTitle.text = viewModel.driverId
+            tvUserTitle.text = viewModel.driverId?:""
             tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
 
-            val isVisible = viewModel.driverId?.isNotEmpty() == true
+            val isVisible = spinnerPosition != -1
             clVehicleItem.setVisibility(isVisible)
             viewLineTextSub.setVisibilityIn(isVisible)
         }
     }
-
-    private fun setDriverDetail() {
-
-    }
-
 
     /**
      * View created

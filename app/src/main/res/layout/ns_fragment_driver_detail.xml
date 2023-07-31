@@ -168,7 +168,6 @@
                         android:id="@+id/cl_driver_item"
                         style="@style/LayoutWidthHeightZeroWrap"
                         android:layout_height="@dimen/_25sdp"
-                        android:visibility="gone"
                         android:paddingHorizontal="@dimen/_4sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

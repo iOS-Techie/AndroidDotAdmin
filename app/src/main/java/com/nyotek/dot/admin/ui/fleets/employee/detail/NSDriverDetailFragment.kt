@@ -15,6 +15,7 @@ import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glide
+import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setVisibilityIn
@@ -152,7 +153,7 @@ class NSDriverDetailFragment :
                     layoutFleet.tvCommonTitle.text = fleet
                     spinner.tvCommonTitle.text = updateVehicle
                     spinnerRole.tvCommonTitle.text = employeeRole
-
+                    clDriverItem.gone()
                     layoutName.edtValue.setText(employeeDataItem?.titleId)
                     layoutFleet.edtValue.getMapValue(fleetModel?.name)
                     switchService.switchEnableDisable(employeeDataItem?.isActive == true)
