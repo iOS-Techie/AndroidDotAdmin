@@ -1,29 +1,17 @@
 package com.nyotek.dot.admin.ui.fleets.vehicle
 
-import android.app.AlertDialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.BrandLogoHelper
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityListCallback
-import com.nyotek.dot.admin.common.callbacks.NSEditVehicleCallback
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.callbacks.NSSuccessFailCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
-import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.glide
@@ -31,9 +19,7 @@ import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCreateVehicleBinding
-import com.nyotek.dot.admin.databinding.LayoutUpdateEmployeeBinding
 import com.nyotek.dot.admin.databinding.NsFragmentVehicleBinding
-import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
@@ -138,7 +124,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
             baseObserveViewModel(viewModel)
             baseObserveViewModel(capabilitiesViewModel)
             observeViewModel()
-            capabilitiesViewModel.getCapabilitiesList(false, isCapabilityAvailableCheck = true, isShowError = false)
+            capabilitiesViewModel.getCapabilitiesList(false, isCapabilityAvailableCheck = true, isShowError = false) {}
         }
     }
 
@@ -167,22 +153,11 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
         with(binding) {
             with(viewModel) {
                 with(rvVehicleList) {
-                    vehicleRecycleAdapter =
-                        NSVehicleRecycleAdapter(object : NSEditVehicleCallback {
-                            override fun editVehicle(response: VehicleDataItem, position: Int) {
-                                editVehicleData(response, position)
-                            }
-                        }, object :
-                            NSSwitchCallback {
-                            override fun switch(serviceId: String, isEnable: Boolean) {
-                                vehicleEnableDisable(serviceId, isEnable, true)
-                            }
-
-                        }, object : NSVehicleSelectCallback {
-                            override fun onItemSelect(vendorId: String) {
-                                //setGoogleMapMarker(vendorId, branchList)
-                            }
-                        })
+                    vehicleRecycleAdapter = NSVehicleRecycleAdapter({ response, position ->
+                        editVehicleData(response, position)
+                    }, { serviceId, isEnable ->
+                        vehicleEnableDisable(serviceId, isEnable, true)
+                    })
                     setupWithAdapter(vehicleRecycleAdapter!!)
                     vehicleRecycleAdapter?.setData(branchList)
                 }
@@ -259,15 +234,11 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                         }
 
                         var selectedCapabilities: MutableList<String> = arrayListOf()
-                        capabilitiesViewModel.getCapabilitiesList(false, isCapabilityAvailableCheck = true, isShowError = false, callback = object : NSCapabilityCallback {
-                            override fun onCapability(capabilities: MutableList<CapabilitiesDataItem>) {
-                                NSUtilities.setCapability(activity, false, layoutCapability, capabilities, dataItem, object : NSCapabilityListCallback {
-                                    override fun onCapability(capabilities: MutableList<String>) {
-                                        selectedCapabilities = capabilities
-                                    }
-                                })
+                        capabilitiesViewModel.getCapabilitiesList(false, isCapabilityAvailableCheck = true, isShowError = false) {
+                            NSUtilities.setCapability(activity, false, layoutCapability, it, dataItem) { capabilities ->
+                                selectedCapabilities = capabilities
                             }
-                        })
+                        }
 
                         tvCreate.setOnClickListener {
                             val strRegistrationNo = layoutRegistrationNo.edtValue.text.toString().trim()
@@ -306,15 +277,13 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                                     map[NSConstants.NOTES] = strNotes
 
                                     progress.visible()
-                                    createVehicle(selectedCapabilities, map, object : NSSuccessFailCallback {
-                                        override fun onResponse(isSuccess: Boolean) {
-                                            progress.gone()
-                                            dialog.dismiss()
-                                            if (isSuccess) {
-                                                getVehicleList(ownerId, true)
-                                            }
+                                    createVehicle(selectedCapabilities, map) { isSuccess ->
+                                        progress.gone()
+                                        dialog.dismiss()
+                                        if (isSuccess) {
+                                            getVehicleList(ownerId, true)
                                         }
-                                    })
+                                    }
                                 }
                             }
                         }

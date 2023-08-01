@@ -4,7 +4,6 @@ import android.app.Application
 import android.location.Address
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.callbacks.NSVendorAddressSelectCallback
 import com.nyotek.dot.admin.repository.NSAddressRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
@@ -24,7 +23,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
     var selectedAddressModel: AddressData? = null
     var isFleetLocationListAvailable = NSSingleLiveEvent<FleetDataItem?>()
 
-    private fun editAddress(callback: NSVendorAddressSelectCallback) {
+    private fun editAddress(callback: ((AddressData?) -> Unit)) {
         if (currentAddressData != null) {
             currentAddressData?.apply {
                 isProgressShowing.value = true
@@ -35,7 +34,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
                         override fun <T> onSuccess(data: T) {
                             isProgressShowing.value = false
                             selectedVendorId = ""
-                            callback.onItemSelect(selectedAddressModel)
+                            callback.invoke(selectedAddressModel)
                         }
 
                         override fun onError(errors: List<Any>) {
@@ -53,7 +52,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
                     })
             }
         } else {
-            callback.onItemSelect(selectedAddressModel)
+            callback.invoke(selectedAddressModel)
         }
     }
 
@@ -78,7 +77,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         selectedAddressModel = addressData
     }
 
-    fun createOrEditAddress(callback: NSVendorAddressSelectCallback) {
+    fun createOrEditAddress(callback: ((AddressData?) -> Unit)) {
         isProgressShowing.value = true
         if (selectedAddressId.isNotEmpty()) {
             editAddress(callback)
@@ -87,16 +86,16 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         }
     }
 
-    fun branchEditAddress(callback: NSVendorAddressSelectCallback) {
+    fun branchEditAddress(callback: ((AddressData?) -> Unit)) {
         if (selectedAddressId.isNotEmpty()) {
             getSelectedEditAddressRequest()
         } else {
             getSelectedCreateAddressRequest()
         }
-        callback.onItemSelect(selectedAddressModel)
+        callback.invoke(selectedAddressModel)
     }
 
-    fun branchAddressCreateEdit(callback: NSVendorAddressSelectCallback) {
+    fun branchAddressCreateEdit(callback: ((AddressData?) -> Unit)) {
         isProgressShowing.value = true
         if (selectedAddressId.isNotEmpty()) {
             editAddress(callback)
@@ -124,7 +123,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         return createAddressRequest
     }
 
-    private fun createVendorAddress(callback: NSVendorAddressSelectCallback){
+    private fun createVendorAddress(callback: ((AddressData?) -> Unit)){
         NSAddressRepository.createFleetAddress(getSelectedCreateAddressRequest(),object : NSGenericViewModelCallback {
             override fun <T> onSuccess(data: T) {
                 if (data is NSCreateFleetAddressResponse) {
@@ -132,17 +131,17 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
                         selectedAddressId = data.data?.id ?: ""
                     }
                     isProgressShowing.value = false
-                    callback.onItemSelect(data.data)
+                    callback.invoke(data.data)
                 }
             }
 
             override fun onError(errors: List<Any>) {
-                callback.onItemSelect(AddressData())
+                callback.invoke(AddressData())
                 handleError(errors)
             }
 
             override fun onFailure(failureMessage: String?) {
-                callback.onItemSelect(AddressData())
+                callback.invoke(AddressData())
                 handleFailure(failureMessage)
             }
 

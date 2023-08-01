@@ -1,7 +1,6 @@
 package com.nyotek.dot.admin.ui.serviceManagement
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSFleetServiceCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.databinding.LayoutCapabilitiesVehicleBinding
@@ -11,7 +10,7 @@ import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 private var selectedList: MutableList<String> = arrayListOf()
 
 class NSFleetServiceRecycleAdapter(
-    private val callback: NSFleetServiceCallback
+    private val callback: ((FleetData, Boolean) -> Unit?)
 ) : BaseViewBindingAdapter<LayoutCapabilitiesVehicleBinding, FleetServiceResponse>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -26,14 +25,14 @@ class NSFleetServiceRecycleAdapter(
 
                 if (response.isSelected) {
                     cbCapability.isChecked = true
-                    callback.onItemSelect(response.data!!, !cbCapability.isChecked)
+                    callback.invoke(response.data!!, !cbCapability.isChecked)
                 } else {
                     cbCapability.isChecked = false
                 }
 
                 clCapabilities.setOnClickListener {
                     cbCapability.isChecked = !cbCapability.isChecked
-                    callback.onItemSelect(response.data!!, !cbCapability.isChecked)
+                    callback.invoke(response.data!!, !cbCapability.isChecked)
                 }
             }
         }

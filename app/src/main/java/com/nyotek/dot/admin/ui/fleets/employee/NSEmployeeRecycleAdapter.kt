@@ -1,9 +1,6 @@
 package com.nyotek.dot.admin.ui.fleets.employee
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSEmployeeCallback
-import com.nyotek.dot.admin.common.callbacks.NSEmployeeSwitchEnableDisableCallback
-import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
@@ -13,9 +10,9 @@ import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 
 private var jobMap: HashMap<String, JobListDataItem> = hashMapOf()
 class NSEmployeeRecycleAdapter(
-    private val callback: NSEmployeeCallback,
-    private val switchEnableDisableCallback: NSEmployeeSwitchEnableDisableCallback,
-    private val branchItemSelect: NSVehicleSelectCallback
+    private val callback: ((EmployeeDataItem, Boolean) -> Unit),
+    private val switchCallBack: ((String, String, Boolean) -> Unit),
+    private val branchItemSelect: ((String) -> Unit),
 ) : BaseViewBindingAdapter<LayoutEmployeeListBinding, EmployeeDataItem>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -34,19 +31,19 @@ class NSEmployeeRecycleAdapter(
                 switchService.setOnClickListener {
                     isActive = !isActive
                     switchService.switchEnableDisable(isActive)
-                    switchEnableDisableCallback.switch(vendorId!!,  userId!!, isActive)
+                    switchCallBack.invoke(vendorId!!,  userId!!, isActive)
                 }
 
                 ivDelete.setOnClickListener {
-                    callback.onClick(response, true)
+                    callback.invoke(response, true)
                 }
 
                 ivEdit.setOnClickListener {
-                    callback.onClick(response, false)
+                    callback.invoke(response, false)
                 }
 
                 clEmployeeItem.setOnClickListener {
-                    branchItemSelect.onItemSelect(response.vendorId?:"")
+                    branchItemSelect.invoke(response.vendorId?:"")
                 }
             }
         }

@@ -1,17 +1,11 @@
 package com.nyotek.dot.admin.common
 
 import android.app.Activity
-import android.content.Intent
 import android.view.Gravity
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.drjacky.imagepicker.ImagePicker
-import com.nyotek.dot.admin.common.callbacks.NSLocalLanguageCallback
-import com.nyotek.dot.admin.common.callbacks.NSLocalLanguageListCallback
-import com.nyotek.dot.admin.common.callbacks.NSServiceSelectCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.isValidList
@@ -19,7 +13,6 @@ import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCommonTextBinding
 import com.nyotek.dot.admin.databinding.LayoutCommonTextviewBinding
 import com.nyotek.dot.admin.databinding.LayoutTagTextBinding
-import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetServiceListRecycleAdapter
 
 
@@ -69,43 +62,34 @@ object NSServiceConfig {
         rvServiceList.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         val serviceHorizontalAdapter =
-            NSFleetServiceListRecycleAdapter(activity, isDialog, object :
-                NSServiceSelectCallback {
-                override fun onItemSelect(serviceId: String, isChecked: Boolean) {
-                    if (isChecked) {
-                        NSUtilities.localLanguageApiCall(serviceId, object :
-                            NSLocalLanguageCallback {
-                            override fun onItemSelect(model: NSLocalLanguageResponse) {
-                                layoutName.rvLanguageTitle.refreshAdapter()
-                                layoutSlogan.rvLanguageTitle.refreshAdapter()
-                            }
-                        })
-                    } else {
-                        //NSLanguageRepository.clearApiCall()
-                        NSApplication.getInstance().removeMapLocalLanguage(serviceId)
+            NSFleetServiceListRecycleAdapter(activity, isDialog) { serviceId, isChecked ->
+                if (isChecked) {
+                    NSUtilities.localLanguageApiCall(serviceId) {
                         layoutName.rvLanguageTitle.refreshAdapter()
                         layoutSlogan.rvLanguageTitle.refreshAdapter()
                     }
+                } else {
+                    //NSLanguageRepository.clearApiCall()
+                    NSApplication.getInstance().removeMapLocalLanguage(serviceId)
+                    layoutName.rvLanguageTitle.refreshAdapter()
+                    layoutSlogan.rvLanguageTitle.refreshAdapter()
                 }
-            })
+            }
         rvServiceList.adapter = serviceHorizontalAdapter
         rvServiceList.isNestedScrollingEnabled = false
         return serviceHorizontalAdapter
     }
 
-    fun getListFromLocal(list: MutableList<String>, callback: NSLocalLanguageListCallback) {
+    fun getListFromLocal(list: MutableList<String>, callback: () -> Unit) {
         if (list.isValidList()) {
-            NSUtilities.localLanguageApiCall(list[0], object :
-                NSLocalLanguageCallback {
-                override fun onItemSelect(model: NSLocalLanguageResponse) {
-                    val newList: MutableList<String> = arrayListOf()
-                    newList.addAll(list)
-                    newList.removeAt(0)
-                    getListFromLocal(newList, callback)
-                }
-            })
+            NSUtilities.localLanguageApiCall(list[0]) {
+                val newList: MutableList<String> = arrayListOf()
+                newList.addAll(list)
+                newList.removeAt(0)
+                getListFromLocal(newList, callback)
+            }
         } else {
-            callback.onItemGet()
+            callback.invoke()
         }
     }
 }

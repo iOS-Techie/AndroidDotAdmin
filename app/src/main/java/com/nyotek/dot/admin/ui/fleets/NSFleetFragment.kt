@@ -12,9 +12,6 @@ import com.nyotek.dot.admin.common.FilterHelper
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSServiceConfig
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.callbacks.NSFleetDetailCallback
-import com.nyotek.dot.admin.common.callbacks.NSFleetFilterCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
@@ -30,7 +27,7 @@ import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
 
 class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleetsBinding>(),
-    NSFileUploadCallback, NSFleetFilterCallback {
+    NSFileUploadCallback {
 
     override val viewModel: NSFleetViewModel by lazy {
         ViewModelProvider(this)[NSFleetViewModel::class.java]
@@ -56,7 +53,12 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         baseObserveViewModel(viewModel)
         observeViewModel()
         setFleetManagementAdapter()
-        FilterHelper(activity, binding.rvFleetsFilter, this)
+        FilterHelper(activity, binding.rvFleetsFilter) { _, list ->
+            viewModel.apply {
+                selectedFilterList = list
+                setFilterData(list)
+            }
+        }
     }
 
     override fun loadFragment() {
@@ -149,20 +151,12 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         with(binding) {
             with(viewModel) {
                 with(rvFleetsList) {
-                    fleetRecycleAdapter =
-                        NSFleetManagementRecycleAdapter(
-                            object :
-                                NSFleetDetailCallback {
-                                override fun onItemSelect(model: FleetData) {
-                                    openFleetDetail(model)
-                                }
-                            },
-                            object : NSSwitchCallback {
-                                override fun switch(serviceId: String, isEnable: Boolean) {
-                                    fleetEnableDisable(serviceId, isEnable, true)
-                                }
+                    fleetRecycleAdapter = NSFleetManagementRecycleAdapter({ model ->
+                        openFleetDetail(model)
+                    }, {serviceId, isEnable ->
+                        fleetEnableDisable(serviceId, isEnable, true)
+                    })
 
-                            })
                     setupWithAdapterAndCustomLayoutManager(fleetRecycleAdapter!!, GridLayoutManager(activity, 5))
                 }
             }
@@ -313,16 +307,6 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
             createCompanyRequest.logo = url
             createCompanyRequest.logoHeight = height
             createCompanyRequest.logoWidth = width
-        }
-    }
-
-    override fun onFilterSelect(
-        model: ActiveInActiveFilter,
-        list: MutableList<ActiveInActiveFilter>
-    ) {
-        viewModel.apply {
-            selectedFilterList = list
-            setFilterData(list)
         }
     }
 }

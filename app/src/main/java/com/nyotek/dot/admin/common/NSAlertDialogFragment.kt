@@ -12,7 +12,6 @@ import androidx.fragment.app.DialogFragment
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSConstants.Companion.SESSION_EXPIRED
 import com.nyotek.dot.admin.common.NSConstants.Companion.SESSION_EXPIRED_ERROR
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCustomAlertDialogBinding
 import org.greenrobot.eventbus.EventBus
@@ -31,7 +30,8 @@ class NSAlertDialogFragment : DialogFragment() {
         private const val BUNDLE_KEY_IS_CANCEL_NEEDED = "isCancelNeeded"
         private const val BUNDLE_KEY_ALERT_KEY = "alertKey"
         var stringResource = NSApplication.getInstance().getStringModel()
-        private var callback: NSDialogClickCallback? = null
+        private var callback: ((Boolean) -> Unit)? = null
+        //private var callback: NSDialogClickCallback? = null
 
         fun newInstance(
             title: String?,
@@ -40,7 +40,7 @@ class NSAlertDialogFragment : DialogFragment() {
             negativeButtonText: String?,
             positiveButtonText: String?,
             alertKey: String?,
-            dialogCallback: NSDialogClickCallback?
+            dialogCallback: ((Boolean) -> Unit)?
         ) = NSAlertDialogFragment().apply {
             callback = dialogCallback
             arguments = bundleOf(
@@ -107,7 +107,7 @@ class NSAlertDialogFragment : DialogFragment() {
                 if (message.equals(SESSION_EXPIRED)) {
                     EventBus.getDefault().post(NSLogoutEvent())
                 } else {
-                    callback?.onDialog(false)
+                    callback?.invoke(false)
                 }
             }
 
@@ -124,7 +124,7 @@ class NSAlertDialogFragment : DialogFragment() {
                 bind.tvCancel.text = negativeButtonText
                 bind.tvCancel.setOnClickListener {
                     dialog.dismiss()
-                    callback?.onDialog(true)
+                    callback?.invoke(true)
                 }
             }
             isCancelable = false

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.databinding.FragmentDashboardMainTabBinding
@@ -64,16 +63,13 @@ class DashboardMainTabFragment : NSFragment() {
 
         binding.dashboardPager.setPager(
             requireActivity(),
-            mFragmentList,
-            object : NSOnPageChangeCallback {
-                override fun onPageChange(position: Int) {
-                    pageIndex = position
-                    val fragment = mFragmentList[position]
-                    if (fragment is NSDashboardTabFragment) {
-                        fragment.loadFragment()
-                    }
-                }
-            })
+            mFragmentList) { position ->
+            pageIndex = position
+            val fragment = mFragmentList[position]
+            if (fragment is NSDashboardTabFragment) {
+                fragment.loadFragment()
+            }
+        }
     }
 
     fun onBackClick(callback: NSBackClickCallback) {

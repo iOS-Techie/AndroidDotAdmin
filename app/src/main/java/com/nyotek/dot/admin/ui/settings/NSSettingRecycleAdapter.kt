@@ -2,7 +2,6 @@ package com.nyotek.dot.admin.ui.settings
 
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSSettingSelectCallback
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.databinding.LayoutSettingItemBinding
 import com.nyotek.dot.admin.repository.network.responses.NSSettingListResponse
@@ -11,7 +10,7 @@ private var itemSize = 0
 
 class NSSettingRecycleAdapter(
     private val isLanguageSelected: Boolean,
-    private val settingItemSelectCallBack: NSSettingSelectCallback
+    private val settingItemSelectCallBack: ((String) -> Unit)
 ) : BaseViewBindingAdapter<LayoutSettingItemBinding, NSSettingListResponse>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -31,7 +30,7 @@ class NSSettingRecycleAdapter(
                 ivNext.setImageResource(if (isLanguageSelected) R.drawable.arrow_left else R.drawable.arrow_right)
 
                 clProfileItem.setOnClickListener {
-                    title?.let { it1 -> settingItemSelectCallBack.onPosition(it1) }
+                    title?.let { it1 -> settingItemSelectCallBack.invoke(it1) }
                 }
             }
         }

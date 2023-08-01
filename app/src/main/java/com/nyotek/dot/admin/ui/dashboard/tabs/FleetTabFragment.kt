@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.NSVendorCall
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.databinding.FragmentFleetTabBinding
 import com.nyotek.dot.admin.repository.network.responses.FragmentSelectModel
@@ -58,16 +57,13 @@ class FleetTabFragment : NSFragment() {
 
         binding.fleetPager.setPager(
             requireActivity(),
-            mFragmentList.map { it.framgents!! } as MutableList<Fragment>,
-            object : NSOnPageChangeCallback {
-                override fun onPageChange(position: Int) {
-                    pageIndex = mFragmentList[position].page
-                    val fragment = mFragmentList[position].framgents
-                    if (fragment is NSFleetFragment) {
-                        fragment.loadFragment()
-                    }
-                }
-            })
+            mFragmentList.map { it.framgents!! } as MutableList<Fragment>) { position ->
+            pageIndex = mFragmentList[position].page
+            val fragment = mFragmentList[position].framgents
+            if (fragment is NSFleetFragment) {
+                fragment.loadFragment()
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

@@ -10,8 +10,6 @@ import com.franmontiel.localechanger.utils.ActivityRecreationHelper
 import com.nyotek.dot.admin.BuildConfig
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSSettingSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setupWithAdapter
@@ -131,12 +129,9 @@ class NSSettingFragment : BaseViewModelFragment<NSSettingViewModel, NsFragmentSe
                 getProfileListData(activity)
                 settingAdapter =
                     NSSettingRecycleAdapter(
-                        isLanguageSelected(),
-                        object : NSSettingSelectCallback {
-                            override fun onPosition(title: String) {
-                                onClickProfile(title)
-                            }
-                        })
+                        isLanguageSelected()) {
+                        onClickProfile(it)
+                    }
                 rvSettings.setupWithAdapter(settingAdapter!!)
                 settingAdapter?.setItemSize(profileItemList.size)
                 settingAdapter?.setData(profileItemList)
@@ -183,14 +178,11 @@ class NSSettingFragment : BaseViewModelFragment<NSSettingViewModel, NsFragmentSe
                         logout,
                         logoutMessage,
                         no,
-                        yes, object : NSDialogClickCallback {
-                            override fun onDialog(isCancelClick: Boolean) {
-                                if (isCancelClick) {
-                                    viewModel.logout(true)
-                                }
-                            }
+                        yes) {
+                        if (it) {
+                            viewModel.logout(true)
                         }
-                    )
+                    }
                 }
 
                 else -> {}

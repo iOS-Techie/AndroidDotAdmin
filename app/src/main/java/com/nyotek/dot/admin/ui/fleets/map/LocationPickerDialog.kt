@@ -22,7 +22,6 @@ import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
-import com.nyotek.dot.admin.common.callbacks.NSVendorAddressSelectCallback
 import com.nyotek.dot.admin.common.utils.*
 import com.nyotek.dot.admin.databinding.LayoutSelectAddressBinding
 import com.nyotek.dot.admin.repository.network.responses.AddressData
@@ -44,12 +43,12 @@ class LocationPickerDialog : DialogFragment(), OnMapReadyCallback {
 
     companion object {
         private var mapViewModel: NSMapViewModel? = null
-        private var addressSelectCallback: NSVendorAddressSelectCallback? = null
+        private var addressSelectCallback: ((AddressData?) -> Unit)? = null
         private var isFromEdit: Boolean = false
         private lateinit var selectedPositions: IntArray
         private var height: Int = 0
 
-        fun newInstance(isFromEditBranch: Boolean, positions: IntArray, viewHeight: Int, addressData: AddressData?, mapModel: NSMapViewModel, vendorId: String, serviceIdList: MutableList<String>, addressId: String, addressCallback: NSVendorAddressSelectCallback) = LocationPickerDialog().apply {
+        fun newInstance(isFromEditBranch: Boolean, positions: IntArray, viewHeight: Int, addressData: AddressData?, mapModel: NSMapViewModel, vendorId: String, serviceIdList: MutableList<String>, addressId: String, addressCallback: ((AddressData?) -> Unit)) = LocationPickerDialog().apply {
             height = viewHeight
             selectedPositions = positions
             isFromEdit = isFromEditBranch

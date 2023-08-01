@@ -11,11 +11,7 @@ import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.OnTextUpdateHelper
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityListCallback
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.callbacks.NSOnTextChangeCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.gone
@@ -162,12 +158,10 @@ class NSVehicleDetailFragment :
                     capabilitiesViewModel.getCapabilitiesList(
                         false,
                         isCapabilityAvailableCheck = true,
-                        isShowError = false,
-                        callback = object : NSCapabilityCallback {
-                            override fun onCapability(capabilities: MutableList<CapabilitiesDataItem>) {
-                                setCapabilityList(capabilities)
-                            }
-                        })
+                        isShowError = false
+                    ) {
+                        setCapabilityList(it)
+                    }
 
                     if (isApiCall) {
                         //Get Vehicle Detail
@@ -188,16 +182,13 @@ class NSVehicleDetailFragment :
                     true,
                     layoutCapability,
                     capabilities,
-                    vehicleDataItem,
-                    object :
-                        NSCapabilityListCallback {
-                        override fun onCapability(capabilities: MutableList<String>) {
-                            if (vehicleDataItem?.capabilities?.equals(capabilities) != true) {
-                                vehicleDataItem?.capabilities = capabilities
-                                viewModel.updateCapability(capabilities)
-                            }
-                        }
-                    })
+                    vehicleDataItem
+                ) {
+                    if (vehicleDataItem?.capabilities?.equals(capabilities) != true) {
+                        vehicleDataItem?.capabilities = it
+                        viewModel.updateCapability(it)
+                    }
+                }
             }
         }
     }
@@ -220,7 +211,13 @@ class NSVehicleDetailFragment :
             val nameList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
             val idList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
             val spinnerList = SpinnerData(idList, nameList)
-            spinner.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, viewModel.driverId, isHideFirstPosition = true, placeholderName = stringResource.selectDriver) { selectedId ->
+            spinner.spinnerAppSelect.setPlaceholderAdapter(
+                spinnerList,
+                activity,
+                viewModel.driverId,
+                isHideFirstPosition = true,
+                placeholderName = stringResource.selectDriver
+            ) { selectedId ->
                 if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
                     viewModel.driverId = selectedId
                     viewModel.assignVehicle(selectedId)
@@ -228,7 +225,7 @@ class NSVehicleDetailFragment :
             }
 
             val empResponse = employeeList.find { it.userId == viewModel.driverId }
-            tvUserTitle.text = viewModel.driverId?:""
+            tvUserTitle.text = viewModel.driverId ?: ""
             tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
 
             val spinnerPosition = idList.indexOf(viewModel.driverId)
@@ -286,29 +283,24 @@ class NSVehicleDetailFragment :
                         message = stringResource.doYouWantToDelete,
                         alertKey = NSConstants.KEY_ALERT_EMPLOYEE_VEHICLE_DELETE_DETAIL,
                         positiveButton = stringResource.ok,
-                        negativeButton = stringResource.cancel, object : NSDialogClickCallback {
-                            override fun onDialog(isCancelClick: Boolean) {
-                                if (!isCancelClick) {
-                                    driverId?.let {
-                                        assignVehicle(
-                                            it, capabilities = arrayListOf()
-                                        )
-                                    }
-                                }
+                        negativeButton = stringResource.cancel
+                    ) { isCancel ->
+                        if (!isCancel) {
+                            driverId?.let {
+                                assignVehicle(
+                                    it, capabilities = arrayListOf()
+                                )
                             }
                         }
-                    )
+                    }
                 }
 
                 OnTextUpdateHelper(
                     layoutNotes.edtValue,
-                    vehicleDataItem?.additionalNote ?: "",
-                    object : NSOnTextChangeCallback {
-                        override fun afterTextChanged(text: String) {
-                            vehicleDataItem?.additionalNote = text
-                            viewModel.updateNotes(layoutNotes.edtValue.text.toString())
-                        }
-                    })
+                    vehicleDataItem?.additionalNote ?: "") {
+                    vehicleDataItem?.additionalNote = it
+                    viewModel.updateNotes(layoutNotes.edtValue.text.toString())
+                }
             }
         }
     }

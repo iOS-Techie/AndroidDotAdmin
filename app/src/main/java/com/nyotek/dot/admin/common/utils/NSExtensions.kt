@@ -46,7 +46,6 @@ import com.nyotek.dot.admin.common.NSLog
 import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.SafeClickListener
 import com.nyotek.dot.admin.common.SingleClickListener
-import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
@@ -604,16 +603,20 @@ fun View.setAlphaP6(isActive: Boolean) {
     alpha = if (isActive) 1f else 0.6f
 }
 
-fun ViewPager2.setPager(activity: FragmentActivity, list: MutableList<Fragment>, callback: NSOnPageChangeCallback? = null, page: Int = list.size) {
+fun ViewPager2.setPager(
+    activity: FragmentActivity,
+    list: MutableList<Fragment>,
+    callback: ((Int) -> Unit)? = null
+) {
     val pager = NSViewPagerAdapter(activity)
     pager.setFragment(list)
     adapter = pager
     isUserInputEnabled = false
-    offscreenPageLimit = page
+    offscreenPageLimit = list.size
     registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            callback?.onPageChange(position)
+            callback?.invoke(position)
         }
     })
 }

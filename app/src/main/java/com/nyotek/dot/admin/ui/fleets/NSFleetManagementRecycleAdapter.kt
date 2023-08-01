@@ -2,8 +2,6 @@ package com.nyotek.dot.admin.ui.fleets
 
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSFleetDetailCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glide200
 import com.nyotek.dot.admin.common.utils.status
@@ -12,8 +10,8 @@ import com.nyotek.dot.admin.databinding.LayoutFleetItemBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 
 class NSFleetManagementRecycleAdapter(
-    private val fleetDetailCallback: NSFleetDetailCallback,
-    private val switchEnableDisableCallback: NSSwitchCallback
+    private val fleetDetailCallback: ((FleetData) -> Unit),
+    private val switchCallBack: ((String, Boolean) -> Unit)
 ) : BaseViewBindingAdapter<LayoutFleetItemBinding, FleetData>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -31,13 +29,13 @@ class NSFleetManagementRecycleAdapter(
                 switchFleet.switchEnableDisable(isActive)
 
                 clViewMoreVendor.setOnClickListener {
-                    fleetDetailCallback.onItemSelect(response)
+                    fleetDetailCallback.invoke(response)
                 }
 
                 switchFleet.setOnClickListener {
                     isActive = !isActive
                     switchFleet.switchEnableDisable(isActive)
-                    switchEnableDisableCallback.switch(vendorId!!, isActive)
+                    switchCallBack.invoke(vendorId!!, isActive)
                     tvItemActive.status(isActive)
                 }
             }

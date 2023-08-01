@@ -3,9 +3,6 @@ package com.nyotek.dot.admin.ui.serviceManagement
 import android.app.Application
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
-import com.nyotek.dot.admin.common.callbacks.NSFleetListCallback
-import com.nyotek.dot.admin.common.callbacks.NSServiceCapabilityCallback
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSServiceRepository
@@ -75,26 +72,26 @@ class NSServiceManagementViewModel(application: Application) : NSViewModel(appli
         NSServiceRepository.getServiceList(this)
     }
 
-    fun getServiceCapability(serviceId: String, callback: NSServiceCapabilityCallback) {
+    fun getServiceCapability(serviceId: String, callback: ((ServiceCapabilitiesDataItem) -> Unit)) {
         NSCapabilitiesRepository.getServiceCapabilities(
             serviceId,
             object : NSGenericViewModelCallback {
                 override fun <T> onSuccess(data: T) {
                     if (data is NSServiceCapabilityResponse) {
-                        data.data?.let { callback.onDataItem(it) }
+                        data.data?.let { callback.invoke(it) }
                     }
                 }
 
                 override fun onError(errors: List<Any>) {
-                    callback.onDataItem(ServiceCapabilitiesDataItem())
+                    callback.invoke(ServiceCapabilitiesDataItem())
                 }
 
                 override fun onFailure(failureMessage: String?) {
-                    callback.onDataItem(ServiceCapabilitiesDataItem())
+                    callback.invoke(ServiceCapabilitiesDataItem())
                 }
 
                 override fun <T> onNoNetwork(localData: T) {
-                   callback.onDataItem(ServiceCapabilitiesDataItem())
+                   callback.invoke(ServiceCapabilitiesDataItem())
                    handleNoNetwork()
                 }
             })
@@ -144,18 +141,13 @@ class NSServiceManagementViewModel(application: Application) : NSViewModel(appli
                     serviceItemList.addAll(data.data)
                 }
                 serviceItemList.sortByDescending { it.serviceId }
-                viewModel?.getCapabilitiesList(false, isCapabilityAvailableCheck = true, callback = object :
-                    NSCapabilityCallback {
-                    override fun onCapability(capabilities: MutableList<CapabilitiesDataItem>) {
-                        capabilityItemList = capabilities
-                        fleetViewModel?.getFleetList(false, object : NSFleetListCallback {
-                            override fun onFleets(fleetList: MutableList<FleetData>) {
-                                fleetItemList = fleetList
-                                isServiceListAvailable.value = true
-                            }
-                        })
+                viewModel?.getCapabilitiesList(false, isCapabilityAvailableCheck = true) {
+                    capabilityItemList = it
+                    fleetViewModel?.getFleetList(false) { fleetList ->
+                        fleetItemList = fleetList
+                        isServiceListAvailable.value = true
                     }
-                })
+                }
             }
             is NSBlankDataResponse -> {
                 isProgressShowing.value = false

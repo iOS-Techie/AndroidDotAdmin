@@ -7,7 +7,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.notifyAdapter
@@ -16,7 +15,7 @@ import com.nyotek.dot.admin.databinding.LayoutCapabilitiesVehicleSmallBinding
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 
 class NSCapabilitiesVehicleRecycleAdapter(
-    private val callback: NSCapabilitiesCallback,
+    private val callback: ((CapabilitiesDataItem, Boolean) -> Unit),
     private val isSmallLayout: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val itemList: MutableList<CapabilitiesDataItem> = arrayListOf()
@@ -111,12 +110,12 @@ class NSCapabilitiesVehicleRecycleAdapter(
 
         if (selectedList.contains(response.id)) {
             cbCapability.isChecked = true
-            callback.onItemSelect(response, !cbCapability.isChecked)
+            callback.invoke(response, !cbCapability.isChecked)
         }
 
         clCapabilities.setOnClickListener {
             cbCapability.isChecked = !cbCapability.isChecked
-            callback.onItemSelect(response, !cbCapability.isChecked)
+            callback.invoke(response, !cbCapability.isChecked)
         }
     }
 }

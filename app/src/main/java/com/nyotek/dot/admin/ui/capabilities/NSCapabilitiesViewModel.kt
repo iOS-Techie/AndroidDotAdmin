@@ -4,8 +4,6 @@ import android.app.Application
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
-import com.nyotek.dot.admin.common.callbacks.NSSuccessFailCallback
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSLanguageRepository
@@ -29,7 +27,7 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
      *
      * @param isShowProgress
      */
-    fun getCapabilitiesList(isShowProgress: Boolean, isShowError: Boolean = true, isCapabilityAvailableCheck: Boolean = false, callback: NSCapabilityCallback? = null) {
+    fun getCapabilitiesList(isShowProgress: Boolean, isShowError: Boolean = true, isCapabilityAvailableCheck: Boolean = false, callback: ((MutableList<CapabilitiesDataItem>) -> Unit?)) {
 
         if (!isCapabilityAvailable() || !isCapabilityAvailableCheck) {
             if (isShowProgress) {
@@ -42,7 +40,7 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
                         isCapabilitiesListCall.value = data.data
                         NSApplication.getInstance().setCapabilityList(data.data)
                         isProgressShowing.value = false
-                        callback?.onCapability(data.data)
+                        callback.invoke(data.data)
                     }
                 }
 
@@ -69,7 +67,7 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
             val capabilityList = NSApplication.getInstance().getCapabilityList()
             isCapabilitiesListCall.value = capabilityList
             isProgressShowing.value = false
-            callback?.onCapability(capabilityList)
+            callback.invoke(capabilityList)
         }
     }
 
@@ -105,27 +103,27 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
         NSCapabilitiesRepository.deleteCapability(id, this)
     }
 
-    fun createEditCapability(capabilityName: HashMap<String, String>, isCreate: Boolean, selectedId: String = "", callback: NSSuccessFailCallback){
+    fun createEditCapability(capabilityName: HashMap<String, String>, isCreate: Boolean, selectedId: String = "", callback: ((Boolean) -> Unit)){
         isProgressShowing.value = true
         val request = NSCreateCapabilityRequest()
         request.label = capabilityName
         val obj = object : NSGenericViewModelCallback {
             override fun <T> onSuccess(data: T) {
-                callback.onResponse(true)
+                callback.invoke(true)
             }
 
             override fun onError(errors: List<Any>) {
-                callback.onResponse(false)
+                callback.invoke(false)
                 handleError(errors)
             }
 
             override fun onFailure(failureMessage: String?) {
-                callback.onResponse(false)
+                callback.invoke(false)
                 handleFailure(failureMessage)
             }
 
             override fun <T> onNoNetwork(localData: T) {
-                callback.onResponse(false)
+                callback.invoke(false)
                 handleNoNetwork()
             }
         }
@@ -145,7 +143,7 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
             }
             is NSCapabilitiesBlankDataResponse -> {
                 //employeeEditRequest = NSEmployeeEditRequest()
-                getCapabilitiesList(true)
+                getCapabilitiesList(true) {}
             }
             is NSLocalLanguageResponse -> {
                 if (data.data.isValidList()) {

@@ -17,11 +17,6 @@ import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSEmployeeCallback
-import com.nyotek.dot.admin.common.callbacks.NSEmployeeSwitchEnableDisableCallback
-import com.nyotek.dot.admin.common.callbacks.NSUserClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
@@ -183,32 +178,13 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
         viewModel.apply {
             with(binding) {
                 with(rvEmployeeList) {
-                    empAdapter =
-                        NSEmployeeRecycleAdapter(object : NSEmployeeCallback {
-                            override fun onClick(
-                                employeeData: EmployeeDataItem,
-                                isDelete: Boolean
-                            ) {
-                                employeeEditDelete(employeeData, !isDelete)
-                            }
-                        }, object :
-                            NSEmployeeSwitchEnableDisableCallback {
-                            override fun switch(
-                                vendorId: String,
-                                userId: String,
-                                isEnable: Boolean
-                            ) {
-                                employeeSwitch(
-                                    vendorId,
-                                    userId,
-                                    isEnable
-                                )
-                            }
-                        }, object : NSVehicleSelectCallback {
-                            override fun onItemSelect(vendorId: String) {
-                                mapBoxView?.goToMapPosition(vendorId)
-                            }
-                        })
+                    empAdapter = NSEmployeeRecycleAdapter({ model, isDelete ->
+                        employeeEditDelete(model, !isDelete)
+                    }, { vendorId, userId, isEnable ->
+                        employeeSwitch(vendorId, userId, isEnable)
+                    }, { vendorId ->
+                        mapBoxView?.goToMapPosition(vendorId)
+                    })
                     setupWithAdapter(empAdapter!!)
                     isNestedScrollingEnabled = false
                     empAdapter?.setJob(viewModel.jobTitleMap)
@@ -233,19 +209,16 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                 message = stringResource.doYouWantToDelete,
                 alertKey = NSConstants.KEY_ALERT_EMPLOYEE_DELETE,
                 positiveButton = stringResource.ok,
-                negativeButton = stringResource.cancel, callback = object : NSDialogClickCallback {
-                    override fun onDialog(isCancelClick: Boolean) {
-                        if (!isCancelClick) {
-                            employeeData.apply {
-                                if (userId != null) {
-                                    viewModel.employeeDelete(vendorId!!, userId, true)
-                                }
-                            }
+                negativeButton = stringResource.cancel
+            ) {
+                if (!it) {
+                    employeeData.apply {
+                        if (userId != null) {
+                            viewModel.employeeDelete(vendorId!!, userId, true)
                         }
                     }
-
                 }
-            )
+            }
         }
     }
 
@@ -286,10 +259,18 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                         }
 
                         var selectedTitleId: String? = null
-                        val nameList: MutableList<String> = jobTitleList.map { getLngValue(it.name) }.toMutableList()
-                        val idList: MutableList<String> = jobTitleList.map { it.id ?: "" }.toMutableList()
+                        val nameList: MutableList<String> =
+                            jobTitleList.map { getLngValue(it.name) }.toMutableList()
+                        val idList: MutableList<String> =
+                            jobTitleList.map { it.id ?: "" }.toMutableList()
                         val spinnerList = SpinnerData(idList, nameList)
-                        spinnerRole.setPlaceholderAdapter(spinnerList, activity, "", isHideFirstPosition = true, placeholderName = stringResource.selectEmployeeRole) { selectedId ->
+                        spinnerRole.setPlaceholderAdapter(
+                            spinnerList,
+                            activity,
+                            "",
+                            isHideFirstPosition = true,
+                            placeholderName = stringResource.selectEmployeeRole
+                        ) { selectedId ->
                             if (selectedId != selectedTitleId) {
                                 selectedTitleId = selectedId
                             }
@@ -320,7 +301,8 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
 
                         tvSendInvite.setOnClickListener {
                             val vendorIdValue = vendorId
-                            val userId: String = searchUserList.find { it.isEmployeeSelected }?.id?:""
+                            val userId: String =
+                                searchUserList.find { it.isEmployeeSelected }?.id ?: ""
 
                             if (selectedTitleId?.isNotEmpty() == true) {
                                 if (userId.isNotEmpty()) {
@@ -352,11 +334,9 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
         with(inviteEmployeeBinding) {
             with(rvUserList) {
                 userSearchAdapter =
-                    NSEmployeeUserSearchRecycleAdapter(object : NSUserClickCallback {
-                        override fun onUserSelect() {
-                            notifyAdapter(userSearchAdapter!!)
-                        }
-                    })
+                    NSEmployeeUserSearchRecycleAdapter {
+                        notifyAdapter(userSearchAdapter!!)
+                    }
                 setupWithAdapter(userSearchAdapter!!)
                 isNestedScrollingEnabled = false
             }

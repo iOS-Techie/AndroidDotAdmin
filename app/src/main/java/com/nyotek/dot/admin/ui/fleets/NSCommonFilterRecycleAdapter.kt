@@ -1,7 +1,6 @@
 package com.nyotek.dot.admin.ui.fleets
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSFleetFilterCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.databinding.LayoutFilterVendorBinding
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
@@ -9,7 +8,7 @@ import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 private var list: MutableList<ActiveInActiveFilter> = arrayListOf()
 
 class NSCommonFilterRecycleAdapter(
-    private val vendorFilterCallback: NSFleetFilterCallback,
+    private val vendorFilterCallback: ((ActiveInActiveFilter, MutableList<ActiveInActiveFilter>) -> Unit?)
 ) : BaseViewBindingAdapter<LayoutFilterVendorBinding, ActiveInActiveFilter>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -26,7 +25,7 @@ class NSCommonFilterRecycleAdapter(
                 for (data in list) {
                     data.isActive = data.title.equals(response.title)
                 }
-                vendorFilterCallback.onFilterSelect(response, list)
+                vendorFilterCallback.invoke(response, list)
             }
         }
     }

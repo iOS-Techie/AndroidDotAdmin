@@ -4,29 +4,18 @@ import android.app.Application
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.callbacks.NSFleetListCallback
 import com.nyotek.dot.admin.common.utils.isValidList
-import com.nyotek.dot.admin.repository.NSLanguageRepository
-import com.nyotek.dot.admin.repository.NSServiceRepository
-import com.nyotek.dot.admin.repository.NSThemeRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
+import com.nyotek.dot.admin.repository.NSLanguageRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
-import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSCreateCompanyResponse
-import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
-import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListResponse
-import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
-import com.nyotek.dot.admin.repository.network.responses.NSUploadFileResponse
-import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetListResponse
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
+import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
+import com.nyotek.dot.admin.repository.network.responses.NSCreateCompanyResponse
+import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
+import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 
 class NSFleetViewModel(application: Application) : NSViewModel(application) {
     var fleetItemList: MutableList<FleetData> = arrayListOf()
@@ -40,7 +29,7 @@ class NSFleetViewModel(application: Application) : NSViewModel(application) {
      *
      * @param isShowProgress
      */
-    fun getFleetList(isShowProgress: Boolean, callback: NSFleetListCallback? = null) {
+    fun getFleetList(isShowProgress: Boolean, callback: ((MutableList<FleetData>) -> Unit)? = null) {
         if (isShowProgress) {
             isProgressShowing.value = true
         }
@@ -55,7 +44,7 @@ class NSFleetViewModel(application: Application) : NSViewModel(application) {
                     if (callback == null) {
                         getFleetLocalLanguageList(false)
                     } else {
-                        callback.onFleets(fleetItemList)
+                        callback.invoke(fleetItemList)
                     }
                 }
             }

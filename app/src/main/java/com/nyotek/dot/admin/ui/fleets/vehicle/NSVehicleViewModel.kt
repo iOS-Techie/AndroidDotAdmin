@@ -5,18 +5,17 @@ import com.google.gson.Gson
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.callbacks.NSSuccessFailCallback
 import com.nyotek.dot.admin.repository.NSVehicleRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
-import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleResponse
-import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
+import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleBlankDataResponse
+import com.nyotek.dot.admin.repository.network.responses.NSVehicleResponse
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
+import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 
 class NSVehicleViewModel(application: Application) : NSViewModel(application) {
     var isVehicleListAvailable = NSSingleLiveEvent<MutableList<VehicleDataItem>>()
@@ -82,7 +81,7 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
         }
     }
 
-    fun createVehicle(capabilities: MutableList<String>, detail: HashMap<String, String>, callback: NSSuccessFailCallback){
+    fun createVehicle(capabilities: MutableList<String>, detail: HashMap<String, String>, callback: ((Boolean) -> Unit)){
         isProgressShowing.value = true
         val request = NSVehicleRequest()
         request.refId = fleetModel?.vendorId
@@ -101,21 +100,21 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
                 isProgressShowing.value = false
                 uploadFileUrl = ""
                 //isProgressShowing.value = false
-                callback.onResponse(true)
+                callback.invoke(true)
             }
 
             override fun onError(errors: List<Any>) {
-                callback.onResponse(false)
+                callback.invoke(false)
                handleError(errors)
             }
 
             override fun onFailure(failureMessage: String?) {
-                callback.onResponse(false)
+                callback.invoke(false)
                handleFailure(failureMessage)
             }
 
             override fun <T> onNoNetwork(localData: T) {
-                callback.onResponse(false)
+                callback.invoke(false)
                 handleNoNetwork()
             }
 

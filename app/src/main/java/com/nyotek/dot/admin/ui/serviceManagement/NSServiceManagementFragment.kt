@@ -7,9 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.FilterHelper
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
-import com.nyotek.dot.admin.common.callbacks.NSFleetFilterCallback
-import com.nyotek.dot.admin.common.callbacks.NSServiceCapabilityUpdateCallback
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -23,8 +20,7 @@ import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
 import com.nyotek.dot.admin.ui.fleets.NSFleetViewModel
 
 class NSServiceManagementFragment :
-    BaseViewModelFragment<NSServiceManagementViewModel, NsFragmentServiceManagementBinding>(),
-    NSFleetFilterCallback {
+    BaseViewModelFragment<NSServiceManagementViewModel, NsFragmentServiceManagementBinding>() {
 
     private var serviceRecycleAdapter: NSServiceManagementRecycleAdapter? = null
     private var isFragmentLoad = false
@@ -60,7 +56,12 @@ class NSServiceManagementFragment :
         setServiceManagementAdapter()
         viewModel.setCapabilityModel(capabilitiesViewModel)
         viewModel.setFleetModel(fleetViewModel)
-        FilterHelper(activity, binding.rvServiceFilter, this)
+        FilterHelper(activity, binding.rvServiceFilter) { _, list ->
+            viewModel.apply {
+                selectedFilterList = list
+                filterData(list)
+            }
+        }
     }
 
     override fun loadFragment() {
@@ -221,24 +222,17 @@ class NSServiceManagementFragment :
                     serviceRecycleAdapter =
                         NSServiceManagementRecycleAdapter(
                             activity,
-                            viewModel,
-                            object : NSServiceCapabilityUpdateCallback {
-                                override fun onItemSelect(serviceId: String, capabilityId: String, fleets: List<String>, isDirectFleet: Boolean, isFleetUpdate: Boolean) {
-                                    selectedFleets = fleets
-                                    selectedServiceId = serviceId
-                                    isFleetNeedToUpdate = isFleetUpdate
-                                    if (isDirectFleet && isFleetUpdate) {
-                                        serviceFleetsUpdate(serviceId, fleets, true)
-                                    } else {
-                                        serviceCapabilityUpdate(serviceId, capabilityId, true)
-                                    }
+                            viewModel, { serviceId, capabilityId, fleets, isDirectFleet, isFleetUpdate ->
+                                selectedFleets = fleets
+                                selectedServiceId = serviceId
+                                isFleetNeedToUpdate = isFleetUpdate
+                                if (isDirectFleet && isFleetUpdate) {
+                                    serviceFleetsUpdate(serviceId, fleets, true)
+                                } else {
+                                    serviceCapabilityUpdate(serviceId, capabilityId, true)
                                 }
-
-                            },
-                            object : NSSwitchCallback {
-                                override fun switch(serviceId: String, isEnable: Boolean) {
-                                    serviceEnableDisable(serviceId, isEnable, true)
-                                }
+                            }, { serviceId, isEnable ->
+                                serviceEnableDisable(serviceId, isEnable, true)
                             })
                     setupWithAdapterAndCustomLayoutManager(
                         serviceRecycleAdapter!!,
@@ -284,16 +278,6 @@ class NSServiceManagementFragment :
                 setSubList(viewModel.capabilityItemList, viewModel.fleetItemList)
             }
             setData(serviceItemList)
-        }
-    }
-
-    override fun onFilterSelect(
-        model: ActiveInActiveFilter,
-        list: MutableList<ActiveInActiveFilter>
-    ) {
-        viewModel.apply {
-            selectedFilterList = list
-            filterData(list)
         }
     }
 }

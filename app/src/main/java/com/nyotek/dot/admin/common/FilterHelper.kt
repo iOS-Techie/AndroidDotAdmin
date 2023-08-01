@@ -2,7 +2,6 @@ package com.nyotek.dot.admin.common
 
 import android.app.Activity
 import androidx.recyclerview.widget.RecyclerView
-import com.nyotek.dot.admin.common.callbacks.NSFleetFilterCallback
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.linearHorizontal
 import com.nyotek.dot.admin.common.utils.notifyAdapter
@@ -10,7 +9,7 @@ import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.ui.fleets.NSCommonFilterRecycleAdapter
 
-class FilterHelper(private val activity: Activity, private val recycleView: RecyclerView, private val callback: NSFleetFilterCallback) {
+class FilterHelper(private val activity: Activity, private val recycleView: RecyclerView, private val callback: ((ActiveInActiveFilter, MutableList<ActiveInActiveFilter>) -> Unit)) {
 
     private val stringResource = NSApplication.getInstance().getStringModel()
 
@@ -31,13 +30,10 @@ class FilterHelper(private val activity: Activity, private val recycleView: Recy
         if (filterList.isValidList()) {
             recycleView.apply {
                 linearHorizontal(activity)
-                val serviceFilterRecycleAdapter =
-                    NSCommonFilterRecycleAdapter(object : NSFleetFilterCallback {
-                        override fun onFilterSelect(model: ActiveInActiveFilter, list: MutableList<ActiveInActiveFilter>) {
-                            callback.onFilterSelect(model, list)
-                            notifyAdapter(adapter!!)
-                        }
-                    })
+                val serviceFilterRecycleAdapter = NSCommonFilterRecycleAdapter { model, list ->
+                    callback.invoke(model, list)
+                    notifyAdapter(adapter!!)
+                }
                 adapter = serviceFilterRecycleAdapter
                 isNestedScrollingEnabled = false
                 serviceFilterRecycleAdapter.setData(filterList)

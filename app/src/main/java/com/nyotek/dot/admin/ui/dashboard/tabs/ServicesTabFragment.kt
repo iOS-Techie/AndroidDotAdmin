@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.nyotek.dot.admin.common.NSFragment
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.databinding.FragmentServicesTabBinding
 import com.nyotek.dot.admin.ui.serviceManagement.NSServiceManagementFragment
@@ -46,16 +45,13 @@ class ServicesTabFragment : NSFragment() {
 
         binding.servicesPager.setPager(
             requireActivity(),
-            mFragmentList,
-            object : NSOnPageChangeCallback {
-                override fun onPageChange(position: Int) {
-                    pageIndex = position
-                    val fragment = mFragmentList[position]
-                    if (fragment is NSServiceManagementFragment) {
-                        fragment.loadFragment()
-                    }
-                }
-            })
+            mFragmentList) {
+            pageIndex = it
+            val fragment = mFragmentList[it]
+            if (fragment is NSServiceManagementFragment) {
+                fragment.loadFragment()
+            }
+        }
     }
 
     fun onBackClick(callback: NSBackClickCallback) {

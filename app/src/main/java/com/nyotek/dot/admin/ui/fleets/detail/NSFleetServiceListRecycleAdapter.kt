@@ -2,12 +2,13 @@ package com.nyotek.dot.admin.ui.fleets.detail
 
 import android.app.Activity
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSServiceSelectCallback
-import com.nyotek.dot.admin.common.utils.*
+import com.nyotek.dot.admin.common.utils.ColorResources
+import com.nyotek.dot.admin.common.utils.setAlphaP6
+import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.databinding.LayoutServiceListHorizontalBinding
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
-import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 
 private var itemList: MutableList<NSGetServiceListData> = arrayListOf()
 private var selectedFleetData: FleetData? = null
@@ -16,7 +17,7 @@ private var serviceList: MutableList<String> = arrayListOf()
 private var isVendorDetailCheck: Boolean = false
 
 class NSFleetServiceListRecycleAdapter(
-    val activity: Activity, var dialog: Boolean, var callback: NSServiceSelectCallback
+    val activity: Activity, var dialog: Boolean, var callback: ((String, Boolean) -> Unit)
 ) : BaseViewBindingAdapter<LayoutServiceListHorizontalBinding, NSGetServiceListData>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -73,7 +74,7 @@ class NSFleetServiceListRecycleAdapter(
                             )
                         }
                     }
-                    callback.onItemSelect(serviceId ?: "", cbCheck.isChecked)
+                    callback.invoke(serviceId ?: "", cbCheck.isChecked)
                 }
             }
         }

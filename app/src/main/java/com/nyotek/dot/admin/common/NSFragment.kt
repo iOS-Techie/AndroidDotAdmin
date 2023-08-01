@@ -99,7 +99,7 @@ open class NSFragment : Fragment() {
      * @param message The message to show as alert message
      */
     //Use of Outside change to Protected
-    fun showAlertDialog(message: String?, callback: NSDialogClickCallback? = null) {
+    fun showAlertDialog(message: String?, callback: ((Boolean) -> Unit)? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
         NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, callback = callback)
     }
@@ -109,7 +109,7 @@ open class NSFragment : Fragment() {
      *
      * @param message The message to show as alert message
      */
-    protected fun showSuccessDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, callback: NSDialogClickCallback? = null) {
+    protected fun showSuccessDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, callback: ((Boolean) -> Unit)? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
         NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = alertKey, callback = callback)
     }
@@ -119,7 +119,7 @@ open class NSFragment : Fragment() {
      *
      * @param message The message to show as alert message
      */
-    protected fun showCommonDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, positiveButton: String, negativeButton: String, callback: NSDialogClickCallback? = null) {
+    protected fun showCommonDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, positiveButton: String, negativeButton: String, callback: ((Boolean) -> Unit)? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
         NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = alertKey, positiveButtonText = positiveButton, negativeButtonText = negativeButton, isCancelNeeded = true, callback = callback)
     }
@@ -129,7 +129,7 @@ open class NSFragment : Fragment() {
      *
      * @param message The message to show as alert message
      */
-    protected fun showLogoutDialog(title: String?, message: String?, positiveButton: String, negativeButton: String, callback: NSDialogClickCallback? = null) {
+    protected fun showLogoutDialog(title: String?, message: String?, positiveButton: String, negativeButton: String, callback: ((Boolean) -> Unit)? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
         NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = NSConstants.LOGOUT_CLICK, positiveButtonText = positiveButton, negativeButtonText = negativeButton, isCancelNeeded = true, callback = callback)
     }
@@ -138,7 +138,7 @@ open class NSFragment : Fragment() {
      * To display the no network dialog
      */
     //Use of Outside change to Protected
-    private fun showNoNetworkAlertDialog(title: String?, message: String?, callback: NSDialogClickCallback? = null) {
+    private fun showNoNetworkAlertDialog(title: String?, message: String?, callback: ((Boolean) -> Unit)? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
         NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, callback = callback)
     }
@@ -313,25 +313,22 @@ open class NSFragment : Fragment() {
 
                 rvLanguage.layoutManager = LinearLayoutManager(activity)
                 languageAdapter =
-                    NSLanguageRecycleAdapter(pref, object :
-                        NSLanguageSelectCallback {
-                        override fun onPosition(position: Int) {
-                            notifyAdapter(languageAdapter!!)
-                            selectLanguageBottomSheet!!.dismiss()
-                            pref.isLanguageSelected = true
+                    NSLanguageRecycleAdapter(pref) {position ->
+                        notifyAdapter(languageAdapter!!)
+                        selectLanguageBottomSheet!!.dismiss()
+                        pref.isLanguageSelected = true
 
-                            NSLanguageConfig.setLanguagesPref(
-                                position,
-                                (languageList[position].locale?:"").lowercase(),
-                                languageList[position].direction.equals("rtl")
-                            )
-                            NSApplication.getInstance().setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
-                            switchActivity(
-                                NSSplashActivity::class.java,
-                                flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
-                            )
-                        }
-                    })
+                        NSLanguageConfig.setLanguagesPref(
+                            position,
+                            (languageList[position].locale?:"").lowercase(),
+                            languageList[position].direction.equals("rtl")
+                        )
+                        NSApplication.getInstance().setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
+                        switchActivity(
+                            NSSplashActivity::class.java,
+                            flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
+                        )
+                    }
                 rvLanguage.adapter = languageAdapter
                 languageAdapter?.setData(languageList)
                 rvLanguage.isNestedScrollingEnabled = false

@@ -3,12 +3,9 @@ package com.nyotek.dot.admin.common
 import android.app.Activity
 import android.content.Context
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
-import com.nyotek.dot.admin.common.callbacks.NSLanguageSubItemSelectCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.gone
-import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutLanguageTitleItemTextBinding
@@ -17,7 +14,7 @@ import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 private var itemList: MutableList<LanguageSelectModel> = arrayListOf()
 class NSLanguageCommonRecycleAdapter(
     private val context: Context,
-    private val languageSelectCallback: NSLanguageSelectedCallback
+    private val languageSelectCallback: ((String, Boolean) -> Unit)
 ) : BaseViewBindingAdapter<LayoutLanguageTitleItemTextBinding, LanguageSelectModel>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -48,7 +45,7 @@ class NSLanguageCommonRecycleAdapter(
                     spinnerLanguageAdd.text = "+"
 
                     if (response.isSelected) {
-                        languageSelectCallback.onItemSelect(response.locale?:"")
+                        languageSelectCallback.invoke(response.locale?:"", false)
                     }
 
                     fun removeSelection() {
@@ -61,12 +58,9 @@ class NSLanguageCommonRecycleAdapter(
                         tvLanguageTitle.gone()
                         spinnerLanguageAdd.visible()
                         spinnerLanguageAdd.setSafeOnClickListener {
-                            NSUtilities.showCreateLocalDialog((context as Activity), itemList, object : NSLanguageSubItemSelectCallback {
-                                override fun onItemSelect(model: LanguageSelectModel) {
+                            NSUtilities.showCreateLocalDialog((context as Activity), itemList) {
 
-                                }
-
-                            })
+                            }
                         }
                     } else {
                         tvLanguageTitle.visible()
@@ -74,7 +68,7 @@ class NSLanguageCommonRecycleAdapter(
                         tvLanguageTitle.setSafeOnClickListener {
                             removeSelection()
                             response.isSelected = true
-                            languageSelectCallback.onItemSelect(response.locale?:"", true)
+                            languageSelectCallback.invoke(response.locale?:"", true)
                         }
                     }
                 }

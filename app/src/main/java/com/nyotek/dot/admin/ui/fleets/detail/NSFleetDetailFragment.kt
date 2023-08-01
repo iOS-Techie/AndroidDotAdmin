@@ -18,7 +18,6 @@ import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSServiceConfig
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.callbacks.NSOnAddressSelectCallback
 import com.nyotek.dot.admin.common.utils.NSAddressConfig
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.gone
@@ -267,16 +266,10 @@ class NSFleetDetailFragment :
                         addressDetailModel ?: AddressData(),
                         vendorId ?: "",
                         addressId ?: "",
-                        serviceIds,
-                        object : NSOnAddressSelectCallback {
-                            override fun onItemSelect(
-                                addressData: AddressData?,
-                                isFromEditBranch: Boolean
-                            ) {
-                                addressDetailModel = addressData
-                                layoutAddress.edtValue.text = addressData?.addr1
-                            }
-                        })
+                        serviceIds) { addressData, _ ->
+                        addressDetailModel = addressData
+                        layoutAddress.edtValue.text = addressData?.addr1
+                    }
                 }
             }
         }

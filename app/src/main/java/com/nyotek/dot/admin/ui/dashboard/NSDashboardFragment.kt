@@ -9,9 +9,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.*
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
-import com.nyotek.dot.admin.common.callbacks.NSSideNavigationSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
 import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.common.utils.setPager
@@ -113,14 +110,11 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                             logout,
                             logoutMessage,
                             no,
-                            yes, object : NSDialogClickCallback {
-                                override fun onDialog(isCancelClick: Boolean) {
-                                    if (isCancelClick) {
-                                        settingModel.logout(true)
-                                    }
-                                }
+                            yes) {
+                            if (it) {
+                                settingModel.logout(true)
                             }
-                        )
+                        }
                     }
                 }
             }
@@ -145,14 +139,9 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                 with(rvNavList) {
                     setNavigationItem()
                     navigationAdapter =
-                        NSSideNavigationRecycleAdapter(isLanguageSelected(), object : NSSideNavigationSelectCallback {
-                            override fun onItemSelect(
-                                navResponse: NSNavigationResponse,
-                                position: Int
-                            ) {
-                                sideNavigationItemClick(navResponse, position)
-                            }
-                        })
+                        NSSideNavigationRecycleAdapter(isLanguageSelected()) { navResponse, position ->
+                            sideNavigationItemClick(navResponse, position)
+                        }
                     setupWithAdapter(navigationAdapter!!)
                     navigationAdapter?.setData(navItemList)
                     setupViewPager(requireActivity(), binding.dashboardPager)
@@ -179,29 +168,26 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
             var isServiceManagerAdded = false
 
             viewModel.apply {
-                viewPager.setPager(activity, mFragmentList, object : NSOnPageChangeCallback {
-                    override fun onPageChange(position: Int) {
-                        selectedPage = position
-                        val fragment = mFragmentList[position]
-                        val instance = NSApplication.getInstance()
+                viewPager.setPager(activity, mFragmentList) {position ->
+                    selectedPage = position
+                    val fragment = mFragmentList[position]
+                    val instance = NSApplication.getInstance()
 
-                        if (fragment is CapabilitiesTabFragment) {
-                            instance.setSelectedNavigationType(NSConstants.CAPABILITIES_TAB)
-                            fragment.setFragment()
-                        } else if (fragment is FleetTabFragment && !isVendorAdded) {
-                            isVendorAdded = true
-                            fragment.setFragment()
-                            instance.setSelectedNavigationType(NSConstants.FLEETS_TAB)
-                        } else if (fragment is ServicesTabFragment && !isServiceManagerAdded) {
-                            isServiceManagerAdded = true
-                            instance.setSelectedNavigationType(NSConstants.SERVICE_TAB)
-                            fragment.setFragment()
-                        } else if (fragment is DashboardMainTabFragment) {
-                            instance.setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
-                        }
+                    if (fragment is CapabilitiesTabFragment) {
+                        instance.setSelectedNavigationType(NSConstants.CAPABILITIES_TAB)
+                        fragment.setFragment()
+                    } else if (fragment is FleetTabFragment && !isVendorAdded) {
+                        isVendorAdded = true
+                        fragment.setFragment()
+                        instance.setSelectedNavigationType(NSConstants.FLEETS_TAB)
+                    } else if (fragment is ServicesTabFragment && !isServiceManagerAdded) {
+                        isServiceManagerAdded = true
+                        instance.setSelectedNavigationType(NSConstants.SERVICE_TAB)
+                        fragment.setFragment()
+                    } else if (fragment is DashboardMainTabFragment) {
+                        instance.setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
                     }
-
-                })
+                }
             }
 
         } catch (e: Exception) {

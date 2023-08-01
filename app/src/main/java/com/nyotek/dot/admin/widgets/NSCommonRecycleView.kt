@@ -7,12 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSLanguageCommonRecycleAdapter
 import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
-import com.nyotek.dot.admin.common.callbacks.NSLocalLanguageCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.isValidList
-import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
-import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 
 class NSCommonRecycleView : RecyclerView {
     private var languageTitleRecycleAdapter: NSLanguageCommonRecycleAdapter? = null
@@ -25,11 +22,13 @@ class NSCommonRecycleView : RecyclerView {
             init(context)
         }
     }
+
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         if (!isInEditMode) {
             init(context)
         }
     }
+
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
@@ -43,16 +42,13 @@ class NSCommonRecycleView : RecyclerView {
     private fun init(context: Context) {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         languageTitleRecycleAdapter =
-            NSLanguageCommonRecycleAdapter(context, object :
-                NSLanguageSelectedCallback {
-                override fun onItemSelect(language: String, isNotify: Boolean) {
-                    selectedLanguage = language
-                    languageSelectCallback?.onItemSelect(language)
-                    if (isNotify) {
-                        notifyAdapter()
-                    }
+            NSLanguageCommonRecycleAdapter(context) { language, isNotify ->
+                selectedLanguage = language
+                languageSelectCallback?.onItemSelect(language)
+                if (isNotify) {
+                    notifyAdapter()
                 }
-            })
+            }
         adapter = languageTitleRecycleAdapter
         isNestedScrollingEnabled = false
         //setLanguageTitle()
@@ -67,21 +63,20 @@ class NSCommonRecycleView : RecyclerView {
         if (NSApplication.getInstance().getFleetLanguageList().isValidList()) {
             setAdapter(NSApplication.getInstance().getFleetLanguageList())
         } else {
-            NSUtilities.localLanguageApiCall("", object : NSLocalLanguageCallback {
-                override fun onItemSelect(model: NSLocalLanguageResponse) {
-                    setAdapter(model.data)
-                }
-            })
+            NSUtilities.localLanguageApiCall("") {
+                setAdapter(it.data)
+            }
         }
     }
 
     fun refreshAdapter() {
-        val mainList: MutableList<LanguageSelectModel> = NSApplication.getInstance().getFleetLanguageList()
+        val mainList: MutableList<LanguageSelectModel> =
+            NSApplication.getInstance().getFleetLanguageList()
         //val mainList: MutableList<LanguageSelectModel> = arrayListOf()
         val mapList = NSApplication.getInstance().getMapLocalLanguages()
         val tempList: MutableList<LanguageSelectModel> = arrayListOf()
         for ((_, value) in mapList) {
-           tempList.addAll(value)
+            tempList.addAll(value)
         }
         for (local in tempList) {
             if (mainList.none { it.locale!! == local.locale }) {
@@ -93,7 +88,7 @@ class NSCommonRecycleView : RecyclerView {
 
     private fun setAdapter(list: MutableList<LanguageSelectModel>) {
         if (list.isValidList()) {
-            selectedLanguage = list[0].locale?:""
+            selectedLanguage = list[0].locale ?: ""
             list[0].isSelected = true
         }
         setAdapterData(list)

@@ -8,7 +8,6 @@ import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
@@ -292,15 +291,13 @@ class NSDriverDetailFragment :
                         title = "",
                         message = stringResource.doYouWantToDelete,
                         positiveButton = stringResource.ok,
-                        negativeButton = stringResource.cancel, callback = object : NSDialogClickCallback {
-                            override fun onDialog(isCancelClick: Boolean) {
-                                if (!isCancelClick) {
-                                    assignVehicle(
-                                        viewModel.employeeDataItem?.userId!!, capabilities = arrayListOf())
-                                }
-                            }
+                        negativeButton = stringResource.cancel) {
+                        if (!it) {
+                            assignVehicle(
+                                viewModel.employeeDataItem?.userId!!, capabilities = arrayListOf()
+                            )
                         }
-                    )
+                    }
                 }
             }
         }

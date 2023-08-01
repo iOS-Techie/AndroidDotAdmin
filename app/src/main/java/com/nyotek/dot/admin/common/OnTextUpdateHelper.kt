@@ -5,13 +5,12 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import com.nyotek.dot.admin.common.callbacks.NSOnTextChangeCallback
 
-class OnTextUpdateHelper(private val etText: EditText, private val currentText: String, private val callback: NSOnTextChangeCallback) {
+class OnTextUpdateHelper(private val etText: EditText, private val currentText: String, private val callback: ((String) -> Unit)) {
 
     private val handler = Handler(Looper.getMainLooper())
     private val textChangedCallback =
-        Runnable { callback.afterTextChanged(etText.text.toString().trim()) }
+        Runnable { callback.invoke(etText.text.toString().trim()) }
 
     init {
         etText.addTextChangedListener (object : TextWatcher {

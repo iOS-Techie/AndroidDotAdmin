@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.nyotek.dot.admin.common.NSAlertDialogFragment
 import com.nyotek.dot.admin.common.NSLog
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 
 /**
  * The class which performs all alert related operations
@@ -35,7 +34,7 @@ class NSAlertUtils {
             alertKey: String? = null,
             shouldRemoveExistingDialog: Boolean = true,
             alertTag: String = ALERT_DIALOG_TAG,
-            callback: NSDialogClickCallback? = null
+            callback: ((Boolean) -> Unit)? = null
         ) {
             try {
                 if (shouldRemoveExistingDialog) {

@@ -2,7 +2,6 @@ package com.nyotek.dot.admin.ui.dashboard
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.NSApplication
-import com.nyotek.dot.admin.common.callbacks.NSSideNavigationSelectCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.databinding.LayoutSideNavItemBinding
@@ -11,7 +10,7 @@ import com.nyotek.dot.admin.repository.network.responses.NSNavigationResponse
 
 class NSSideNavigationRecycleAdapter(
     private val isLanguageSelected: Boolean,
-    private val sideNavigationCallback: NSSideNavigationSelectCallback
+    private val sideNavigationCallback: ((NSNavigationResponse, Int) -> Unit)
 ) : BaseViewBindingAdapter<LayoutSideNavItemBinding, NSNavigationResponse>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -41,7 +40,7 @@ class NSSideNavigationRecycleAdapter(
                 ivSideArrow.rotation = if (isLanguageSelected) 180f else 0f
 
                 clItem.setOnClickListener {
-                    sideNavigationCallback.onItemSelect(response, position)
+                    sideNavigationCallback.invoke(response, position)
                 }
             }
         }

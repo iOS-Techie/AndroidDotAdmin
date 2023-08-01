@@ -6,9 +6,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
-import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
-import com.nyotek.dot.admin.common.callbacks.NSSuccessFailCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.gone
@@ -105,15 +102,10 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
      */
     private fun getCapabilityList(isShowProgress: Boolean, isCapabilityCheck: Boolean = true) {
         viewModel.apply {
-            getCapabilitiesList(
-                isShowProgress,
-                isCapabilityAvailableCheck = isCapabilityCheck,
-                callback = object : NSCapabilityCallback {
-                    override fun onCapability(capabilities: MutableList<CapabilitiesDataItem>) {
-                        binding.srlRefresh.isRefreshing = false
-                        setAdapter(capabilities)
-                    }
-                })
+            getCapabilitiesList(isShowProgress, isCapabilityAvailableCheck = isCapabilityCheck) {
+                binding.srlRefresh.isRefreshing = false
+                setAdapter(it)
+            }
         }
     }
 
@@ -157,18 +149,15 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                     title = "",
                     message = stringResource.doYouWantToDelete,
                     positiveButton = stringResource.ok,
-                    negativeButton = stringResource.cancel, callback = object : NSDialogClickCallback {
-                        override fun onDialog(isCancelClick: Boolean) {
-                            if (!isCancelClick) {
-                                model.apply {
-                                    if (id != null) {
-                                        capabilitiesDelete(id, true)
-                                    }
-                                }
+                    negativeButton = stringResource.cancel){
+                    if (!it) {
+                        model.apply {
+                            if (id != null) {
+                                capabilitiesDelete(id, true)
                             }
                         }
                     }
-                )
+                }
             } else {
                 showCreateCapabilityDialog(isCreate = false, model)
             }
@@ -230,18 +219,15 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                                 createEditCapability(
                                     capabilityName,
                                     isCreate,
-                                    dataItem?.id ?: "",
-                                    object : NSSuccessFailCallback {
-                                        override fun onResponse(isSuccess: Boolean) {
-                                            progress.gone()
-                                            dialog.dismiss()
-                                            if (isSuccess) {
-                                                getCapabilityList(true, isCapabilityCheck = false)
-                                            } else {
-                                                isProgressShowing.value = false
-                                            }
-                                        }
-                                    })
+                                    dataItem?.id ?: "") { isSuccess ->
+                                    progress.gone()
+                                    dialog.dismiss()
+                                    if (isSuccess) {
+                                        getCapabilityList(true, isCapabilityCheck = false)
+                                    } else {
+                                        isProgressShowing.value = false
+                                    }
+                                }
                             }
                         }
                     }

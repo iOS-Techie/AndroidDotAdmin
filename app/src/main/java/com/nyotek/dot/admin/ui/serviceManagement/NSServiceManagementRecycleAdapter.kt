@@ -4,11 +4,6 @@ import android.app.Activity
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSDateTimeHelper
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityListCallback
-import com.nyotek.dot.admin.common.callbacks.NSItemSelectCallback
-import com.nyotek.dot.admin.common.callbacks.NSServiceCapabilityCallback
-import com.nyotek.dot.admin.common.callbacks.NSServiceCapabilityUpdateCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
@@ -33,8 +28,8 @@ var capabilityItemList: MutableList<CapabilitiesDataItem> = arrayListOf()
 class NSServiceManagementRecycleAdapter(
     private val activity: Activity,
     private val viewModel: NSServiceManagementViewModel,
-    private val callback: NSServiceCapabilityUpdateCallback,
-    private val switchEnableDisableCallback: NSSwitchCallback
+    private val callback: ((String, String, List<String>, Boolean, Boolean) -> Unit),
+    private val switchCallback: ((String, Boolean) -> Unit)
 ) : BaseViewBindingAdapter<LayoutServiceItemBinding, NSGetServiceListData>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -69,7 +64,7 @@ class NSServiceManagementRecycleAdapter(
                         viewModel.showError(stringResource.serviceCannotBeEmpty)
                         return@setOnClickListener
                     }
-                    callback.onItemSelect(response.serviceId!!, selectedCapabilityId!!, selectedFleets,
+                    callback.invoke(response.serviceId!!, selectedCapabilityId!!, selectedFleets,
                         response.serviceId != selectedCapabilityId,  capabilityItem?.fleets != selectedFleets
                     )
                     capabilityItem?.fleets = selectedFleets
@@ -78,7 +73,7 @@ class NSServiceManagementRecycleAdapter(
                 switchService.setOnClickListener {
                     isActive = !isActive
                     switchService.switchEnableDisable(isActive)
-                    switchEnableDisableCallback.switch(serviceId!!, isActive)
+                    switchCallback.invoke(serviceId!!, isActive)
                     tvItemActive.status(isActive)
                 }
 
@@ -87,13 +82,9 @@ class NSServiceManagementRecycleAdapter(
                         activity,
                         stringResource,
                         capabilityItem,
-                        spinner,
-                        object : NSItemSelectCallback {
-                            override fun onItemSelect(selectedId: String) {
-                                selectedCapabilityId = selectedId
-                            }
-                        })
-
+                        spinner) {
+                        selectedCapabilityId = it
+                    }
                     val list = fleetItemList.map { it.vendorId!! } as MutableList<String>
                     capabilityItem.fleets.sortBy { it }
                     list.sortBy { it }
@@ -108,26 +99,20 @@ class NSServiceManagementRecycleAdapter(
                     NSUtilities.setFleet(
                         activity,
                         layoutFleets,
-                        fleetResponse,
-                        object :
-                            NSCapabilityListCallback {
-                            override fun onCapability(capabilities: MutableList<String>) {
-                                selectedFleets = capabilities
-                            }
-                        })
+                        fleetResponse) {
+                        selectedFleets = it
+                    }
                 }
 
                 viewModel.apply {
                     if (capabilityItem == null) {
-                        getServiceCapability(serviceId!!, object : NSServiceCapabilityCallback {
-                            override fun onDataItem(item: ServiceCapabilitiesDataItem) {
-                                val map: HashMap<String, ServiceCapabilitiesDataItem> =
-                                    NSApplication.getInstance().getCapabilityItemList()
-                                map[serviceId] = item
-                                NSApplication.getInstance().setCapabilityItemList(map)
-                                setCapability(item)
-                            }
-                        })
+                        getServiceCapability(serviceId!!) {
+                            val map: HashMap<String, ServiceCapabilitiesDataItem> =
+                                NSApplication.getInstance().getCapabilityItemList()
+                            map[serviceId] = it
+                            NSApplication.getInstance().setCapabilityItemList(map)
+                            setCapability(it)
+                        }
                     } else {
                         setCapability(capabilityItem)
                     }
@@ -142,7 +127,7 @@ class NSServiceManagementRecycleAdapter(
     }
 }
 
-fun setCapabilitySpinner(activity: Activity, stringResource: StringResourceResponse, item: ServiceCapabilitiesDataItem?, spinner: LayoutCommonSpinnerBinding, itemCallback: NSItemSelectCallback) {
+fun setCapabilitySpinner(activity: Activity, stringResource: StringResourceResponse, item: ServiceCapabilitiesDataItem?, spinner: LayoutCommonSpinnerBinding, itemCallback: ((String) -> Unit)) {
     val nameList: MutableList<String> = capabilityItemList.map { getLngValue(it.label) }.toMutableList()
     val idList: MutableList<String> = capabilityItemList.map { it.id ?: "" }.toMutableList()
     val spinnerList = SpinnerData(idList, nameList)
@@ -150,7 +135,7 @@ fun setCapabilitySpinner(activity: Activity, stringResource: StringResourceRespo
     spinner.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, item?.capabilityId, isHideFirstPosition = true, placeholderName = stringResource.selectCapability) { selectedId ->
         if (selectedId != item?.capabilityId && selectedId?.isNotEmpty() == true) {
             item?.capabilityId = selectedId
-            itemCallback.onItemSelect(selectedId)
+            itemCallback.invoke(selectedId)
         }
     }
 }

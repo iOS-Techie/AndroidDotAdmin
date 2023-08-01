@@ -1,28 +1,18 @@
 package com.nyotek.dot.admin.common.utils
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSApplication
-import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
-import com.nyotek.dot.admin.common.callbacks.NSCapabilityListCallback
-import com.nyotek.dot.admin.common.callbacks.NSFleetServiceCallback
 import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
-import com.nyotek.dot.admin.common.callbacks.NSLanguageSubItemSelectCallback
-import com.nyotek.dot.admin.common.callbacks.NSLocalLanguageCallback
 import com.nyotek.dot.admin.databinding.LayoutCreateLocalBinding
-import com.nyotek.dot.admin.databinding.LayoutInviteEmployeeBinding
 import com.nyotek.dot.admin.databinding.LayoutRecycleViewBinding
 import com.nyotek.dot.admin.databinding.LayoutRecycleViewFixBinding
 import com.nyotek.dot.admin.databinding.LayoutSelectAddressBinding
@@ -78,7 +68,11 @@ object NSUtilities {
         imageView.setImageResource(if (isEnable) R.drawable.ic_switch_on else R.drawable.ic_switch_off)
     }
 
-    fun setLanguageText(edtText: NSCommonEditText, recycleView: NSCommonRecycleView, title: HashMap<String, String>) {
+    fun setLanguageText(
+        edtText: NSCommonEditText,
+        recycleView: NSCommonRecycleView,
+        title: HashMap<String, String>
+    ) {
         var selectedLanguage: String? = null
         recycleView.notifyAdapter()
         recycleView.languageSelectCallback = object : NSLanguageSelectedCallback {
@@ -179,7 +173,11 @@ object NSUtilities {
         }
     }
 
-    fun showCreateLocalDialog(activity: Activity, languageList: MutableList<LanguageSelectModel>, callback: NSLanguageSubItemSelectCallback) {
+    fun showCreateLocalDialog(
+        activity: Activity,
+        languageList: MutableList<LanguageSelectModel>,
+        callback: ((LanguageSelectModel) -> Unit)
+    ) {
 
         buildAlertDialog(
             activity,
@@ -194,11 +192,17 @@ object NSUtilities {
                     tvCancel.text = cancel
                 }
 
-                val list = languageList.map { it.label?:"" }.filterNot { it == "+" } as MutableList<String>
+                val list = languageList.map { it.label ?: "" }
+                    .filterNot { it == "+" } as MutableList<String>
                 val spinnerList = SpinnerData(list, list)
-                layoutFromCheckout.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, "", isHideFirstPosition = false) { selectedId ->
+                layoutFromCheckout.spinnerAppSelect.setPlaceholderAdapter(
+                    spinnerList,
+                    activity,
+                    "",
+                    isHideFirstPosition = false
+                ) { selectedId ->
                     val spinnerPosition = languageList.map { it.label }.indexOf(selectedId)
-                    callback.onItemSelect(languageList[spinnerPosition])
+                    callback.invoke(languageList[spinnerPosition])
                 }
 
                 tvCancel.setOnClickListener {
@@ -214,7 +218,7 @@ object NSUtilities {
         }
     }
 
-    fun localLanguageApiCall(serviceId: String = "", callback: NSLocalLanguageCallback) {
+    fun localLanguageApiCall(serviceId: String = "", callback: ((NSLocalLanguageResponse) -> Unit)) {
         NSLanguageRepository.localLanguages(serviceId, object : NSGenericViewModelCallback {
             override fun <T> onSuccess(data: T) {
                 if (data is NSLocalLanguageResponse) {
@@ -223,7 +227,7 @@ object NSUtilities {
                         map[serviceId] = data.data
                         NSApplication.getInstance().setMapLocalLanguage(map)
                     }
-                    callback.onItemSelect(data)
+                    callback.invoke(data)
                 }
             }
 
@@ -243,7 +247,10 @@ object NSUtilities {
 
     fun showProgressBar(progressBar: ProgressBar, dialog: Dialog?) {
         progressBar.progressTintList = ColorResources.getViewEnableDisableState()
-        dialog?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        dialog?.window?.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
         progressBar.visible()
     }
 
@@ -253,44 +260,46 @@ object NSUtilities {
         progressBar?.gone()
     }
 
-    fun setCapability(activity: Activity, isSmallLayout: Boolean, layoutCapability: LayoutRecycleViewBinding, capabilities: MutableList<CapabilitiesDataItem>, dataItem: VehicleDataItem? = null, callback: NSCapabilityListCallback) {
+    fun setCapability(
+        activity: Activity,
+        isSmallLayout: Boolean,
+        layoutCapability: LayoutRecycleViewBinding,
+        capabilities: MutableList<CapabilitiesDataItem>,
+        dataItem: VehicleDataItem? = null,
+        callback: ((MutableList<String>) -> Unit)
+    ) {
         val selectedCapabilities: MutableList<String> = arrayListOf()
         layoutCapability.rvCommonView.layoutManager = GridLayoutManager(activity, 2)
-        val capabilityAdapter = NSCapabilitiesVehicleRecycleAdapter(object : NSCapabilitiesCallback {
-            override fun onItemSelect(
-                model: CapabilitiesDataItem,
-                isDelete: Boolean
-            ) {
-                if (isDelete) {
-                    selectedCapabilities.remove(model.id)
-                } else {
-                    model.id?.let { selectedCapabilities.add(it) }
-                }
-                callback.onCapability(selectedCapabilities)
-            }
 
+        val capabilityAdapter = NSCapabilitiesVehicleRecycleAdapter({ model, isDelete ->
+            if (isDelete) {
+                selectedCapabilities.remove(model.id)
+            } else {
+                model.id?.let { selectedCapabilities.add(it) }
+            }
+            callback.invoke(selectedCapabilities)
         }, isSmallLayout)
+
         layoutCapability.rvCommonView.adapter = capabilityAdapter
-        capabilityAdapter.updateData(capabilities, dataItem?.capabilities?: arrayListOf())
+        capabilityAdapter.updateData(capabilities, dataItem?.capabilities ?: arrayListOf())
     }
 
-    fun setFleet(activity: Activity, layoutFleets: LayoutRecycleViewFixBinding, fleetList: MutableList<FleetServiceResponse>, callback: NSCapabilityListCallback) {
+    fun setFleet(
+        activity: Activity,
+        layoutFleets: LayoutRecycleViewFixBinding,
+        fleetList: MutableList<FleetServiceResponse>,
+        callback: ((MutableList<String>) -> Unit)
+    ) {
         val selectedCapabilities: MutableList<String> = arrayListOf()
         layoutFleets.rvCommonView.layoutManager = GridLayoutManager(activity, 2)
-        val fleetAdapter = NSFleetServiceRecycleAdapter(object : NSFleetServiceCallback {
-            override fun onItemSelect(
-                model: FleetData,
-                isSelected: Boolean
-            ) {
-                if (isSelected) {
-                    selectedCapabilities.remove(model.vendorId)
-                } else {
-                    model.vendorId?.let { selectedCapabilities.add(it) }
-                }
-                callback.onCapability(selectedCapabilities)
+        val fleetAdapter = NSFleetServiceRecycleAdapter { model, isSelected ->
+            if (isSelected) {
+                selectedCapabilities.remove(model.vendorId)
+            } else {
+                model.vendorId?.let { selectedCapabilities.add(it) }
             }
-
-        })
+            callback.invoke(selectedCapabilities)
+        }
         layoutFleets.rvCommonView.adapter = fleetAdapter
         //fleetAdapter.setSubList(dataItem?.fleets?: arrayListOf())
         fleetAdapter.setData(fleetList)
@@ -302,11 +311,11 @@ object NSUtilities {
                 if (cbCheck.isChecked) {
                     cbCheck.isChecked = false
                     list = arrayListOf()
-                    callback.onCapability(list)
+                    callback.invoke(list)
                 } else {
                     cbCheck.isChecked = true
                     list = fleetItemList.map { it.vendorId!! } as MutableList<String>
-                    callback.onCapability(list)
+                    callback.invoke(list)
                 }
                 fleetAdapter.setSubList(list)
                 fleetAdapter.setData(fleetList)
