@@ -14,7 +14,7 @@ data class ServiceCapabilitiesDataItem(
     var serviceId: String? = null,
 
 	@field:SerializedName("capability_id")
-	val capabilityId: String? = null,
+    var capabilityId: String? = null,
 
 	@field:SerializedName("fleets")
     var fleets: MutableList<String> = arrayListOf(),

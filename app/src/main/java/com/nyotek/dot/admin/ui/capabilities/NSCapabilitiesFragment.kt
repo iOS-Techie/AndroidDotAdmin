@@ -6,12 +6,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
-import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
-import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
 import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
+import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSSuccessFailCallback
-import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.gone
@@ -20,8 +17,6 @@ import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.databinding.LayoutCreateCapabiltiesBinding
 import com.nyotek.dot.admin.databinding.NsFragmentCapabilitiesBinding
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, NsFragmentCapabilitiesBinding>() {
 
@@ -131,21 +126,12 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
             with(binding) {
                 with(rvCapabilitiesList) {
                     if (capabilitiesRecycleAdapter == null) {
-                        capabilitiesRecycleAdapter =
-                            NSCapabilitiesRecycleAdapter(
-                                object : NSCapabilitiesCallback {
-                                    override fun onItemSelect(
-                                        model: CapabilitiesDataItem,
-                                        isDelete: Boolean
-                                    ) {
-                                        adapterCapabilityItemSelect(model, isDelete)
-                                    }
-                                },
-                                object : NSSwitchCallback {
-                                    override fun switch(serviceId: String, isEnable: Boolean) {
-                                        capabilityEnableDisable(serviceId, isEnable)
-                                    }
-                                })
+                        capabilitiesRecycleAdapter = NSCapabilitiesRecycleAdapter({ model, isDelete ->
+                            adapterCapabilityItemSelect(model, isDelete)
+                        }, { serviceId, isEnable ->
+                            capabilityEnableDisable(serviceId, isEnable)
+                        })
+
                         setupWithAdapterAndCustomLayoutManager(
                             capabilitiesRecycleAdapter!!,
                             GridLayoutManager(activity, 2)
@@ -166,14 +152,22 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
      */
     private fun adapterCapabilityItemSelect(model: CapabilitiesDataItem, isDelete: Boolean) {
         viewModel.apply {
-            selectedCapabilities = model
             if (isDelete) {
                 showCommonDialog(
                     title = "",
                     message = stringResource.doYouWantToDelete,
-                    alertKey = NSConstants.KEY_ALERT_CAPABILITIES_DELETE,
                     positiveButton = stringResource.ok,
-                    negativeButton = stringResource.cancel
+                    negativeButton = stringResource.cancel, callback = object : NSDialogClickCallback {
+                        override fun onDialog(isCancelClick: Boolean) {
+                            if (!isCancelClick) {
+                                model.apply {
+                                    if (id != null) {
+                                        capabilitiesDelete(id, true)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 )
             } else {
                 showCreateCapabilityDialog(isCreate = false, model)
@@ -193,19 +187,6 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
             isEnable,
             false
         )
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
-        viewModel.apply {
-            if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_POSITIVE && event.alertKey == NSConstants.KEY_ALERT_CAPABILITIES_DELETE) {
-                selectedCapabilities?.apply {
-                    if (id != null) {
-                        capabilitiesDelete(id, true)
-                    }
-                }
-            }
-        }
     }
 
     private fun showCreateCapabilityDialog(isCreate: Boolean, dataItem: CapabilitiesDataItem?) {

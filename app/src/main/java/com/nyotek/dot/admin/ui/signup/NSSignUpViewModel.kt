@@ -3,7 +3,6 @@ package com.nyotek.dot.admin.ui.signup
 import android.app.Application
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.repository.network.responses.NSUserResponse
 
 /**
@@ -13,11 +12,6 @@ class NSSignUpViewModel(application: Application) : NSViewModel(application) {
     var strEmail: String? = null
     var strPassword: String? = null
     var isLoginSuccess = NSSingleLiveEvent<Boolean>()
-    var apiValue = 0
-    var nsDeviceId: String = ""
-    var nsToken: String = ""
-    private var nsBundleId: String = NSUtilities.getBundleId()
-    private var nsModelId: String = ""
 
     /**
      * To check all the mandatory fields are entered and valid

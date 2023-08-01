@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.*
 import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
+import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
 import com.nyotek.dot.admin.common.callbacks.NSSideNavigationSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
@@ -112,7 +113,13 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                             logout,
                             logoutMessage,
                             no,
-                            yes
+                            yes, object : NSDialogClickCallback {
+                                override fun onDialog(isCancelClick: Boolean) {
+                                    if (isCancelClick) {
+                                        settingModel.logout(true)
+                                    }
+                                }
+                            }
                         )
                     }
                 }
@@ -260,14 +267,5 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
 
     override fun onBack() {
         EventBus.getDefault().post(NSOnBackPressReceiveEvent())
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
-        if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_NEGATIVE && event.alertKey == NSConstants.LOGOUT_CLICK) {
-            with(settingModel) {
-                logout(true)
-            }
-        }
     }
 }

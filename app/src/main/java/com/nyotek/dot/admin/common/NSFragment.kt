@@ -99,9 +99,9 @@ open class NSFragment : Fragment() {
      * @param message The message to show as alert message
      */
     //Use of Outside change to Protected
-    fun showAlertDialog(message: String?) {
+    fun showAlertDialog(message: String?, callback: NSDialogClickCallback? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
-        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage)
+        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, callback = callback)
     }
 
     /**
@@ -109,9 +109,9 @@ open class NSFragment : Fragment() {
      *
      * @param message The message to show as alert message
      */
-    protected fun showSuccessDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK) {
+    protected fun showSuccessDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, callback: NSDialogClickCallback? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
-        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = alertKey)
+        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = alertKey, callback = callback)
     }
 
     /**
@@ -119,9 +119,9 @@ open class NSFragment : Fragment() {
      *
      * @param message The message to show as alert message
      */
-    protected fun showCommonDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, positiveButton: String, negativeButton: String) {
+    protected fun showCommonDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, positiveButton: String, negativeButton: String, callback: NSDialogClickCallback? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
-        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = alertKey, positiveButtonText = positiveButton, negativeButtonText = negativeButton, isCancelNeeded = true)
+        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = alertKey, positiveButtonText = positiveButton, negativeButtonText = negativeButton, isCancelNeeded = true, callback = callback)
     }
 
     /**
@@ -129,18 +129,18 @@ open class NSFragment : Fragment() {
      *
      * @param message The message to show as alert message
      */
-    protected fun showLogoutDialog(title: String?, message: String?, positiveButton: String, negativeButton: String) {
+    protected fun showLogoutDialog(title: String?, message: String?, positiveButton: String, negativeButton: String, callback: NSDialogClickCallback? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
-        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = NSConstants.LOGOUT_CLICK, positiveButtonText = positiveButton, negativeButtonText = negativeButton, isCancelNeeded = true)
+        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = NSConstants.LOGOUT_CLICK, positiveButtonText = positiveButton, negativeButtonText = negativeButton, isCancelNeeded = true, callback = callback)
     }
 
     /**
      * To display the no network dialog
      */
     //Use of Outside change to Protected
-    private fun showNoNetworkAlertDialog(title: String?, message: String?) {
+    private fun showNoNetworkAlertDialog(title: String?, message: String?, callback: NSDialogClickCallback? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
-        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title)
+        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, callback = callback)
     }
 
     /**

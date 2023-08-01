@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSConstants.Companion.SESSION_EXPIRED
 import com.nyotek.dot.admin.common.NSConstants.Companion.SESSION_EXPIRED_ERROR
+import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCustomAlertDialogBinding
 import org.greenrobot.eventbus.EventBus
@@ -30,6 +31,7 @@ class NSAlertDialogFragment : DialogFragment() {
         private const val BUNDLE_KEY_IS_CANCEL_NEEDED = "isCancelNeeded"
         private const val BUNDLE_KEY_ALERT_KEY = "alertKey"
         var stringResource = NSApplication.getInstance().getStringModel()
+        private var callback: NSDialogClickCallback? = null
 
         fun newInstance(
             title: String?,
@@ -37,8 +39,10 @@ class NSAlertDialogFragment : DialogFragment() {
             isCancelNeeded: Boolean,
             negativeButtonText: String?,
             positiveButtonText: String?,
-            alertKey: String?
+            alertKey: String?,
+            dialogCallback: NSDialogClickCallback?
         ) = NSAlertDialogFragment().apply {
+            callback = dialogCallback
             arguments = bundleOf(
                 BUNDLE_KEY_TITLE to title,
                 BUNDLE_KEY_MESSAGE to message,
@@ -103,12 +107,7 @@ class NSAlertDialogFragment : DialogFragment() {
                 if (message.equals(SESSION_EXPIRED)) {
                     EventBus.getDefault().post(NSLogoutEvent())
                 } else {
-                    EventBus.getDefault().post(
-                        NSAlertButtonClickEvent(
-                            NSConstants.KEY_ALERT_BUTTON_POSITIVE,
-                            arguments.getString(BUNDLE_KEY_ALERT_KEY, "")
-                        )
-                    )
+                    callback?.onDialog(false)
                 }
             }
 
@@ -125,12 +124,7 @@ class NSAlertDialogFragment : DialogFragment() {
                 bind.tvCancel.text = negativeButtonText
                 bind.tvCancel.setOnClickListener {
                     dialog.dismiss()
-                    EventBus.getDefault().post(
-                        NSAlertButtonClickEvent(
-                            NSConstants.KEY_ALERT_BUTTON_NEGATIVE,
-                            arguments.getString(BUNDLE_KEY_ALERT_KEY, "")
-                        )
-                    )
+                    callback?.onDialog(true)
                 }
             }
             isCancelable = false

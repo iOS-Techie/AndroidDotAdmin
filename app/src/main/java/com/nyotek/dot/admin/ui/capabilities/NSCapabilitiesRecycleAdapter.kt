@@ -1,7 +1,6 @@
 package com.nyotek.dot.admin.ui.capabilities
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
 import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -11,8 +10,8 @@ import com.nyotek.dot.admin.databinding.LayoutCapabilitiesBinding
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 
 class NSCapabilitiesRecycleAdapter(
-    private val callback: NSCapabilitiesCallback,
-    private val switchEnableDisableCallback: NSSwitchCallback
+    private val callback: ((CapabilitiesDataItem, Boolean) -> Unit),
+    private val switchCallBack: ((String, Boolean) -> Unit),
 ) : BaseViewBindingAdapter<LayoutCapabilitiesBinding, CapabilitiesDataItem>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -30,16 +29,16 @@ class NSCapabilitiesRecycleAdapter(
                 switchService.setOnClickListener {
                     isActive = !isActive
                     switchService.switchEnableDisable(isActive)
-                    switchEnableDisableCallback.switch(id!!, isActive)
+                    switchCallBack.invoke(id!!, isActive)
                     tvActiveTitle.status(isActive)
                 }
 
                 ivDelete.setSafeOnClickListener {
-                    callback.onItemSelect(response, true)
+                    callback.invoke(response, true)
                 }
 
                 ivEdit.setSafeOnClickListener {
-                    callback.onItemSelect(response, false)
+                    callback.invoke(response, false)
                 }
             }
         }

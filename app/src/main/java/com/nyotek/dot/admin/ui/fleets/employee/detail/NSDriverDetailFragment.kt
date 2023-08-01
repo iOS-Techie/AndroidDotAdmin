@@ -7,15 +7,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
-import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.callbacks.NSItemSelectCallback
-import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glide
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setVisibilityIn
@@ -24,9 +23,8 @@ import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDriverDetailBinding
 import com.nyotek.dot.admin.repository.network.requests.NSEmployeeEditRequest
-import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
-import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
+import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
@@ -178,29 +176,21 @@ class NSDriverDetailFragment :
                 var spinnerTitleId: String? = employeeDataItem?.titleId
                 val titleList = list.map { getLngValue(it.name) } as MutableList<String>
                 val idList = list.map { it.id!! } as MutableList<String>
-                titleList.add(0, stringResource.selectEmployeeRole)
-                idList.add(0, "")
-                NSUtilities.setSpinner(activity, spinnerRole.spinnerAppSelect, titleList, idList, object :
-                    NSItemSelectCallback {
-                    override fun onItemSelect(selectedId: String) {
-                        if (spinnerTitleId != selectedId) {
-                            spinnerTitleId = selectedId
+                val spinnerList = SpinnerData(idList, titleList)
 
-                            employeeViewModel.apply {
-                                employeeEditRequest = NSEmployeeEditRequest(
-                                    viewModel.fleetModel?.vendorId,
-                                    viewModel.employeeDataItem?.userId,
-                                    selectedId
-                                )
-                                employeeEdit(true, employeeEditRequest)
-                            }
+                spinnerRole.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, spinnerTitleId, isHideFirstPosition = true, placeholderName = stringResource.selectEmployeeRole) { selectedId ->
+                    if (spinnerTitleId != selectedId) {
+                        spinnerTitleId = selectedId
+
+                        employeeViewModel.apply {
+                            employeeEditRequest = NSEmployeeEditRequest(
+                                fleetModel?.vendorId,
+                                employeeDataItem?.userId,
+                                selectedId
+                            )
+                            employeeEdit(true, employeeEditRequest)
                         }
                     }
-                }, true)
-
-                val spinnerPosition = idList.indexOf(employeeDataItem?.titleId)
-                if (spinnerPosition != -1) {
-                    spinnerRole.spinnerAppSelect.setSelection(spinnerPosition)
                 }
             }
         }
@@ -230,36 +220,37 @@ class NSDriverDetailFragment :
                     icDriverImg.glide(url = vehicleImg)
                     tvUserTitle.text = manufacturer?:""
                     tvStatus.text = model?:""
-
-                    var spinnerTitleId: String? = vehicleData.id
-                    val titleList = vehicleDataList.map { "${it.manufacturer} ${it.model}" } as MutableList<String>
-                    val idList = vehicleDataList.map { it.id!! } as MutableList<String>
-                    titleList.add(0, stringResource.selectVehicle)
-                    idList.add(0, "")
-                    NSUtilities.setSpinner(activity, spinner.spinnerAppSelect, titleList, idList, object :
-                        NSItemSelectCallback {
-                        override fun onItemSelect(selectedId: String) {
-                            if (spinnerTitleId != selectedId && selectedId.isNotEmpty()) {
-                                spinnerTitleId = selectedId
-                                if (spinnerTitleId?.isNotEmpty() == true) {
-                                    employeeDataItem?.vehicleId = selectedId
-                                    assignVehicle(
-                                        viewModel.employeeDataItem?.userId!!, selectedId,
-                                        vehicleData.capabilities
-                                    )
-                                }
-                            }
-                        }
-                    }, true)
-
-                    val spinnerPosition = idList.indexOf(vehicleData.id)
-                    if (spinnerPosition != -1) {
-                        spinner.spinnerAppSelect.setSelection(spinnerPosition)
-                    }
+                    updateVehicle(vehicleData)
                 }
 
                 if (viewModel.employeeDataItem?.userId?.isNotEmpty() == true) {
                     employeeViewModel.getDriverLocation(viewModel.employeeDataItem?.userId!!)
+                }
+            }
+        }
+    }
+
+    private fun updateVehicle(vehicleData: VehicleData?) {
+        binding.apply {
+            viewModel.apply {
+                vehicleData?.apply {
+                    var spinnerTitleId: String? = id
+                    val titleList = vehicleDataList.map { "${it.manufacturer} ${it.model}" } as MutableList<String>
+                    val idList = vehicleDataList.map { it.id!! } as MutableList<String>
+                    val spinnerList = SpinnerData(idList, titleList)
+
+                    spinner.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, id, isHideFirstPosition = true, placeholderName = stringResource.selectVehicle) { selectedId ->
+                        if (spinnerTitleId != selectedId && selectedId?.isNotEmpty() == true) {
+                            spinnerTitleId = selectedId
+                            if (spinnerTitleId?.isNotEmpty() == true) {
+                                employeeDataItem?.vehicleId = selectedId
+                                assignVehicle(
+                                    employeeDataItem?.userId!!, selectedId,
+                                    capabilities
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -300,9 +291,15 @@ class NSDriverDetailFragment :
                     showCommonDialog(
                         title = "",
                         message = stringResource.doYouWantToDelete,
-                        alertKey = NSConstants.KEY_ALERT_EMPLOYEE_VEHICLE_DELETE,
                         positiveButton = stringResource.ok,
-                        negativeButton = stringResource.cancel
+                        negativeButton = stringResource.cancel, callback = object : NSDialogClickCallback {
+                            override fun onDialog(isCancelClick: Boolean) {
+                                if (!isCancelClick) {
+                                    assignVehicle(
+                                        viewModel.employeeDataItem?.userId!!, capabilities = arrayListOf())
+                                }
+                            }
+                        }
                     )
                 }
             }
@@ -322,17 +319,6 @@ class NSDriverDetailFragment :
     override fun onFileUrl(url: String, width: Int, height: Int) {
         viewModel.apply {
             updateVehicleImage(url)
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
-        viewModel.apply {
-            if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_POSITIVE && event.alertKey == NSConstants.KEY_ALERT_EMPLOYEE_VEHICLE_DELETE) {
-                //This is use for delete vehicle for use this api not send to vehicleId and capability to delete
-                assignVehicle(
-                    viewModel.employeeDataItem?.userId!!, capabilities = arrayListOf())
-            }
         }
     }
 }

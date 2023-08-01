@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.franmontiel.localechanger.utils.ActivityRecreationHelper
 import com.nyotek.dot.admin.BuildConfig
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
-import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSSettingSelectCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -19,8 +19,6 @@ import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentSettingsBinding
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class NSSettingFragment : BaseViewModelFragment<NSSettingViewModel, NsFragmentSettingsBinding>() {
 
@@ -185,20 +183,17 @@ class NSSettingFragment : BaseViewModelFragment<NSSettingViewModel, NsFragmentSe
                         logout,
                         logoutMessage,
                         no,
-                        yes
+                        yes, object : NSDialogClickCallback {
+                            override fun onDialog(isCancelClick: Boolean) {
+                                if (isCancelClick) {
+                                    viewModel.logout(true)
+                                }
+                            }
+                        }
                     )
                 }
 
                 else -> {}
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
-        if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_NEGATIVE && event.alertKey == NSConstants.LOGOUT_CLICK) {
-            with(viewModel) {
-                logout(true)
             }
         }
     }

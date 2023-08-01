@@ -19,7 +19,6 @@ import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 
 class NSCapabilitiesViewModel(application: Application) : NSViewModel(application) {
     var isCapabilitiesListCall = NSSingleLiveEvent<MutableList<CapabilitiesDataItem>>()
-    var selectedCapabilities: CapabilitiesDataItem? = null
 
     fun getLocalLanguageList() {
         NSLanguageRepository.localLanguages("", this)

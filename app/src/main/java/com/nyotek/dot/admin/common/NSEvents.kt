@@ -16,11 +16,6 @@ import com.google.android.gms.location.LocationResult
 class NSLogoutEvent
 
 /**
- * The event that is triggered when a button is clicked in the alert dialog
- */
-class NSAlertButtonClickEvent(val buttonType: String, val alertKey: String)
-
-/**
  * Event that triggered when the permission check
  */
 class NSPermissionEvent(

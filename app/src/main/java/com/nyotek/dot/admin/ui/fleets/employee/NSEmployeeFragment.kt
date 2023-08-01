@@ -5,47 +5,37 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
-import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
-import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
+import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeCallback
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeSwitchEnableDisableCallback
-import com.nyotek.dot.admin.common.callbacks.NSSpinnerSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSUserClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSVehicleSelectCallback
-import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.notifyAdapter
+import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutInviteEmployeeBinding
-import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
-import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
-import com.nyotek.dot.admin.databinding.LayoutUpdateEmployeeBinding
 import com.nyotek.dot.admin.databinding.NsFragmentEmployeeBinding
-import com.nyotek.dot.admin.repository.network.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
-import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
+import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.ui.common.NSUserViewModel
 import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
 import org.greenrobot.eventbus.Subscribe
@@ -199,7 +189,6 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                                 employeeData: EmployeeDataItem,
                                 isDelete: Boolean
                             ) {
-                                selectedEmployeeData = employeeData
                                 employeeEditDelete(employeeData, !isDelete)
                             }
                         }, object :
@@ -238,14 +227,24 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
     private fun employeeEditDelete(employeeData: EmployeeDataItem, isEdit: Boolean) {
         if (isEdit) {
             editEmployeeData(employeeData)
-            //showEditEmployeeDialog(employeeData)
         } else {
             showCommonDialog(
                 title = "",
                 message = stringResource.doYouWantToDelete,
                 alertKey = NSConstants.KEY_ALERT_EMPLOYEE_DELETE,
                 positiveButton = stringResource.ok,
-                negativeButton = stringResource.cancel
+                negativeButton = stringResource.cancel, callback = object : NSDialogClickCallback {
+                    override fun onDialog(isCancelClick: Boolean) {
+                        if (!isCancelClick) {
+                            employeeData.apply {
+                                if (userId != null) {
+                                    viewModel.employeeDelete(vendorId!!, userId, true)
+                                }
+                            }
+                        }
+                    }
+
+                }
             )
         }
     }
@@ -262,153 +261,6 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                 NSDriverDetailFragment.newInstance(bundle),
                 true, bundle
             )
-        }
-    }
-
-    private fun showEditEmployeeDialog(employeeData: EmployeeDataItem) {
-        binding.apply {
-            viewModel.apply {
-
-                buildAlertDialog(
-                    requireContext(),
-                    LayoutUpdateEmployeeBinding::inflate
-                ) { dialog, binding ->
-                    binding.apply {
-                        stringResource.apply {
-                            tvNameTitle.text = editEmployee
-                            tvSubmitApp.text = save
-                            tvCancelApp.text = cancel
-                            tvThemeNameTitle.text = employeeRole
-                        }
-
-                        var spinnerTitleId: String? = null
-                        setSpinner(
-                            spinnerTheme,
-                            jobTitleList,
-                            employeeData,
-                            callback = object : NSSpinnerSelectCallback {
-                                override fun onItemSelect(item: String) {
-                                    spinnerTitleId = item
-                                }
-                            })
-
-                        ivCloseAppCreate.setOnClickListener {
-                            dialog.dismiss()
-                        }
-
-                        tvCancelApp.setOnClickListener {
-                            dialog.dismiss()
-                        }
-
-                        tvSubmitApp.setOnClickListener {
-                            val employeeEditRequest = NSEmployeeEditRequest(
-                                employeeData.vendorId,
-                                employeeData.userId,
-                                spinnerTitleId
-                            )
-
-                            if (employeeEditRequest.titleId?.isEmpty() == true) {
-                                showError(stringResource.pleaseSelectEmployeeRole)
-                                return@setOnClickListener
-                            }
-                            if (employeeEditRequest.userId?.isEmpty() == true) {
-                                showError(stringResource.pleaseSelectUser)
-                                return@setOnClickListener
-                            }
-                            dialog.dismiss()
-                            employeeEdit(true, employeeEditRequest)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setSpinner(
-        spinnerEmployee: Spinner,
-        jobTitleList: MutableList<JobListDataItem>,
-        employeeData: EmployeeDataItem?,
-        isInvite: Boolean = false,
-        callback: NSSpinnerSelectCallback
-    ) {
-        viewModel.apply {
-            val adapter: ArrayAdapter<JobListDataItem> =
-                object : ArrayAdapter<JobListDataItem>(
-                    activity,
-                    R.layout.layout_spinner_item,
-                    android.R.id.text1,
-                    jobTitleList
-                ) {
-                    override fun getDropDownView(
-                        position: Int,
-                        convertView: View?,
-                        parent: ViewGroup
-                    ): View {
-                        val view = super.getDropDownView(position, convertView, parent)
-                        val bind = LayoutSpinnerItemDropDownBinding.bind(view)
-                        bind.text1.text = getLngValue(jobTitleList[position].name)
-                        if (isInvite) {
-                            if (position == 0) {
-                                bind.text1.visibility = View.GONE
-                            } else {
-                                bind.text1.visibility = View.VISIBLE
-                            }
-                        }
-                        return view
-                    }
-
-                    override fun getCount(): Int {
-                        return jobTitleList.ifEmpty { arrayListOf() }.size
-                    }
-
-                    override fun getView(
-                        position: Int,
-                        convertView: View?,
-                        parent: ViewGroup
-                    ): View {
-                        val view = super.getView(position, convertView, parent)
-                        val bind = LayoutSpinnerItemBinding.bind(view)
-                        if (isInvite && position == 0) {
-                            bind.text1.setTextColor(ColorResources.getGrayColor())
-                            bind.text1.text = stringResource.selectEmployeeRole
-                        } else {
-                            bind.text1.setTextColor(ColorResources.getPrimaryColor())
-                            bind.text1.text = getLngValue(jobTitleList[position].name)
-                        }
-                        return view
-                    }
-                }
-
-            adapter.setDropDownViewResource(R.layout.layout_spinner_item_drop_down)
-            spinnerEmployee.adapter = adapter
-            val themeCallback = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    callback.onItemSelect(jobTitleList[position].id ?: "")
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                }
-
-            }
-            spinnerEmployee.onItemSelectedListener = themeCallback
-
-            if (employeeData != null) {
-                var position: Int = -1
-                jobTitleList.forEachIndexed { index, s ->
-                    if (s.id == employeeData.titleId) {
-                        position = index
-                    }
-                }
-
-                val spinnerPosition: Int = position
-                spinnerEmployee.setSelection(spinnerPosition)
-            }
         }
     }
 
@@ -433,20 +285,15 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                             tvRoleNameTitle.text = employeeRole
                         }
 
-                        val jobList: MutableList<JobListDataItem> = arrayListOf()
-
-                        val name: HashMap<String, String> = hashMapOf()
-                        name[""] = stringResource.selectEmployeeRole
-                        val jobTitleModel = JobListDataItem(name = name)
-                        jobList.add(jobTitleModel)
-                        jobList.addAll(jobTitleList)
-
                         var selectedTitleId: String? = null
-                        setSpinner(spinnerRole, jobList, null, true, object : NSSpinnerSelectCallback {
-                            override fun onItemSelect(item: String) {
-                                selectedTitleId = item
+                        val nameList: MutableList<String> = jobTitleList.map { getLngValue(it.name) }.toMutableList()
+                        val idList: MutableList<String> = jobTitleList.map { it.id ?: "" }.toMutableList()
+                        val spinnerList = SpinnerData(idList, nameList)
+                        spinnerRole.setPlaceholderAdapter(spinnerList, activity, "", isHideFirstPosition = true, placeholderName = stringResource.selectEmployeeRole) { selectedId ->
+                            if (selectedId != selectedTitleId) {
+                                selectedTitleId = selectedId
                             }
-                        })
+                        }
 
                         setUserManagementAdapter(binding)
 
@@ -512,19 +359,6 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                     })
                 setupWithAdapter(userSearchAdapter!!)
                 isNestedScrollingEnabled = false
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
-        viewModel.apply {
-            if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_POSITIVE && event.alertKey == NSConstants.KEY_ALERT_EMPLOYEE_DELETE) {
-                selectedEmployeeData?.apply {
-                    if (userId != null) {
-                        employeeDelete(vendorId!!, userId, true)
-                    }
-                }
             }
         }
     }

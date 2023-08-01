@@ -8,32 +8,24 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Spinner
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.callbacks.NSCapabilitiesCallback
 import com.nyotek.dot.admin.common.callbacks.NSCapabilityListCallback
 import com.nyotek.dot.admin.common.callbacks.NSFleetServiceCallback
-import com.nyotek.dot.admin.common.callbacks.NSItemSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
 import com.nyotek.dot.admin.common.callbacks.NSLanguageSubItemSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSLocalLanguageCallback
 import com.nyotek.dot.admin.databinding.LayoutCreateLocalBinding
+import com.nyotek.dot.admin.databinding.LayoutInviteEmployeeBinding
 import com.nyotek.dot.admin.databinding.LayoutRecycleViewBinding
 import com.nyotek.dot.admin.databinding.LayoutRecycleViewFixBinding
 import com.nyotek.dot.admin.databinding.LayoutSelectAddressBinding
-import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
-import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
 import com.nyotek.dot.admin.repository.NSLanguageRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
@@ -41,7 +33,7 @@ import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
-import com.nyotek.dot.admin.repository.network.responses.ServiceCapabilitiesDataItem
+import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 import com.nyotek.dot.admin.ui.fleets.vehicle.NSCapabilitiesVehicleRecycleAdapter
 import com.nyotek.dot.admin.ui.serviceManagement.NSFleetServiceRecycleAdapter
@@ -86,66 +78,6 @@ object NSUtilities {
         imageView.setImageResource(if (isEnable) R.drawable.ic_switch_on else R.drawable.ic_switch_off)
     }
 
-    fun setSpinner(activity: Activity, spinner: Spinner, arrayList1: MutableList<String>, arrayList2: MutableList<String>, itemSelectCallback: NSItemSelectCallback, isHide: Boolean = true) {
-        val adapter: ArrayAdapter<String> =
-            object : ArrayAdapter<String>(activity, R.layout.layout_spinner_item, android.R.id.text1, arrayList1.ifEmpty { arrayListOf() }) {
-                override fun getDropDownView(
-                    position: Int,
-                    convertView: View?,
-                    parent: ViewGroup
-                ): View {
-                    val view = super.getDropDownView(position, convertView, parent)
-                    if (isHide) {
-                        val bind = LayoutSpinnerItemDropDownBinding.bind(view)
-                        if (position == 0) {
-                            bind.text1.visibility = View.GONE
-                        } else {
-                            bind.text1.visibility = View.VISIBLE
-                        }
-                    }
-                    return view
-                }
-
-                override fun getCount(): Int {
-                    return arrayList1.ifEmpty { arrayListOf() }.size
-                }
-
-                override fun getView(
-                    position: Int,
-                    convertView: View?,
-                    parent: ViewGroup
-                ): View {
-                    val view = super.getView(position, convertView, parent)
-                    val bind = LayoutSpinnerItemBinding.bind(view)
-                    if (isHide && position == 0) {
-                        bind.text1.setTextColor(ColorResources.getPrimaryLightColor())
-                    } else {
-                        bind.text1.setTextColor(ColorResources.getPrimaryColor())
-                    }
-                    return view
-                }
-            }
-        adapter.setDropDownViewResource(R.layout.layout_spinner_item_drop_down)
-        spinner.adapter = adapter
-
-        val themeCallback = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                itemSelectCallback.onItemSelect(arrayList2[position])
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-        }
-        spinner.onItemSelectedListener = themeCallback
-    }
-
     fun setLanguageText(edtText: NSCommonEditText, recycleView: NSCommonRecycleView, title: HashMap<String, String>) {
         var selectedLanguage: String? = null
         recycleView.notifyAdapter()
@@ -157,42 +89,23 @@ object NSUtilities {
             }
         }
 
-        edtText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        edtText.addOnTextChangedListener(
+            onTextChanged = { s, _, _, _ ->
                 if (selectedLanguage != null) {
                     title[selectedLanguage!!] = s.toString()
                 }
             }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-        })
+        )
     }
 
     fun setLanguageText(edtText: NSCommonEditText, fleetData: FleetData?, isUrl: Boolean) {
-
-        edtText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        edtText.addOnTextChangedListener(
+            onTextChanged = { s, _, _, _ ->
                 if (isUrl) {
                     fleetData?.url = s.toString()
                 }
             }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-        })
+        )
     }
 
     fun setupSelectAddressView(bind: LayoutSelectAddressBinding) {
@@ -268,73 +181,35 @@ object NSUtilities {
 
     fun showCreateLocalDialog(activity: Activity, languageList: MutableList<LanguageSelectModel>, callback: NSLanguageSubItemSelectCallback) {
 
-        val builder = AlertDialog.Builder(activity)
-        val view: View =
-            activity.layoutInflater.inflate(R.layout.layout_create_local, null)
-        builder.setView(view)
-        builder.setCancelable(false)
-        val layoutCreateLocal = LayoutCreateLocalBinding.bind(view)
-        val dialog = builder.create()
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        layoutCreateLocal.apply {
-            NSApplication.getInstance().getStringModel().apply {
-                tvBranchTitle.text = createLocal
-                layoutName.tvCommonTitle.text = local
-                layoutFromCheckout.tvCommonTitle.text = fromCheckout
-                tvSave.text = create
-                tvCancel.text = cancel
-            }
-
-            val languageLocalList: MutableList<String> = arrayListOf()
-            for (language in languageList) {
-                if (!language.locale.equals("+")) {
-                    language.locale?.let { languageLocalList.add(it) }
-                }
-            }
-
-            val adapter =
-                activity.let {
-                    ArrayAdapter(
-                        it,
-                        R.layout.layout_spinner_language_dialog_item,
-                        android.R.id.text1,
-                        languageLocalList
-                    )
+        buildAlertDialog(
+            activity,
+            LayoutCreateLocalBinding::inflate
+        ) { dialog, binding ->
+            binding.apply {
+                NSApplication.getInstance().getStringModel().apply {
+                    tvBranchTitle.text = createLocal
+                    layoutName.tvCommonTitle.text = local
+                    layoutFromCheckout.tvCommonTitle.text = fromCheckout
+                    tvSave.text = create
+                    tvCancel.text = cancel
                 }
 
-            adapter.setDropDownViewResource(R.layout.layout_spinner_item_drop_down)
-            layoutFromCheckout.spinnerAppSelect.adapter = adapter
-
-            layoutFromCheckout.spinnerAppSelect.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        callback.onItemSelect(languageList[position])
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                    }
+                val list = languageList.map { it.label?:"" }.filterNot { it == "+" } as MutableList<String>
+                val spinnerList = SpinnerData(list, list)
+                layoutFromCheckout.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, "", isHideFirstPosition = false) { selectedId ->
+                    val spinnerPosition = languageList.map { it.label }.indexOf(selectedId)
+                    callback.onItemSelect(languageList[spinnerPosition])
                 }
 
-            tvCancel.setOnClickListener {
-                layoutName.edtValue.setText("")
-                dialog.dismiss()
-            }
+                tvCancel.setOnClickListener {
+                    layoutName.edtValue.setText("")
+                    dialog.dismiss()
+                }
 
-            tvSave.setOnClickListener {
-                layoutName.edtValue.setText("")
-                dialog.dismiss()
-            }
-
-            if (!dialog.isShowing) {
-                dialog.show()
+                tvSave.setOnClickListener {
+                    layoutName.edtValue.setText("")
+                    dialog.dismiss()
+                }
             }
         }
     }

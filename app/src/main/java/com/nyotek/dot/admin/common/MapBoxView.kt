@@ -3,6 +3,8 @@ package com.nyotek.dot.admin.common
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
@@ -49,11 +51,11 @@ class MapBoxView(context: Context) {
         }
     }
 
-    fun initMapView(context: Context, view: MapView, fleetData: FleetDataItem?) {
+    fun initMapView(context: Context, view: MapView, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS) {
         fleetDataItem = fleetData
         map = view.getMapboxMap()
         viewAnnotationManager = view.viewAnnotationManager
-        initAddMarker(context)
+        initAddMarker(context, mapStyle)
         initStyleMap()
     }
 
@@ -75,6 +77,13 @@ class MapBoxView(context: Context) {
         longitude = lon
     }
 
+    fun getCurrentPosition(): LatLng {
+        val cameraPosition = map?.getFreeCameraOptions()
+        val latitude = cameraPosition?.position?.x
+        val longitude = cameraPosition?.position?.y
+        return LatLng(latitude?:0.0, longitude?:0.0)
+    }
+
     fun goToMapPosition(fleetId: String, zoom: Double = 13.0, pitch: Double = 10.0) {
         for (data in fleetDataItem?.features ?: arrayListOf()) {
             if (data.properties?.fleetId.equals(fleetId)) {
@@ -87,7 +96,7 @@ class MapBoxView(context: Context) {
         }
     }
 
-    private fun moveCamera(point: Point, zoom: Double = 13.0, pitch: Double = 10.0) {
+    public fun moveCamera(point: Point, zoom: Double = 13.0, pitch: Double = 10.0) {
         val cameraPosition = CameraOptions.Builder()
             .center(point)
             .zoom(zoom)
@@ -97,9 +106,9 @@ class MapBoxView(context: Context) {
         map?.setCamera(cameraPosition)
     }
 
-    private fun initAddMarker(context: Context) {
+    private fun initAddMarker(context: Context, mapStyle: String) {
         if (styleMap == null) {
-            map?.loadStyleUri(Style.MAPBOX_STREETS) { style ->
+            map?.loadStyleUri(mapStyle) { style ->
                 styleMap = style
                 mapMarker = BitmapUtils.bitmapFromDrawableRes(context, R.drawable.ic_map_marker)!!
                 styleMap?.addImage(

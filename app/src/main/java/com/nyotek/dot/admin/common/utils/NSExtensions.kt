@@ -14,9 +14,13 @@ import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.widget.Group
@@ -43,6 +47,9 @@ import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.SafeClickListener
 import com.nyotek.dot.admin.common.SingleClickListener
 import com.nyotek.dot.admin.common.callbacks.NSOnPageChangeCallback
+import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
+import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
+import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -609,4 +616,78 @@ fun ViewPager2.setPager(activity: FragmentActivity, list: MutableList<Fragment>,
             callback?.onPageChange(position)
         }
     })
+}
+
+fun Spinner.setPlaceholderAdapter(
+    items: SpinnerData,
+    context: Context,
+    selectedId: String?,
+    isHideFirstPosition: Boolean,
+    placeholderName: String? = null,
+    onItemSelectedListener: ((String?) -> Unit)?
+) {
+    if (isHideFirstPosition) {
+        items.title.add(0, placeholderName?:"")
+        items.id.add(0,"")
+    }
+    // Create a custom adapter with the items
+    val adapter = object : ArrayAdapter<String>(context, R.layout.layout_spinner_item, android.R.id.text1, items.title) {
+        override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = super.getDropDownView(position, convertView, parent)
+            if (isHideFirstPosition) {
+                val bind = LayoutSpinnerItemDropDownBinding.bind(view)
+                if (position == 0) {
+                    bind.text1.visibility = View.GONE
+                } else {
+                    bind.text1.visibility = View.VISIBLE
+                }
+            }
+            return view
+        }
+
+        override fun getView(
+            position: Int,
+            convertView: View?,
+            parent: ViewGroup
+        ): View {
+            val view = super.getView(position, convertView, parent)
+            val bind = LayoutSpinnerItemBinding.bind(view)
+            if (isHideFirstPosition && position == 0) {
+                bind.text1.setTextColor(ColorResources.getPrimaryLightColor())
+            } else {
+                bind.text1.setTextColor(ColorResources.getPrimaryColor())
+            }
+            return view
+        }
+    }
+
+    // Set the drop-down layout style
+    adapter.setDropDownViewResource(R.layout.layout_spinner_item_drop_down)
+
+    // Set the adapter to the Spinner
+    this.adapter = adapter
+
+    // Set a default selection to the first item (placeholder item) if needed
+    if (!isHideFirstPosition && items.title.isNotEmpty()) {
+        this.setSelection(1, false)
+    } else {
+        this.setSelection(0, false)
+    }
+
+    // Set the OnItemSelectedListener to handle item selection
+    this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            val selectedItem = if (position >= 0) items.id[position] else null
+            onItemSelectedListener?.invoke(selectedItem)
+        }
+
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+            onItemSelectedListener?.invoke(null)
+        }
+    }
+
+    val spinnerPosition = items.id.indexOf(selectedId)
+    if (spinnerPosition != -1) {
+        setSelection(spinnerPosition)
+    }
 }

@@ -32,7 +32,6 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var strVendorDetail: String? = null
     var vendorModel: FleetData? = null
     var vendorId: String? = null
-    var selectedEmployeeData: EmployeeDataItem? = null
     var employeeEditRequest: NSEmployeeEditRequest = NSEmployeeEditRequest()
     var searchUserList: MutableList<NSUserDetail> = arrayListOf()
     var strJobTitle: String? = null

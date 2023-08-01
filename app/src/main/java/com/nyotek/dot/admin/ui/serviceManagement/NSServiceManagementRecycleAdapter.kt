@@ -12,6 +12,7 @@ import com.nyotek.dot.admin.common.callbacks.NSSwitchCallback
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
@@ -22,12 +23,12 @@ import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.repository.network.responses.ServiceCapabilitiesDataItem
+import com.nyotek.dot.admin.repository.network.responses.SpinnerData
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 
 
 var fleetItemList: MutableList<FleetData> = arrayListOf()
 var capabilityItemList: MutableList<CapabilitiesDataItem> = arrayListOf()
-val tempCapabilityNameList: MutableList<String> = arrayListOf()
-val tempCapabilityIdList: MutableList<String> = arrayListOf()
 
 class NSServiceManagementRecycleAdapter(
     private val activity: Activity,
@@ -64,6 +65,9 @@ class NSServiceManagementRecycleAdapter(
                     if (capabilityItem?.fleets != selectedFleets && selectedFleets.isEmpty()) {
                         viewModel.showError(stringResource.selectFleet)
                         return@setOnClickListener
+                    } else if (capabilityItem?.serviceId.isNullOrEmpty()) {
+                        viewModel.showError(stringResource.serviceCannotBeEmpty)
+                        return@setOnClickListener
                     }
                     callback.onItemSelect(response.serviceId!!, selectedCapabilityId!!, selectedFleets,
                         response.serviceId != selectedCapabilityId,  capabilityItem?.fleets != selectedFleets
@@ -81,6 +85,7 @@ class NSServiceManagementRecycleAdapter(
                 fun setCapability(capabilityItem: ServiceCapabilitiesDataItem) {
                     setCapabilitySpinner(
                         activity,
+                        stringResource,
                         capabilityItem,
                         spinner,
                         object : NSItemSelectCallback {
@@ -134,40 +139,18 @@ class NSServiceManagementRecycleAdapter(
     fun setSubList(capabilityList: MutableList<CapabilitiesDataItem>, fleetList: MutableList<FleetData>) {
         fleetItemList = fleetList
         capabilityItemList = capabilityList
-        tempCapabilityNameList.clear()
-        tempCapabilityIdList.clear()
-        tempCapabilityNameList.add(stringResource.selectCapability)
-        tempCapabilityIdList.add("")
-        for (data in capabilityItemList) {
-            tempCapabilityNameList.add(getLngValue(data.label))
-            tempCapabilityIdList.add(data.id?:"")
-        }
     }
 }
 
-fun setCapabilitySpinner(activity: Activity, item: ServiceCapabilitiesDataItem?, spinner: LayoutCommonSpinnerBinding, itemCallback: NSItemSelectCallback) {
-    var selectedCapabilityId: String? = null
-    var spinnerPosition = -1
-    if (item != null) {
-        spinnerPosition = tempCapabilityIdList.indexOf(item.capabilityId)
-    }
-    NSUtilities.setSpinner(
-        activity,
-        spinner.spinnerAppSelect,
-        tempCapabilityNameList,
-        tempCapabilityIdList,
-        object :
-            NSItemSelectCallback {
-            override fun onItemSelect(selectedId: String) {
-                if (selectedCapabilityId != selectedId) {
-                    selectedCapabilityId = selectedId
-                    itemCallback.onItemSelect(selectedId)
-                }
-            }
-        },
-        true
-    )
-    if (spinnerPosition != -1) {
-        spinner.spinnerAppSelect.setSelection(spinnerPosition)
+fun setCapabilitySpinner(activity: Activity, stringResource: StringResourceResponse, item: ServiceCapabilitiesDataItem?, spinner: LayoutCommonSpinnerBinding, itemCallback: NSItemSelectCallback) {
+    val nameList: MutableList<String> = capabilityItemList.map { getLngValue(it.label) }.toMutableList()
+    val idList: MutableList<String> = capabilityItemList.map { it.id ?: "" }.toMutableList()
+    val spinnerList = SpinnerData(idList, nameList)
+
+    spinner.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, item?.capabilityId, isHideFirstPosition = true, placeholderName = stringResource.selectCapability) { selectedId ->
+        if (selectedId != item?.capabilityId && selectedId?.isNotEmpty() == true) {
+            item?.capabilityId = selectedId
+            itemCallback.onItemSelect(selectedId)
+        }
     }
 }

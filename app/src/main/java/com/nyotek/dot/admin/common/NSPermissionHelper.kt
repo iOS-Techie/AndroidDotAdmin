@@ -10,18 +10,20 @@ import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSRequestCodes.REQUEST_LOCATION_CODE
+import com.nyotek.dot.admin.common.utils.buildAlertDialog
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
+import com.nyotek.dot.admin.common.utils.visible
+import com.nyotek.dot.admin.databinding.LayoutCustomAlertDialogBinding
 
 
 /**
  * Created by Admin on 25-01-2022.
  */
 class NSPermissionHelper(context: Context) {
-    private val logTag: String = NSPermissionHelper::class.java.simpleName
     private val nsContext = context
     private var gpsEnabled = false
     private var networkEnabled = false
@@ -95,28 +97,36 @@ class NSPermissionHelper(context: Context) {
      * @param locationCode location request code
      */
     private fun checkPhonePermission(activity: Activity, locationCode: Int) {
-        val stringResource = NSApplication.getInstance().getStringModel()
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)) {
-                AlertDialog.Builder(activity)
-                    .setTitle(R.string.location_permission)
-                    .setMessage(R.string.location_permission_description)
-                    .setPositiveButton(stringResource.ok) { dialog, which ->
-                        NSLog.d(logTag, "checkPhonePermission: $dialog $which")
-                        ActivityCompat.requestPermissions(
-                            activity,
-                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                            REQUEST_LOCATION_CODE
-                        )
-                    }
-                    .create()
-                    .show()
-
+                openLocationPermission(activity)
             } else ActivityCompat.requestPermissions(
                 activity,
                 arrayOf(Manifest.permission.READ_PHONE_STATE),
                 locationCode
             )
+        }
+    }
+
+    private fun openLocationPermission(activity: Activity) {
+        val stringResource = NSApplication.getInstance().getStringModel()
+        buildAlertDialog(
+            activity,
+            LayoutCustomAlertDialogBinding::inflate
+        ) { dialog, binding ->
+            binding.apply {
+                tvOk.text = stringResource.ok
+                tvTitle.text = activity.resources.getString(R.string.location_permission)
+                tvSubTitle.text = activity.resources.getString(R.string.location_permission_description)
+                tvOk.setSafeOnClickListener {
+                    dialog.dismiss()
+                    ActivityCompat.requestPermissions(
+                        activity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        REQUEST_LOCATION_CODE
+                    )
+                }
+            }
         }
     }
 
@@ -127,7 +137,6 @@ class NSPermissionHelper(context: Context) {
      * @param locationCode location request code
      */
     private fun checkLocationPermission(activity: Activity, locationCode: Int) {
-        val stringResource = NSApplication.getInstance().getStringModel()
         if (ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -138,20 +147,7 @@ class NSPermissionHelper(context: Context) {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
-                AlertDialog.Builder(activity)
-                    .setTitle(R.string.location_permission)
-                    .setMessage(R.string.location_permission_description)
-                    .setPositiveButton(stringResource.ok) { dialog, which ->
-                        NSLog.d(logTag, "checkLocationPermission: $dialog $which")
-                        ActivityCompat.requestPermissions(
-                            activity,
-                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                            REQUEST_LOCATION_CODE
-                        )
-                    }
-                    .create()
-                    .show()
-
+                openLocationPermission(activity)
             } else {
                 ActivityCompat.requestPermissions(
                     activity,
@@ -169,28 +165,40 @@ class NSPermissionHelper(context: Context) {
 
         try {
             gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
         }
 
         try {
             networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
         }
 
         if (!gpsEnabled && !networkEnabled) {
             // notify user
-            AlertDialog.Builder(activity)
-                .setTitle(R.string.gps_network_not_enabled)
-                .setMessage(R.string.open_location_settings)
-                .setPositiveButton(stringResource.ok) { dialog, which ->
-                    NSLog.d(logTag, "checkGpsEnable: $dialog $which")
-                    nsContext.startActivity(
-                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    )
+            buildAlertDialog(
+                activity,
+                LayoutCustomAlertDialogBinding::inflate
+            ) { dialog, binding ->
+                binding.apply {
+                    tvOk.text = stringResource.ok
+                    tvCancel.text = stringResource.cancel
+                    tvCancel.visible()
+                    viewLine2.visible()
+
+                    tvTitle.text = activity.resources.getString(R.string.gps_network_not_enabled)
+                    tvSubTitle.text = activity.resources.getString(R.string.open_location_settings)
+                    tvOk.setSafeOnClickListener {
+                        dialog.dismiss()
+                        nsContext.startActivity(
+                            Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                        )
+                    }
+
+                    tvCancel.setSafeOnClickListener {
+                        dialog.dismiss()
+                    }
                 }
-                .setNegativeButton(stringResource.cancel, null)
-                .create()
-                .show()
+            }
         }
     }
 
@@ -203,18 +211,30 @@ class NSPermissionHelper(context: Context) {
 
     private fun showAlertLocation(context: Context, title: String, message: String) {
         val stringResource = NSApplication.getInstance().getStringModel()
-        AlertDialog.Builder(context)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(stringResource.ok) { dialog, which ->
-                NSLog.d(logTag, "showAlertLocation: $dialog $which")
-                context.startActivity(
-                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                )
+        buildAlertDialog(
+            context,
+            LayoutCustomAlertDialogBinding::inflate
+        ) { dialog, binding ->
+            binding.apply {
+                tvOk.text = stringResource.ok
+                tvCancel.text = stringResource.cancel
+                tvCancel.visible()
+                viewLine2.visible()
+
+                tvTitle.text = title
+                tvSubTitle.text = message
+                tvOk.setSafeOnClickListener {
+                    dialog.dismiss()
+                    context.startActivity(
+                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    )
+                }
+
+                tvCancel.setSafeOnClickListener {
+                    dialog.dismiss()
+                }
             }
-            .setNegativeButton(stringResource.cancel, null)
-            .create()
-            .show()
+        }
     }
 
     @Suppress("unused")

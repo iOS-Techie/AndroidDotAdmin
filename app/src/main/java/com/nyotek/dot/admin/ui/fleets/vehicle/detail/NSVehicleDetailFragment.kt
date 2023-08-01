@@ -9,17 +9,17 @@ import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.BrandLogoHelper
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
-import com.nyotek.dot.admin.common.NSAlertButtonClickEvent
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.OnTextUpdateHelper
 import com.nyotek.dot.admin.common.callbacks.NSCapabilityCallback
 import com.nyotek.dot.admin.common.callbacks.NSCapabilityListCallback
+import com.nyotek.dot.admin.common.callbacks.NSDialogClickCallback
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.callbacks.NSItemSelectCallback
 import com.nyotek.dot.admin.common.callbacks.NSOnTextChangeCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setVisibilityIn
@@ -30,6 +30,7 @@ import com.nyotek.dot.admin.databinding.NsFragmentVehicleDetailBinding
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
+import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDetailData
 import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeViewModel
@@ -216,32 +217,21 @@ class NSVehicleDetailFragment :
 
     private fun setUpdateDriverList(employeeList: MutableList<EmployeeDataItem>) {
         binding.apply {
-            val nameList: MutableList<String> = arrayListOf()
-            val idList: MutableList<String> = arrayListOf()
-            nameList.add(stringResource.selectDriver)
-            idList.add("")
-            nameList.addAll(employeeList.map { it.userId ?: "" }.toMutableList())
-            idList.addAll(employeeList.map { it.userId ?: "" }.toMutableList())
-
-            NSUtilities.setSpinner(activity, spinner.spinnerAppSelect, nameList, idList, object :
-                NSItemSelectCallback {
-                override fun onItemSelect(selectedId: String) {
-                    if (selectedId != viewModel.driverId && selectedId.isNotEmpty()) {
-                        viewModel.driverId = selectedId
-                        viewModel.assignVehicle(selectedId)
-                    }
+            val nameList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
+            val idList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
+            val spinnerList = SpinnerData(idList, nameList)
+            spinner.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, viewModel.driverId, isHideFirstPosition = true, placeholderName = stringResource.selectDriver) { selectedId ->
+                if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
+                    viewModel.driverId = selectedId
+                    viewModel.assignVehicle(selectedId)
                 }
-            }, true)
-
-            val spinnerPosition = idList.indexOf(viewModel.driverId)
-            if (spinnerPosition != -1) {
-                spinner.spinnerAppSelect.setSelection(spinnerPosition)
             }
 
             val empResponse = employeeList.find { it.userId == viewModel.driverId }
             tvUserTitle.text = viewModel.driverId?:""
             tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
 
+            val spinnerPosition = idList.indexOf(viewModel.driverId)
             val isVisible = spinnerPosition != -1
             clVehicleItem.setVisibility(isVisible)
             viewLineTextSub.setVisibilityIn(isVisible)
@@ -296,7 +286,17 @@ class NSVehicleDetailFragment :
                         message = stringResource.doYouWantToDelete,
                         alertKey = NSConstants.KEY_ALERT_EMPLOYEE_VEHICLE_DELETE_DETAIL,
                         positiveButton = stringResource.ok,
-                        negativeButton = stringResource.cancel
+                        negativeButton = stringResource.cancel, object : NSDialogClickCallback {
+                            override fun onDialog(isCancelClick: Boolean) {
+                                if (!isCancelClick) {
+                                    driverId?.let {
+                                        assignVehicle(
+                                            it, capabilities = arrayListOf()
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     )
                 }
 
@@ -326,19 +326,6 @@ class NSVehicleDetailFragment :
     override fun onFileUrl(url: String, width: Int, height: Int) {
         viewModel.apply {
             updateVehicleImage(url)
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onPositiveButtonClickEvent(event: NSAlertButtonClickEvent) {
-        viewModel.apply {
-            if (event.buttonType == NSConstants.KEY_ALERT_BUTTON_POSITIVE && event.alertKey == NSConstants.KEY_ALERT_EMPLOYEE_VEHICLE_DELETE_DETAIL) {
-                //This is use for delete vehicle for use this api not send to vehicleId and capability to delete
-                driverId?.let {
-                    assignVehicle(
-                        it, capabilities = arrayListOf())
-                }
-            }
         }
     }
 }
