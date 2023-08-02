@@ -155,9 +155,9 @@ class NSVehicleDetailFragment :
 
                     switchService.isActivated = vehicleDataItem?.isActive == true
 
-                    capabilitiesViewModel.getCapabilitiesList(
+                    capabilitiesViewModel.getCapabilities(
                         false,
-                        isCapabilityAvailableCheck = true,
+                        isCapabilityCheck = true,
                         isShowError = false
                     ) {
                         setCapabilityList(it)

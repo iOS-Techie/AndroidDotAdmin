@@ -112,7 +112,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                             no,
                             yes) {
                             if (it) {
-                                settingModel.logout(true)
+                                settingModel.logout()
                             }
                         }
                     }

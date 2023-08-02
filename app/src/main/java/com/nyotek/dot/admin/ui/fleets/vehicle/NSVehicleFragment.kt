@@ -69,7 +69,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
         arguments?.let {
             with(viewModel) {
                 if (!isFragmentLoad) {
-                    binding.clMap.visible()
+                    //binding.clMap.visible()
                     isFragmentLoad = true
                     strVehicleDetail = it.getString(NSConstants.FLEET_DETAIL_KEY)
                     initCreateVendor()
@@ -124,7 +124,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
             baseObserveViewModel(viewModel)
             baseObserveViewModel(capabilitiesViewModel)
             observeViewModel()
-            capabilitiesViewModel.getCapabilitiesList(false, isCapabilityAvailableCheck = true, isShowError = false) {}
+            capabilitiesViewModel.getCapabilities(false, isCapabilityCheck = true, isShowError = false) {}
         }
     }
 
@@ -234,7 +234,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                         }
 
                         var selectedCapabilities: MutableList<String> = arrayListOf()
-                        capabilitiesViewModel.getCapabilitiesList(false, isCapabilityAvailableCheck = true, isShowError = false) {
+                        capabilitiesViewModel.getCapabilities(false, isCapabilityCheck = true, isShowError = false) {
                             NSUtilities.setCapability(activity, false, layoutCapability, it, dataItem) { capabilities ->
                                 selectedCapabilities = capabilities
                             }

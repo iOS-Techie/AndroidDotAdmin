@@ -2,7 +2,6 @@ package com.nyotek.dot.admin.ui.capabilities
 
 import android.app.Application
 import com.nyotek.dot.admin.common.NSApplication
-import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
@@ -16,63 +15,26 @@ import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataRespons
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 
 class NSCapabilitiesViewModel(application: Application) : NSViewModel(application) {
-    var isCapabilitiesListCall = NSSingleLiveEvent<MutableList<CapabilitiesDataItem>>()
-
-    fun getLocalLanguageList() {
-        NSLanguageRepository.localLanguages("", this)
-    }
 
     /**
      * Get Capabilities List
      *
      * @param isShowProgress
+     * @param isShowError
+     * @param isCapabilityCheck
+     * @return callback
      */
-    fun getCapabilitiesList(isShowProgress: Boolean, isShowError: Boolean = true, isCapabilityAvailableCheck: Boolean = false, callback: ((MutableList<CapabilitiesDataItem>) -> Unit?)) {
-
-        if (!isCapabilityAvailable() || !isCapabilityAvailableCheck) {
-            if (isShowProgress) {
-                isProgressShowing.value = true
-            }
-            NSCapabilitiesRepository.getCapabilities(object : NSGenericViewModelCallback {
-                override fun <T> onSuccess(data: T) {
-                    if (data is NSCapabilitiesResponse) {
-                        data.data.sortBy { it.id }
-                        isCapabilitiesListCall.value = data.data
-                        NSApplication.getInstance().setCapabilityList(data.data)
-                        isProgressShowing.value = false
-                        callback.invoke(data.data)
-                    }
-                }
-
-                override fun onError(errors: List<Any>) {
-                    if (isShowError) {
-                        handleError(errors)
-                    }
-                }
-
-                override fun onFailure(failureMessage: String?) {
-                    if (isShowError) {
-                        handleFailure(failureMessage)
-                    }
-                }
-
-                override fun <T> onNoNetwork(localData: T) {
-                    if (isShowError) {
-                        handleNoNetwork()
-                    }
-                }
-
-            })
-        } else {
-            val capabilityList = NSApplication.getInstance().getCapabilityList()
-            isCapabilitiesListCall.value = capabilityList
-            isProgressShowing.value = false
-            callback.invoke(capabilityList)
+    fun getCapabilities(
+        isShowProgress: Boolean,
+        isShowError: Boolean = true,
+        isCapabilityCheck: Boolean = false,
+        callback: ((MutableList<CapabilitiesDataItem>) -> Unit?)
+    ) {
+        if (isShowProgress) showProgress()
+        getCapabilitiesList(isShowError = isShowError, isCapabilityCheck = isCapabilityCheck) {
+            hideProgress()
+            callback.invoke(it)
         }
-    }
-
-    private fun isCapabilityAvailable(): Boolean {
-        return NSApplication.getInstance().getCapabilityList().isValidList()
     }
 
     /**
@@ -80,14 +42,18 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
      *
      * @param isShowProgress
      */
-    fun capabilityEnableDisable(capabilitiesId: String?, isEnable: Boolean, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
+    fun capabilityEnableDisable(
+        capabilitiesId: String?,
+        isEnable: Boolean,
+        isShowProgress: Boolean
+    ) {
         if (capabilitiesId != null) {
-            NSCapabilitiesRepository.enableDisableCapabilities(capabilitiesId, isEnable, this)
-        } else {
-            isProgressShowing.value = false
+            if (isShowProgress) showProgress()
+            callCommonApi({ obj ->
+                NSCapabilitiesRepository.enableDisableCapabilities(capabilitiesId, isEnable, obj)
+            }, { _, _ ->
+                hideProgress()
+            })
         }
     }
 
@@ -96,60 +62,41 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
      *
      * @param isShowProgress
      */
-    fun capabilitiesDelete(id: String, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSCapabilitiesRepository.deleteCapability(id, this)
+    fun capabilitiesDelete(id: String, callback: ((MutableList<CapabilitiesDataItem>) -> Unit?)) {
+        showProgress()
+        callCommonApi({ obj ->
+            NSCapabilitiesRepository.deleteCapability(id, obj)
+        }, { _, _ ->
+            getCapabilities(isShowProgress = true, callback = callback)
+        })
     }
 
-    fun createEditCapability(capabilityName: HashMap<String, String>, isCreate: Boolean, selectedId: String = "", callback: ((Boolean) -> Unit)){
-        isProgressShowing.value = true
+    fun createEditCapability(
+        capabilityName: HashMap<String, String>,
+        isCreate: Boolean,
+        selectedId: String = "",
+        callback: ((MutableList<CapabilitiesDataItem>) -> Unit?)
+    ) {
         val request = NSCreateCapabilityRequest()
         request.label = capabilityName
-        val obj = object : NSGenericViewModelCallback {
-            override fun <T> onSuccess(data: T) {
-                callback.invoke(true)
-            }
 
-            override fun onError(errors: List<Any>) {
-                callback.invoke(false)
-                handleError(errors)
+        showProgress()
+        callCommonApi({ obj ->
+            NSCapabilitiesRepository.createEditCapability(isCreate, selectedId, request, obj)
+        }, { _, isSuccess ->
+            if (!isSuccess) {
+                hideProgress()
+                callback.invoke(arrayListOf())
+            } else {
+                getCapabilities(isShowProgress = false, isCapabilityCheck = false, callback = callback)
             }
-
-            override fun onFailure(failureMessage: String?) {
-                callback.invoke(false)
-                handleFailure(failureMessage)
-            }
-
-            override fun <T> onNoNetwork(localData: T) {
-                callback.invoke(false)
-                handleNoNetwork()
-            }
-        }
-
-        NSCapabilitiesRepository.createEditCapability(isCreate, selectedId, request, obj)
+        })
     }
-
-
 
     override fun apiResponse(data: Any) {
         when (data) {
             is NSCapabilitiesResponse -> {
 
-            }
-            is NSFleetBlankDataResponse -> {
-                isProgressShowing.value = false
-            }
-            is NSCapabilitiesBlankDataResponse -> {
-                //employeeEditRequest = NSEmployeeEditRequest()
-                getCapabilitiesList(true) {}
-            }
-            is NSLocalLanguageResponse -> {
-                if (data.data.isValidList()) {
-                    data.data[0].isSelected = true
-                }
-                NSApplication.getInstance().setFleetLanguageList(data.data)
             }
         }
     }

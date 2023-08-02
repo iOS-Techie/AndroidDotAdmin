@@ -126,7 +126,7 @@ class NSSettingFragment : BaseViewModelFragment<NSSettingViewModel, NsFragmentSe
     private fun setSettingAdapter() {
         with(binding) {
             with(viewModel) {
-                getProfileListData(activity)
+                getProfileListData()
                 settingAdapter =
                     NSSettingRecycleAdapter(
                         isLanguageSelected()) {
@@ -180,7 +180,7 @@ class NSSettingFragment : BaseViewModelFragment<NSSettingViewModel, NsFragmentSe
                         no,
                         yes) {
                         if (it) {
-                            viewModel.logout(true)
+                            viewModel.logout()
                         }
                     }
                 }

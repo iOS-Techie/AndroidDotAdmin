@@ -1,170 +1,127 @@
 package com.nyotek.dot.admin.ui.serviceManagement
 
 import android.app.Application
-import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSServiceRepository
-import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
-import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
-import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSCapabilitiesBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSCreateServiceResponse
-import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSServiceCapabilityResponse
 import com.nyotek.dot.admin.repository.network.responses.ServiceCapabilitiesDataItem
-import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
-import com.nyotek.dot.admin.ui.fleets.NSFleetViewModel
 
 class NSServiceManagementViewModel(application: Application) : NSViewModel(application) {
-    var isServiceListAvailable = NSSingleLiveEvent<Boolean>()
-    var serviceItemList: MutableList<NSGetServiceListData> = arrayListOf()
-    var capabilityItemList: MutableList<CapabilitiesDataItem> = arrayListOf()
-    var fleetItemList: MutableList<FleetData> = arrayListOf()
-    var createdServiceName: String? = null
-    var createdServiceDescription: String? = null
-    var selectedFilterList: MutableList<ActiveInActiveFilter> = arrayListOf()
-    private var viewModel: NSCapabilitiesViewModel? = null
-    var fleetViewModel: NSFleetViewModel? = null
-    var selectedFleets: List<String> = arrayListOf()
-    var selectedServiceId: String? = null
-    var isFleetNeedToUpdate: Boolean = false
-
-    fun setCapabilityModel(model: NSCapabilitiesViewModel) {
-        viewModel = model
-    }
-
-    fun setFleetModel(model: NSFleetViewModel) {
-        fleetViewModel = model
-    }
 
     /**
      * create service list
      *
      * @param isShowProgress
      */
-    fun createService(isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        if (!createdServiceName.isNullOrEmpty() && !createdServiceDescription.isNullOrEmpty()) {
-            NSServiceRepository.createService(createdServiceName!!, createdServiceDescription!!, this)
-        } else {
-            isProgressShowing.value = true
+    fun createService(name: String?, description: String?, isShowProgress: Boolean) {
+        if (!name.isNullOrEmpty() && !description.isNullOrEmpty()) {
+            if (isShowProgress) showProgress()
+            callCommonApi({ obj ->
+                NSServiceRepository.createService(
+                    name,
+                    description,
+                    obj
+                )
+            }, { _, _ ->
+                getServiceListApi(false) { serviceList, fleetList, _ ->
+
+                }
+            })
         }
     }
 
 
     /**
-     * Get user detail
+     * Get service list
      *
      * @param isShowProgress
      */
-    fun getServiceList(isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
+    fun getServiceListApi(isShowProgress: Boolean, callback: ((MutableList<NSGetServiceListData>, MutableList<FleetData>, MutableList<CapabilitiesDataItem>) -> Unit)) {
+        if (isShowProgress) showProgress()
+
+        callCommonApi({ obj ->
+            NSServiceRepository.getServiceList(obj)
+        }, { data, _ ->
+            if (data is NSGetServiceListResponse) {
+                data.data.sortByDescending { it.serviceId }
+                getCapabilityList(data.data, callback)
+            }
+        })
+    }
+
+    private fun getCapabilityList(list: MutableList<NSGetServiceListData>, callback: ((MutableList<NSGetServiceListData>, MutableList<FleetData>, MutableList<CapabilitiesDataItem>) -> Unit)) {
+        getCapabilitiesList(isCapabilityCheck = true) {
+            getFleetList(list, it, callback)
         }
-        NSServiceRepository.getServiceList(this)
+    }
+
+    private fun getFleetList(list: MutableList<NSGetServiceListData>, capabilities: MutableList<CapabilitiesDataItem>,callback: ((MutableList<NSGetServiceListData>, MutableList<FleetData>, MutableList<CapabilitiesDataItem>) -> Unit)) {
+        getFleetListApi { fleets ->
+            callback.invoke(list, fleets, capabilities)
+            hideProgress()
+        }
     }
 
     fun getServiceCapability(serviceId: String, callback: ((ServiceCapabilitiesDataItem) -> Unit)) {
-        NSCapabilitiesRepository.getServiceCapabilities(
-            serviceId,
-            object : NSGenericViewModelCallback {
-                override fun <T> onSuccess(data: T) {
-                    if (data is NSServiceCapabilityResponse) {
-                        data.data?.let { callback.invoke(it) }
-                    }
-                }
-
-                override fun onError(errors: List<Any>) {
-                    callback.invoke(ServiceCapabilitiesDataItem())
-                }
-
-                override fun onFailure(failureMessage: String?) {
-                    callback.invoke(ServiceCapabilitiesDataItem())
-                }
-
-                override fun <T> onNoNetwork(localData: T) {
-                   callback.invoke(ServiceCapabilitiesDataItem())
-                   handleNoNetwork()
-                }
-            })
+        callCommonApi({ obj ->
+            NSCapabilitiesRepository.getServiceCapabilities(serviceId, obj)
+        }, { data, isSuccess ->
+            if (!isSuccess) {
+                callback.invoke(ServiceCapabilitiesDataItem())
+            } else if (data is NSServiceCapabilityResponse) {
+                data.data?.let { callback.invoke(it) }
+            }
+        }, false)
     }
 
     /**
      * Service Enable disable
      *
-     * @param isShowProgress
      */
-    fun serviceEnableDisable(serviceId: String, isEnable: Boolean, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSServiceRepository.enableDisableService(serviceId, isEnable, this)
+    fun serviceEnableDisable(serviceId: String, isEnable: Boolean) {
+        callCommonApi({ obj ->
+            NSServiceRepository.enableDisableService(serviceId, isEnable, obj)
+        }, { _, _ ->
+
+        })
     }
 
     /**
      * service capability update
      *
-     * @param isShowProgress
      */
-    fun serviceCapabilityUpdate(serviceId: String, capabilityId: String, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSCapabilitiesRepository.updateServiceCapability(serviceId, capabilityId, this)
+    fun serviceCapabilityUpdate(serviceId: String, capabilityId: String, isFleetUpdate: Boolean, fleets: List<String>) {
+        showProgress()
+        callCommonApi({ obj ->
+            NSCapabilitiesRepository.updateServiceCapability(serviceId, capabilityId, obj)
+        }, { _, _ ->
+            if (isFleetUpdate) {
+                serviceFleetsUpdate(serviceId, fleets)
+            } else {
+                hideProgress()
+            }
+        })
     }
 
     /**
      * service capability update
      *
-     * @param isShowProgress
      */
-    fun serviceFleetsUpdate(serviceId: String, fleets: List<String>, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSCapabilitiesRepository.updateServiceFleets(serviceId, fleets, this)
+    fun serviceFleetsUpdate(serviceId: String, fleets: List<String>) {
+        showProgress()
+        callCommonApi({ obj ->
+            NSCapabilitiesRepository.updateServiceFleets(serviceId, fleets, obj)
+        }, { _, _ ->
+            hideProgress()
+        })
     }
 
     override fun apiResponse(data: Any) {
-        when (data) {
-            is NSGetServiceListResponse -> {
-                serviceItemList.clear()
-                if (data.data.isValidList()) {
-                    serviceItemList.addAll(data.data)
-                }
-                serviceItemList.sortByDescending { it.serviceId }
-                viewModel?.getCapabilitiesList(false, isCapabilityAvailableCheck = true) {
-                    capabilityItemList = it
-                    fleetViewModel?.getFleetList(false) { fleetList ->
-                        fleetItemList = fleetList
-                        isServiceListAvailable.value = true
-                    }
-                }
-            }
-            is NSBlankDataResponse -> {
-                isProgressShowing.value = false
-            }
-            is NSCapabilitiesBlankDataResponse -> {
-                if (isFleetNeedToUpdate) {
-                    serviceFleetsUpdate(selectedServiceId!!, selectedFleets, true)
-                } else {
-                    isProgressShowing.value = false
-                }
-            }
-            is NSFleetBlankDataResponse -> {
-                isProgressShowing.value = false
-            }
-            is NSCreateServiceResponse -> {
-                getServiceList(false)
-            }
-        }
+
     }
 }

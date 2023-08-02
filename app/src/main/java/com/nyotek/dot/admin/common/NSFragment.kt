@@ -99,7 +99,7 @@ open class NSFragment : Fragment() {
      * @param message The message to show as alert message
      */
     //Use of Outside change to Protected
-    fun showAlertDialog(message: String?, callback: ((Boolean) -> Unit)? = null) {
+    private fun showAlertDialog(message: String?, callback: ((Boolean) -> Unit)? = null) {
         val errorMessage: String = message ?: stringResource.somethingWentWrong
         NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, callback = callback)
     }

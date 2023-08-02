@@ -42,15 +42,19 @@ class NSLoginViewModel(application: Application) : NSViewModel(application) {
      */
     fun login() {
         if (checkAllFieldsValid()) {
-            isProgressShowing.value = true
-            NSUserRepository.loginWithEmailPassword(strEmail, strPassword, this)
+            showProgress()
+            callCommonApi({ obj ->
+                NSUserRepository.loginWithEmailPassword(strEmail, strPassword, obj)
+            }, { data, _ ->
+                hideProgress()
+                if (data is NSUserResponse) {
+                    isLoginSuccess.value = true
+                }
+            })
         }
     }
 
     override fun apiResponse(data: Any) {
-        if (data is NSUserResponse) {
-            isProgressShowing.value = false
-            isLoginSuccess.value = true
-        }
+
     }
 }

@@ -15,9 +15,9 @@ import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.databinding.LayoutCreateServiceBinding
 import com.nyotek.dot.admin.databinding.NsFragmentServiceManagementBinding
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
+import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
+import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
-import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
-import com.nyotek.dot.admin.ui.fleets.NSFleetViewModel
 
 class NSServiceManagementFragment :
     BaseViewModelFragment<NSServiceManagementViewModel, NsFragmentServiceManagementBinding>() {
@@ -27,14 +27,6 @@ class NSServiceManagementFragment :
 
     override val viewModel: NSServiceManagementViewModel by lazy {
         ViewModelProvider(this)[NSServiceManagementViewModel::class.java]
-    }
-
-    private val capabilitiesViewModel: NSCapabilitiesViewModel by lazy {
-        ViewModelProvider(this)[NSCapabilitiesViewModel::class.java]
-    }
-
-    private val fleetViewModel: NSFleetViewModel by lazy {
-        ViewModelProvider(this)[NSFleetViewModel::class.java]
     }
 
     companion object {
@@ -51,17 +43,8 @@ class NSServiceManagementFragment :
     override fun setupViews() {
         super.setupViews()
         baseObserveViewModel(viewModel)
-        baseObserveViewModel(capabilitiesViewModel)
         observeViewModel()
         setServiceManagementAdapter()
-        viewModel.setCapabilityModel(capabilitiesViewModel)
-        viewModel.setFleetModel(fleetViewModel)
-        FilterHelper(activity, binding.rvServiceFilter) { _, list ->
-            viewModel.apply {
-                selectedFilterList = list
-                filterData(list)
-            }
-        }
     }
 
     override fun loadFragment() {
@@ -81,14 +64,6 @@ class NSServiceManagementFragment :
                     if (isSwipe) {
                         srlRefresh.isRefreshing = false
                     }
-                }
-
-                isServiceListAvailable.observe(
-                    viewLifecycleOwner
-                ) {
-                    this@NSServiceManagementFragment.viewModel.isProgressShowing.value = false
-                    srlRefresh.isRefreshing = false
-                    filterData(selectedFilterList)
                 }
             }
         }
@@ -110,8 +85,14 @@ class NSServiceManagementFragment :
      * View created
      */
     private fun viewCreated() {
-        viewModel.getServiceList(!isFragmentLoad)
+        serviceApiCall(!isFragmentLoad)
         isFragmentLoad = true
+    }
+
+    private fun serviceApiCall(isShowProgress: Boolean) {
+        viewModel.getServiceListApi(isShowProgress) { serviceList, fleetList, capabilities ->
+            setServiceData(serviceList, fleetList, capabilities)
+        }
     }
 
     /**
@@ -121,7 +102,7 @@ class NSServiceManagementFragment :
         viewModel.apply {
             with(binding) {
                 srlRefresh.setOnRefreshListener {
-                    this@NSServiceManagementFragment.viewModel.getServiceList(false)
+                    serviceApiCall(false)
                 }
 
                 layoutHomeHeader.apply {
@@ -132,14 +113,32 @@ class NSServiceManagementFragment :
                     tvHeaderBtn.setSafeOnClickListener {
                         showCreateServiceDialog()
                     }
-
-                    etSearch.addOnTextChangedListener(
-                        onTextChanged = { text, _, _, _ ->
-                            ivClearData.setVisibility(text.toString().isNotEmpty())
-                            filterData(selectedFilterList, text.toString())
-                        }
-                    )
                 }
+            }
+        }
+    }
+
+    private fun setServiceData(serviceList: MutableList<NSGetServiceListData>, fleetList: MutableList<FleetData>, capabilities: MutableList<CapabilitiesDataItem>) {
+        binding.apply {
+            viewModel.apply {
+                srlRefresh.isRefreshing = false
+                var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
+
+                FilterHelper(activity, binding.rvServiceFilter) { _, list ->
+                    viewModel.apply {
+                        filterList = list
+                        filterData(serviceList, fleetList, capabilities, filterList)
+                    }
+                }
+
+                layoutHomeHeader.etSearch.addOnTextChangedListener(
+                    onTextChanged = { text, _, _, _ ->
+                        layoutHomeHeader.ivClearData.setVisibility(text.toString().isNotEmpty())
+                        filterData(serviceList, fleetList, capabilities, filterList, text.toString())
+                    }
+                )
+
+                filterData(serviceList, fleetList, capabilities, filterList)
             }
         }
     }
@@ -178,10 +177,10 @@ class NSServiceManagementFragment :
                                     showError(pleaseEnterDescription)
                                     return@setSafeOnClickListener
                                 } else {
-                                    createdServiceName = layoutServiceName.edtValue.text.toString()
-                                    createdServiceDescription = etServiceDescription.text.toString()
+                                    val name = layoutServiceName.edtValue.text.toString()
+                                    val desc = etServiceDescription.text.toString()
                                     dialog.dismiss()
-                                    createService(true)
+                                    createService(name, desc,true)
                                 }
                                 cancelCreateService(binding)
                             }
@@ -201,8 +200,6 @@ class NSServiceManagementFragment :
             binding.apply {
                 layoutHomeHeader.apply {
                     layoutCreateService.apply {
-                        createdServiceName = null
-                        createdServiceDescription = null
                         layoutServiceName.edtValue.setText("")
                         etServiceDescription.setText("")
                     }
@@ -223,16 +220,16 @@ class NSServiceManagementFragment :
                         NSServiceManagementRecycleAdapter(
                             activity,
                             viewModel, { serviceId, capabilityId, fleets, isDirectFleet, isFleetUpdate ->
-                                selectedFleets = fleets
-                                selectedServiceId = serviceId
-                                isFleetNeedToUpdate = isFleetUpdate
+                                // Api call for fleet and Capability Update
                                 if (isDirectFleet && isFleetUpdate) {
-                                    serviceFleetsUpdate(serviceId, fleets, true)
+                                    serviceFleetsUpdate(serviceId, fleets)
                                 } else {
-                                    serviceCapabilityUpdate(serviceId, capabilityId, true)
+                                    serviceCapabilityUpdate(serviceId, capabilityId, isFleetUpdate, fleets)
                                 }
+
                             }, { serviceId, isEnable ->
-                                serviceEnableDisable(serviceId, isEnable, true)
+                                //Service Enable Disable
+                                serviceEnableDisable(serviceId, isEnable)
                             })
                     setupWithAdapterAndCustomLayoutManager(
                         serviceRecycleAdapter!!,
@@ -245,7 +242,7 @@ class NSServiceManagementFragment :
         }
     }
 
-    private fun filterData(
+    private fun filterData(serviceList: MutableList<NSGetServiceListData>, fleetList: MutableList<FleetData>, capabilities: MutableList<CapabilitiesDataItem>,
         filterList: MutableList<ActiveInActiveFilter>,
         searchText: String = binding.layoutHomeHeader.etSearch.text.toString()
     ) {
@@ -255,27 +252,27 @@ class NSServiceManagementFragment :
 
                 if (filterTypes.isNotEmpty()) {
 
-                    val filter = serviceItemList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<NSGetServiceListData>
+                    val filter = serviceList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<NSGetServiceListData>
                     setAdapterData(searchText, if (searchText.isEmpty()) filter else filter.filter {
                         it.name
                             ?.lowercase()?.contains(searchText.lowercase()) == true
-                    } as MutableList<NSGetServiceListData>)
+                    } as MutableList<NSGetServiceListData>, fleetList, capabilities)
 
                 } else {
 
-                    setAdapterData(searchText, if (searchText.isEmpty()) serviceItemList else serviceItemList.filter {
+                    setAdapterData(searchText, if (searchText.isEmpty()) serviceList else serviceList.filter {
                         it.name?.lowercase()?.contains(searchText.lowercase()) == true
-                    } as MutableList<NSGetServiceListData>)
+                    } as MutableList<NSGetServiceListData>, fleetList, capabilities)
 
                 }
             }
         }
     }
 
-    private fun setAdapterData(search: String, serviceItemList: MutableList<NSGetServiceListData>) {
+    private fun setAdapterData(search: String, serviceItemList: MutableList<NSGetServiceListData>, fleetList: MutableList<FleetData>, capabilities: MutableList<CapabilitiesDataItem>) {
         serviceRecycleAdapter?.apply {
             if (search.isEmpty()) {
-                setSubList(viewModel.capabilityItemList, viewModel.fleetItemList)
+                setSubList(capabilities, fleetList)
             }
             setData(serviceItemList)
         }

@@ -149,7 +149,7 @@ object NSCapabilitiesRepository: BaseRepository() {
                 ) {
                 override fun <T> onResponse(response: Response<T>) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        viewModelCallback.onSuccess(response.body())
+                        viewModelCallback.onSuccess(response.body()?:NSCapabilitiesBlankDataResponse())
                     }
                 }
 

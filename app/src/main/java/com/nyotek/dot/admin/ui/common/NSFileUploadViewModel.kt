@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
+import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSThemeRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSFleetNameUpdateRequest
@@ -23,26 +24,14 @@ class NSFileUploadViewModel(application: Application) : NSViewModel(application)
         val file = File(imageUrl)
         val requestFile: RequestBody = file.asRequestBody("*/*".toMediaTypeOrNull())
         val myFile = MultipartBody.Part.createFormData("myFile", file.name, requestFile)
-        NSThemeRepository.uploadFile(myFile, object : NSGenericViewModelCallback {
-            override fun <T> onSuccess(data: T) {
-                if (data is NSUploadFileResponse) {
-                    val url =  data.browserUrl?:""
-                    callback.onFileUrl(url, bitmap.width, bitmap.height)
-                }
-            }
 
-            override fun onError(errors: List<Any>) {
-               handleError(errors)
+        callCommonApi({ obj ->
+            NSThemeRepository.uploadFile(myFile, obj)
+        }, { data, _ ->
+            if (data is NSUploadFileResponse) {
+                val url =  data.browserUrl?:""
+                callback.onFileUrl(url, bitmap.width, bitmap.height)
             }
-
-            override fun onFailure(failureMessage: String?) {
-              handleFailure(failureMessage)
-            }
-
-            override fun <T> onNoNetwork(localData: T) {
-                handleNoNetwork()
-            }
-
         })
     }
 

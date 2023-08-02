@@ -44,24 +44,6 @@ class NSSplashFragment : BaseViewModelFragment<NSSplashViewModel, NsFragmentSpla
         super.observeViewModel()
         with(viewModel) {
             with(binding) {
-                isAppThemeDataAvailable.observe(
-                    viewLifecycleOwner
-                ) { isAppTheme ->
-                    if (isAppTheme) {
-                        getLanguageList()
-                    } else {
-                        showError(stringResource.somethingWentWrong)
-                    }
-                }
-
-                isLanguageDataAvailable.observe(
-                    viewLifecycleOwner
-                ) { isLanguage ->
-                    if (isLanguage) {
-                        NSConstants.IS_LANGUAGE_UPDATE = true
-                        checkLoginStatus()
-                    }
-                }
 
                 isClProgressVisible.observe(
                     viewLifecycleOwner
@@ -76,7 +58,12 @@ class NSSplashFragment : BaseViewModelFragment<NSSplashViewModel, NsFragmentSpla
         NSApplication.getInstance().setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
         baseObserveViewModel(viewModel)
         observeViewModel()
-        viewModel.getAppTheme()
+        viewModel.getAppTheme {
+            if (it) {
+                NSConstants.IS_LANGUAGE_UPDATE = true
+                checkLoginStatus()
+            }
+        }
     }
 
     private fun checkLoginStatus() {

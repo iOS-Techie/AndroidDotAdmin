@@ -9,6 +9,7 @@ import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.databinding.LayoutCreateCapabiltiesBinding
@@ -76,7 +77,7 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
      */
     private fun viewCreated() {
         getCapabilityList(true)
-        viewModel.getLocalLanguageList()
+        viewModel.getLocalLanguages(isSelect = true)
         isFragmentAdd = true
     }
 
@@ -102,7 +103,7 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
      */
     private fun getCapabilityList(isShowProgress: Boolean, isCapabilityCheck: Boolean = true) {
         viewModel.apply {
-            getCapabilitiesList(isShowProgress, isCapabilityAvailableCheck = isCapabilityCheck) {
+            getCapabilities(isShowProgress, isCapabilityCheck) {
                 binding.srlRefresh.isRefreshing = false
                 setAdapter(it)
             }
@@ -153,7 +154,9 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                     if (!it) {
                         model.apply {
                             if (id != null) {
-                                capabilitiesDelete(id, true)
+                                capabilitiesDelete(id) { list ->
+                                    setAdapter(list)
+                                }
                             }
                         }
                     }
@@ -219,13 +222,11 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                                 createEditCapability(
                                     capabilityName,
                                     isCreate,
-                                    dataItem?.id ?: "") { isSuccess ->
+                                    dataItem?.id ?: "") { list ->
                                     progress.gone()
                                     dialog.dismiss()
-                                    if (isSuccess) {
-                                        getCapabilityList(true, isCapabilityCheck = false)
-                                    } else {
-                                        isProgressShowing.value = false
+                                    if (list.isValidList()) {
+                                        setAdapter(list)
                                     }
                                 }
                             }

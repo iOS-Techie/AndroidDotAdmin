@@ -79,7 +79,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/_6sdp"
         android:background="@drawable/white_round_12"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/cl_vehicle_list"

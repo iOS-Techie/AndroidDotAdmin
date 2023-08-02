@@ -2,11 +2,9 @@ package com.nyotek.dot.admin.ui.fleets.map
 
 import android.app.Application
 import android.location.Address
-import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSAddressRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
-import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSCreateFleetAddressRequest
 import com.nyotek.dot.admin.repository.network.requests.NSEditAddressRequest
 import com.nyotek.dot.admin.repository.network.responses.AddressData
@@ -21,35 +19,18 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
     var selectedAddressId: String = ""
     var currentAddressData: AddressData? = null
     var selectedAddressModel: AddressData? = null
-    var isFleetLocationListAvailable = NSSingleLiveEvent<FleetDataItem?>()
 
     private fun editAddress(callback: ((AddressData?) -> Unit)) {
         if (currentAddressData != null) {
             currentAddressData?.apply {
-                isProgressShowing.value = true
 
-                NSAddressRepository.editAddress(
-                    getSelectedEditAddressRequest(),
-                    object : NSGenericViewModelCallback {
-                        override fun <T> onSuccess(data: T) {
-                            isProgressShowing.value = false
-                            selectedVendorId = ""
-                            callback.invoke(selectedAddressModel)
-                        }
-
-                        override fun onError(errors: List<Any>) {
-                            handleError(errors)
-                        }
-
-                        override fun onFailure(failureMessage: String?) {
-                            handleFailure(failureMessage)
-                        }
-
-                        override fun <T> onNoNetwork(localData: T) {
-                            handleNoNetwork()
-                        }
-
-                    })
+                callCommonApi({ obj ->
+                    NSAddressRepository.editAddress(getSelectedEditAddressRequest(), obj)
+                }, { _, _ ->
+                    hideProgress()
+                    selectedVendorId = ""
+                    callback.invoke(selectedAddressModel)
+                })
             }
         } else {
             callback.invoke(selectedAddressModel)
@@ -78,7 +59,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
     }
 
     fun createOrEditAddress(callback: ((AddressData?) -> Unit)) {
-        isProgressShowing.value = true
+        showProgress()
         if (selectedAddressId.isNotEmpty()) {
             editAddress(callback)
         } else {
@@ -93,15 +74,6 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
             getSelectedCreateAddressRequest()
         }
         callback.invoke(selectedAddressModel)
-    }
-
-    fun branchAddressCreateEdit(callback: ((AddressData?) -> Unit)) {
-        isProgressShowing.value = true
-        if (selectedAddressId.isNotEmpty()) {
-            editAddress(callback)
-        } else {
-            createVendorAddress(callback)
-        }
     }
 
     private fun getSelectedCreateAddressRequest(): NSCreateFleetAddressRequest {
@@ -123,32 +95,20 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         return createAddressRequest
     }
 
-    private fun createVendorAddress(callback: ((AddressData?) -> Unit)){
-        NSAddressRepository.createFleetAddress(getSelectedCreateAddressRequest(),object : NSGenericViewModelCallback {
-            override fun <T> onSuccess(data: T) {
-                if (data is NSCreateFleetAddressResponse) {
-                    if (selectedAddressId.isEmpty()) {
-                        selectedAddressId = data.data?.id ?: ""
-                    }
-                    isProgressShowing.value = false
-                    callback.invoke(data.data)
+    private fun createVendorAddress(callback: ((AddressData?) -> Unit)) {
+
+        callCommonApi({ obj ->
+            NSAddressRepository.createFleetAddress(getSelectedCreateAddressRequest(), obj)
+        }, { data, isSuccess ->
+            hideProgress()
+            if (!isSuccess) {
+                callback.invoke(AddressData())
+            } else if (data is NSCreateFleetAddressResponse) {
+                if (selectedAddressId.isEmpty()) {
+                    selectedAddressId = data.data?.id ?: ""
                 }
+                callback.invoke(data.data)
             }
-
-            override fun onError(errors: List<Any>) {
-                callback.invoke(AddressData())
-                handleError(errors)
-            }
-
-            override fun onFailure(failureMessage: String?) {
-                callback.invoke(AddressData())
-                handleFailure(failureMessage)
-            }
-
-            override fun <T> onNoNetwork(localData: T) {
-                handleNoNetwork()
-            }
-
         })
     }
 
@@ -173,19 +133,25 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
      *
      * @param isShowProgress
      */
-    fun getFleetLocations(vendorId: String?, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSFleetRepository.getFleetLocations(vendorId!!, this)
+    fun getFleetLocations(
+        vendorId: String?,
+        isShowProgress: Boolean,
+        callback: ((FleetDataItem?) -> Unit?)
+    ) {
+        if (isShowProgress) showProgress()
+
+        callCommonApi({ obj ->
+            NSFleetRepository.getFleetLocations(vendorId!!, obj)
+        }, { data, _ ->
+            hideProgress()
+            if (data is FleetLocationResponse) {
+                callback.invoke(data.fleetDataItem)
+            }
+        })
+
     }
 
     override fun apiResponse(data: Any) {
-        when(data) {
-            is FleetLocationResponse -> {
-                isProgressShowing.value = false
-                isFleetLocationListAvailable.value =  data.fleetDataItem
-            }
-        }
+
     }
 }

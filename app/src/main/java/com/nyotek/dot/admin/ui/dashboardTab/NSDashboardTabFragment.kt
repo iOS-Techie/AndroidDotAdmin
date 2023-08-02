@@ -49,25 +49,20 @@ class NSDashboardTabFragment :
         initUI()
     }
 
-    override fun observeViewModel() {
-        super.observeViewModel()
-        with(viewModel) {
-            isFleetLocationListAvailable.observe(
-                viewLifecycleOwner
-            ) { fleetData ->
-                mapBoxView?.initMapView(
-                    requireContext(), binding.mapView,
-                    fleetData
-                )
-            }
-        }
-    }
-
     override fun loadFragment() {
         super.loadFragment()
         getCurrentLocation()
         isFragmentLoad = true
-        viewModel.getFleetLocations("", true)
+        viewModel.getFleetLocations("", true) {
+            initMapView(it)
+        }
+    }
+
+    private fun initMapView(fleetData: FleetDataItem?) {
+        mapBoxView?.initMapView(
+            requireContext(), binding.mapView,
+            fleetData
+        )
     }
 
     /***
@@ -129,7 +124,9 @@ class NSDashboardTabFragment :
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun getCurrentLocation(event: NSAddress) {
-        viewModel.getFleetLocations("", false)
+        viewModel.getFleetLocations("", false) {
+            initMapView(it)
+        }
         val address = event.addresses[0].getAddressLine(0).toString()
         if (address.isNotEmpty()) {
             event.locationResult.lastLocation?.apply {

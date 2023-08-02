@@ -8,8 +8,6 @@ import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSUserRepository
 import com.nyotek.dot.admin.repository.network.responses.NSCommonResponse
-import com.nyotek.dot.admin.repository.network.responses.NSLogoutResponse
-import com.nyotek.dot.admin.repository.network.responses.NSNotificationDeRegisterResponse
 import com.nyotek.dot.admin.repository.network.responses.NSSettingListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserDetailResponse
 
@@ -20,10 +18,9 @@ class NSSettingViewModel(application: Application) : NSViewModel(application) {
     var profileItemList: MutableList<NSSettingListResponse> = arrayListOf()
     var settingUserList: MutableList<NSCommonResponse> = arrayListOf()
     var isLogout = NSSingleLiveEvent<Boolean>()
-    var isNotificationDeRegister = NSSingleLiveEvent<Boolean>()
     var isSettingUserAvailable = NSSingleLiveEvent<Boolean>()
     var strUserDetail: String? = null
-    var userData: NSUserDetailResponse? = null
+    private var userData: NSUserDetailResponse? = null
 
     fun getJsonUserDetail(activity: Activity) {
         if (!strUserDetail.isNullOrEmpty()) {
@@ -45,16 +42,13 @@ class NSSettingViewModel(application: Application) : NSViewModel(application) {
     /**
      * Get profile list data
      *
-     * @param activity The activity's context
      */
-    fun getProfileListData(activity: Activity) {
-        with(activity) {
-            with(stringResource) {
-                profileItemList.clear()
-                profileItemList.add(NSSettingListResponse(selectLanguage, R.drawable.ic_select_language))
-                profileItemList.add(NSSettingListResponse(contactUs, R.drawable.ic_phone_settings))
-                profileItemList.add(NSSettingListResponse(logout, R.drawable.ic_logout))
-            }
+    fun getProfileListData() {
+        with(stringResource) {
+            profileItemList.clear()
+            profileItemList.add(NSSettingListResponse(selectLanguage, R.drawable.ic_select_language))
+            profileItemList.add(NSSettingListResponse(contactUs, R.drawable.ic_phone_settings))
+            profileItemList.add(NSSettingListResponse(logout, R.drawable.ic_logout))
         }
     }
 
@@ -62,20 +56,17 @@ class NSSettingViewModel(application: Application) : NSViewModel(application) {
      * logout data
      *
      */
-    fun logout(isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSUserRepository.logout(viewModelCallback = this@NSSettingViewModel)
+    fun logout() {
+        showProgress()
+        callCommonApi({ obj ->
+            NSUserRepository.logout(obj)
+        }, { _, _ ->
+            hideProgress()
+            isLogout.value = true
+        })
     }
 
     override fun apiResponse(data: Any) {
-        if (data is NSNotificationDeRegisterResponse) {
-            isProgressShowing.value = false
-            isNotificationDeRegister.value = true
-        } else if (data is NSLogoutResponse) {
-            isProgressShowing.value = false
-            isLogout.value = true
-        }
+
     }
 }

@@ -15,6 +15,6 @@ class SafeClickListener(private val onClickListener: () -> Unit) : View.OnClickL
     }
 
     companion object {
-        private const val CLICK_COOL_DOWN = 1000L
+        private const val CLICK_COOL_DOWN = 500L
     }
 }

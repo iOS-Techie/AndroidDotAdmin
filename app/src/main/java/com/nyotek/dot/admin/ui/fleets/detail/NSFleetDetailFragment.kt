@@ -103,12 +103,6 @@ class NSFleetDetailFragment :
                 setFleetDetailFromJson(fleetData)
             }
 
-            mapViewModel.isFleetLocationListAvailable.observe(
-                viewLifecycleOwner
-            ) { fleetData ->
-                setFleetLocationList(fleetData)
-            }
-
             isAllDataUpdateAvailable.observe(
                 viewLifecycleOwner
             ) { isAllDataUpdate ->
@@ -373,7 +367,7 @@ class NSFleetDetailFragment :
                         switchService.switchEnableDisable(isActive)
                         viewModel.selectedFleetId = vendorId
                         viewModel.isEnableFleet = isActive
-                        fleetViewModel.fleetEnableDisable(vendorId, isActive, true)
+                        fleetViewModel.fleetEnableDisable(vendorId, isActive)
                         tvFleetActive.status(isActive)
                     }
 
@@ -382,7 +376,9 @@ class NSFleetDetailFragment :
                     viewModel.apply {
                         layoutAddress.edtValue.text = addressDetailModel?.addr1 ?: ""
                         //getServiceList(true)
-                        mapViewModel.getFleetLocations(fleetModel.vendorId, true)
+                        mapViewModel.getFleetLocations(fleetModel.vendorId, true) { fleet ->
+                            setFleetLocationList(fleet)
+                        }
                     }
                 }
             }

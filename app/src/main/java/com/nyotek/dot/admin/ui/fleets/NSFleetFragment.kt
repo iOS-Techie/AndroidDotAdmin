@@ -53,12 +53,6 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         baseObserveViewModel(viewModel)
         observeViewModel()
         setFleetManagementAdapter()
-        FilterHelper(activity, binding.rvFleetsFilter) { _, list ->
-            viewModel.apply {
-                selectedFilterList = list
-                setFilterData(list)
-            }
-        }
     }
 
     override fun loadFragment() {
@@ -78,13 +72,6 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                     if (isSwipe) {
                         srlRefresh.isRefreshing = false
                     }
-                }
-
-                isFleetListAvailable.observe(
-                    viewLifecycleOwner
-                ) {
-                    srlRefresh.isRefreshing = false
-                    setFilterData(selectedFilterList)
                 }
             }
         }
@@ -108,7 +95,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
      */
     private fun viewCreated() {
         viewModel.apply {
-            getFleetList(!isFragmentLoad)
+            getFleetFromApi(!isFragmentLoad)
             isFragmentLoad = true
         }
     }
@@ -125,20 +112,46 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                     }
 
                     srlRefresh.setOnRefreshListener {
-                        getFleetList(false)
+                        getFleetFromApi(false)
                     }
 
                     tvHeaderBtn.setOnClickListener {
                         showFleetCreateDialog()
                     }
-
-                    etSearch.addOnTextChangedListener(
-                        onTextChanged = { text, _, _, _ ->
-                            ivClearData.setVisibility(text.toString().isNotEmpty())
-                            setFilterData(selectedFilterList, text.toString())
-                        }
-                    )
                 }
+            }
+        }
+    }
+
+    private fun getFleetFromApi(isShowProgress: Boolean) {
+        viewModel.apply {
+            getFleetList(isShowProgress) {
+                binding.srlRefresh.isRefreshing = false
+                setFleetData(it)
+            }
+        }
+    }
+
+    private fun setFleetData(fleetList: MutableList<FleetData>) {
+        binding.apply {
+            viewModel.apply {
+                var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
+
+                FilterHelper(activity, binding.rvFleetsFilter) { _, list ->
+                    viewModel.apply {
+                        filterList = list
+                        setFilterData(fleetList, list)
+                    }
+                }
+
+                layoutHomeHeader.etSearch.addOnTextChangedListener(
+                    onTextChanged = { text, _, _, _ ->
+                        layoutHomeHeader.ivClearData.setVisibility(text.toString().isNotEmpty())
+                        setFilterData(fleetList, filterList, text.toString())
+                    }
+                )
+
+                setFilterData(fleetList, filterList)
             }
         }
     }
@@ -154,7 +167,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                     fleetRecycleAdapter = NSFleetManagementRecycleAdapter({ model ->
                         openFleetDetail(model)
                     }, {serviceId, isEnable ->
-                        fleetEnableDisable(serviceId, isEnable, true)
+                        fleetEnableDisable(serviceId, isEnable)
                     })
 
                     setupWithAdapterAndCustomLayoutManager(fleetRecycleAdapter!!, GridLayoutManager(activity, 5))
@@ -173,7 +186,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         )
     }
 
-    private fun setFilterData(
+    private fun setFilterData(fleetList: MutableList<FleetData>,
         filterList: MutableList<ActiveInActiveFilter>,
         searchText: String = binding.layoutHomeHeader.etSearch.text.toString()
     ) {
@@ -181,14 +194,14 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
             val filterTypes = getFilterSelectedTypes(filterList)
             if (filterTypes.isNotEmpty()) {
 
-                val filter = fleetItemList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<FleetData>
+                val filter = fleetList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<FleetData>
                 setAdapterData(if (searchText.isEmpty()) filter else filter.filter { getLngValue(
                     it.name
                 ).lowercase().contains(searchText.lowercase()) } as MutableList<FleetData>)
 
             } else {
 
-                setAdapterData(if (searchText.isEmpty()) fleetItemList else fleetItemList.filter {
+                setAdapterData(if (searchText.isEmpty()) fleetList else fleetList.filter {
                     getLngValue(it.name).lowercase().contains(searchText.lowercase())
                 } as MutableList<FleetData>)
 
@@ -292,7 +305,9 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                                 createCompanyRequest.name = name
                                 createCompanyRequest.slogan = slogan
 
-                                createFleet()
+                                createFleet {
+                                    setFleetData(it)
+                                }
                             }
                         }
                     }
