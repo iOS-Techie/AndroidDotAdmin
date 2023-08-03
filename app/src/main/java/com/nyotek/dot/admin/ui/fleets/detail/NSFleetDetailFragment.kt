@@ -28,12 +28,10 @@ import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentFleetDetailBinding
-import com.nyotek.dot.admin.repository.network.requests.NSCreateFleetAddressRequest
 import com.nyotek.dot.admin.repository.network.requests.NSFleetLogoUpdateRequest
 import com.nyotek.dot.admin.repository.network.responses.AddressData
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
-import com.nyotek.dot.admin.ui.fleets.NSFleetViewModel
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeFragment
 import com.nyotek.dot.admin.ui.fleets.map.NSMapViewModel
 import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleFragment
@@ -49,10 +47,6 @@ class NSFleetDetailFragment :
 
     private val mapViewModel: NSMapViewModel by lazy {
         ViewModelProvider(this)[NSMapViewModel::class.java]
-    }
-
-    private val fleetViewModel: NSFleetViewModel by lazy {
-        ViewModelProvider(this)[NSFleetViewModel::class.java]
     }
 
     private var isFragmentAdded: Boolean = false
@@ -75,7 +69,6 @@ class NSFleetDetailFragment :
         super.setupViews()
         baseObserveViewModel(mapViewModel)
         baseObserveViewModel(viewModel)
-        baseObserveViewModel(fleetViewModel)
         observeViewModel()
         setFleetDetailBox()
         pageChangeListener()
@@ -87,7 +80,9 @@ class NSFleetDetailFragment :
         arguments = bundle
         arguments?.let {
             with(viewModel) {
-                getFleetDetail(it.getString(NSConstants.FLEET_DETAIL_KEY))
+                getFleetDetail(it.getString(NSConstants.FLEET_DETAIL_KEY)) {
+                    setFleetDetailFromJson(it)
+                }
             }
         }
         initUI()
@@ -97,12 +92,6 @@ class NSFleetDetailFragment :
     override fun observeViewModel() {
         super.observeViewModel()
         with(viewModel) {
-            isFleetDataAvailable.observe(
-                viewLifecycleOwner
-            ) { fleetData ->
-                setFleetDetailFromJson(fleetData)
-            }
-
             isAllDataUpdateAvailable.observe(
                 viewLifecycleOwner
             ) { isAllDataUpdate ->
@@ -149,12 +138,8 @@ class NSFleetDetailFragment :
                 cbFill.isChecked = true
                 cbFit.isChecked = false
                 fleetModel = null
-                selectedFleetId = ""
-                isEnableFleet = false
-                addressDetailModel = null
                 urlToUpload = ""
                 fleetLogoUpdateRequest = NSFleetLogoUpdateRequest()
-                createAddressRequest = NSCreateFleetAddressRequest()
                 tabService.removeAllTabs()
                 fleetPager.invisible()
                 manageFocus()
@@ -257,11 +242,11 @@ class NSFleetDetailFragment :
                         mapViewModel,
                         false,
                         binding.viewAddress,
-                        addressDetailModel ?: AddressData(),
+                        addressModel ?: AddressData(),
                         vendorId ?: "",
                         addressId ?: "",
                         serviceIds) { addressData, _ ->
-                        addressDetailModel = addressData
+                        addressModel = addressData
                         layoutAddress.edtValue.text = addressData?.addr1
                     }
                 }
@@ -345,7 +330,7 @@ class NSFleetDetailFragment :
 
                     //Tags
                     layoutTags.edtValue.gravity = Gravity.START
-                    val tagsList = tags?.joinToString(" ")?.trim()
+                    val tagsList = tags?.joinToString(" ")
                     layoutTags.edtValue.hint = stringResource.enterTag
                     layoutTags.edtValue.setText(tagsList)
 
@@ -365,16 +350,14 @@ class NSFleetDetailFragment :
                     switchService.setOnClickListener {
                         isActive = !isActive
                         switchService.switchEnableDisable(isActive)
-                        viewModel.selectedFleetId = vendorId
-                        viewModel.isEnableFleet = isActive
-                        fleetViewModel.fleetEnableDisable(vendorId, isActive)
+                        fleetEnableDisable(vendorId, isActive)
                         tvFleetActive.status(isActive)
                     }
 
                     layoutAddress.edtValue.ellipsize = TextUtils.TruncateAt.END
 
                     viewModel.apply {
-                        layoutAddress.edtValue.text = addressDetailModel?.addr1 ?: ""
+                        layoutAddress.edtValue.text = addressModel?.addr1 ?: ""
                         //getServiceList(true)
                         mapViewModel.getFleetLocations(fleetModel.vendorId, true) { fleet ->
                             setFleetLocationList(fleet)

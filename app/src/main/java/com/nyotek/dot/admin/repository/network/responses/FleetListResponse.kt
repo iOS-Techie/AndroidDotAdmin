@@ -75,5 +75,11 @@ data class FleetData(
 	val slogan: HashMap<String, String> = hashMapOf(),
 
 	@field:SerializedName("status")
-	val status: String? = null
+	val status: String? = null,
+
+	//Set Address
+	@field:SerializedName("address_model")
+	var addressModel: AddressData? = null
+
+
 )

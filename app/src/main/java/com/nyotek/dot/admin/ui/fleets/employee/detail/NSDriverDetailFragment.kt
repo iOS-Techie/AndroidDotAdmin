@@ -86,8 +86,7 @@ class NSDriverDetailFragment :
                 fleetDetail = it.getString(NSConstants.FLEET_DETAIL_KEY)
 
                 employeeViewModel.apply {
-                    strJobTitle = it.getString(NSConstants.Job_TITLE_LIST_KEY)
-                    getJobTitleListFromString()
+                    getJobTitleListFromString(it.getString(NSConstants.Job_TITLE_LIST_KEY))
                 }
 
                 getVehicleDetail()
@@ -187,7 +186,7 @@ class NSDriverDetailFragment :
                                 employeeDataItem?.userId,
                                 selectedId
                             )
-                            employeeEdit(true, employeeEditRequest)
+                            employeeEdit(employeeEditRequest)
                         }
                     }
                 }
@@ -278,7 +277,11 @@ class NSDriverDetailFragment :
                         isActive = !isActive
                         tvVehicleActive.status(isActive)
                         switchService.switchEnableDisable(isActive)
-                        employeeViewModel.employeeEnableDisable(fleetModel?.vendorId!!, employeeDataItem?.userId!!, isActive, isShowProgress = true)
+                        employeeViewModel.employeeEnableDisable(
+                            fleetModel?.vendorId!!,
+                            employeeDataItem?.userId!!,
+                            isActive
+                        )
                     }
                 }
 

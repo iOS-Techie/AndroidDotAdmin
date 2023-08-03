@@ -196,7 +196,7 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
 
     private fun employeeSwitch(vendorId: String, userId: String, isEnable: Boolean) {
         viewModel.apply {
-            employeeEnableDisable(vendorId, userId, isEnable, isShowProgress = true)
+            employeeEnableDisable(vendorId, userId, isEnable)
         }
     }
 
@@ -214,7 +214,7 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                 if (!it) {
                     employeeData.apply {
                         if (userId != null) {
-                            viewModel.employeeDelete(vendorId!!, userId, true)
+                            viewModel.employeeDelete(vendorId!!, userId)
                         }
                     }
                 }
@@ -310,8 +310,7 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                                     employeeAdd(
                                         vendorIdValue ?: "",
                                         userId,
-                                        selectedTitleId ?: "",
-                                        true
+                                        selectedTitleId ?: ""
                                     )
                                 } else {
                                     showError(stringResource.pleaseSelectUser)

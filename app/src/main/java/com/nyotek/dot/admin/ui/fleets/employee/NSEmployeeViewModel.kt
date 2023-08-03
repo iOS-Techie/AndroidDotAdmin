@@ -7,21 +7,17 @@ import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.common.utils.isValidList
-import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSEmployeeRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
-import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
-import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
-import com.nyotek.dot.admin.repository.network.responses.NSEmployeeBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSEmployeeAddDeleteBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSEmployeeResponse
-import com.nyotek.dot.admin.repository.network.responses.NSListJobTitleResponse
-import com.nyotek.dot.admin.repository.network.responses.NSUserDetail
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
+import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
+import com.nyotek.dot.admin.repository.network.responses.NSEmployeeResponse
+import com.nyotek.dot.admin.repository.network.responses.NSListJobTitleResponse
+import com.nyotek.dot.admin.repository.network.responses.NSUserDetail
 
 class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var employeeList: MutableList<EmployeeDataItem> = arrayListOf()
@@ -34,7 +30,6 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var vendorId: String? = null
     var employeeEditRequest: NSEmployeeEditRequest = NSEmployeeEditRequest()
     var searchUserList: MutableList<NSUserDetail> = arrayListOf()
-    var strJobTitle: String? = null
 
     fun getVendorDetail() {
         if (!strVendorDetail.isNullOrEmpty()) {
@@ -44,22 +39,24 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
         }
     }
 
-    fun getJobTitleListFromString() {
-        if (strJobTitle?.isNotEmpty() == true) {
+    fun getJobTitleListFromString(strJob: String?) {
+        if (strJob?.isNotEmpty() == true) {
             val listType = object : TypeToken<MutableList<JobListDataItem>>() {}.type
-            jobTitleList = Gson().fromJson(strJobTitle, listType)
+            jobTitleList = Gson().fromJson(strJob, listType)
         }
     }
 
     fun getJobTitleList(isShowProgress: Boolean, serviceIdList: MutableList<String> = arrayListOf()) {
         if (isShowProgress) {
-            isProgressShowing.value = true
+            showProgress()
         }
         if (serviceIdList.isValidList()) {
             val serviceId = serviceIdList[0]
-            NSEmployeeRepository.getJobTitle(serviceId, object : NSGenericViewModelCallback {
-                override fun <T> onSuccess(data: T) {
-                    if (data is NSListJobTitleResponse) {
+            callCommonApi({ obj ->
+                NSEmployeeRepository.getJobTitle(serviceId, obj)
+            }, { data, isSuccess ->
+                if (data is NSListJobTitleResponse) {
+                    if (isSuccess) {
                         if (vendorModel?.serviceIds?.size == serviceIdList.size) {
                             jobTitleList.clear()
                         }
@@ -73,28 +70,19 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                         }
                         serviceIdList.remove(serviceIdList[0])
                         getJobTitleList(isShowProgress, serviceIdList)
+                    } else {
+                        hideProgress()
                     }
+                } else {
+                    hideProgress()
                 }
-
-                override fun onError(errors: List<Any>) {
-                    handleError(errors)
-                }
-
-                override fun onFailure(failureMessage: String?) {
-                    handleFailure(failureMessage)
-                }
-
-                override fun <T> onNoNetwork(localData: T) {
-                    handleNoNetwork()
-                }
-
             })
         } else {
             if (jobTitleList.isValidList()) {
                 NSApplication.getInstance().setJobRoleType(jobTitleMap)
                 getEmployeeList(vendorId)
             } else {
-                isProgressShowing.value = false
+                hideProgress()
             }
         }
     }
@@ -116,86 +104,103 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
      */
     private fun getEmployeeList(vendorId: String?) {
         if (!vendorId.isNullOrEmpty()) {
-            NSEmployeeRepository.getEmployeeList(vendorId, this)
+            callCommonApi({ obj ->
+                NSEmployeeRepository.getEmployeeList(vendorId, obj)
+            }, { data, isSuccess ->
+                hideProgress()
+                if (isSuccess) {
+                    if (data is NSEmployeeResponse) {
+                        data.employeeList.sortByDescending { it.userId }
+                        val list = data.employeeList.filter { !it.isDeleted }
+                        isEmployeeListAvailable.postValue(list as MutableList<EmployeeDataItem>?)
+                    }
+                }
+            })
         } else {
-            isProgressShowing.value = false
+            hideProgress()
         }
     }
 
     /**
-     * Get user detail
+     * Employee Enable Disable
      *
-     * @param isShowProgress
      */
-    fun employeeEnableDisable(vendorId: String, userId: String, isEnable: Boolean, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSEmployeeRepository.enableDisableEmployee(vendorId, userId, isEnable, this)
+    fun employeeEnableDisable(vendorId: String, userId: String, isEnable: Boolean) {
+        callCommonApi({ obj ->
+            NSEmployeeRepository.enableDisableEmployee(vendorId, userId, isEnable, obj)
+        }, { _, _ ->
+
+        })
     }
 
     /**
      * employee delete
      *
-     * @param isShowProgress
      */
-    fun employeeDelete(vendorId: String, userId: String, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSEmployeeRepository.deleteEmployee(vendorId, userId, this)
+    fun employeeDelete(vendorId: String, userId: String) {
+        showProgress()
+        callCommonApi({ obj ->
+            NSEmployeeRepository.deleteEmployee(vendorId, userId, obj)
+        }, { _, isSuccess ->
+            if (isSuccess) {
+                getEmployeeList(vendorId)
+            } else {
+                hideProgress()
+            }
+        })
     }
 
     /**
-     * Get user detail
+     * Employee Edit
      *
-     * @param isShowProgress
      */
-    fun employeeEdit(isShowProgress: Boolean, request: NSEmployeeEditRequest) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSEmployeeRepository.editEmployee(request, this)
+    fun employeeEdit(request: NSEmployeeEditRequest) {
+        showProgress()
+        callCommonApi({ obj ->
+            NSEmployeeRepository.editEmployee(request, obj)
+        }, { _, isSuccess ->
+            if (isSuccess) {
+                getEmployeeList(vendorId)
+            } else {
+                hideProgress()
+            }
+        })
     }
 
     /**
      * add employees
      *
-     * @param isShowProgress
      */
-    fun employeeAdd(vendorId: String, userId: String, titleId: String, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
-        NSEmployeeRepository.addEmployee(vendorId, userId, titleId, this)
+    fun employeeAdd(vendorId: String, userId: String, titleId: String) {
+        showProgress()
+        callCommonApi({ obj ->
+            NSEmployeeRepository.addEmployee(vendorId, userId, titleId, obj)
+        }, { _, isSuccess ->
+            if (isSuccess) {
+                getEmployeeList(vendorId)
+            } else {
+                hideProgress()
+            }
+        })
     }
 
     fun getDriverLocation(driverId: String?) {
         if (driverId?.isNotEmpty() == true) {
-            isProgressShowing.value = true
-            NSFleetRepository.getDriverLocations(driverId, this)
+            showProgress()
+            callCommonApi({ obj ->
+                NSFleetRepository.getDriverLocations(driverId, obj)
+            }, { data, isSuccess ->
+                hideProgress()
+                if (isSuccess) {
+                    if (data is FleetLocationResponse) {
+                        isDriverLocationAvailable.value = data.fleetDataItem
+                    }
+                }
+            })
         }
     }
 
     override fun apiResponse(data: Any) {
 
-        when (data) {
-            is NSEmployeeResponse -> {
-                isProgressShowing.value = false
-                data.employeeList.sortByDescending { it.userId }
-                val list = data.employeeList.filter { !it.isDeleted }
-                isEmployeeListAvailable.postValue(list as MutableList<EmployeeDataItem>?)
-            }
-            is NSEmployeeBlankDataResponse -> {
-                isProgressShowing.value = false
-            }
-            is NSEmployeeAddDeleteBlankDataResponse -> {
-                getEmployeeList(vendorId)
-            }
-            is FleetLocationResponse -> {
-                isProgressShowing.value = false
-                isDriverLocationAvailable.value = data.fleetDataItem
-            }
-        }
     }
 }

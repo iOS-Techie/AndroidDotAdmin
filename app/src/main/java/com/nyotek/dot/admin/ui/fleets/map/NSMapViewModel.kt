@@ -33,6 +33,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
                 })
             }
         } else {
+            hideProgress()
             callback.invoke(selectedAddressModel)
         }
     }
@@ -63,7 +64,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         if (selectedAddressId.isNotEmpty()) {
             editAddress(callback)
         } else {
-            createVendorAddress(callback)
+            createFleetAddress(callback)
         }
     }
 
@@ -95,7 +96,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         return createAddressRequest
     }
 
-    private fun createVendorAddress(callback: ((AddressData?) -> Unit)) {
+    private fun createFleetAddress(callback: ((AddressData?) -> Unit)) {
 
         callCommonApi({ obj ->
             NSAddressRepository.createFleetAddress(getSelectedCreateAddressRequest(), obj)
