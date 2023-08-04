@@ -28,7 +28,7 @@
 
 #-keeppackagenames doNotKeepAThing
 -flattenpackagehierarchy
--adaptclassstrings Constants,Constant
+#-adaptclassstrings Constants,Constant
 -keep class kotlin.coroutines.** { *; }
 -keepattributes Signature,*Annotation*,EnclosingMethod
 -adaptresourcefilecontents **.properties,META-INF/MANIFEST.MF

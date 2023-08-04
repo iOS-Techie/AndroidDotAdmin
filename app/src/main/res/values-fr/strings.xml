@@ -12,4 +12,5 @@
     <string name="open_location_settings">Device location is turned off, please turn on to continue use this app.</string>
     <string name="please_turn_on_gps">Please turn on GPS</string>
     <string name="description">Description</string>
+    <string name="slash">/</string>
 </resources>
