@@ -17,6 +17,7 @@ import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
+import com.nyotek.dot.admin.common.callbacks.NSEmployeeEditCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
@@ -178,8 +179,8 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
         viewModel.apply {
             with(binding) {
                 with(rvEmployeeList) {
-                    empAdapter = NSEmployeeRecycleAdapter({ model, isDelete ->
-                        employeeEditDelete(model, !isDelete)
+                    empAdapter = NSEmployeeRecycleAdapter({ model, isDelete, position ->
+                        employeeEditDelete(model, !isDelete, position)
                     }, { vendorId, userId, isEnable ->
                         employeeSwitch(vendorId, userId, isEnable)
                     }, { vendorId ->
@@ -200,9 +201,9 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
         }
     }
 
-    private fun employeeEditDelete(employeeData: EmployeeDataItem, isEdit: Boolean) {
+    private fun employeeEditDelete(employeeData: EmployeeDataItem, isEdit: Boolean, position: Int) {
         if (isEdit) {
-            editEmployeeData(employeeData)
+            editEmployeeData(employeeData, position)
         } else {
             showCommonDialog(
                 title = "",
@@ -222,7 +223,7 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
         }
     }
 
-    private fun editEmployeeData(response: EmployeeDataItem) {
+    private fun editEmployeeData(response: EmployeeDataItem, position: Int) {
         viewModel.apply {
             val bundle = bundleOf(
                 NSConstants.DRIVER_DETAIL_KEY to Gson().toJson(response),
@@ -231,7 +232,11 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
             )
             fleetManagementFragmentChangeCallback?.setFragment(
                 this@NSEmployeeFragment.javaClass.simpleName,
-                NSDriverDetailFragment.newInstance(bundle),
+                NSDriverDetailFragment.newInstance(bundle, object : NSEmployeeEditCallback {
+                    override fun onEmployee(empDataItem: EmployeeDataItem) {
+                        empAdapter?.updateSingleData(empDataItem, position)
+                    }
+                }),
                 true, bundle
             )
         }

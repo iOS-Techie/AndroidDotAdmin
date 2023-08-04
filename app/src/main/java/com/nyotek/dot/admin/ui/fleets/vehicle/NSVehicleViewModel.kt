@@ -3,81 +3,88 @@ package com.nyotek.dot.admin.ui.fleets.vehicle
 import android.app.Application
 import com.google.gson.Gson
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
+import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.repository.NSVehicleRepository
-import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
+import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
-import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
-import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
-import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleResponse
-import com.nyotek.dot.admin.repository.network.responses.VehicleData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 
 class NSVehicleViewModel(application: Application) : NSViewModel(application) {
-    var isVehicleListAvailable = NSSingleLiveEvent<MutableList<VehicleDataItem>>()
-    var isVehicleDetailAvailable = NSSingleLiveEvent<VehicleData?>()
     var ownerId: String? = null
     var strVehicleDetail: String? = null
     var fleetModel: FleetData? = null
     var uploadFileUrl: String? = null
 
-    fun getVehicleDetail() {
+    fun getVehicleDetail(isShowProgress: Boolean, callback: ((MutableList<VehicleDataItem>) -> Unit)) {
         if (!strVehicleDetail.isNullOrEmpty()) {
-            fleetModel = Gson().fromJson(strVehicleDetail, FleetData::class.java)
+            if (fleetModel == null) {
+                fleetModel = Gson().fromJson(strVehicleDetail, FleetData::class.java)
+            }
             ownerId = fleetModel?.vendorId
-            getVehicleList(ownerId,true)
+            if (ownerId?.isNotEmpty() == true) {
+                getCapabilities(isShowProgress, ownerId!!, isShowError = true, false, callback) {}
+            } else {
+                callback.invoke(arrayListOf())
+            }
+        }
+    }
+
+    fun getCapabilities(
+        isShowProgress: Boolean,
+        id: String? = null,
+        isShowError: Boolean = true,
+        isCapabilityCheck: Boolean = false,
+        callback: ((MutableList<VehicleDataItem>) -> Unit)? = null,
+        capCallback: ((MutableList<CapabilitiesDataItem>) -> Unit?)
+    ) {
+        if (isShowProgress) showProgress()
+        getCapabilitiesList(isShowError = isShowError, isCapabilityCheck = isCapabilityCheck) {
+            if (id != null && callback != null) {
+                getVehicleList(false, id, it, callback)
+            } else {
+                hideProgress()
+                capCallback.invoke(it)
+            }
         }
     }
 
     /**
-     * Get user detail
+     * Get vehicle list
      *
-     * @param isShowProgress
      */
-    fun getVehicleList(refId: String?, isShowProgress: Boolean) {
-        if (refId != null) {
-            if (isShowProgress) {
-                isProgressShowing.value = true
+    fun getVehicleList(isShowProgress: Boolean, refId: String, list: MutableList<CapabilitiesDataItem>, callback: (MutableList<VehicleDataItem>) -> Unit) {
+        if (isShowProgress) showProgress()
+        callCommonApi({ obj ->
+            NSVehicleRepository.getVehicleList(refId, obj)
+        }, { data, _ ->
+            hideProgress()
+            if (data is NSVehicleResponse) {
+                data.data.sortByDescending { it.id }
+
+                for (vehicle in data.data) {
+                    vehicle.capabilityNameList = list.filter { vehicle.capabilities.contains(it.id) }
+                        .joinToString { getLngValue(it.label) }
+                }
+
+                callback.invoke(data.data)
             }
-            NSVehicleRepository.getVehicleList(refId, this)
-        }
+        })
     }
-
-    fun getAssignVehicleDriver(driverId: String?, fleetId: String, isShowProgress: Boolean) {
-        if (driverId != null) {
-            if (isShowProgress) {
-                isProgressShowing.value = true
-            }
-            NSVehicleRepository.getAssignVehicleDriver(driverId, fleetId, this)
-        }
-    }
-
-    fun getDriverVehicleDetail(vehicleId: String?) {
-        if (vehicleId != null) {
-            isProgressShowing.value = true
-            NSVehicleRepository.getDriverVehicleDetail(vehicleId, this)
-        }
-    }
-
-
 
     /**
-     * Get user detail
+     * Vehicle Enable Disable
      *
-     * @param isShowProgress
      */
-    fun vehicleEnableDisable(vehicleId: String?, isEnable: Boolean, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
-        }
+    fun vehicleEnableDisable(vehicleId: String?, isEnable: Boolean) {
         if (vehicleId != null) {
-            NSVehicleRepository.enableDisableVehicle(vehicleId, isEnable, this)
-        } else {
-            isProgressShowing.value = false
+            callCommonApi({ obj ->
+                NSVehicleRepository.enableDisableVehicle(vehicleId, isEnable, obj)
+            }, { _, _ ->
+
+            })
         }
     }
 
@@ -95,57 +102,18 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
         request.registrationNo = detail[NSConstants.REGISTRATION_NO]
         request.vehicleImg = uploadFileUrl
 
-        NSVehicleRepository.createVehicle(request,object : NSGenericViewModelCallback {
-            override fun <T> onSuccess(data: T) {
-                isProgressShowing.value = false
+        callCommonApi({ obj ->
+            NSVehicleRepository.createVehicle(request, obj)
+        }, { _, isSuccess ->
+            callback.invoke(isSuccess)
+            hideProgress()
+            if (isSuccess) {
                 uploadFileUrl = ""
-                //isProgressShowing.value = false
-                callback.invoke(true)
             }
-
-            override fun onError(errors: List<Any>) {
-                callback.invoke(false)
-               handleError(errors)
-            }
-
-            override fun onFailure(failureMessage: String?) {
-                callback.invoke(false)
-               handleFailure(failureMessage)
-            }
-
-            override fun <T> onNoNetwork(localData: T) {
-                callback.invoke(false)
-                handleNoNetwork()
-            }
-
         })
     }
 
     override fun apiResponse(data: Any) {
-        when (data) {
-            is NSVehicleResponse -> {
-                isProgressShowing.value = false
-                isVehicleListAvailable.value = data.data
-            }
-            is NSFleetBlankDataResponse -> {
-                branchSuccess()
-            }
-            is NSVehicleBlankDataResponse -> {
-                isProgressShowing.value = false
-            }
-            is NSAssignVehicleDriverResponse -> {
-                getDriverVehicleDetail(data.data?.vehicleId)
-            }
-            is NSDriverVehicleDetailResponse -> {
-                isProgressShowing.value = false
-                if (data.data != null) {
-                    isVehicleDetailAvailable.value = data.data
-                }
-            }
-        }
-    }
 
-    private fun branchSuccess() {
-        isProgressShowing.value = false
     }
 }

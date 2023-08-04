@@ -20,7 +20,6 @@ import com.nyotek.dot.admin.repository.network.responses.NSVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.VehicleDetailData
 
 class NSVehicleDetailViewModel(application: Application) : NSViewModel(application) {
-    var isVehicleDetailAvailable = NSSingleLiveEvent<VehicleDetailData>()
     var selectedVehicleId: String? = null
     var isEnableVehicle: Boolean = false
     var driverId: String? = null
@@ -28,7 +27,6 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
     var fleetDetail: String? = null
     var vehicleDataItem: VehicleDataItem? = null
     var fleetModel: FleetData? = null
-    var isVehicleAssign = NSSingleLiveEvent<Boolean>()
 
     fun getVehicleDetail() {
         if (!strVehicleDetail.isNullOrEmpty()) {
@@ -52,9 +50,18 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
         NSVehicleRepository.updateVehicleImage(request, this)
     }
 
-    fun assignVehicle(driverId: String, vehicleId: String? = vehicleDataItem?.id, capabilities: MutableList<String> = vehicleDataItem?.capabilities?: arrayListOf()) {
+    fun assignVehicle(driverId: String, vehicleId: String? = vehicleDataItem?.id, capabilities: MutableList<String> = vehicleDataItem?.capabilities?: arrayListOf(), callback: (Boolean) -> Unit) {
         val request = NSAssignVehicleRequest(driverId, fleetModel?.vendorId, vehicleId, capabilities)
-        NSVehicleRepository.assignVehicle(request, this)
+
+        callCommonApi({ obj ->
+            NSVehicleRepository.assignVehicle(request, obj)
+        }, { _, isSuccess ->
+            if (isSuccess) {
+                callback.invoke(true)
+            }
+        })
+
+
     }
 
     /**
@@ -62,28 +69,37 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
      *
      * @param isShowProgress
      */
-    fun getVehicleDetail(id: String, isShowProgress: Boolean) {
-        if (isShowProgress) {
-            isProgressShowing.value = true
+    fun getVehicleDetail(id: String, isShowProgress: Boolean, callback: ((VehicleDetailData) -> Unit)) {
+        if (isShowProgress) showProgress()
+        callCommonApi({ obj ->
+            NSVehicleRepository.getVehicleDetail(id, obj)
+        }, { data, isSuccess ->
+            hideProgress()
+            if (isSuccess) {
+                if (data is NSVehicleDetailResponse) {
+                    callback.invoke(data.vehicleDetailData ?: VehicleDetailData())
+                }
+            }
+        }, false)
+    }
+
+    fun vehicleEnableDisable(vehicleId: String?, isEnable: Boolean) {
+        if (vehicleId != null) {
+            callCommonApi({ obj ->
+                NSVehicleRepository.enableDisableVehicle(vehicleId, isEnable, obj)
+            }, { _, _ ->
+
+            })
         }
-        NSVehicleRepository.getVehicleDetail(id, this)
     }
 
     override fun apiResponse(data: Any) {
         when (data) {
-            is NSVehicleDetailResponse -> {
-                isProgressShowing.value = false
-                isVehicleDetailAvailable.postValue(data.vehicleDetailData?:VehicleDetailData())
-            }
             is NSFleetBlankDataResponse -> {
                 branchSuccess()
             }
             is NSVehicleBlankDataResponse -> {
                 isProgressShowing.value = false
-            }
-            is NSVehicleAssignBlankDataResponse -> {
-                isProgressShowing.value = false
-                isVehicleAssign.value = true
             }
         }
     }

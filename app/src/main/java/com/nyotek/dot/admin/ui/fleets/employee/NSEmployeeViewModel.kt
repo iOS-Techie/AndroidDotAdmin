@@ -9,15 +9,21 @@ import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.repository.NSEmployeeRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
+import com.nyotek.dot.admin.repository.NSVehicleRepository
+import com.nyotek.dot.admin.repository.network.requests.NSAssignVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
 import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
+import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
+import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSEmployeeResponse
 import com.nyotek.dot.admin.repository.network.responses.NSListJobTitleResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserDetail
+import com.nyotek.dot.admin.repository.network.responses.VehicleData
+import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 
 class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var employeeList: MutableList<EmployeeDataItem> = arrayListOf()
@@ -31,11 +37,25 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var employeeEditRequest: NSEmployeeEditRequest = NSEmployeeEditRequest()
     var searchUserList: MutableList<NSUserDetail> = arrayListOf()
 
+    //Driver Detail
+    var fleetDetail: String? = null
+    var strVehicleDetail: String? = null
+    var employeeDataItem: EmployeeDataItem? = null
+    var fleetModel: FleetData? = null
+    var vehicleDataList: MutableList<VehicleDataItem> = arrayListOf()
+
     fun getVendorDetail() {
         if (!strVendorDetail.isNullOrEmpty()) {
             vendorModel = Gson().fromJson(strVendorDetail, FleetData::class.java)
             vendorId = vendorModel?.vendorId
             getJobTitleList(true, vendorModel?.serviceIds?: arrayListOf())
+        }
+    }
+
+    fun getDriverDetail() {
+        if (!strVehicleDetail.isNullOrEmpty()) {
+            employeeDataItem = Gson().fromJson(strVehicleDetail, EmployeeDataItem::class.java)
+            fleetModel = Gson().fromJson(fleetDetail, FleetData::class.java)
         }
     }
 
@@ -195,6 +215,50 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                     if (data is FleetLocationResponse) {
                         isDriverLocationAvailable.value = data.fleetDataItem
                     }
+                }
+            })
+        }
+    }
+
+    fun assignVehicle(driverId: String, vehicleId: String? = "", capabilities: MutableList<String>, callback: ((Boolean) -> Unit)) {
+        val request = NSAssignVehicleRequest(driverId, fleetModel?.vendorId, vehicleId, capabilities)
+        callCommonApi({ obj ->
+            NSVehicleRepository.assignVehicle(request, obj)
+        }, { _, isSuccess ->
+            hideProgress()
+            if (isSuccess) {
+                callback.invoke(true)
+            }
+        })
+    }
+
+    fun getAssignVehicleDriver(driverId: String?, fleetId: String, isShowProgress: Boolean, callback: ((VehicleData?) -> Unit)) {
+        if (driverId != null) {
+            if (isShowProgress) showProgress()
+            callCommonApi({ obj ->
+                NSVehicleRepository.getAssignVehicleDriver(driverId, fleetId, obj)
+            }, { data, isSuccess ->
+                if (!isSuccess) {
+                    hideProgress()
+                }
+                if (data is NSAssignVehicleDriverResponse) {
+                    getDriverVehicleDetail(data.data?.vehicleId, callback)
+                } else {
+                    hideProgress()
+                }
+            })
+        }
+    }
+
+    fun getDriverVehicleDetail(vehicleId: String?, callback: ((VehicleData?) -> Unit)) {
+        if (vehicleId != null) {
+            showProgress()
+            callCommonApi({ obj ->
+                NSVehicleRepository.getDriverVehicleDetail(vehicleId, obj)
+            }, { data, _ ->
+                hideProgress()
+                if (data is NSDriverVehicleDetailResponse) {
+                    callback.invoke(data.data)
                 }
             })
         }

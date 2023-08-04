@@ -38,7 +38,7 @@ data class VehicleDataItem(
 	val manufacturingYear: String? = null,
 
 	@field:SerializedName("vehicle_img")
-	val vehicleImg: String? = null,
+    var vehicleImg: String? = null,
 
 	@field:SerializedName("load_capacity")
 	val loadCapacity: String? = null,
@@ -54,4 +54,7 @@ data class VehicleDataItem(
 
 	@field:SerializedName("updated_at")
 	val updatedAt: String? = null,
+
+	@field:SerializedName("capability_name_list")
+	var capabilityNameList: String? = null
 )

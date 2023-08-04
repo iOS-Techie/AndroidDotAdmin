@@ -8,10 +8,10 @@ import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
+import com.nyotek.dot.admin.common.callbacks.NSEmployeeEditCallback
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
-import com.nyotek.dot.admin.common.utils.glide
+import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -26,7 +26,6 @@ import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
-import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeViewModel
 import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleViewModel
 import org.greenrobot.eventbus.Subscribe
@@ -34,28 +33,24 @@ import org.greenrobot.eventbus.ThreadMode
 
 
 class NSDriverDetailFragment :
-    BaseViewModelFragment<NSDriverDetailViewModel, NsFragmentDriverDetailBinding>(),
-    NSFileUploadCallback {
+    BaseViewModelFragment<NSEmployeeViewModel, NsFragmentDriverDetailBinding>() {
 
-    override val viewModel: NSDriverDetailViewModel by lazy {
-        ViewModelProvider(this)[NSDriverDetailViewModel::class.java]
+    override val viewModel: NSEmployeeViewModel by lazy {
+        ViewModelProvider(this)[NSEmployeeViewModel::class.java]
     }
 
     private val vehicleViewModel: NSVehicleViewModel by lazy {
         ViewModelProvider(this)[NSVehicleViewModel::class.java]
     }
-    private val employeeViewModel: NSEmployeeViewModel by lazy {
-        ViewModelProvider(this)[NSEmployeeViewModel::class.java]
-    }
-    private val capabilitiesViewModel: NSCapabilitiesViewModel by lazy {
-        ViewModelProvider(this)[NSCapabilitiesViewModel::class.java]
-    }
 
     private var mapBoxView: MapBoxView? = null
 
     companion object {
-        fun newInstance(bundle: Bundle?) = NSDriverDetailFragment().apply {
+
+        private var empCallback: NSEmployeeEditCallback? = null
+        fun newInstance(bundle: Bundle?, callback: NSEmployeeEditCallback? = null) = NSDriverDetailFragment().apply {
             arguments = bundle
+            empCallback = callback
         }
     }
 
@@ -72,8 +67,6 @@ class NSDriverDetailFragment :
         binding.clMap.visible()
         baseObserveViewModel(viewModel)
         baseObserveViewModel(vehicleViewModel)
-        baseObserveViewModel(employeeViewModel)
-        baseObserveViewModel(capabilitiesViewModel)
         viewCreated()
     }
 
@@ -85,11 +78,8 @@ class NSDriverDetailFragment :
                 strVehicleDetail = it.getString(NSConstants.DRIVER_DETAIL_KEY)
                 fleetDetail = it.getString(NSConstants.FLEET_DETAIL_KEY)
 
-                employeeViewModel.apply {
-                    getJobTitleListFromString(it.getString(NSConstants.Job_TITLE_LIST_KEY))
-                }
-
-                getVehicleDetail()
+                getJobTitleListFromString(it.getString(NSConstants.Job_TITLE_LIST_KEY))
+                getDriverDetail()
                 initDriverDetail()
                 setListener()
             }
@@ -98,31 +88,7 @@ class NSDriverDetailFragment :
 
     override fun observeViewModel() {
         super.observeViewModel()
-        with(vehicleViewModel) {
-            isVehicleListAvailable.observe(
-                viewLifecycleOwner
-            ) { response ->
-                setVehicleList(response)
-            }
-
-            isVehicleDetailAvailable.observe(
-                viewLifecycleOwner
-            ) { response ->
-                setDriverVehicleDetail(response)
-            }
-        }
-
         viewModel.apply {
-            isVehicleAssign.observe(
-                viewLifecycleOwner
-            ) {
-                if (it) {
-                    vehicleViewModel.getDriverVehicleDetail(employeeDataItem?.vehicleId )
-                }
-            }
-        }
-
-        employeeViewModel.apply {
             isDriverLocationAvailable.observe(viewLifecycleOwner) {
                 mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver, it)
             }
@@ -151,15 +117,19 @@ class NSDriverDetailFragment :
                     spinnerRole.tvCommonTitle.text = employeeRole
                     clDriverItem.gone()
                     layoutName.edtValue.setText(employeeDataItem?.titleId)
+                    layoutName.edtValue.isEnabled = false
                     layoutFleet.edtValue.getMapValue(fleetModel?.name)
+                    layoutFleet.edtValue.isEnabled = false
                     switchService.switchEnableDisable(employeeDataItem?.isActive == true)
 
-                    setEmployeeRole(employeeViewModel.jobTitleList)
+                    setEmployeeRole(viewModel.jobTitleList)
 
                     if (isApiCall) {
                         //Get Vehicle Detail
                         vehicleViewModel.apply {
-                            getVehicleList(viewModel.fleetModel?.vendorId, true)
+                            getVehicleList(true, viewModel.fleetModel?.vendorId?:"", arrayListOf()) {
+                                setVehicleList(it)
+                            }
                         }
                     }
                 }
@@ -180,12 +150,14 @@ class NSDriverDetailFragment :
                     if (spinnerTitleId != selectedId) {
                         spinnerTitleId = selectedId
 
-                        employeeViewModel.apply {
+                        viewModel.apply {
                             employeeEditRequest = NSEmployeeEditRequest(
                                 fleetModel?.vendorId,
                                 employeeDataItem?.userId,
                                 selectedId
                             )
+                            employeeDataItem?.titleId = spinnerTitleId
+                            empCallback?.onEmployee(employeeDataItem!!)
                             employeeEdit(employeeEditRequest)
                         }
                     }
@@ -199,8 +171,10 @@ class NSDriverDetailFragment :
             viewModel.apply {
                 vehicleDataList = list
                 fleetModel?.vendorId?.let {
-                    vehicleViewModel.getAssignVehicleDriver(employeeDataItem?.userId,
-                        it,true)
+                    getAssignVehicleDriver(employeeDataItem?.userId,
+                        it,true) { vehicleData ->
+                        setDriverVehicleDetail(vehicleData)
+                    }
                 }
             }
         }
@@ -215,14 +189,14 @@ class NSDriverDetailFragment :
                 clDriverItem.setVisibility(isVisible)
 
                 vehicleData?.apply {
-                    icDriverImg.glide(url = vehicleImg)
+                    icDriverImg.glideCenter(url = vehicleImg)
                     tvUserTitle.text = manufacturer?:""
                     tvStatus.text = model?:""
                     updateVehicle(vehicleData)
                 }
 
-                if (viewModel.employeeDataItem?.userId?.isNotEmpty() == true) {
-                    employeeViewModel.getDriverLocation(viewModel.employeeDataItem?.userId!!)
+                if (employeeDataItem?.userId?.isNotEmpty() == true) {
+                    getDriverLocation(employeeDataItem?.userId!!)
                 }
             }
         }
@@ -242,12 +216,25 @@ class NSDriverDetailFragment :
                             spinnerTitleId = selectedId
                             if (spinnerTitleId?.isNotEmpty() == true) {
                                 employeeDataItem?.vehicleId = selectedId
-                                assignVehicle(
-                                    employeeDataItem?.userId!!, selectedId,
-                                    capabilities
-                                )
+                                empCallback?.onEmployee(employeeDataItem!!)
+                                assignVehicleToDriver(selectedId, capabilities)
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun assignVehicleToDriver(selectedId: String = "", capabilities: MutableList<String>) {
+        viewModel.apply {
+            assignVehicle(
+                employeeDataItem?.userId!!, selectedId,
+                capabilities
+            ) {
+                if (it) {
+                    getDriverVehicleDetail(employeeDataItem?.vehicleId) { vehicleData ->
+                        setDriverVehicleDetail(vehicleData)
                     }
                 }
             }
@@ -260,9 +247,7 @@ class NSDriverDetailFragment :
     private fun viewCreated() {
         viewModel.apply {
             baseObserveViewModel(viewModel)
-            baseObserveViewModel(capabilitiesViewModel)
             observeViewModel()
-            // getVendorList(true)
         }
     }
 
@@ -277,7 +262,8 @@ class NSDriverDetailFragment :
                         isActive = !isActive
                         tvVehicleActive.status(isActive)
                         switchService.switchEnableDisable(isActive)
-                        employeeViewModel.employeeEnableDisable(
+                        empCallback?.onEmployee(this)
+                        employeeEnableDisable(
                             fleetModel?.vendorId!!,
                             employeeDataItem?.userId!!,
                             isActive
@@ -296,9 +282,7 @@ class NSDriverDetailFragment :
                         positiveButton = stringResource.ok,
                         negativeButton = stringResource.cancel) {
                         if (!it) {
-                            assignVehicle(
-                                viewModel.employeeDataItem?.userId!!, capabilities = arrayListOf()
-                            )
+                            assignVehicleToDriver(capabilities = arrayListOf())
                         }
                     }
                 }
@@ -313,12 +297,6 @@ class NSDriverDetailFragment :
             event.locationResult.lastLocation?.apply {
                 mapBoxView?.setCurrentLatLong(latitude, longitude)
             }
-        }
-    }
-
-    override fun onFileUrl(url: String, width: Int, height: Int) {
-        viewModel.apply {
-            updateVehicleImage(url)
         }
     }
 }

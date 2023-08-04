@@ -437,6 +437,13 @@ fun ImageView.glide(resource: Int = 0, url: String? = null) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).into(this)
 }
 
+fun ImageView.glideCenter(resource: Int = 0, url: String? = null) {
+    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).apply(
+        RequestOptions().transform(
+            CenterCrop()
+        )).into(this)
+}
+
 fun ImageView.glide200(resource: Int = 0, url: String? = null, scale: String?) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).apply(
         RequestOptions().transform(

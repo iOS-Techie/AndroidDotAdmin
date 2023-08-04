@@ -12,9 +12,10 @@ import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
+import com.nyotek.dot.admin.common.callbacks.NSVehicleEditCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
-import com.nyotek.dot.admin.common.utils.glide
+import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.visible
@@ -22,7 +23,6 @@ import com.nyotek.dot.admin.databinding.LayoutCreateVehicleBinding
 import com.nyotek.dot.admin.databinding.NsFragmentVehicleBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
-import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
 import com.nyotek.dot.admin.ui.fleets.vehicle.detail.NSVehicleDetailFragment
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -30,17 +30,12 @@ import org.greenrobot.eventbus.ThreadMode
 
 class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVehicleBinding>(), NSFileUploadCallback {
 
-    private val capabilitiesViewModel: NSCapabilitiesViewModel by lazy {
-        ViewModelProvider(this)[NSCapabilitiesViewModel::class.java]
-    }
-
     override val viewModel: NSVehicleViewModel by lazy {
         ViewModelProvider(this)[NSVehicleViewModel::class.java]
     }
 
     private var vehicleRecycleAdapter: NSVehicleRecycleAdapter? = null
     private var mapBoxView: MapBoxView? = null
-    private var layoutCreateVehicle: LayoutCreateVehicleBinding? = null
     private var isFragmentLoad = false
     private val brandLogoHelper: BrandLogoHelper = BrandLogoHelper(this, callback = this)
 
@@ -75,7 +70,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                     initCreateVendor()
                     viewCreated()
                     setListener()
-                    getVehicleDetail()
+                    getUserVehicle(true)
                 }
             }
         }
@@ -92,13 +87,6 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                     if (isSwipe) {
                         srlRefresh.isRefreshing = false
                     }
-                }
-
-                isVehicleListAvailable.observe(
-                    viewLifecycleOwner
-                ) { branchList ->
-                    srlRefresh.isRefreshing = false
-                    setVehicleAdapter(branchList)
                 }
             }
         }
@@ -122,9 +110,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
     private fun viewCreated() {
         viewModel.apply {
             baseObserveViewModel(viewModel)
-            baseObserveViewModel(capabilitiesViewModel)
             observeViewModel()
-            capabilitiesViewModel.getCapabilities(false, isCapabilityCheck = true, isShowError = false) {}
         }
     }
 
@@ -139,7 +125,18 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                 }
 
                 srlRefresh.setOnRefreshListener {
-                    getVehicleList(viewModel.ownerId, false)
+                    getUserVehicle(false)
+                }
+            }
+        }
+    }
+
+    private fun getUserVehicle(isShowProgress: Boolean) {
+        binding.apply {
+            viewModel.apply {
+                getVehicleDetail(isShowProgress) {
+                    srlRefresh.isRefreshing = false
+                    setVehicleAdapter(it)
                 }
             }
         }
@@ -156,7 +153,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                     vehicleRecycleAdapter = NSVehicleRecycleAdapter({ response, position ->
                         editVehicleData(response, position)
                     }, { serviceId, isEnable ->
-                        vehicleEnableDisable(serviceId, isEnable, true)
+                        vehicleEnableDisable(serviceId, isEnable)
                     })
                     setupWithAdapter(vehicleRecycleAdapter!!)
                     vehicleRecycleAdapter?.setData(branchList)
@@ -173,7 +170,11 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
             )
             fleetManagementFragmentChangeCallback?.setFragment(
                 this@NSVehicleFragment.javaClass.simpleName,
-                NSVehicleDetailFragment.newInstance(bundle),
+                NSVehicleDetailFragment.newInstance(bundle, object : NSVehicleEditCallback {
+                    override fun onVehicle(vehicleData: VehicleDataItem) {
+                        vehicleRecycleAdapter?.updateSingleData(vehicleData, position)
+                    }
+                }),
                 true, bundle
             )
         }
@@ -219,7 +220,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                                 layoutNotes.edtValue.setText(additionalNote)
                                 layoutModel.edtValue.setText(model)
                                 layoutLoadCapacity.edtValue.setText(loadCapacity)
-                                layoutLogo.ivBrandLogo.glide(url = vehicleImg)
+                                layoutLogo.ivBrandLogo.glideCenter(url = vehicleImg)
                             }
                         }
 
@@ -234,7 +235,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                         }
 
                         var selectedCapabilities: MutableList<String> = arrayListOf()
-                        capabilitiesViewModel.getCapabilities(false, isCapabilityCheck = true, isShowError = false) {
+                        getCapabilities(false, isCapabilityCheck = true, isShowError = false) {
                             NSUtilities.setCapability(activity, false, layoutCapability, it, dataItem) { capabilities ->
                                 selectedCapabilities = capabilities
                             }
@@ -281,7 +282,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                                         progress.gone()
                                         dialog.dismiss()
                                         if (isSuccess) {
-                                            getVehicleList(ownerId, true)
+                                            getUserVehicle(true)
                                         }
                                     }
                                 }

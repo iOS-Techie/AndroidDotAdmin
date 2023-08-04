@@ -10,7 +10,7 @@ import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 
 private var jobMap: HashMap<String, JobListDataItem> = hashMapOf()
 class NSEmployeeRecycleAdapter(
-    private val callback: ((EmployeeDataItem, Boolean) -> Unit),
+    private val callback: ((EmployeeDataItem, Boolean, Int) -> Unit),
     private val switchCallBack: ((String, String, Boolean) -> Unit),
     private val branchItemSelect: ((String) -> Unit),
 ) : BaseViewBindingAdapter<LayoutEmployeeListBinding, EmployeeDataItem>(
@@ -19,7 +19,7 @@ class NSEmployeeRecycleAdapter(
         LayoutEmployeeListBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, _ ->
+    onBind = { binding, response, _, position ->
         with(binding) {
             response.apply {
                 tvDescription.getMapValue(jobMap[response.titleId]?.name?: hashMapOf())
@@ -35,11 +35,11 @@ class NSEmployeeRecycleAdapter(
                 }
 
                 ivDelete.setOnClickListener {
-                    callback.invoke(response, true)
+                    callback.invoke(response, true, position)
                 }
 
                 ivEdit.setOnClickListener {
-                    callback.invoke(response, false)
+                    callback.invoke(response, false, position)
                 }
 
                 clEmployeeItem.setOnClickListener {

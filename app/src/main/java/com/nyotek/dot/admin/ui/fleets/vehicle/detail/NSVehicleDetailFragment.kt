@@ -12,8 +12,10 @@ import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.OnTextUpdateHelper
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
+import com.nyotek.dot.admin.common.callbacks.NSVehicleEditCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -28,9 +30,7 @@ import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDetailData
-import com.nyotek.dot.admin.ui.capabilities.NSCapabilitiesViewModel
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeViewModel
-import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleViewModel
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -43,22 +43,19 @@ class NSVehicleDetailFragment :
         ViewModelProvider(this)[NSVehicleDetailViewModel::class.java]
     }
 
-    private val vehicleViewModel: NSVehicleViewModel by lazy {
-        ViewModelProvider(this)[NSVehicleViewModel::class.java]
-    }
     private val employeeViewModel: NSEmployeeViewModel by lazy {
         ViewModelProvider(this)[NSEmployeeViewModel::class.java]
-    }
-    private val capabilitiesViewModel: NSCapabilitiesViewModel by lazy {
-        ViewModelProvider(this)[NSCapabilitiesViewModel::class.java]
     }
 
     private var mapBoxView: MapBoxView? = null
     private val brandLogoHelper: BrandLogoHelper = BrandLogoHelper(this, callback = this)
 
     companion object {
-        fun newInstance(bundle: Bundle?) = NSVehicleDetailFragment().apply {
+
+        private var vehCallback: NSVehicleEditCallback? = null
+        fun newInstance(bundle: Bundle?, callback: NSVehicleEditCallback? = null) = NSVehicleDetailFragment().apply {
             arguments = bundle
+            vehCallback = callback
         }
     }
 
@@ -101,23 +98,6 @@ class NSVehicleDetailFragment :
                 setUpdateDriverList(list)
             }
         }
-
-        with(viewModel) {
-            isVehicleDetailAvailable.observe(
-                viewLifecycleOwner
-            ) { response ->
-                setVehicleDetail(response)
-            }
-
-            isVehicleAssign.observe(
-                viewLifecycleOwner
-            ) {
-                if (it) {
-                    setUpdateDriverList(employeeViewModel.employeeList)
-                    //vehicleViewModel.getDriverVehicleDetail(employeeDataItem?.vehicleId )
-                }
-            }
-        }
     }
 
     fun resetFragment() {
@@ -143,22 +123,25 @@ class NSVehicleDetailFragment :
                     layoutCapability.tvCommonTitle.text = capability
                     layoutNotes.tvCommonTitle.text = additionalNote
                     spinner.tvCommonTitle.text = updateDriver
-                    Glide.with(activity.applicationContext).load(vehicleDataItem?.vehicleImg)
-                        .into(layoutLogo.ivBrandLogo)
+                    layoutLogo.ivBrandLogo.glideCenter(url = vehicleDataItem?.vehicleImg)
                     clVehicleItem.gone()
                     layoutManufacturer.edtValue.setText(vehicleDataItem?.manufacturer)
+                    layoutManufacturer.edtValue.isEnabled = false
                     layoutManufacturerYear.edtValue.setText(vehicleDataItem?.manufacturingYear)
+                    layoutManufacturerYear.edtValue.isEnabled = false
                     layoutModel.edtValue.setText(vehicleDataItem?.model)
+                    layoutModel.edtValue.isEnabled = false
                     layoutRegistrationNo.edtValue.setText(vehicleDataItem?.registrationNo)
+                    layoutRegistrationNo.edtValue.isEnabled = false
                     layoutLoadCapacity.edtValue.setText(vehicleDataItem?.loadCapacity)
+                    layoutLoadCapacity.edtValue.isEnabled = false
                     layoutNotes.edtValue.setText(vehicleDataItem?.additionalNote)
 
                     switchService.isActivated = vehicleDataItem?.isActive == true
 
-                    capabilitiesViewModel.getCapabilities(
-                        false,
-                        isCapabilityCheck = true,
-                        isShowError = false
+                    getCapabilitiesList(
+                        isShowError = false,
+                        isCapabilityCheck = true
                     ) {
                         setCapabilityList(it)
                     }
@@ -166,7 +149,9 @@ class NSVehicleDetailFragment :
                     if (isApiCall) {
                         //Get Vehicle Detail
                         viewModel.apply {
-                            vehicleDataItem?.id?.let { getVehicleDetail(it, true) }
+                            vehicleDataItem?.id?.let { getVehicleDetail(it, true) { vehicleData ->
+                                setVehicleDetail(vehicleData)
+                            } }
                         }
                     }
                 }
@@ -174,19 +159,26 @@ class NSVehicleDetailFragment :
         }
     }
 
-    private fun setCapabilityList(capabilities: MutableList<CapabilitiesDataItem>) {
+    private fun setCapabilityList(capabilityList: MutableList<CapabilitiesDataItem>) {
         binding.apply {
             viewModel.apply {
                 NSUtilities.setCapability(
                     activity,
                     true,
                     layoutCapability,
-                    capabilities,
+                    capabilityList,
                     vehicleDataItem
                 ) {
-                    if (vehicleDataItem?.capabilities?.equals(capabilities) != true) {
-                        vehicleDataItem?.capabilities = it
-                        viewModel.updateCapability(it)
+                    vehicleDataItem?.apply {
+                        if (capabilities != capabilityList) {
+                            capabilities = it
+
+                            capabilityNameList = capabilityList.filter { capabilities.contains(it.id) }
+                                .joinToString { getLngValue(it.label) }
+
+                            vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
+                            viewModel.updateCapability(it)
+                        }
                     }
                 }
             }
@@ -219,8 +211,10 @@ class NSVehicleDetailFragment :
                 placeholderName = stringResource.selectDriver
             ) { selectedId ->
                 if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
-                    viewModel.driverId = selectedId
-                    viewModel.assignVehicle(selectedId)
+                    viewModel.apply {
+                        viewModel.driverId = selectedId
+                        assignVehicleToDriver(vehicleDataItem?.capabilities?: arrayListOf())
+                    }
                 }
             }
 
@@ -241,7 +235,6 @@ class NSVehicleDetailFragment :
     private fun viewCreated() {
         viewModel.apply {
             baseObserveViewModel(viewModel)
-            baseObserveViewModel(capabilitiesViewModel)
             observeViewModel()
             // getVendorList(true)
         }
@@ -258,10 +251,10 @@ class NSVehicleDetailFragment :
                         isActive = !isActive
                         tvVehicleActive.status(isActive)
                         switchService.switchEnableDisable(isActive)
-                        vehicleViewModel.vehicleEnableDisable(
+                        vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
+                        vehicleEnableDisable(
                             id,
-                            isActive,
-                            true
+                            isActive
                         )
                     }
                 }
@@ -286,11 +279,7 @@ class NSVehicleDetailFragment :
                         negativeButton = stringResource.cancel
                     ) { isCancel ->
                         if (!isCancel) {
-                            driverId?.let {
-                                assignVehicle(
-                                    it, capabilities = arrayListOf()
-                                )
-                            }
+                            assignVehicleToDriver(arrayListOf())
                         }
                     }
                 }
@@ -299,7 +288,20 @@ class NSVehicleDetailFragment :
                     layoutNotes.edtValue,
                     vehicleDataItem?.additionalNote ?: "") {
                     vehicleDataItem?.additionalNote = it
+                    vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
                     viewModel.updateNotes(layoutNotes.edtValue.text.toString())
+                }
+            }
+        }
+    }
+
+    private fun assignVehicleToDriver(capabilities: MutableList<String>) {
+        viewModel.apply {
+            driverId?.let {
+                assignVehicle(
+                    it, capabilities = capabilities
+                ) {
+                    setUpdateDriverList(employeeViewModel.employeeList)
                 }
             }
         }
@@ -317,6 +319,8 @@ class NSVehicleDetailFragment :
 
     override fun onFileUrl(url: String, width: Int, height: Int) {
         viewModel.apply {
+            vehicleDataItem?.vehicleImg = url
+            vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
             updateVehicleImage(url)
         }
     }

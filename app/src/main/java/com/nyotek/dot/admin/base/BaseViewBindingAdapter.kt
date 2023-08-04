@@ -28,6 +28,11 @@ open class BaseViewBindingAdapter<T : ViewBinding, D>(
         data.clear()
     }
 
+    fun updateSingleData(model: D, position: Int) {
+        data[position] = model
+        notifyItemChanged(position)
+    }
+
     fun setData(newData: List<D>) {
 //        val diffCallback = ViewBindingDiffCallback(data, newData)
 //        val diffResult = DiffUtil.calculateDiff(diffCallback)

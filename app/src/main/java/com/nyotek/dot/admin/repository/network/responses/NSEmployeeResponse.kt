@@ -26,7 +26,7 @@ data class EmployeeDataItem(
 	val vendorId: String? = null,
 
 	@field:SerializedName("title_id")
-	val titleId: String? = null,
+    var titleId: String? = null,
 
 	@field:SerializedName("last_modified")
 	val lastModified: String? = null,
