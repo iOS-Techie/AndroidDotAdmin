@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.BrandLogoHelper
 import com.nyotek.dot.admin.common.MapBoxView
@@ -79,9 +78,7 @@ class NSVehicleDetailFragment :
         arguments = bundle
         arguments?.let {
             with(viewModel) {
-                strVehicleDetail = it.getString(NSConstants.VEHICLE_DETAIL_KEY)
-                fleetDetail = it.getString(NSConstants.FLEET_DETAIL_KEY)
-                getVehicleDetail()
+                getVehicleDetail(it.getString(NSConstants.VEHICLE_DETAIL_KEY), it.getString(NSConstants.FLEET_DETAIL_KEY))
                 initCreateVendor()
                 setListener()
             }
@@ -102,7 +99,6 @@ class NSVehicleDetailFragment :
 
     fun resetFragment() {
         viewModel.apply {
-            strVehicleDetail = ""
             vehicleDataItem = null
             initCreateVendor(false)
         }
@@ -139,6 +135,7 @@ class NSVehicleDetailFragment :
 
                     switchService.isActivated = vehicleDataItem?.isActive == true
 
+                    //Get Capability List
                     getCapabilitiesList(
                         isShowError = false,
                         isCapabilityCheck = true
@@ -169,17 +166,7 @@ class NSVehicleDetailFragment :
                     capabilityList,
                     vehicleDataItem
                 ) {
-                    vehicleDataItem?.apply {
-                        if (capabilities != capabilityList) {
-                            capabilities = it
-
-                            capabilityNameList = capabilityList.filter { capabilities.contains(it.id) }
-                                .joinToString { getLngValue(it.label) }
-
-                            vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
-                            viewModel.updateCapability(it)
-                        }
-                    }
+                    updateCapabilityParameter(it, capabilityList, vehCallback)
                 }
             }
         }
@@ -189,6 +176,7 @@ class NSVehicleDetailFragment :
         binding.apply {
             viewModel.apply {
                 driverId = response.driverId
+                //Get Employee List with Role
                 employeeViewModel.getEmployeeWithRole(
                     false,
                     fleetModel?.serviceIds ?: arrayListOf(),
@@ -198,44 +186,12 @@ class NSVehicleDetailFragment :
         }
     }
 
-    private fun setUpdateDriverList(employeeList: MutableList<EmployeeDataItem>) {
-        binding.apply {
-            val nameList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
-            val idList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
-            val spinnerList = SpinnerData(idList, nameList)
-            spinner.spinnerAppSelect.setPlaceholderAdapter(
-                spinnerList,
-                activity,
-                viewModel.driverId,
-                isHideFirstPosition = true,
-                placeholderName = stringResource.selectDriver
-            ) { selectedId ->
-                if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
-                    viewModel.apply {
-                        viewModel.driverId = selectedId
-                        assignVehicleToDriver(vehicleDataItem?.capabilities?: arrayListOf())
-                    }
-                }
-            }
-
-            val empResponse = employeeList.find { it.userId == viewModel.driverId }
-            tvUserTitle.text = viewModel.driverId ?: ""
-            tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
-
-            val spinnerPosition = idList.indexOf(viewModel.driverId)
-            val isVisible = spinnerPosition != -1
-            clVehicleItem.setVisibility(isVisible)
-            viewLineTextSub.setVisibilityIn(isVisible)
-        }
-    }
-
     /**
      * View created
      */
     private fun viewCreated() {
         viewModel.apply {
             baseObserveViewModel(viewModel)
-            observeViewModel()
             // getVendorList(true)
         }
     }
@@ -252,10 +208,7 @@ class NSVehicleDetailFragment :
                         tvVehicleActive.status(isActive)
                         switchService.switchEnableDisable(isActive)
                         vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
-                        vehicleEnableDisable(
-                            id,
-                            isActive
-                        )
+                        vehicleEnableDisable(id, isActive)
                     }
                 }
 
@@ -295,6 +248,44 @@ class NSVehicleDetailFragment :
         }
     }
 
+    /***
+     * Set Update Driver Spinner
+     */
+    private fun setUpdateDriverList(employeeList: MutableList<EmployeeDataItem>) {
+        binding.apply {
+            val nameList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
+            val idList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
+
+            val spinnerList = SpinnerData(idList, nameList)
+            spinner.spinnerAppSelect.setPlaceholderAdapter(
+                spinnerList,
+                activity,
+                viewModel.driverId,
+                isHideFirstPosition = true,
+                placeholderName = stringResource.selectDriver
+            ) { selectedId ->
+                if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
+                    viewModel.apply {
+                        viewModel.driverId = selectedId
+                        assignVehicleToDriver(vehicleDataItem?.capabilities?: arrayListOf())
+                    }
+                }
+            }
+
+            val empResponse = employeeList.find { it.userId == viewModel.driverId }
+            tvUserTitle.text = viewModel.driverId ?: ""
+            tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
+
+            val spinnerPosition = idList.indexOf(viewModel.driverId)
+            val isVisible = spinnerPosition != -1
+            clVehicleItem.setVisibility(isVisible)
+            viewLineTextSub.setVisibilityIn(isVisible)
+        }
+    }
+
+    /***
+     * Assign Vehicle To Selected Driver
+     */
     private fun assignVehicleToDriver(capabilities: MutableList<String>) {
         viewModel.apply {
             driverId?.let {

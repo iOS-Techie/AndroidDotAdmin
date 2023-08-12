@@ -259,8 +259,10 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                 hideProgress()
                 if (data is NSDriverVehicleDetailResponse) {
                     callback.invoke(data.data)
+                } else {
+                    callback.invoke(VehicleData())
                 }
-            })
+            }, false)
         }
     }
 

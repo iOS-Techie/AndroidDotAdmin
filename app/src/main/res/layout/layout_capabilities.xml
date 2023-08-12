@@ -40,6 +40,7 @@
             android:lines="1"
             android:paddingStart="0dp"
             android:paddingEnd="@dimen/_4sdp"
+            android:visibility="gone"
             android:textAppearance="@style/CommonTextInter400"
             android:textSize="@dimen/_5sdp"
             android:textAlignment="viewStart"
@@ -62,21 +63,24 @@
             android:id="@+id/view_divider_dashboard"
             android:layout_width="0.8dp"
             android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            app:layout_constraintEnd_toStartOf="@id/iv_edit"
+            android:layout_marginEnd="@dimen/_6sdp"
+            app:layout_constraintEnd_toStartOf="@id/tv_modify"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <ImageView
-            android:id="@+id/iv_edit"
-            android:layout_width="@dimen/_7sdp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:src="@drawable/ic_edit"
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_modify"
+            android:layout_width="@dimen/_45sdp"
+            style="@style/LayoutWidthHeightZero"
+            android:gravity="center"
+            android:lines="1"
+            android:textAppearance="@style/CommonTextInter500"
+            android:textSize="@dimen/_6sdp"
+            android:layout_marginVertical="@dimen/_2sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iv_delete"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            tools:text="Employee 01" />
 
         <ImageView
             android:id="@+id/iv_delete"

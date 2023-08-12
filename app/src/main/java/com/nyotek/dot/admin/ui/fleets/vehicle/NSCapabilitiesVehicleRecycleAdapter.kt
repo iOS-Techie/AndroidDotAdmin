@@ -110,7 +110,6 @@ class NSCapabilitiesVehicleRecycleAdapter(
 
         if (selectedList.contains(response.id)) {
             cbCapability.isChecked = true
-            callback.invoke(response, !cbCapability.isChecked)
         }
 
         clCapabilities.setOnClickListener {

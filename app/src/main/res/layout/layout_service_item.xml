@@ -88,6 +88,21 @@
             app:layout_constraintTop_toBottomOf="@id/tv_item_title"
             />
 
+        <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
+            android:id="@+id/tv_description"
+            style="@style/LayoutWidthHeightZeroWrap"
+            android:textAppearance="@style/CommonTextRegular"
+            android:textSize="@dimen/_3ssp"
+            android:gravity="center"
+            android:lines="1"
+            tools:text="15/01/2023"
+            android:layout_marginTop="@dimen/_1sdp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_date"
+            />
+
         <View
             android:id="@+id/view_line_driver2"
             android:layout_width="0dp"
@@ -96,7 +111,7 @@
             android:layout_marginTop="@dimen/_8sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_date"/>
+            app:layout_constraintTop_toBottomOf="@id/tv_description"/>
 
         <include
             android:id="@+id/spinner"
@@ -125,6 +140,7 @@
             android:layout_height="0.6dp"
             android:background="@color/line_divider"
             android:layout_marginTop="@dimen/_4sdp"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/layout_fleets"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -133,6 +149,7 @@
             android:id="@+id/cl_view_more"
             android:layout_width="0dp"
             android:layout_height="@dimen/_13sdp"
+            android:visibility="gone"
             android:background="@drawable/half_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

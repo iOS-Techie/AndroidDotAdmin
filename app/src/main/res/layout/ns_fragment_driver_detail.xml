@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.nyotek.dot.admin.widgets.NSConstraintLayout android:id="@+id/cl_driver_detail" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -258,7 +258,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_map"
+        android:id="@+id/cl_map_driver"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_8sdp"
@@ -287,4 +287,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.nyotek.dot.admin.widgets.NSConstraintLayout>

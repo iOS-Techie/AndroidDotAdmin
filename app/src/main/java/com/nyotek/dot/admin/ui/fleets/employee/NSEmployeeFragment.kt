@@ -22,6 +22,7 @@ import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.invisible
 import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -257,7 +258,7 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                             layoutUser.edtValue.setText("")
                             tvSendInvite.text = add
                             tvCancelApp.text = cancel
-                            tvInviteEmployeeTitle.text = inviteEmployee
+                            tvInviteEmployeeTitle.text = addEmployee
                             layoutUser.tvCommonTitle.text = user
                             layoutUser.edtValue.hint = searchUser
                             tvRoleNameTitle.text = employeeRole

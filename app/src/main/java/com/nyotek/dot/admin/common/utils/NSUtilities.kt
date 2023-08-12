@@ -269,6 +269,7 @@ object NSUtilities {
         callback: ((MutableList<String>) -> Unit)
     ) {
         val selectedCapabilities: MutableList<String> = arrayListOf()
+        selectedCapabilities.addAll(dataItem?.capabilities ?: arrayListOf())
         layoutCapability.rvCommonView.layoutManager = GridLayoutManager(activity, 2)
 
         val capabilityAdapter = NSCapabilitiesVehicleRecycleAdapter({ model, isDelete ->
@@ -290,15 +291,16 @@ object NSUtilities {
         fleetList: MutableList<FleetServiceResponse>,
         callback: ((MutableList<String>) -> Unit)
     ) {
-        val selectedCapabilities: MutableList<String> = arrayListOf()
+        val selectedFleets: MutableList<String> = arrayListOf()
+        selectedFleets.addAll(fleetList.filter { it.isSelected }.map { it.data?.vendorId!! } as MutableList<String>)
         layoutFleets.rvCommonView.layoutManager = GridLayoutManager(activity, 2)
         val fleetAdapter = NSFleetServiceRecycleAdapter { model, isSelected ->
             if (isSelected) {
-                selectedCapabilities.remove(model.vendorId)
+                selectedFleets.remove(model.vendorId)
             } else {
-                model.vendorId?.let { selectedCapabilities.add(it) }
+                model.vendorId?.let { selectedFleets.add(it) }
             }
-            callback.invoke(selectedCapabilities)
+            callback.invoke(selectedFleets)
         }
         layoutFleets.rvCommonView.adapter = fleetAdapter
         //fleetAdapter.setSubList(dataItem?.fleets?: arrayListOf())

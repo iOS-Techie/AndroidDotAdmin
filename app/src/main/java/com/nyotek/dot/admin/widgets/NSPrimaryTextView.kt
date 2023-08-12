@@ -35,6 +35,9 @@ class NSPrimaryTextView : AppCompatTextView {
             R.id.tv_back_settings, R.id.tv_cancel_service, R.id.tv_cancel_app, R.id.tv_cancel -> {
                 ColorResources.setBlankBackground(this, 5f, 1, ColorResources.getPrimaryColor())
             }
+            R.id.tv_modify -> {
+                ColorResources.setBlankBackground(this, 5f, 1, ColorResources.getPrimaryColor())
+            }
             R.id.tv_select_all_title -> {
                 text = NSApplication.getInstance().getStringModel().selectAll
             }

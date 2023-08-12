@@ -219,18 +219,14 @@ class NSServiceManagementFragment :
                     serviceRecycleAdapter =
                         NSServiceManagementRecycleAdapter(
                             activity,
-                            viewModel, { serviceId, capabilityId, fleets, isDirectFleet, isFleetUpdate ->
-                                // Api call for fleet and Capability Update
-                                if (isDirectFleet && isFleetUpdate) {
-                                    serviceFleetsUpdate(serviceId, fleets)
-                                } else {
-                                    serviceCapabilityUpdate(serviceId, capabilityId, isFleetUpdate, fleets)
-                                }
-
-                            }, { serviceId, isEnable ->
-                                //Service Enable Disable
-                                serviceEnableDisable(serviceId, isEnable)
-                            })
+                            viewModel, { serviceId, capabilityId ->
+                                serviceCapabilityUpdate(serviceId, capabilityId)
+                            }, { serviceId, fleets ->
+                                serviceFleetsUpdate(serviceId, fleets)
+                            }) { serviceId, isEnable ->
+                            //Service Enable Disable
+                            serviceEnableDisable(serviceId, isEnable)
+                        }
                     setupWithAdapterAndCustomLayoutManager(
                         serviceRecycleAdapter!!,
                         GridLayoutManager(activity, 3)

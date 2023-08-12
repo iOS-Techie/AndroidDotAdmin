@@ -42,13 +42,13 @@ class NSFleetServiceListRecycleAdapter(
                 viewDivider.setVisibility(position != itemList.size - 1)
 
 
-                fun checkServiceId(list: MutableList<String>) {
+               /* fun checkServiceId(list: MutableList<String>) {
                     cbCheck.isChecked = list.contains(response.serviceId)
                 }
                 checkServiceId(
                     (if (isVendorDetailCheck) selectedFleetData?.serviceIds else selectedCompanyData?.serviceIds)
                         ?: arrayListOf()
-                )
+                )*/
 
                 fun add(list: MutableList<String>, serviceId: String) {
                     serviceId.let { list.add(it) }
@@ -61,17 +61,17 @@ class NSFleetServiceListRecycleAdapter(
                 clCheck.setOnClickListener {
                     if (cbCheck.isChecked) {
                         cbCheck.isChecked = false
-                        remove(
+                        /*remove(
                             (if (dialog) selectedCompanyData?.serviceIds else selectedFleetData?.serviceIds)
                                 ?: arrayListOf(), serviceId!!
-                        )
+                        )*/
                     } else {
                         cbCheck.isChecked = true
                         if (serviceId?.isNotEmpty() == true) {
-                            add(
+                            /*add(
                                 (if (dialog) selectedCompanyData?.serviceIds else selectedFleetData?.serviceIds)
                                     ?: arrayListOf(), serviceId
-                            )
+                            )*/
                         }
                     }
                     callback.invoke(serviceId ?: "", cbCheck.isChecked)
@@ -95,7 +95,7 @@ class NSFleetServiceListRecycleAdapter(
         isVendorDetailCheck = false
         selectedCompanyData = companyData
         serviceList.clear()
-        serviceList.addAll(companyData?.serviceIds ?: arrayListOf())
+       // serviceList.addAll(companyData?.serviceIds ?: arrayListOf())
         itemList = list
     }
 }

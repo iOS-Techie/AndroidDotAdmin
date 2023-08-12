@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
+import com.nyotek.dot.admin.common.FilterHelper
+import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.gone
@@ -14,7 +16,10 @@ import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.databinding.LayoutCreateCapabiltiesBinding
 import com.nyotek.dot.admin.databinding.NsFragmentCapabilitiesBinding
+import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
+import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 
 class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, NsFragmentCapabilitiesBinding>() {
 
@@ -118,6 +123,17 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
         viewModel.apply {
             with(binding) {
                 with(rvCapabilitiesList) {
+
+                    var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
+
+                    FilterHelper(activity, binding.rvCapabilityFilter) { _, list ->
+                        viewModel.apply {
+                            filterList = list
+                            filterData(capabilities, filterList)
+                        }
+                    }
+
+
                     if (capabilitiesRecycleAdapter == null) {
                         capabilitiesRecycleAdapter = NSCapabilitiesRecycleAdapter({ model, isDelete ->
                             adapterCapabilityItemSelect(model, isDelete)
@@ -131,9 +147,30 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                         )
                         isNestedScrollingEnabled = false
                     }
-                    capabilitiesRecycleAdapter?.setData(capabilities)
+                    filterData(capabilities, filterList)
                 }
             }
+        }
+    }
+
+    private fun filterData(capabilities: MutableList<CapabilitiesDataItem>, filterList: MutableList<ActiveInActiveFilter>) {
+        with(viewModel) {
+            capabilitiesRecycleAdapter?.apply {
+                val filterTypes = getFilterSelectedTypes(filterList)
+
+                if (filterTypes.isNotEmpty()) {
+                    val filter = capabilities.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<CapabilitiesDataItem>
+                    setAdapterData(filter)
+                } else {
+                    setAdapterData(capabilities)
+                }
+            }
+        }
+    }
+
+    private fun setAdapterData(capabilities: MutableList<CapabilitiesDataItem>) {
+        capabilitiesRecycleAdapter?.apply {
+            setData(capabilities)
         }
     }
 

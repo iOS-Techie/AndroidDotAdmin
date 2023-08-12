@@ -23,12 +23,7 @@ class NSFleetServiceRecycleAdapter(
                 ColorResources.setCardBackground(viewStatus, 100f, 0, if (response.data?.isActive == true) ColorResources.getGreenColor() else ColorResources.getGrayColor())
                 response.data?.name?.let { tvCapabilitiesTitle.getMapValue(it) }
 
-                if (response.isSelected) {
-                    cbCapability.isChecked = true
-                    callback.invoke(response.data!!, !cbCapability.isChecked)
-                } else {
-                    cbCapability.isChecked = false
-                }
+                cbCapability.isChecked = response.isSelected
 
                 clCapabilities.setOnClickListener {
                     cbCapability.isChecked = !cbCapability.isChecked

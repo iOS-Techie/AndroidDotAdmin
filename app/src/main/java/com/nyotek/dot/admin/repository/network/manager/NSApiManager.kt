@@ -792,7 +792,7 @@ class NSApiManager {
     }
 
     /**
-     * To call the enable service data API
+     * To call the create vehicle data API
      *
      * @param callback  The callback for the result
      */

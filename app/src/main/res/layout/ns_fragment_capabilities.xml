@@ -8,12 +8,29 @@
     <include android:id="@+id/layout_home_header"
         layout="@layout/layout_home_header"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_capability_filter"
+        style="@style/LayoutWidthHeightMatchMatch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_8sdp"
+        android:paddingBottom="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_home_header"
+        tools:listitem="@layout/layout_filter_vendor"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl_refresh"
         style="@style/LayoutWidthHeightZero"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_home_header"
+        app:layout_constraintTop_toBottomOf="@id/rv_capability_filter"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView

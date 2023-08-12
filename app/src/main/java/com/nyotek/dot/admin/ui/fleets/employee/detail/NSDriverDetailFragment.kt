@@ -64,7 +64,7 @@ class NSDriverDetailFragment :
 
     override fun setupViews() {
         super.setupViews()
-        binding.clMap.visible()
+        binding.clMapDriver.visible()
         baseObserveViewModel(viewModel)
         baseObserveViewModel(vehicleViewModel)
         viewCreated()
@@ -189,7 +189,9 @@ class NSDriverDetailFragment :
                 clDriverItem.setVisibility(isVisible)
 
                 vehicleData?.apply {
-                    icDriverImg.glideCenter(url = vehicleImg)
+                    if (vehicleImg?.isNotEmpty() == true) {
+                        icDriverImg.glideCenter(url = vehicleImg)
+                    }
                     tvUserTitle.text = manufacturer?:""
                     tvStatus.text = model?:""
                     updateVehicle(vehicleData)
@@ -217,7 +219,7 @@ class NSDriverDetailFragment :
                             if (spinnerTitleId?.isNotEmpty() == true) {
                                 employeeDataItem?.vehicleId = selectedId
                                 empCallback?.onEmployee(employeeDataItem!!)
-                                assignVehicleToDriver(selectedId, capabilities)
+                                assignVehicleToDriver(selectedId, capabilities, false)
                             }
                         }
                     }
@@ -226,7 +228,7 @@ class NSDriverDetailFragment :
         }
     }
 
-    private fun assignVehicleToDriver(selectedId: String = "", capabilities: MutableList<String>) {
+    private fun assignVehicleToDriver(selectedId: String = "", capabilities: MutableList<String>, isDelete: Boolean) {
         viewModel.apply {
             assignVehicle(
                 employeeDataItem?.userId!!, selectedId,
@@ -234,7 +236,7 @@ class NSDriverDetailFragment :
             ) {
                 if (it) {
                     getDriverVehicleDetail(employeeDataItem?.vehicleId) { vehicleData ->
-                        setDriverVehicleDetail(vehicleData)
+                        setDriverVehicleDetail(if (isDelete) VehicleData() else vehicleData)
                     }
                 }
             }
@@ -282,7 +284,7 @@ class NSDriverDetailFragment :
                         positiveButton = stringResource.ok,
                         negativeButton = stringResource.cancel) {
                         if (!it) {
-                            assignVehicleToDriver(capabilities = arrayListOf())
+                            assignVehicleToDriver(capabilities = arrayListOf(), isDelete = true)
                         }
                     }
                 }

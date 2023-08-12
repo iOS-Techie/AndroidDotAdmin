@@ -42,6 +42,9 @@ class NSConstraintLayout : ConstraintLayout {
 
     fun init() {
         when (this.id) {
+            R.id.cl_driver_detail -> {
+                ColorResources.setBackground(this)
+            }
             R.id.cl_brand_logo -> {
                 ColorResources.setCardBackground(this, 10f, 2, ColorResources.getBackgroundColor(), ColorResources.getBorderColor())
             }

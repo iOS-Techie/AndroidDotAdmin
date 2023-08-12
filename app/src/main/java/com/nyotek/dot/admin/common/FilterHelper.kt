@@ -12,7 +12,7 @@ import com.nyotek.dot.admin.ui.fleets.NSCommonFilterRecycleAdapter
 class FilterHelper(private val activity: Activity, private val recycleView: RecyclerView, private val callback: ((ActiveInActiveFilter, MutableList<ActiveInActiveFilter>) -> Unit)) {
 
     private val stringResource = NSApplication.getInstance().getStringModel()
-
+    private var serviceFilterRecycleAdapter: NSCommonFilterRecycleAdapter? = null
     init {
         setFilterTypes()
     }
@@ -30,14 +30,14 @@ class FilterHelper(private val activity: Activity, private val recycleView: Recy
         if (filterList.isValidList()) {
             recycleView.apply {
                 linearHorizontal(activity)
-                val serviceFilterRecycleAdapter = NSCommonFilterRecycleAdapter { model, list ->
+                serviceFilterRecycleAdapter = NSCommonFilterRecycleAdapter { model, list ->
                     callback.invoke(model, list)
-                    notifyAdapter(adapter!!)
+                    notifyAdapter(serviceFilterRecycleAdapter!!)
                 }
                 adapter = serviceFilterRecycleAdapter
                 isNestedScrollingEnabled = false
-                serviceFilterRecycleAdapter.setData(filterList)
-                serviceFilterRecycleAdapter.setList()
+                serviceFilterRecycleAdapter?.setData(filterList)
+                serviceFilterRecycleAdapter?.setList()
             }
         }
     }

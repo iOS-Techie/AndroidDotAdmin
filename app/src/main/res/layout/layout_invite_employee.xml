@@ -181,6 +181,7 @@
         <com.nyotek.dot.admin.widgets.NSWhiteTextView
             android:id="@+id/tv_send_invite"
             android:layout_width="wrap_content"
+            android:minWidth="@dimen/_25sdp"
             android:layout_height="@dimen/_12sdp"
             android:layout_marginStart="@dimen/_6sdp"
             android:layout_marginTop="@dimen/_6sdp"
@@ -197,6 +198,7 @@
             android:id="@+id/tv_cancel_app"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_12sdp"
+            android:minWidth="@dimen/_25sdp"
             android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginEnd="@dimen/_6sdp"

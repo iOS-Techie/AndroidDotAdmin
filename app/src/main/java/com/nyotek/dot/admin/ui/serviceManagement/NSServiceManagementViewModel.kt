@@ -95,16 +95,12 @@ class NSServiceManagementViewModel(application: Application) : NSViewModel(appli
      * service capability update
      *
      */
-    fun serviceCapabilityUpdate(serviceId: String, capabilityId: String, isFleetUpdate: Boolean, fleets: List<String>) {
-        showProgress()
+    fun serviceCapabilityUpdate(serviceId: String, capabilityId: String) {
+        //showProgress()
         callCommonApi({ obj ->
             NSCapabilitiesRepository.updateServiceCapability(serviceId, capabilityId, obj)
         }, { _, _ ->
-            if (isFleetUpdate) {
-                serviceFleetsUpdate(serviceId, fleets)
-            } else {
-                hideProgress()
-            }
+
         })
     }
 

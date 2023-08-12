@@ -28,8 +28,9 @@ var capabilityItemList: MutableList<CapabilitiesDataItem> = arrayListOf()
 class NSServiceManagementRecycleAdapter(
     private val activity: Activity,
     private val viewModel: NSServiceManagementViewModel,
-    private val callback: ((String, String, List<String>, Boolean, Boolean) -> Unit),
-    private val switchCallback: ((String, Boolean) -> Unit)
+    private val selectedCapabilityCallback: (String, String) -> Unit,
+    private val selectedFleetCallback: (String, List<String>) -> Unit,
+    private val switchCallback: (String, Boolean) -> Unit
 ) : BaseViewBindingAdapter<LayoutServiceItemBinding, NSGetServiceListData>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -39,8 +40,6 @@ class NSServiceManagementRecycleAdapter(
     onBind = { binding, response, stringResource, _ ->
         with(binding) {
             response.apply {
-                var selectedCapabilityId: String? = null
-                var selectedFleets: MutableList<String> = arrayListOf()
                 val capabilityItem = NSApplication.getInstance().getCapabilityItemList()[serviceId]
                 stringResource.apply {
                     layoutFleets.tvCommonTitle.text = fleet
@@ -48,6 +47,7 @@ class NSServiceManagementRecycleAdapter(
                     switchService.switchEnableDisable(isActive)
                     tvItemActive.status(isActive)
                     tvViewMore.text = update
+                    tvDescription.text = description
                     tvViewMore.setTextColor(ColorResources.getWhiteColor())
                     spinner.tvCommonTitle.text = capability.lowercase()
                     ColorResources.setBackgroundTint(clViewMore, ColorResources.getPrimaryColor())
@@ -56,20 +56,6 @@ class NSServiceManagementRecycleAdapter(
                 tvItemTitle.text = response.name
                 tvDate.text = NSDateTimeHelper.getDateForUser(response.created)
 
-                clViewMore.setOnClickListener {
-                    if (capabilityItem?.fleets != selectedFleets && selectedFleets.isEmpty()) {
-                        viewModel.showError(stringResource.selectFleet)
-                        return@setOnClickListener
-                    } else if (capabilityItem?.serviceId.isNullOrEmpty()) {
-                        viewModel.showError(stringResource.serviceCannotBeEmpty)
-                        return@setOnClickListener
-                    }
-                    callback.invoke(response.serviceId!!, selectedCapabilityId!!, selectedFleets,
-                        response.serviceId != selectedCapabilityId,  capabilityItem?.fleets != selectedFleets
-                    )
-                    capabilityItem?.fleets = selectedFleets
-                }
-
                 switchService.setOnClickListener {
                     isActive = !isActive
                     switchService.switchEnableDisable(isActive)
@@ -77,44 +63,52 @@ class NSServiceManagementRecycleAdapter(
                     tvItemActive.status(isActive)
                 }
 
-                fun setCapability(capabilityItem: ServiceCapabilitiesDataItem) {
+                fun setCapabilityAndFleet(capabilityItem: ServiceCapabilitiesDataItem) {
+                    //Set Capability in Spinner
                     setCapabilitySpinner(
                         activity,
                         stringResource,
                         capabilityItem,
                         spinner) {
-                        selectedCapabilityId = it
+                        capabilityItem.capabilityId = it
+                        selectedCapabilityCallback.invoke(response.serviceId!!, it)
                     }
+
+                    //Compare Select All for Main FleetList with capability fleet list
                     val list = fleetItemList.map { it.vendorId!! } as MutableList<String>
                     capabilityItem.fleets.sortBy { it }
                     list.sortBy { it }
                     layoutFleets.cbCheck.isChecked = capabilityItem.fleets == list
 
+                    //Add Fleet Selected or not
                     val fleetResponse: MutableList<FleetServiceResponse> = arrayListOf()
                     for (fResponse in fleetItemList) {
                         val fleetServiceResponse = FleetServiceResponse(fResponse, capabilityItem.fleets.contains(fResponse.vendorId))
                         fleetResponse.add(fleetServiceResponse)
                     }
 
+                    //Set Fleet in list
                     NSUtilities.setFleet(
                         activity,
                         layoutFleets,
                         fleetResponse) {
-                        selectedFleets = it
+                        selectedFleetCallback.invoke(response.serviceId!!, it)
+                        capabilityItem.fleets = it
                     }
                 }
 
                 viewModel.apply {
                     if (capabilityItem == null) {
+                        //Api calling of Capability List
                         getServiceCapability(serviceId!!) {
                             val map: HashMap<String, ServiceCapabilitiesDataItem> =
                                 NSApplication.getInstance().getCapabilityItemList()
                             map[serviceId] = it
                             NSApplication.getInstance().setCapabilityItemList(map)
-                            setCapability(it)
+                            setCapabilityAndFleet(it)
                         }
                     } else {
-                        setCapability(capabilityItem)
+                        setCapabilityAndFleet(capabilityItem)
                     }
                 }
             }

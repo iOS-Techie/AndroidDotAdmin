@@ -2,33 +2,28 @@ package com.nyotek.dot.admin.ui.fleets.vehicle.detail
 
 import android.app.Application
 import com.google.gson.Gson
-import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.NSViewModel
+import com.nyotek.dot.admin.common.callbacks.NSVehicleEditCallback
+import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.repository.NSVehicleRepository
 import com.nyotek.dot.admin.repository.network.requests.NSAssignVehicleRequest
-import com.nyotek.dot.admin.repository.network.requests.NSFleetNameUpdateRequest
 import com.nyotek.dot.admin.repository.network.requests.NSUpdateCapabilitiesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleUpdateImageRequest
+import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleResponse
 import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleAssignBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.VehicleDetailData
 
 class NSVehicleDetailViewModel(application: Application) : NSViewModel(application) {
-    var selectedVehicleId: String? = null
-    var isEnableVehicle: Boolean = false
     var driverId: String? = null
-    var strVehicleDetail: String? = null
-    var fleetDetail: String? = null
     var vehicleDataItem: VehicleDataItem? = null
     var fleetModel: FleetData? = null
 
-    fun getVehicleDetail() {
+    fun getVehicleDetail(strVehicleDetail: String?, fleetDetail: String?) {
         if (!strVehicleDetail.isNullOrEmpty()) {
             vehicleDataItem = Gson().fromJson(strVehicleDetail, VehicleDataItem::class.java)
             fleetModel = Gson().fromJson(fleetDetail, FleetData::class.java)
@@ -40,7 +35,7 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
         NSVehicleRepository.updateVehicleNotes(request,this)
     }
 
-    fun updateCapability(list: MutableList<String>) {
+    private fun updateCapability(list: MutableList<String>) {
         val request = NSUpdateCapabilitiesRequest(vehicleDataItem?.id, list)
         NSVehicleRepository.updateVehicleCapability(request,this)
     }
@@ -60,8 +55,6 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
                 callback.invoke(true)
             }
         })
-
-
     }
 
     /**
@@ -73,12 +66,12 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
         if (isShowProgress) showProgress()
         callCommonApi({ obj ->
             NSVehicleRepository.getVehicleDetail(id, obj)
-        }, { data, isSuccess ->
+        }, { data, _ ->
             hideProgress()
-            if (isSuccess) {
-                if (data is NSVehicleDetailResponse) {
-                    callback.invoke(data.vehicleDetailData ?: VehicleDetailData())
-                }
+            if (data is NSVehicleDetailResponse) {
+                callback.invoke(data.vehicleDetailData ?: VehicleDetailData())
+            } else {
+                callback.invoke(VehicleDetailData())
             }
         }, false)
     }
@@ -90,6 +83,20 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
             }, { _, _ ->
 
             })
+        }
+    }
+
+    fun updateCapabilityParameter(list: MutableList<String>, capabilityList: MutableList<CapabilitiesDataItem>, callback: NSVehicleEditCallback?) {
+        vehicleDataItem?.apply {
+            if (capabilities != list) {
+                capabilities = list
+
+                capabilityNameList = capabilityList.filter { capabilities.contains(it.id) }
+                    .joinToString { getLngValue(it.label) }
+
+                vehicleDataItem?.let { it1 -> callback?.onVehicle(it1) }
+                updateCapability(list)
+            }
         }
     }
 
@@ -106,7 +113,5 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
 
     private fun branchSuccess() {
         isProgressShowing.value = false
-        selectedVehicleId = ""
-        isEnableVehicle = false
     }
 }

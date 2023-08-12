@@ -84,11 +84,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+        <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
             android:id="@+id/tv_common_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha="0.5"
             tools:text="Name"
             android:fontFamily="@font/archivo_medium"
             android:textSize="@dimen/_5sdp" />

@@ -17,10 +17,10 @@ class NSCapabilitiesRecycleAdapter(
         LayoutCapabilitiesBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _,_ ->
+    onBind = { binding, response, stringResource,_ ->
         binding.apply {
             response.apply {
-
+                tvModify.text = stringResource.modify
                 tvActiveTitle.status(isActive)
                 switchService.switchEnableDisable(isActive)
                 tvCapabilitiesTitle.getMapValue(label)
@@ -36,7 +36,7 @@ class NSCapabilitiesRecycleAdapter(
                     callback.invoke(response, true)
                 }
 
-                ivEdit.setSafeOnClickListener {
+                tvModify.setSafeOnClickListener {
                     callback.invoke(response, false)
                 }
             }

@@ -300,6 +300,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                                 return@setOnClickListener
                             } else {
 
+                                createCompanyRequest.serviceIds.add(NSConstants.SERVICE_ID)
                                 createCompanyRequest.logoScale = if (cbFill.isChecked) NSConstants.FILL else NSConstants.FIT
                                 createCompanyRequest.isActive = isActiveFleet
                                 createCompanyRequest.name = name
