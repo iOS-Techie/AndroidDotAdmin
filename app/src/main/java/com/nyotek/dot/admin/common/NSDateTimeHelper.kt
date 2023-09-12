@@ -1,5 +1,6 @@
 package com.nyotek.dot.admin.common
 
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -128,4 +129,20 @@ object NSDateTimeHelper {
      */
     fun getDateForUser(dateString: String?) =
         getConvertedDate(dateString, DATE_FORMAT_FROM_API_TRANSACTION, DATE_FORMAT_USER)
+
+    fun formatDateToNowOrDateTime(inputDateString: String): String {
+        val stringResource = StringResourceResponse()
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
+        val inputDate = inputFormat.parse(inputDateString)
+        val currentTime = System.currentTimeMillis()
+        val dateDifference = currentTime - inputDate.time
+        val secondsDifference = dateDifference / 1000
+
+        return when {
+            secondsDifference < 60 -> stringResource.justNow // Less than a minute ago
+            secondsDifference < 3600 -> "${secondsDifference / 60}m ago" // Less than an hour ago
+            secondsDifference < 86400 -> "${secondsDifference / 3600}h ago" // Less than a day ago
+            else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(inputDate) // Default format for older dates
+        }
+    }
 }

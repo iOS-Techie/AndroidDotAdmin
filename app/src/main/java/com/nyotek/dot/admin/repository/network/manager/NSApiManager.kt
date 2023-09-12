@@ -912,6 +912,17 @@ class NSApiManager {
             request(authorisedFleetClient.assignVehicle(request), callback)
         }
     }
+
+    /**
+     * To call the assign vehicle detail data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getDispatchesDrivers(driverId: String, callback: NSRetrofitCallback<ResponseBody>) {
+        if (isNetwork(callback)) {
+            request(authorised3020Client.dispatchDrivers(driverId), callback)
+        }
+    }
 }
 
 /**
@@ -1095,5 +1106,8 @@ interface RTApiInterface {
 
     @POST("driver/vehicle")
     suspend fun assignVehicle(@Body request: NSAssignVehicleRequest): retrofit2.Response<NSVehicleAssignBlankDataResponse>
+
+    @GET("dispatches/d/{driver_id}")
+    suspend fun dispatchDrivers(@Path("driver_id") driverId: String): retrofit2.Response<ResponseBody>
 
 }

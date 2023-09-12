@@ -49,6 +49,7 @@ import com.nyotek.dot.admin.common.SingleClickListener
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -546,7 +547,7 @@ fun ImageView.switchEnableDisable(isEnable: Boolean) {
 }
 
 fun TextView.status(isActive: Boolean) {
-    val stringResource = NSApplication.getInstance().getStringModel()
+    val stringResource = StringResourceResponse()
     stringResource.apply {
         this@status.text = if (isActive) active else inActive
     }

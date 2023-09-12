@@ -7,11 +7,12 @@ import com.nyotek.dot.admin.common.utils.linearHorizontal
 import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import com.nyotek.dot.admin.ui.fleets.NSCommonFilterRecycleAdapter
 
 class FilterHelper(private val activity: Activity, private val recycleView: RecyclerView, private val callback: ((ActiveInActiveFilter, MutableList<ActiveInActiveFilter>) -> Unit)) {
 
-    private val stringResource = NSApplication.getInstance().getStringModel()
+    private val stringResource = StringResourceResponse()
     private var serviceFilterRecycleAdapter: NSCommonFilterRecycleAdapter? = null
     init {
         setFilterTypes()

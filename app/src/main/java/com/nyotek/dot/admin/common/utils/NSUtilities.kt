@@ -24,6 +24,7 @@ import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
 import com.nyotek.dot.admin.ui.fleets.vehicle.NSCapabilitiesVehicleRecycleAdapter
 import com.nyotek.dot.admin.ui.serviceManagement.NSFleetServiceRecycleAdapter
@@ -103,7 +104,7 @@ object NSUtilities {
     }
 
     fun setupSelectAddressView(bind: LayoutSelectAddressBinding) {
-        val stringResource = NSApplication.getInstance().getStringModel()
+        val stringResource = StringResourceResponse()
         stringResource.apply {
             bind.tvAddressTitle.text = address
             bind.tilAddress.hint = address
@@ -184,7 +185,7 @@ object NSUtilities {
             LayoutCreateLocalBinding::inflate
         ) { dialog, binding ->
             binding.apply {
-                NSApplication.getInstance().getStringModel().apply {
+                StringResourceResponse().apply {
                     tvBranchTitle.text = createLocal
                     layoutName.tvCommonTitle.text = local
                     layoutFromCheckout.tvCommonTitle.text = fromCheckout

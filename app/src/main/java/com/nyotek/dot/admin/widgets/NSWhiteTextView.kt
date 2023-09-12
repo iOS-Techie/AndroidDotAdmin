@@ -37,7 +37,7 @@ class NSWhiteTextView : AppCompatTextView {
            R.id.tv_save_settings, R.id.tv_header_btn, R.id.tv_service_submit, R.id.tv_submit_app, R.id.tv_save, R.id.tv_add_address, R.id.tv_create_vehicle, R.id.tv_add_employee, R.id.tv_send_invite, R.id.tv_create -> {
                 ColorResources.setCardBackground(this, 5f, 0, ColorResources.getPrimaryColor())
             }
-            R.id.btn_save_address -> {
+            R.id.btn_save_address, R.id.tv_see_all, R.id.tv_order_places -> {
                 ColorResources.setCardBackground(this, 100f, 0, ColorResources.getPrimaryColor())
             }
         }

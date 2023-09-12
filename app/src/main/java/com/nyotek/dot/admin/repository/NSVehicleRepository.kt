@@ -318,4 +318,32 @@ object NSVehicleRepository : BaseRepository() {
             })
         }
     }
+
+    /**
+     * To get driver vehicle details API
+     *
+     * @param viewModelCallback The callback to communicate back to the view model
+     */
+    fun getDispatchDrivers(
+        id: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiManager.getDispatchesDrivers(id, object :
+                NSRetrofitCallback<ResponseBody>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_DRIVER_DISPATCH
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    getDispatchDrivers(id, viewModelCallback)
+                }
+            })
+        }
+    }
 }

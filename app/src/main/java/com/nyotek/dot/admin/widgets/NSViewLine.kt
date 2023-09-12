@@ -43,6 +43,9 @@ class NSViewLine : View {
             R.id.view_divider_dashboard, R.id.view_divider_dashboard_vertical, R.id.view_line_text, R.id.view_line_text_divider, R.id.view_line_text_sub -> {
                 ColorResources.setBackground(this,getColorWithAlpha(ColorResources.getPrimaryColor(), 5f))
             }
+            R.id.view_line_decoration -> {
+                ColorResources.setBackground(this,getColorWithAlpha(ColorResources.getPrimaryColor(), 100f))
+            }
             else -> {
                 ColorResources.setBackground(this, ColorResources.getBorderColor())
             }

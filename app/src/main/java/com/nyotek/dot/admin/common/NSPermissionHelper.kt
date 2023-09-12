@@ -18,6 +18,7 @@ import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCustomAlertDialogBinding
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 
 
 /**
@@ -109,7 +110,7 @@ class NSPermissionHelper(context: Context) {
     }
 
     private fun openLocationPermission(activity: Activity) {
-        val stringResource = NSApplication.getInstance().getStringModel()
+        val stringResource = StringResourceResponse()
         buildAlertDialog(
             activity,
             LayoutCustomAlertDialogBinding::inflate
@@ -160,7 +161,7 @@ class NSPermissionHelper(context: Context) {
 
     @Suppress("unused")
     fun isGpsEnable(activity: Activity) {
-        val stringResource = NSApplication.getInstance().getStringModel()
+        val stringResource = StringResourceResponse()
         val lm = nsContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         try {
@@ -210,7 +211,7 @@ class NSPermissionHelper(context: Context) {
     }
 
     private fun showAlertLocation(context: Context, title: String, message: String) {
-        val stringResource = NSApplication.getInstance().getStringModel()
+        val stringResource = StringResourceResponse()
         buildAlertDialog(
             context,
             LayoutCustomAlertDialogBinding::inflate

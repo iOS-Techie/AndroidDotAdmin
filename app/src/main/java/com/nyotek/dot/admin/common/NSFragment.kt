@@ -19,6 +19,7 @@ import com.nyotek.dot.admin.databinding.LayoutContactUsBinding
 import com.nyotek.dot.admin.databinding.LayoutHomeHeaderBinding
 import com.nyotek.dot.admin.databinding.LayoutLanguageBinding
 import com.nyotek.dot.admin.databinding.LayoutServiceHeaderBinding
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
 import com.nyotek.dot.admin.ui.settings.NSLanguageRecycleAdapter
 import com.nyotek.dot.admin.ui.splash.NSSplashActivity
@@ -38,7 +39,7 @@ open class NSFragment : Fragment() {
     private var callEmailBottomSheet: BottomSheetDialog? = null
     var selectLanguageBottomSheet: BottomSheetDialog? = null
     val pref = NSApplication.getInstance().getPrefs()
-    var stringResource = NSApplication.getInstance().getStringModel()
+    var stringResource = StringResourceResponse()
     var viewModelMain: NSViewModel? = null
     private var languageAdapter: NSLanguageRecycleAdapter? = null
 
@@ -65,7 +66,7 @@ open class NSFragment : Fragment() {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
-        stringResource = NSApplication.getInstance().getStringModel()
+        stringResource = StringResourceResponse()
     }
 
     override fun onStop() {

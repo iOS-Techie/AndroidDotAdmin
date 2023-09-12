@@ -8,6 +8,7 @@ import com.nyotek.dot.admin.common.NSLogoutEvent
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.callbacks.NSTokenRefreshCallback
 import com.nyotek.dot.admin.repository.network.responses.NSErrorResponse
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Response
 
@@ -77,6 +78,7 @@ class NSApiErrorHandler {
         const val ERROR_SERVICE_FLEET_UPDATE = "error_update_fleets_update"
         const val ERROR_ASSIGN_VEHICLE_DRIVER = "error_assign_vehicle_driver"
         const val ERROR_DRIVER_LOCATION = "error_driver_locations"
+        const val ERROR_DRIVER_DISPATCH = "error_driver_dispatch"
 
         /**
          * To get the error messages from API endpoints
@@ -89,7 +91,7 @@ class NSApiErrorHandler {
             viewModelCallback: NSGenericViewModelCallback,
             tokenRefreshCallback: NSTokenRefreshCallback
         ) {
-            val stringResource = NSApplication.getInstance().getStringModel()
+            val stringResource = StringResourceResponse()
             errorMessageList = mutableListOf()
 
             var errorMessage: String = stringResource.dataFailed

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.utils.ColorResources
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 
 class NSPrimaryTextView : AppCompatTextView {
 
@@ -39,7 +40,7 @@ class NSPrimaryTextView : AppCompatTextView {
                 ColorResources.setBlankBackground(this, 5f, 1, ColorResources.getPrimaryColor())
             }
             R.id.tv_select_all_title -> {
-                text = NSApplication.getInstance().getStringModel().selectAll
+                text = StringResourceResponse().selectAll
             }
         }
     }

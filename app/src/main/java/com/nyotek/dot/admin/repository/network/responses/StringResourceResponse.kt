@@ -1,730 +1,258 @@
 package com.nyotek.dot.admin.repository.network.responses
 
-import com.google.gson.annotations.SerializedName
-
-data class StringResourceResponse(
-
-	@field:SerializedName("apps")
-	val apps: String = "",
-
-	@field:SerializedName("type_your_email_phone")
-	val typeYourEmailPhone: String = "",
-
-	@field:SerializedName("email_phone_number")
-	val emailPhoneNumber: String = "",
-
-	@field:SerializedName("type_your_password")
-	val typeYourPassword: String = "",
-
-	@field:SerializedName("must_be_8_char")
-	val mustBe8Char: String = "",
-
-	@field:SerializedName("password_reset")
-	val passwordReset: String = "",
-
-	@field:SerializedName("enter_your_email_we_send_reset")
-	val enterYourEmailWeSendReset: String = "",
-
-	@field:SerializedName("send_me_the_link")
-	val sendMeTheLink: String = "",
-
-	@field:SerializedName("welcome_back")
-	val welcomeBack: String = "",
-
-	@field:SerializedName("lets_build_something")
-	val letsBuildSomething: String = "",
-
-	@field:SerializedName("cancel")
-	val cancel: String = "",
-
-	@field:SerializedName("employees")
-	val employees : String = "",
-
-	@field:SerializedName("vehicle")
-	val vehicle : String = "",
-
-	@field:SerializedName("vehicle_details")
-	val vehicleDetails : String = "",
-
-	@field:SerializedName("created_date")
-	val createdDate: String = "",
-
-	@field:SerializedName("hubz")
-	val hubz: String = "",
-
-	@field:SerializedName("yamin")
-	val yamin: String = "",
-
-	@field:SerializedName("branch_list")
-	val branchList: String = "",
-
-	@field:SerializedName("create_branch")
-	val createBranch: String = "",
-
-	@field:SerializedName("create_vehicle")
-	val createVehicle: String = "",
-
-	@field:SerializedName("update_vehicle")
-	val updateVehicle: String = "",
-
-	@field:SerializedName("branches")
-	val branches: String = "",
-
-	@field:SerializedName("edit_branch")
-	val editBranch: String = "",
-
-	@field:SerializedName("copy")
-	val copy: String = "",
-
-	@field:SerializedName("german")
-	val german: String = "",
-
-	@field:SerializedName("create")
-	val create: String = "",
-
-	@field:SerializedName("update")
-	val update: String = "",
-
-	@field:SerializedName("update_driver")
-	val updateDriver: String = "",
-
-	@field:SerializedName("send_invite")
-	val sendInvite: String = "",
-
-	@field:SerializedName("something_went_wrong")
-	val somethingWentWrong: String = "",
-
-	@field:SerializedName("no_file_selected")
-	val noFileSelected: String = "",
-
-	@field:SerializedName("setting")
-	val setting: String = "",
-
-	@field:SerializedName("in_active")
-	val inActive: String = "",
-
-	@field:SerializedName("all")
-	val all: String = "",
-
-	@field:SerializedName("password")
-	val password: String = "",
-
-	@field:SerializedName("edit")
-	val edit: String = "",
-
-	@field:SerializedName("sign_up")
-	val signUp: String = "",
-
-	@field:SerializedName("profile")
-	val profile: String = "",
-
-	@field:SerializedName("active")
-	val active: String = "",
-
-	@field:SerializedName("fill")
-	val fill: String = "",
-
-	@field:SerializedName("fit")
-	val fit: String = "",
-
-	@field:SerializedName("enable")
-	val enable: String = "",
-
-	@field:SerializedName("disable")
-	val disable: String = "",
-
-	@field:SerializedName("hide_title")
-	val hideTitle: String = "",
-
-	@field:SerializedName("json")
-	val json: String = "",
-
-	@field:SerializedName("copy_success")
-	val copySuccess: String = "",
-
-	@field:SerializedName("order_id")
-	val orderId: String = "",
-
-	@field:SerializedName("logout_message")
-	val logoutMessage: String = "",
-
-	@field:SerializedName("driver_management")
-	val driverManagement: String = "",
-
-	@field:SerializedName("dashboard")
-	val dashboard: String = "",
-
-	@field:SerializedName("search")
-	val search: String = "",
-
-	@field:SerializedName("vendor")
-	val vendor: String = "",
-
-	@field:SerializedName("no_network_available")
-	val noNetworkAvailable: String = "",
-
-	@field:SerializedName("close")
-	val close: String = "",
-
-	@field:SerializedName("email")
-	val email: String = "",
-
-	@field:SerializedName("address")
-	val address: String = "",
-
-	@field:SerializedName("select_language")
-	val selectLanguage: String = "",
-
-	@field:SerializedName("add_address")
-	val addAddress: String = "",
-
-	@field:SerializedName("edit_driver")
-	val editDriver: String = "",
-
-	@field:SerializedName("arabic_l")
-	val arabicL: String = "",
-
-	@field:SerializedName("call")
-	val call: String = "",
-
-	@field:SerializedName("notification_setting_title")
-	val notificationSettingTitle: String = "",
-
-	@field:SerializedName("email_address")
-	val emailAddress: String = "",
-
-	@field:SerializedName("add_deduct")
-	val addDeduct: String = "",
-
-	@field:SerializedName("new_")
-	val new: String = "",
-
-	@field:SerializedName("edit_vendor")
-	val editVendor: String = "",
-
-	@field:SerializedName("networkUnreachable_title")
-	val networkUnreachableTitle: String = "",
-
-	@field:SerializedName("view_more")
-	val viewMore: String = "",
-
-	@field:SerializedName("view")
-	val view: String = "",
-
-	@field:SerializedName("log_in")
-	val logIn: String = "",
-
-	@field:SerializedName("add")
-	val add: String = "",
-
-	@field:SerializedName("deduct")
-	val deduct: String = "",
-
-	@field:SerializedName("month")
-	val month: String = "",
-
-	@field:SerializedName("success")
-	val success: String = "",
-
-	@field:SerializedName("name")
-	val name: String = "",
-
-	@field:SerializedName("vehicle_registration_no")
-	val vehicleRegistrationNo: String = "",
-
-	@field:SerializedName("enter_your_vehicle_registration_no")
-	val enterYourVehicleRegistrationNo: String = "",
-
-	@field:SerializedName("model_can_not_empty")
-	val modelCanNotEmpty: String = "",
-
-	@field:SerializedName("manufacturer_can_not_empty")
-	val manufacturerCanNotEmpty: String = "",
-
-	@field:SerializedName("registration_number_can_not_empty")
-	val registrationNumberCanNotEmpty: String = "",
-
-	@field:SerializedName("manufacturer_year_can_not_empty")
-	val manufacturerYearCanNotEmpty: String = "",
-
-	@field:SerializedName("load_capacity_can_not_empty")
-	val loadCapacityCanNotEmpty: String = "",
-
-	@field:SerializedName("logo_can_not_empty")
-	val logoCanNotEmpty: String = "",
-
-	@field:SerializedName("please_select_capability")
-	val pleaseSelectCapability: String = "",
-
-	@field:SerializedName("select_manufacturer_year")
-	val selectManufactureYear: String = "",
-
-	@field:SerializedName("select_model")
-	val selectModel: String = "",
-
-	@field:SerializedName("select_fleet")
-	val selectFleet: String = "",
-
-	@field:SerializedName("select_manufacturer")
-	val selectManufacturer: String = "",
-
-	@field:SerializedName("select_load_capacity")
-	val selectLoadCapacity: String = "",
-
-	@field:SerializedName("select_capability")
-	val selectCapability: String = "",
-
-	@field:SerializedName("select_driver")
-	val selectDriver: String = "",
-
-	@field:SerializedName("model")
-	val model: String = "",
-
-	@field:SerializedName("select_all")
-	val selectAll: String = "",
-
-	@field:SerializedName("load_capacity")
-	val loadCapacity: String = "",
-
-	@field:SerializedName("additional_note")
-	val additionalNote: String = "",
-
-	@field:SerializedName("manufacturer")
-	val manufacturer: String = "",
-
-	@field:SerializedName("manufacturer_year")
-	val manufacturerYear: String = "",
-
-	@field:SerializedName("background_images")
-	val backgroundImages: String = "",
-
-	@field:SerializedName("brand_logo")
-	val brandLogo: String = "",
-
-	@field:SerializedName("icon_size_title")
-	val iconSizeTitle: String = "",
-
-	@field:SerializedName("select_theme")
-	val selectTheme: String = "",
-
-	@field:SerializedName("select_platform")
-	val selectPlatForm: String = "",
-
-	@field:SerializedName("description")
-	val description: String = "",
-
-	@field:SerializedName("invalid_password_title")
-	val invalidPasswordTitle: String = "",
-
-	@field:SerializedName("phone_number")
-	val phoneNumber: String = "",
-
-	@field:SerializedName("next")
-	val next: String = "",
-
-	@field:SerializedName("back")
-	val back: String = "",
-
-	@field:SerializedName("industry_type")
-	val industryType: String = "",
-
-	@field:SerializedName("invalid_email_title")
-	val invalidEmailTitle: String = "",
-
-	@field:SerializedName("create_fleet")
-	val createFleet: String = "",
-
-	@field:SerializedName("fleets")
-	val fleets: String = "",
-
-	@field:SerializedName("fleet")
-	val fleet: String = "",
-
-	@field:SerializedName("fleet_management")
-	val fleetManagement: String = "",
-
-	@field:SerializedName("total_price")
-	val totalPrice: String = "",
-
-	@field:SerializedName("primary_color")
-	val primaryColor: String = "",
-
-	@field:SerializedName("primary_light_color")
-	val primaryLightColor: String = "",
-
-	@field:SerializedName("secondary_color")
-	val secondaryColor: String = "",
-
-	@field:SerializedName("secondary_dark_color")
-	val secondaryDarkColor: String = "",
-
-	@field:SerializedName("background_color")
-	val backgroundColor: String = "",
-
-	@field:SerializedName("tab_secondary_color")
-	val tabSecondaryColor: String = "",
-
-	@field:SerializedName("category_segment_color")
-	val categorySegmentColor: String = "",
-
-	@field:SerializedName("success_color")
-	val successColor: String = "",
-
-	@field:SerializedName("error_color")
-	val errorColor: String = "",
-
-	@field:SerializedName("user_details")
-	val userDetails: String = "",
-
-	@field:SerializedName("select_app")
-	val selectApp: String = "",
-
-	@field:SerializedName("theme_not_empty")
-	val themeCanNotBeEmpty: String = "",
-
-	@field:SerializedName("yes")
-	val yes: String = "",
-
-	@field:SerializedName("mobile")
-	val mobile: String = "",
-
-	@field:SerializedName("english_l")
-	val englishL: String = "",
-
-	@field:SerializedName("selected_item")
-	val selectedItem: String = "",
-
-	@field:SerializedName("username")
-	val username: String = "",
-
-	@field:SerializedName("select")
-	val select: String = "",
-
-	@field:SerializedName("logout")
-	val logout: String = "",
-
-	@field:SerializedName("no_item")
-	val noItem: String = "",
-
-	@field:SerializedName("fleet_detail")
-	val fleetDetail: String = "",
-
-	@field:SerializedName("block")
-	val block: String = "",
-
-	@field:SerializedName("field_cannot_be_empty")
-	val fieldCannotBeEmpty: String = "",
-
-	@field:SerializedName("driver")
-	val driver: String = "",
-
-	@field:SerializedName("services")
-	val services: String = "",
-
-	@field:SerializedName("service_management")
-	val serviceManagement: String = "",
-
-	@field:SerializedName("submit")
-	val submit: String = "",
-
-	@field:SerializedName("theme_created_successfully")
-	val themeCreatedSuccessfully: String = "",
-
-	@field:SerializedName("theme_edited_successfully")
-	val themeEditedSuccessfully: String = "",
-
-	@field:SerializedName("apply")
-	val apply: String = "",
-
-	@field:SerializedName("employee_role")
-	val employeeRole: String = "",
-
-	@field:SerializedName("edit_employee")
-	val editEmployee: String = "",
-
-	@field:SerializedName("enter_tag")
-	val enterTag: String = "",
-
-	@field:SerializedName("please_enter_name")
-	val pleaseEnterName: String = "",
-
-	@field:SerializedName("logo_can_not_be_empty")
-	val logoCanNotBeEmpty: String = "",
-
-	@field:SerializedName("please_enter_slogan")
-	val pleaseEnterSlogan: String = "",
-
-	@field:SerializedName("please_enter_description")
-	val pleaseEnterDescription: String = "",
-
-	@field:SerializedName("create_service")
-	val createService: String = "",
-
-	@field:SerializedName("create_theme")
-	val createTheme: String = "",
-
-	@field:SerializedName("apply_theme")
-	val applyTheme: String = "",
-
-	@field:SerializedName("edit_theme")
-	val editTheme: String = "",
-
-	@field:SerializedName("create_app")
-	val createApp: String = "",
-
-	@field:SerializedName("customer")
-	val customer: String = "",
-
-	@field:SerializedName("orders")
-	val orders: String = "",
-
-	@field:SerializedName("themes")
-	val themes: String = "",
-
-	@field:SerializedName("branch")
-	val branch: String = "",
-
-	@field:SerializedName("employee")
-	val employee: String = "",
-
-	@field:SerializedName("employee_list")
-	val employeeList: String = "",
-
-	@field:SerializedName("invite_employee")
-	val inviteEmployee: String = "",
-
-	@field:SerializedName("add_employee")
-	val addEmployee : String = "",
-
-	@field:SerializedName("please_select_employee_role")
-	val pleaseSelectEmployeeRole  : String = "",
-
-	@field:SerializedName("please_select_user")
-	val pleaseSelectUser  : String = "",
-
-	@field:SerializedName("select_employee_role")
-	val selectEmployeeRole  : String = "",
-
-	@field:SerializedName("select_vehicle")
-	val selectVehicle  : String = "",
-
-	@field:SerializedName("theme")
-	val theme: String = "",
-
-	@field:SerializedName("color_picker")
-	val colorPicker: String = "",
-
-	@field:SerializedName("updated_successfully")
-	val updatedSuccessfully: String = "",
-
-	@field:SerializedName("app_created_successfully")
-	val appCreatedSuccessfully: String = "",
-
-	@field:SerializedName("imported_successfully")
-	val importedSuccessfully: String = "",
-
-	@field:SerializedName("theme_applied_successfully")
-	val themeAppliedSuccessfully: String = "",
-
-	@field:SerializedName("preview")
-	val preview: String = "",
-
-	@field:SerializedName("update_theme")
-	val updateTheme: String = "",
-
-	@field:SerializedName("modify")
-	val modify: String = "",
-
-	@field:SerializedName("language")
-	val language: String = "",
-
-	@field:SerializedName("lat_short")
-	val latShort: String = "",
-
-	@field:SerializedName("long_short")
-	val longShort: String = "",
-
-	@field:SerializedName("browse")
-	val browse: String = "",
-
-	@field:SerializedName("status")
-	val status: String = "",
-
-	@field:SerializedName("save")
-	val save: String = "",
-
-	@field:SerializedName("import")
-	val import: String = "",
-
-	@field:SerializedName("contact_us")
-	val contactUs: String = "",
-
-	@field:SerializedName("you_have_account")
-	val youHaveAccount: String = "",
-
-	@field:SerializedName("driver_detail")
-	val driverDetail: String = "",
-
-	@field:SerializedName("order_delivered_details")
-	val orderDeliveredDetails: String = "",
-
-	@field:SerializedName("wallet_id_not_found")
-	val walletIdNotFound: String = "",
-
-	@field:SerializedName("last_name")
-	val lastName: String = "",
-
-	@field:SerializedName("not_yet_registered")
-	val notYetRegistered: String = "",
-
-	@field:SerializedName("url")
-	val url: String = "",
-
-	@field:SerializedName("notification_title")
-	val notificationTitle: String = "",
-
-	@field:SerializedName("user_management")
-	val userManagement: String = "",
-
-	@field:SerializedName("enter_your_credentials")
-	val enterYourCredentials: String = "",
-
-	@field:SerializedName("logo")
-	val logo: String = "",
-
-	@field:SerializedName("day")
-	val day: String = "",
-
-	@field:SerializedName("accepted")
-	val accepted: String = "",
-
-	@field:SerializedName("done")
-	val done: String = "",
-
-	@field:SerializedName("please_select_address")
-	val pleaseSelectAddress: String = "",
-
-	@field:SerializedName("app_can_not_empty")
-	val appCanNotEmpty: String = "",
-
-	@field:SerializedName("not_refresh_token")
-	val notRefreshToken: String = "",
-
-	@field:SerializedName("slogan")
-	val slogan: String = "",
-
-	@field:SerializedName("tags")
-	val tags: String = "",
-
-	@field:SerializedName("no")
-	val no: String = "",
-
-	@field:SerializedName("week")
-	val week: String = "",
-
-	@field:SerializedName("delete")
-	val delete: String = "",
-
-	@field:SerializedName("total")
-	val total: String = "",
-
-	@field:SerializedName("national_id_number")
-	val nationalIdNumber: String = "",
-
-	@field:SerializedName("ok")
-	val ok: String = "",
-
-	@field:SerializedName("do_you_want_to_delete")
-	val doYouWantToDelete: String = "",
-
-	@field:SerializedName("value")
-	val value: String = "",
-
-	@field:SerializedName("select_service")
-	val selectService: String = "",
-
-	@field:SerializedName("service_cannot_be_empty")
-	val serviceCannotBeEmpty: String = "",
-
-	@field:SerializedName("amount")
-	val amount: String = "",
-
-	@field:SerializedName("register_driver")
-	val registerDriver: String = "",
-
-	@field:SerializedName("sar")
-	val sar: String = "",
-
-	@field:SerializedName("clear")
-	val clear: String = "",
-
-	@field:SerializedName("search_here")
-	val searchHere: String = "",
-
-	@field:SerializedName("search_user")
-	val searchUser: String = "",
-
-	@field:SerializedName("data_failed")
-	val dataFailed: String = "",
-
-	@field:SerializedName("user")
-	val user: String = "",
-
-	@field:SerializedName("capabilities")
-	val capabilities: String = "",
-
-	@field:SerializedName("capability")
-	val capability: String = "",
-
-	@field:SerializedName("create_capabilities")
-	val createCapabilities: String = "",
-
-	@field:SerializedName("update_capability")
-	val updateCapabilities: String = "",
-
-	@field:SerializedName("forgot_password")
-	val forgotPassword: String = "",
-
-	@field:SerializedName("select_address")
-	val selectAddress: String = "",
-
-	@field:SerializedName("standard_title")
-	val standardTitle: String = "",
-
-	@field:SerializedName("satellite_title")
-	val satelliteTitle: String = "",
-
-	@field:SerializedName("hybrid_title")
-	val hybridTitle: String = "",
-
-	@field:SerializedName("nick_name")
-	val nickName: String = "",
-
-	@field:SerializedName("city_title")
-	val cityTitle: String = "",
-
-	@field:SerializedName("postal_code")
-	val postalCode: String = "",
-
-	@field:SerializedName("state")
-	val state: String = "",
-
-	@field:SerializedName("country_title")
-	val countryTitle: String = "",
-
-	@field:SerializedName("add_new_key")
-	val addnewkey: String = "",
-
-	@field:SerializedName("key")
-	val key: String = "",
-
-	@field:SerializedName("create_local")
-	val createLocal: String = "",
-
-	@field:SerializedName("local")
-	val local: String = "",
-
-	@field:SerializedName("from_checkout")
-	val fromCheckout: String = ""
-
-)
+import com.nyotek.dot.admin.common.NSApplication
+
+class StringResourceResponse {
+
+	val map: HashMap<String, String> = NSApplication.getInstance().getStringModel()
+
+	val apps: String = map["apps"] ?: ""
+	val typeYourEmailPhone: String = map["type_your_email_phone"] ?: ""
+	val emailPhoneNumber: String = map["email_phone_number"] ?: ""
+	val typeYourPassword: String = map["type_your_password"] ?: ""
+	val mustBe8Char: String = map["must_be_8_char"] ?: ""
+	val passwordReset: String = map["password_reset"] ?: ""
+	val enterYourEmailWeSendReset: String = map["enter_your_email_we_send_reset"] ?: ""
+	val sendMeTheLink: String = map["send_me_the_link"] ?: ""
+	val welcomeBack: String = map["welcome_back"] ?: ""
+	val letsBuildSomething: String = map["lets_build_something"] ?: ""
+	val cancel: String = map["cancel"] ?: ""
+	val employees: String = map["employees"] ?: ""
+	val vehicle: String = map["vehicle"] ?: ""
+	val vehicleDetails: String = map["vehicle_details"] ?: ""
+	val createdDate: String = map["created_date"] ?: ""
+	val hubz: String = map["hubz"] ?: ""
+	val yamin: String = map["yamin"] ?: ""
+	val branchList: String = map["branch_list"] ?: ""
+	val createBranch: String = map["create_branch"] ?: ""
+	val createVehicle: String = map["create_vehicle"] ?: ""
+	val updateVehicle: String = map["update_vehicle"] ?: ""
+	val branches: String = map["branches"] ?: ""
+	val editBranch: String = map["edit_branch"] ?: ""
+	val copy: String = map["copy"] ?: ""
+	val german: String = map["german"] ?: ""
+	val create: String = map["create"] ?: ""
+	val update: String = map["update"] ?: ""
+	val updateDriver: String = map["update_driver"] ?: ""
+	val sendInvite: String = map["send_invite"] ?: ""
+	val somethingWentWrong: String = map["something_went_wrong"] ?: ""
+	val noFileSelected: String = map["no_file_selected"] ?: ""
+	val setting: String = map["setting"] ?: ""
+	val inActive: String = map["in_active"] ?: ""
+	val all: String = map["all"] ?: ""
+	val password: String = map["password"] ?: ""
+	val edit: String = map["edit"] ?: ""
+	val signUp: String = map["sign_up"] ?: ""
+	val profile: String = map["profile"] ?: ""
+	val active: String = map["active"] ?: ""
+	val fill: String = map["fill"] ?: ""
+	val fit: String = map["fit"] ?: ""
+	val enable: String = map["enable"] ?: ""
+	val disable: String = map["disable"] ?: ""
+	val hideTitle: String = map["hide_title"] ?: ""
+	val json: String = map["json"] ?: ""
+	val copySuccess: String = map["copy_success"] ?: ""
+	val orderId: String = map["order_id"] ?: ""
+	val logoutMessage: String = map["logout_message"] ?: ""
+	val driverManagement: String = map["driver_management"] ?: ""
+	val dashboard: String = map["dashboard"] ?: ""
+	val search: String = map["search"] ?: ""
+	val vendor: String = map["vendor"] ?: ""
+	val noNetworkAvailable: String = map["no_network_available"] ?: ""
+	val close: String = map["close"] ?: ""
+	val email: String = map["email"] ?: ""
+	val address: String = map["address"] ?: ""
+	val selectLanguage: String = map["select_language"] ?: ""
+	val addAddress: String = map["add_address"] ?: ""
+	val editDriver: String = map["edit_driver"] ?: ""
+	val arabicL: String = map["arabic_l"] ?: ""
+	val call: String = map["call"] ?: ""
+	val notificationSettingTitle: String = map["notification_setting_title"] ?: ""
+	val emailAddress: String = map["email_address"] ?: ""
+	val addDeduct: String = map["add_deduct"] ?: ""
+	val new: String = map["new_"] ?: ""
+	val editVendor: String = map["edit_vendor"] ?: ""
+	val networkUnreachableTitle: String = map["networkUnreachable_title"] ?: ""
+	val viewMore: String = map["view_more"] ?: ""
+	val view: String = map["view"] ?: ""
+	val logIn: String = map["log_in"] ?: ""
+	val add: String = map["add"] ?: ""
+	val deduct: String = map["deduct"] ?: ""
+	val month: String = map["month"] ?: ""
+	val success: String = map["success"] ?: ""
+	val name: String = map["name"] ?: ""
+	val vehicleRegistrationNo: String = map["vehicle_registration_no"] ?: ""
+	val enterYourVehicleRegistrationNo: String = map["enter_your_vehicle_registration_no"] ?: ""
+	val modelCanNotEmpty: String = map["model_can_not_empty"] ?: ""
+	val manufacturerCanNotEmpty: String = map["manufacturer_can_not_empty"] ?: ""
+	val registrationNumberCanNotEmpty: String = map["registration_number_can_not_empty"] ?: ""
+	val manufacturerYearCanNotEmpty: String = map["manufacturer_year_can_not_empty"] ?: ""
+	val loadCapacityCanNotEmpty: String = map["load_capacity_can_not_empty"] ?: ""
+	val logoCanNotEmpty: String = map["logo_can_not_empty"] ?: ""
+	val pleaseSelectCapability: String = map["please_select_capability"] ?: ""
+	val selectManufactureYear: String = map["select_manufacturer_year"] ?: ""
+	val selectModel: String = map["select_model"] ?: ""
+	val selectFleet: String = map["select_fleet"] ?: ""
+	val selectManufacturer: String = map["select_manufacturer"] ?: ""
+	val selectLoadCapacity: String = map["select_load_capacity"] ?: ""
+	val selectCapability: String = map["select_capability"] ?: ""
+	val selectDriver: String = map["select_driver"] ?: ""
+	val model: String = map["model"] ?: ""
+	val selectAll: String = map["select_all"] ?: ""
+	val loadCapacity: String = map["load_capacity"] ?: ""
+	val additionalNote: String = map["additional_note"] ?: ""
+	val manufacturer: String = map["manufacturer"] ?: ""
+	val manufacturerYear: String = map["manufacturer_year"] ?: ""
+	val backgroundImages: String = map["background_images"] ?: ""
+	val brandLogo: String = map["brand_logo"] ?: ""
+	val iconSizeTitle: String = map["icon_size_title"] ?: ""
+	val selectTheme: String = map["select_theme"] ?: ""
+	val selectPlatForm: String = map["select_platform"] ?: ""
+	val description: String = map["description"] ?: ""
+	val invalidPasswordTitle: String = map["invalid_password_title"] ?: ""
+	val phoneNumber: String = map["phone_number"] ?: ""
+	val next: String = map["next"] ?: ""
+	val back: String = map["back"] ?: ""
+	val industryType: String = map["industry_type"] ?: ""
+	val invalidEmailTitle: String = map["invalid_email_title"] ?: ""
+	val createFleet: String = map["create_fleet"] ?: ""
+	val fleets: String = map["fleets"] ?: ""
+	val fleet: String = map["fleet"] ?: ""
+	val driverStatus: String = map["driver_status"] ?: ""
+	val dispatchId: String = map["dispatch_id"] ?: ""
+	val activeDispatches: String = map["active_dispatches"] ?: ""
+	val time: String = map["time"] ?: ""
+	val fleetManagement: String = map["fleet_management"] ?: ""
+	val totalPrice: String = map["total_price"] ?: ""
+	val primaryColor: String = map["primary_color"] ?: ""
+	val primaryLightColor: String = map["primary_light_color"] ?: ""
+	val secondaryColor: String = map["secondary_color"] ?: ""
+	val secondaryDarkColor: String = map["secondary_dark_color"] ?: ""
+	val backgroundColor: String = map["background_color"] ?: ""
+	val tabSecondaryColor: String = map["tab_secondary_color"] ?: ""
+	val categorySegmentColor: String = map["category_segment_color"] ?: ""
+	val successColor: String = map["success_color"] ?: ""
+	val errorColor: String = map["error_color"] ?: ""
+	val userDetails: String = map["user_details"] ?: ""
+	val selectApp: String = map["select_app"] ?: ""
+	val themeCanNotBeEmpty: String = map["theme_not_empty"] ?: ""
+	val yes: String = map["yes"] ?: ""
+	val mobile: String = map["mobile"] ?: ""
+	val englishL: String = map["english_l"] ?: ""
+	val selectedItem: String = map["selected_item"] ?: ""
+	val username: String = map["username"] ?: ""
+	val select: String = map["select"] ?: ""
+	val logout: String = map["logout"] ?: ""
+	val noItem: String = map["no_item"] ?: ""
+	val fleetDetail: String = map["fleet_detail"] ?: ""
+	val block: String = map["block"] ?: ""
+	val fieldCannotBeEmpty: String = map["field_cannot_be_empty"] ?: ""
+	val driver: String = map["driver"] ?: ""
+	val location: String = map["location"] ?: ""
+	val services: String = map["services"] ?: ""
+	val serviceManagement: String = map["service_management"] ?: ""
+	val submit: String = map["submit"] ?: ""
+	val themeCreatedSuccessfully: String = map["theme_created_successfully"] ?: ""
+	val themeEditedSuccessfully: String = map["theme_edited_successfully"] ?: ""
+	val apply: String = map["apply"] ?: ""
+	val employeeRole: String = map["employee_role"] ?: ""
+	val editEmployee: String = map["edit_employee"] ?: ""
+	val enterTag: String = map["enter_tag"] ?: ""
+	val pleaseEnterName: String = map["please_enter_name"] ?: ""
+	val logoCanNotBeEmpty: String = map["logo_can_not_be_empty"] ?: ""
+	val pleaseEnterSlogan: String = map["please_enter_slogan"] ?: ""
+	val pleaseEnterDescription: String = map["please_enter_description"] ?: ""
+	val createService: String = map["create_service"] ?: ""
+	val createTheme: String = map["create_theme"] ?: ""
+	val applyTheme: String = map["apply_theme"] ?: ""
+	val editTheme: String = map["edit_theme"] ?: ""
+	val createApp: String = map["create_app"] ?: ""
+	val customer: String = map["customer"] ?: ""
+	val orders: String = map["orders"] ?: ""
+	val themes: String = map["themes"] ?: ""
+	val branch: String = map["branch"] ?: ""
+	val employee: String = map["employee"] ?: ""
+	val employeeList: String = map["employee_list"] ?: ""
+	val inviteEmployee: String = map["invite_employee"] ?: ""
+	val addEmployee: String = map["add_employee"] ?: ""
+	val pleaseSelectEmployeeRole: String = map["please_select_employee_role"] ?: ""
+	val pleaseSelectUser: String = map["please_select_user"] ?: ""
+	val selectEmployeeRole: String = map["select_employee_role"] ?: ""
+	val selectVehicle: String = map["select_vehicle"] ?: ""
+	val theme: String = map["theme"] ?: ""
+	val colorPicker: String = map["color_picker"] ?: ""
+	val updatedSuccessfully: String = map["updated_successfully"] ?: ""
+	val appCreatedSuccessfully: String = map["app_created_successfully"] ?: ""
+	val importedSuccessfully: String = map["imported_successfully"] ?: ""
+	val themeAppliedSuccessfully: String = map["theme_applied_successfully"] ?: ""
+	val preview: String = map["preview"] ?: ""
+	val updateTheme: String = map["update_theme"] ?: ""
+	val modify: String = map["modify"] ?: ""
+	val language: String = map["language"] ?: ""
+	val latShort: String = map["lat_short"] ?: ""
+	val longShort: String = map["long_short"] ?: ""
+	val browse: String = map["browse"] ?: ""
+	val status: String = map["status"] ?: ""
+	val save: String = map["save"] ?: ""
+	val import: String = map["import"] ?: ""
+	val contactUs: String = map["contact_us"] ?: ""
+	val youHaveAccount: String = map["you_have_account"] ?: ""
+	val driverDetail: String = map["driver_detail"] ?: ""
+	val orderDeliveredDetails: String = map["order_delivered_details"] ?: ""
+	val walletIdNotFound: String = map["wallet_id_not_found"] ?: ""
+	val lastName: String = map["last_name"] ?: ""
+	val notYetRegistered: String = map["not_yet_registered"] ?: ""
+	val url: String = map["url"] ?: ""
+	val notificationTitle: String = map["notification_title"] ?: ""
+	val userManagement: String = map["user_management"] ?: ""
+	val enterYourCredentials: String = map["enter_your_credentials"] ?: ""
+	val logo: String = map["logo"] ?: ""
+	val day: String = map["day"] ?: ""
+	val accepted: String = map["accepted"] ?: ""
+	val done: String = map["done"] ?: ""
+	val pleaseSelectAddress: String = map["please_select_address"] ?: ""
+	val appCanNotEmpty: String = map["app_can_not_empty"] ?: ""
+	val notRefreshToken: String = map["not_refresh_token"] ?: ""
+	val slogan: String = map["slogan"] ?: ""
+	val tags: String = map["tags"] ?: ""
+	val no: String = map["no"] ?: ""
+	val week: String = map["week"] ?: ""
+	val delete: String = map["delete"] ?: ""
+	val total: String = map["total"] ?: ""
+	val nationalIdNumber: String = map["national_id_number"] ?: ""
+	val ok: String = map["ok"] ?: ""
+	val doYouWantToDelete: String = map["do_you_want_to_delete"] ?: ""
+	val value: String = map["value"] ?: ""
+	val selectService: String = map["select_service"] ?: ""
+	val serviceCannotBeEmpty: String = map["service_cannot_be_empty"] ?: ""
+	val amount: String = map["amount"] ?: ""
+	val registerDriver: String = map["register_driver"] ?: ""
+	val sar: String = map["sar"] ?: ""
+	val clear: String = map["clear"] ?: ""
+	val searchHere: String = map["search_here"] ?: ""
+	val searchUser: String = map["search_user"] ?: ""
+	val dataFailed: String = map["data_failed"] ?: ""
+	val user: String = map["user"] ?: ""
+	val capabilities: String = map["capabilities"] ?: ""
+	val capability: String = map["capability"] ?: ""
+	val createCapabilities: String = map["create_capabilities"] ?: ""
+	val updateCapabilities: String = map["update_capability"] ?: ""
+	val forgotPassword: String = map["forgot_password"] ?: ""
+	val selectAddress: String = map["select_address"] ?: ""
+	val standardTitle: String = map["standard_title"] ?: ""
+	val satelliteTitle: String = map["satellite_title"] ?: ""
+	val hybridTitle: String = map["hybrid_title"] ?: ""
+	val nickName: String = map["nick_name"] ?: ""
+	val cityTitle: String = map["city_title"] ?: ""
+	val postalCode: String = map["postal_code"] ?: ""
+	val state: String = map["state"] ?: ""
+	val countryTitle: String = map["country_title"] ?: ""
+	val addNewKey: String = map["add_new_key"] ?: ""
+	val key: String = map["key"] ?: ""
+	val createLocal: String = map["create_local"] ?: ""
+	val local: String = map["local"] ?: ""
+	val fromCheckout: String = map["from_checkout"] ?: ""
+	val seeAll: String = map["see_all"] ?: ""
+	val justNow: String = map["just_now"] ?: ""
+
+}

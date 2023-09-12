@@ -17,6 +17,7 @@ import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 import com.nyotek.dot.admin.repository.network.responses.NSCapabilitiesResponse
 import com.nyotek.dot.admin.repository.network.responses.NSErrorResponse
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -30,7 +31,7 @@ abstract class NSViewModel(mApplication: Application) : AndroidViewModel(mApplic
     val apiErrors: NSSingleLiveEvent<List<Any>> = NSSingleLiveEvent()
     val noNetworkAlert: NSSingleLiveEvent<Boolean> = NSSingleLiveEvent()
     var isSwipeRefresh = NSSingleLiveEvent<Boolean>()
-    var stringResource = NSApplication.getInstance().getStringModel()
+    var stringResource = StringResourceResponse()
     var isClProgressVisible = NSSingleLiveEvent<Boolean>()
     var isFleetTypesAvailable = NSSingleLiveEvent<MutableList<ActiveInActiveFilter>>()
 

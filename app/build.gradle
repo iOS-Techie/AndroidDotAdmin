@@ -45,7 +45,7 @@ android {
     productFlavors {
         development {
             dimension "dotadmin"
-            versionCode 3
+            versionCode 4
             versionName "1.0"
             applicationId "com.nyotek.dot.dev.admin"
             applicationIdSuffix ""
@@ -152,8 +152,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
     annotationProcessor "androidx.lifecycle:lifecycle-common-java8:$lifeCycleVersion"*/
 
-    implementation 'com.github.bumptech.glide:glide:4.14.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.0'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
 
     implementation 'androidx.recyclerview:recyclerview:1.3.0'
 

@@ -96,5 +96,11 @@ data class Properties(
 	val longitude: Double = 0.0,
 
 	@field:SerializedName("ts")
-	val ts: String? = null
+	val ts: String? = null,
+
+	@field:SerializedName("dispatch_count")
+	val dispatchCount: Int = 0,
+
+	@field:SerializedName("vehicle_id")
+	val vehicleId: String? = ""
 )

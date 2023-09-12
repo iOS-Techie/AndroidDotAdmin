@@ -22,6 +22,7 @@ import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import java.net.URL
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
+import kotlin.collections.HashMap
 
 /**
  * The DoT application class containing Preference, network manager and functionality
@@ -35,13 +36,14 @@ class NSApplication : Application() {
     private var selectedNavigationType: String? = null
     private lateinit var themeModel: NSGetThemeData
     private var apiFailCode: Int = 0
-    private lateinit var stringResource: StringResourceResponse
+    private var stringResource: HashMap<String, String> = hashMapOf()
     private var capabilityList: MutableList<CapabilitiesDataItem> = arrayListOf()
     private var fleetLanguageList: MutableList<LanguageSelectModel> = arrayListOf()
     private var localLanguageList: MutableList<LanguageSelectModel> = arrayListOf()
     private var localMapLanguageList: HashMap<String, MutableList<LanguageSelectModel>> = hashMapOf()
     private var capabilityItemList: HashMap<String, ServiceCapabilitiesDataItem> = hashMapOf()
     private var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
+    private var stringMap: HashMap<String, String> = hashMapOf()
 
     override fun onCreate() {
         super.onCreate()
@@ -109,14 +111,20 @@ class NSApplication : Application() {
     /**
      * To get instance of String Resource Model
      */
-    fun getStringModel(): StringResourceResponse = if (this::stringResource.isInitialized) {
-        stringResource
-    } else {
-        StringResourceResponse()
+    fun getStringModel(): HashMap<String, String> {
+        return stringResource
     }
 
-    fun setStringModel(resources: StringResourceResponse) {
+    fun setStringModel(resources: HashMap<String, String>) {
         stringResource = resources
+    }
+
+    fun getStringMap(): HashMap<String, String> {
+        return stringMap
+    }
+
+    fun setStringMap(resources: HashMap<String, String>) {
+        stringMap = resources
     }
 
     /**

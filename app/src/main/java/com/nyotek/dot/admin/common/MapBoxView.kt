@@ -2,10 +2,12 @@ package com.nyotek.dot.admin.common
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Looper
 import android.view.View
-import com.google.android.gms.maps.model.CameraPosition
+import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
+import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -28,10 +30,14 @@ import com.mapbox.maps.viewannotation.ViewAnnotationManager
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.nyotek.dot.admin.BuildConfig
 import com.nyotek.dot.admin.R
+import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.InfoWindowMultilineBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import java.util.logging.Handler
 
 
 class MapBoxView(context: Context) {
@@ -123,6 +129,10 @@ class MapBoxView(context: Context) {
                 styleMap?.addLayer(stretchLayer)
 
                 map?.addOnMapClickListener { point ->
+//                    android.os.Handler(Looper.getMainLooper()).postDelayed( {
+//                        moveCamera(point, 14.0, 10.0)
+//                    }, 3000)
+                    //moveCamera(point, 14.0, 10.0)
                     map?.queryRenderedFeatures(
                         RenderedQueryGeometry(map!!.pixelForCoordinate(point)),
                         RenderedQueryOptions(listOf(NSConstants.LAYER_ID), null)
@@ -132,7 +142,7 @@ class MapBoxView(context: Context) {
                             prepareViewAnnotation(
                                 mapMarker?.height ?: 1,
                                 point,
-                                it.value?.get(0)?.feature?.getStringProperty("driver_id") ?: ""
+                                it.value?.get(0)?.feature
                             )
                         } else {
                             removeAnnotation()
@@ -172,7 +182,7 @@ class MapBoxView(context: Context) {
         viewAnnotation?.let { viewAnnotationManager?.removeViewAnnotation(it) }
     }
 
-    private fun prepareViewAnnotation(height: Int, point: Point, driverId: String) {
+    private fun prepareViewAnnotation(height: Int, point: Point, feature: Feature?) {
         viewAnnotation = viewAnnotationManager?.addViewAnnotation(
             resId = R.layout.info_window_multiline,
             options = viewAnnotationOptions {
@@ -183,15 +193,64 @@ class MapBoxView(context: Context) {
             }
         )
         InfoWindowMultilineBinding.bind(viewAnnotation!!).apply {
-            val stringResource = NSApplication.getInstance().getStringModel()
-            val driverIdValue =stringResource.driver + " = $driverId"
-            tvTitleMap.text = driverIdValue
-            tvSnippet.visible()
-            val latLong = stringResource.latShort + " = %.2f\n${stringResource.longShort} = %.2f".format(point.latitude(), point.longitude())
-            tvSnippet.text = latLong
-            ivClose.setOnClickListener {
-                viewAnnotationManager?.removeViewAnnotation(viewAnnotation!!)
+            val stringResource = StringResourceResponse()
+
+            val driverIdValue = feature?.getStringProperty("driver_id") ?: ""
+            val driverTitle = stringResource.driver + ":"
+            layoutDriverId.tvTitleMap.text = driverTitle
+            layoutDriverId.tvValueMap.text = driverIdValue
+
+            val locationTitle = stringResource.location + ":"
+            layoutLocation.tvTitleMap.text = locationTitle
+            val latLong = "%.6f, %.6f".format(point.latitude(), point.longitude())
+            layoutLocation.tvValueMap.text = latLong
+
+            val vehicleIdValue = feature?.getStringProperty("vehicle_id") ?: ""
+            val vehicleTitle = stringResource.vehicle + ":"
+            layoutVehicle.tvTitleMap.text = vehicleTitle
+            layoutVehicle.tvValueMap.text = vehicleIdValue
+
+            val fleetValue = feature?.getStringProperty("fleet_id") ?: ""
+            val fleetTitle = stringResource.fleet + ":"
+            layoutFleet.tvTitleMap.text = fleetTitle
+            layoutFleet.tvValueMap.text = fleetValue
+
+            val driverStatusValue = feature?.getStringProperty("driver_status") ?: ""
+            val driverStatusTitle = stringResource.driverStatus + ":"
+            layoutDriverStatus.tvTitleMap.text = driverStatusTitle
+            layoutDriverStatus.tvValueMap.text = driverStatusValue
+
+            val dispatchIdValue = feature?.getStringProperty("ref_id") ?: ""
+            val dispatchIdTitle = stringResource.dispatchId + ":"
+            layoutDispatchId.tvTitleMap.text = dispatchIdTitle
+            layoutDispatchId.tvValueMap.text = dispatchIdValue
+
+            val activeDispatchesValue = feature?.getStringProperty("dispatch_count")?.toDouble()?.toInt() ?: 0
+            val activeDispatchTitle = stringResource.activeDispatches + ":"
+            layoutActiveDispatches.tvTitleMap.text = activeDispatchTitle
+            layoutActiveDispatches.tvValueMap.text = activeDispatchesValue.toString()
+
+            if (activeDispatchesValue >= 0) {
+                layoutActiveDispatches.clMapDriverView.visible()
+                layoutActiveDispatches.tvSeeAll.text = stringResource.seeAll
+                layoutActiveDispatches.tvSeeAll.visible()
+
+                layoutActiveDispatches.tvSeeAll.setSafeOnClickListener {
+
+                }
+            } else {
+                layoutActiveDispatches.clMapDriverView.gone()
             }
+
+            val timeValue = feature?.getStringProperty("created_at") ?: ""
+            val timeTitle = stringResource.time + ":"
+            layoutTime.tvTitleMap.text = timeTitle
+            layoutTime.tvValueMap.text = NSDateTimeHelper.formatDateToNowOrDateTime(timeValue)
+
+
+            /*ivClose.setOnClickListener {
+                viewAnnotationManager?.removeViewAnnotation(viewAnnotation!!)
+            }*/
         }
     }
 }

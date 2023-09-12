@@ -13,7 +13,7 @@ open class BaseViewBindingAdapter<T : ViewBinding, D>(
     private val bindingInflater: (LayoutInflater, ViewGroup, Boolean) -> T,
     private val onBind: (T, D, StringResourceResponse, Int) -> Unit
 ) : RecyclerView.Adapter<BaseViewBindingAdapter<T, D>.ViewHolder>() {
-    var stringResource = NSApplication.getInstance().getStringModel()
+    var stringResource = StringResourceResponse()
     private var data: MutableList<D> = arrayListOf()
 
     fun getString(): StringResourceResponse {

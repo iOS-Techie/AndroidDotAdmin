@@ -13,6 +13,7 @@ import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCommonTextBinding
 import com.nyotek.dot.admin.databinding.LayoutCommonTextviewBinding
 import com.nyotek.dot.admin.databinding.LayoutTagTextBinding
+import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetServiceListRecycleAdapter
 
 
@@ -31,7 +32,7 @@ object NSServiceConfig {
                        tvEditTitle: TextView,
                        rlBrandLogo: RelativeLayout,
                        rvServiceList: RecyclerView): NSFleetServiceListRecycleAdapter {
-        val stringResource = NSApplication.getInstance().getStringModel()
+        val stringResource = StringResourceResponse()
         stringResource.apply {
             layoutName.tvCommonTitle.text = name
             layoutUrl.tvCommonTitle.text = url
