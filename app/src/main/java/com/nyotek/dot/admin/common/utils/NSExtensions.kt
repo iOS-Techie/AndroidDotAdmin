@@ -445,6 +445,11 @@ fun ImageView.glideCenter(resource: Int = 0, url: String? = null) {
         )).into(this)
 }
 
+fun ImageView.setGlideRound(activity: Activity, url: String?, resource: Int = R.drawable.ic_place_holder_product, scale: String? = "fill", corners: Int = 30) {
+    val transform = if (scale == "fill") CenterCrop() else FitCenter()
+    Glide.with(activity.applicationContext).load(if (url.isNullOrBlank()) resource else url).placeholder(resource).error(resource).circleCrop().into(this)
+}
+
 fun ImageView.glide200(resource: Int = 0, url: String? = null, scale: String?) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).apply(
         RequestOptions().transform(
@@ -465,6 +470,9 @@ fun getLngValue(hashMap: Map<String, String>?): String {
             }
             hashMap["en-us"] != null -> {
                 hashMap["en-us"]!!
+            }
+            hashMap["en-US"] != null -> {
+                hashMap["en-US"]!!
             }
             hashMap["en"] != null -> {
                 hashMap["en"]!!

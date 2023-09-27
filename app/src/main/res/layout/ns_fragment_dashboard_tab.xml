@@ -40,22 +40,20 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl_refresh"
-        style="@style/LayoutWidthHeightZero"
+        style="@style/LayoutWidthHeightZeroWrap"
+        android:layout_height="@dimen/_122sdp"
         android:visibility="gone"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginBottom="@dimen/_8sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_map"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_assigned_list"
-            style="@style/LayoutWidthHeightMatchMatch"
+            style="@style/LayoutWidthHeightMatchWrap"
             tools:listitem="@layout/layout_assigned_list"
             android:paddingStart="@dimen/_2sdp"
-            android:paddingTop="@dimen/_2sdp"
             android:paddingEnd="@dimen/_8sdp"
-            android:paddingBottom="@dimen/_8sdp"
             android:clipToPadding="false"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

@@ -325,4 +325,16 @@ object NSUtilities {
             }
         }
     }
+
+    fun capitalizeFirstLetter(sentence: String): String {
+        if (sentence.isEmpty()) {
+            return sentence
+        }
+
+        val firstChar = sentence[0]
+        val capitalizedFirstChar = firstChar.uppercaseChar()
+        val lowercaseRest = sentence.substring(1).lowercase()
+
+        return "$capitalizedFirstChar$lowercaseRest"
+    }
 }

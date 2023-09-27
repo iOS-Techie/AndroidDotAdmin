@@ -117,6 +117,7 @@ class StringResourceResponse {
 	val invalidEmailTitle: String = map["invalid_email_title"] ?: ""
 	val createFleet: String = map["create_fleet"] ?: ""
 	val fleets: String = map["fleets"] ?: ""
+	val dispatch: String = map["dispatch"] ?: ""
 	val fleet: String = map["fleet"] ?: ""
 	val driverStatus: String = map["driver_status"] ?: ""
 	val dispatchId: String = map["dispatch_id"] ?: ""
@@ -254,5 +255,6 @@ class StringResourceResponse {
 	val fromCheckout: String = map["from_checkout"] ?: ""
 	val seeAll: String = map["see_all"] ?: ""
 	val justNow: String = map["just_now"] ?: ""
+	val assigned: String = map["assigned"] ?: ""
 
 }

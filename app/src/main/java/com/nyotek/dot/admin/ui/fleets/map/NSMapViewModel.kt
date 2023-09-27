@@ -5,12 +5,16 @@ import android.location.Address
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSAddressRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
+import com.nyotek.dot.admin.repository.NSVehicleRepository
 import com.nyotek.dot.admin.repository.network.requests.NSCreateFleetAddressRequest
 import com.nyotek.dot.admin.repository.network.requests.NSEditAddressRequest
 import com.nyotek.dot.admin.repository.network.responses.AddressData
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
 import com.nyotek.dot.admin.repository.network.responses.NSCreateFleetAddressResponse
+import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
+import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResponse
+import okhttp3.ResponseBody
 
 class NSMapViewModel(application: Application) : NSViewModel(application) {
 
@@ -150,6 +154,23 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
             }
         })
 
+    }
+
+    fun getDispatchDrivers(
+        driverId: String?,
+        isShowProgress: Boolean,
+        callback: ((MutableList<NSDispatchOrderListData>) -> Unit?)
+    ) {
+        if (isShowProgress) showProgress()
+
+        callCommonApi({ obj ->
+            NSVehicleRepository.getDispatchDrivers(driverId!!, obj)
+        }, { data, _ ->
+            hideProgress()
+            if (data is NSDispatchOrderListResponse) {
+                callback.invoke(data.orderData?: arrayListOf())
+            }
+        })
     }
 
     override fun apiResponse(data: Any) {

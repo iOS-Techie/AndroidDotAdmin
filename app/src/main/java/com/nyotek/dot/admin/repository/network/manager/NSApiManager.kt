@@ -918,7 +918,7 @@ class NSApiManager {
      *
      * @param callback  The callback for the result
      */
-    suspend fun getDispatchesDrivers(driverId: String, callback: NSRetrofitCallback<ResponseBody>) {
+    suspend fun getDispatchesDrivers(driverId: String, callback: NSRetrofitCallback<NSDispatchOrderListResponse>) {
         if (isNetwork(callback)) {
             request(authorised3020Client.dispatchDrivers(driverId), callback)
         }
@@ -1108,6 +1108,6 @@ interface RTApiInterface {
     suspend fun assignVehicle(@Body request: NSAssignVehicleRequest): retrofit2.Response<NSVehicleAssignBlankDataResponse>
 
     @GET("dispatches/d/{driver_id}")
-    suspend fun dispatchDrivers(@Path("driver_id") driverId: String): retrofit2.Response<ResponseBody>
+    suspend fun dispatchDrivers(@Path("driver_id") driverId: String): retrofit2.Response<NSDispatchOrderListResponse>
 
 }

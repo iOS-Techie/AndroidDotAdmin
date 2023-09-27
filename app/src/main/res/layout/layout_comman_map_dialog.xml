@@ -5,47 +5,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
-        android:id="@+id/tv_title_map"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start"
-        android:textSize="@dimen/_4sdp"
-        tools:text="Driver:"
-        android:fontFamily="@font/archivo_regular"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
-        android:id="@+id/tv_value_map"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        tools:text="012300123oakdso10123kkl"
-        android:textSize="@dimen/_4sdp"
-        android:fontFamily="@font/archivo_regular"
-        android:paddingHorizontal="@dimen/_2sdp"
-        app:layout_constraintStart_toEndOf="@id/tv_title_map"
-        app:layout_constraintEnd_toStartOf="@+id/tv_see_all"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.nyotek.dot.admin.widgets.NSWhiteTextView
-        android:id="@+id/tv_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        tools:text="See All"
-        android:textSize="@dimen/_4sdp"
-        android:visibility="gone"
-        android:fontFamily="@font/archivo_regular"
-        android:paddingHorizontal="@dimen/_5sdp"
-        android:paddingVertical="@dimen/_1sdp"
-        android:includeFontPadding="false"
-        app:layout_constraintStart_toEndOf="@id/tv_value_map"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
+            android:id="@+id/tv_title_map"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:textSize="@dimen/_4sdp"
+            tools:text="Driver:"
+            android:fontFamily="@font/archivo_regular"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_value_map"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            tools:text="012300123oakdso10123kkl"
+            android:textSize="@dimen/_4sdp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:textAlignment="viewStart"
+            android:fontFamily="@font/archivo_regular"
+            android:paddingHorizontal="@dimen/_2sdp"
+            app:layout_constraintStart_toEndOf="@id/tv_title_map"
+            app:layout_constraintEnd_toStartOf="@+id/tv_see_all"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.nyotek.dot.admin.widgets.NSWhiteTextView
+            android:id="@+id/tv_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            tools:text="See All"
+            android:textSize="@dimen/_4sdp"
+            android:visibility="gone"
+            android:fontFamily="@font/archivo_regular"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:paddingVertical="@dimen/_1sdp"
+            android:includeFontPadding="false"
+            app:layout_constraintStart_toEndOf="@id/tv_value_map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

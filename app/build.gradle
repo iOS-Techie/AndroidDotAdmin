@@ -45,7 +45,7 @@ android {
     productFlavors {
         development {
             dimension "dotadmin"
-            versionCode 4
+            versionCode 5
             versionName "1.0"
             applicationId "com.nyotek.dot.dev.admin"
             applicationIdSuffix ""
@@ -176,7 +176,8 @@ dependencies {
     implementation 'com.github.pvarry:android-json-viewer:v1.1'
     implementation 'com.github.MasayukiSuda:BubbleLayout:v1.2.2'
 
-    implementation "com.mapbox.maps:android:10.15.0-beta.1"
+    implementation "com.mapbox.maps:android:10.16.0"
+    //implementation "com.mapbox.maps:android:11.0.0-beta.3"
     
     //for marshalling - googlemaps for get current location (error if not this)
     implementation 'com.google.android.gms:play-services-location:21.0.1'

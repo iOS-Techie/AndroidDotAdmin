@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/cl_info_window" xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/_120sdp"
+    android:layout_height="@dimen/_85sdp"
     android:minWidth="@dimen/_100sdp"
-    android:padding="@dimen/_5sdp"
-    android:background="@drawable/white_round_4"
+    android:paddingHorizontal="@dimen/_10sdp"
+    android:paddingVertical="@dimen/_8sdp"
+    android:background="@drawable/ic_map_dialog_bg"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 

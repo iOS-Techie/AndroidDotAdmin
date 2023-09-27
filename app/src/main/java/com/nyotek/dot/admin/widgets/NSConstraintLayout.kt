@@ -75,7 +75,7 @@ class NSConstraintLayout : ConstraintLayout {
             R.id.cl_address -> {
                 ColorResources.setCardBackground(this, 6f, 1, ColorResources.getSecondaryColor(), ColorResources.getSecondaryDarkColor())
             }
-            R.id.cl_border_bg, R.id.cl_user_list -> {
+            R.id.cl_border_bg, R.id.cl_user_list, R.id.cl_dispatch_view -> {
                 ColorResources.setCardBackground(this, 10f, 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
             }
             R.id.cl_theme_spinner, R.id.cl_role_spinner -> {

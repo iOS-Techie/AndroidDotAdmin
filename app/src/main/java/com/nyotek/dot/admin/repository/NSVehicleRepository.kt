@@ -10,6 +10,7 @@ import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleUpdateImageRequest
 import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
+import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleAssignBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleBlankDataResponse
@@ -330,7 +331,7 @@ object NSVehicleRepository : BaseRepository() {
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             apiManager.getDispatchesDrivers(id, object :
-                NSRetrofitCallback<ResponseBody>(
+                NSRetrofitCallback<NSDispatchOrderListResponse>(
                     viewModelCallback,
                     NSApiErrorHandler.ERROR_DRIVER_DISPATCH
                 ) {

@@ -28,6 +28,7 @@ class NSConstants {
         const val FLEETS_TAB = "fleets_tab"
         const val DASHBOARD_TAB = "dashboard_tab"
         const val SERVICE_TAB = "service_tab"
+        const val DISPATCH_TAB = "dispatch_tab"
 
         //Keys
         const val USER_DETAIL_KEY = "user_detail_key"

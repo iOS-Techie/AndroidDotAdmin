@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.nyotek.dot.admin.widgets.NSConstraintLayout
         android:id="@+id/cl_dispatch_view"
         android:layout_width="@dimen/_107sdp"
         android:layout_height="@dimen/_122sdp"
@@ -16,7 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_top_detail"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_13sdp"
+            android:layout_height="@dimen/_14sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -74,10 +74,9 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_4sdp"
                 tools:text="Order Places"
-                android:fontFamily="@font/archivo_bold"
+                android:fontFamily="@font/archivo_medium"
                 android:layout_marginEnd="@dimen/_4sdp"
                 android:paddingHorizontal="@dimen/_2sdp"
-                android:paddingVertical="@dimen/_1sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/iv_hubz_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_hubz_icon"/>
@@ -89,7 +88,6 @@
             android:layout_width="match_parent"
             android:layout_height="0.6dp"
             android:background="@color/line_divider"
-            android:layout_marginTop="@dimen/_3sdp"
             app:layout_constraintTop_toBottomOf="@+id/cl_top_detail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -177,7 +175,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <ImageView
+            <com.nyotek.dot.admin.widgets.ImageIconView
                 android:id="@+id/iv_model_img"
                 android:layout_width="@dimen/_10sdp"
                 android:layout_height="@dimen/_10sdp"
@@ -247,7 +245,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_dispatch_detail_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/_55sdp"
             android:layout_marginTop="@dimen/_4sdp"
             android:paddingVertical="@dimen/_2sdp"
             android:layout_marginHorizontal="@dimen/_4sdp"
@@ -258,12 +256,12 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageView
-                android:id="@+id/iv_product_icon"
+                android:id="@+id/iv_product_icon_round"
                 android:layout_width="@dimen/_9sdp"
                 android:layout_height="@dimen/_9sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_product_round"
+                android:src="@drawable/ic_place_holder_product"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -277,9 +275,9 @@
                 android:textAlignment="viewStart"
                 android:gravity="start"
                 app:layout_constraintEnd_toStartOf="@+id/tv_order_id"
-                app:layout_constraintStart_toEndOf="@id/iv_product_icon"
-                app:layout_constraintTop_toTopOf="@id/iv_product_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_product_icon"/>
+                app:layout_constraintStart_toEndOf="@id/iv_product_icon_round"
+                app:layout_constraintTop_toTopOf="@id/iv_product_icon_round"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_product_icon_round"/>
 
             <com.nyotek.dot.admin.widgets.NSPrimaryTextView
                 android:id="@+id/tv_order_id"
@@ -294,22 +292,22 @@
                 android:layout_marginEnd="@dimen/_4sdp"
                 android:paddingHorizontal="@dimen/_3sdp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/iv_product_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_product_icon"/>
+                app:layout_constraintTop_toTopOf="@id/iv_product_icon_round"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_product_icon_round"/>
 
             <View
                 android:id="@+id/view_line_divider"
                 android:layout_width="match_parent"
                 android:layout_height="0.6dp"
                 android:layout_marginTop="@dimen/_3sdp"
-                app:layout_constraintTop_toBottomOf="@+id/iv_product_icon"
+                app:layout_constraintTop_toBottomOf="@+id/iv_product_icon_round"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.nyotek.dot.admin.widgets.ImageIconView
                 android:id="@+id/iv_location_start"
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
+                android:layout_width="@dimen/_7sdp"
+                android:layout_height="@dimen/_7sdp"
                 android:src="@drawable/ic_location"
                 android:layout_marginStart="@dimen/_5sdp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -347,8 +345,8 @@
 
             <com.nyotek.dot.admin.widgets.ImageIconView
                 android:id="@+id/iv_location_end"
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
+                android:layout_width="@dimen/_7sdp"
+                android:layout_height="@dimen/_7sdp"
                 android:src="@drawable/ic_location_end"
                 android:layout_marginStart="@dimen/_5sdp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -397,6 +395,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.nyotek.dot.admin.widgets.NSConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
