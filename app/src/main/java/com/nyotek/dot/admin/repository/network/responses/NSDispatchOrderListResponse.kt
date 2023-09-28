@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class NSDispatchOrderListResponse(
     @SerializedName("data")
     @Expose
-    var orderData: MutableList<NSDispatchOrderListData>? = null
+    var orderData: MutableList<NSDispatchOrderListData> = arrayListOf()
 )
 
 /**

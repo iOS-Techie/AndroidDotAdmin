@@ -7,15 +7,16 @@
 
     <com.nyotek.dot.admin.widgets.NSConstraintLayout
         android:id="@+id/cl_dispatch_view"
-        android:layout_width="@dimen/_107sdp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/_122sdp"
         android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_top_detail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/_14sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,10 +33,9 @@
 
             <ImageView
                 android:id="@+id/iv_hubz_icon"
-                android:layout_width="@dimen/_16sdp"
-                android:layout_height="@dimen/_8sdp"
+                android:layout_width="@dimen/_14sdp"
+                android:layout_height="@dimen/_7sdp"
                 android:src="@drawable/ic_hubz"
-                android:visibility="gone"
                 android:layout_marginStart="@dimen/_5sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,12 +43,11 @@
 
             <View
                 android:id="@+id/view_line_horizontal"
-                android:layout_width="0.6dp"
+                android:layout_width="0.8dp"
                 android:layout_height="0dp"
-                android:visibility="invisible"
                 android:layout_marginStart="@dimen/_3sdp"
                 android:background="@color/line_divider"
-                android:layout_marginVertical="@dimen/_2sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
                 app:layout_constraintTop_toTopOf="@id/iv_hubz_icon"
                 app:layout_constraintBottom_toBottomOf="@id/iv_hubz_icon"
                 app:layout_constraintStart_toEndOf="@id/iv_hubz_icon"/>

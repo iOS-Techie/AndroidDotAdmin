@@ -124,9 +124,8 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
             with(binding) {
                 with(rvCapabilitiesList) {
 
-                    var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
 
-                    FilterHelper(activity, binding.rvCapabilityFilter) { _, list ->
+                    FilterHelper(activity, binding.rvCapabilityFilter, if (filterList.isEmpty()) FilterHelper.getCommonFilterLists() else filterList) { _, list ->
                         viewModel.apply {
                             filterList = list
                             filterData(capabilities, filterList)

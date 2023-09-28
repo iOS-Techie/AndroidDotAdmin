@@ -914,13 +914,24 @@ class NSApiManager {
     }
 
     /**
-     * To call the assign vehicle detail data API
+     * To call the dispatch list data API
      *
      * @param callback  The callback for the result
      */
     suspend fun getDispatchesDrivers(driverId: String, callback: NSRetrofitCallback<NSDispatchOrderListResponse>) {
         if (isNetwork(callback)) {
             request(authorised3020Client.dispatchDrivers(driverId), callback)
+        }
+    }
+
+    /**
+     * To call the dispatch list data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getDispatchesFromService(serviceId: String, callback: NSRetrofitCallback<NSDispatchOrderListResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3020Client.dispatchFromService(serviceId), callback)
         }
     }
 }
@@ -1109,5 +1120,8 @@ interface RTApiInterface {
 
     @GET("dispatches/d/{driver_id}")
     suspend fun dispatchDrivers(@Path("driver_id") driverId: String): retrofit2.Response<NSDispatchOrderListResponse>
+
+    @GET("dispatches/s/{service_id}")
+    suspend fun dispatchFromService(@Path("service_id") serviceId: String): retrofit2.Response<NSDispatchOrderListResponse>
 
 }

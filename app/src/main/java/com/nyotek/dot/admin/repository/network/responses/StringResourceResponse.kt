@@ -121,6 +121,7 @@ class StringResourceResponse {
 	val fleet: String = map["fleet"] ?: ""
 	val driverStatus: String = map["driver_status"] ?: ""
 	val dispatchId: String = map["dispatch_id"] ?: ""
+	val dispatchManagement: String = map["dispatch_management"] ?: ""
 	val activeDispatches: String = map["active_dispatches"] ?: ""
 	val time: String = map["time"] ?: ""
 	val fleetManagement: String = map["fleet_management"] ?: ""

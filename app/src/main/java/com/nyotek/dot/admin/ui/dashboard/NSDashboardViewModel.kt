@@ -10,10 +10,11 @@ import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSUserRepository
 import com.nyotek.dot.admin.repository.network.responses.NSNavigationResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserDetailResponse
-import com.nyotek.dot.admin.ui.dashboard.tabs.ServicesTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.CapabilitiesTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.DashboardMainTabFragment
+import com.nyotek.dot.admin.ui.dashboard.tabs.DispatchTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.FleetTabFragment
+import com.nyotek.dot.admin.ui.dashboard.tabs.ServicesTabFragment
 
 class NSDashboardViewModel(application: Application) : NSViewModel(application) {
     var navItemList: MutableList<NSNavigationResponse> = arrayListOf()
@@ -36,7 +37,7 @@ class NSDashboardViewModel(application: Application) : NSViewModel(application) 
             navItemList.add(NSNavigationResponse(R.drawable.ic_capability, R.drawable.ic_capability_white, capabilities, NSConstants.CAPABILITIES_TAB, CapabilitiesTabFragment.newInstance()))
             navItemList.add(NSNavigationResponse(R.drawable.ic_services, R.drawable.ic_services_white, services, NSConstants.SERVICE_TAB, ServicesTabFragment.newInstance()))
             navItemList.add(NSNavigationResponse(R.drawable.ic_fleets, R.drawable.ic_fleets_white, fleets, NSConstants.FLEETS_TAB, FleetTabFragment.newInstance()))
-            navItemList.add(NSNavigationResponse(R.drawable.ic_dispatch_truck, R.drawable.ic_dispatch_truck_white, dispatch, NSConstants.DISPATCH_TAB, FleetTabFragment.newInstance()))
+            navItemList.add(NSNavigationResponse(R.drawable.ic_dispatch_truck, R.drawable.ic_dispatch_truck_white, dispatch, NSConstants.DISPATCH_TAB, DispatchTabFragment.newInstance()))
            setFragmentList()
         }
     }

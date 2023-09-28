@@ -321,7 +321,7 @@ object NSVehicleRepository : BaseRepository() {
     }
 
     /**
-     * To get driver vehicle details API
+     * To get dispatch list API
      *
      * @param viewModelCallback The callback to communicate back to the view model
      */

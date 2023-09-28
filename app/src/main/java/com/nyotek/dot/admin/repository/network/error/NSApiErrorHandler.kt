@@ -79,6 +79,7 @@ class NSApiErrorHandler {
         const val ERROR_ASSIGN_VEHICLE_DRIVER = "error_assign_vehicle_driver"
         const val ERROR_DRIVER_LOCATION = "error_driver_locations"
         const val ERROR_DRIVER_DISPATCH = "error_driver_dispatch"
+        const val ERROR_DISPATCH_FROM_SERVICE = "error_dispatch_from_service"
 
         /**
          * To get the error messages from API endpoints
@@ -97,7 +98,7 @@ class NSApiErrorHandler {
             var errorMessage: String = stringResource.dataFailed
             var isSessionTimeOut = false
             val isErrorNotNull = rawErrorResponse.errorBody() != null
-
+            var isTokenExpire = false
             if (isErrorNotNull) {
                 var strError = rawErrorResponse.errorBody()!!.string()
                 val isError = strError.isNotEmpty()
@@ -122,25 +123,34 @@ class NSApiErrorHandler {
                 when (val responseErrorCode = rawErrorResponse.code()) {
                     in 400..429 -> {
                         if (responseErrorCode == 401) {
+                            isTokenExpire = true
                             tokenRefreshCallback.onTokenRefresh()
                             //viewModelCallback.onFailure(REFRESH_TOKEN_ENABLE)
-                        } else {
+                        } else if (responseErrorCode != 404){
                             errorMessageList.clear()
-                            errorMessageList.add(errorMessage)
+                            if (errorMessage.isNotEmpty()) {
+                                errorMessageList.add(errorMessage)
+                            }
                         }
                     }
                     in 500..503 -> {
                         errorMessageList.clear()
-                        errorMessageList.add(errorMessage)
+                        if (errorMessage.isNotEmpty()) {
+                            errorMessageList.add(errorMessage)
+                        }
                     }
                     else -> {
                         errorMessageList.clear()
                         if (rawErrorResponse.body() != null && !rawErrorResponse.message()
                                 .isNullOrEmpty()
                         ) {
-                            errorMessageList.add(errorMessage)
+                            if (errorMessage.isNotEmpty()) {
+                                errorMessageList.add(errorMessage)
+                            }
                         } else if (rawErrorResponse.body() == null && rawErrorResponse.errorBody() != null) {
-                            errorMessageList.add(errorMessage)
+                            if (errorMessage.isNotEmpty()) {
+                                errorMessageList.add(errorMessage)
+                            }
                         } else {
                             errorMessageList.add(stringResource.dataFailed)
                         }
@@ -148,7 +158,7 @@ class NSApiErrorHandler {
                 }
             }
 
-            if (errorMessageList.size > 0) {
+            if (!isTokenExpire) {
                 viewModelCallback.onError(errorMessageList)
             }
         }

@@ -47,6 +47,23 @@ object NSDateTimeHelper {
         return newFormat.format(calendar.time)
     }
 
+    private fun getConvertedDateInDate(
+        dateString: String?, inputPattern: String, outputPattern: String): Date {
+        val calendar = Calendar.getInstance()
+        val format = SimpleDateFormat(inputPattern, Locale.ENGLISH)
+        format.timeZone = TimeZone.getTimeZone("UTC")
+        var date: Date? = null
+        try {
+            date = dateString?.let { format.parse(it) }
+            date?.let {
+                calendar.time = it
+            }
+        } catch (exception: ParseException) {
+            NSLog.e(TAG, "getConvertedDate : Caught Exception ", exception)
+        }
+        return date?:Date()
+    }
+
     /**
      * To convert the input date string to expected output pattern
      *
@@ -80,6 +97,15 @@ object NSDateTimeHelper {
      */
     fun getOrderDateView(dateString: String?) =
         getConvertedDate(dateString, DATE_FORMAT_FROM_API, DATE_FORMAT_ORDER_SHOW)
+
+
+    /**
+     * To get the time string for view
+     *
+     * @param dateString The date string
+     */
+    fun getCommonDateView(dateString: String?) =
+        getConvertedDateInDate(dateString, DATE_FORMAT_FROM_API, DATE_FORMAT_ORDER_SHOW)
 
     /**
      * To get the current dateTime string

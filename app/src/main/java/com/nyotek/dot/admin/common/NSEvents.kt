@@ -52,3 +52,4 @@ class NSLocationChangedEvent(val location: Location?, @Suppress("unused") val er
  */
 class NSRefreshEvent
 class NSVendorCall(val fragment: Fragment, val bundle: Bundle)
+class NSDispatchCall(val fragment: Fragment, val bundle: Bundle)

@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
-import com.nyotek.dot.admin.common.FilterHelper
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSApplication
@@ -20,7 +19,6 @@ import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardTabBinding
-import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 import com.nyotek.dot.admin.ui.fleets.map.NSMapViewModel

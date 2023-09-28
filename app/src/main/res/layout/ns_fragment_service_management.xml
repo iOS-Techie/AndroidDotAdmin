@@ -36,7 +36,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_service_list"
             style="@style/LayoutWidthHeightMatchMatch"
-            tools:listitem="@layout/layout_capabilities"
+            tools:listitem="@layout/layout_service_item"
             android:paddingStart="@dimen/_2sdp"
             android:paddingTop="@dimen/_2sdp"
             android:paddingEnd="@dimen/_10sdp"

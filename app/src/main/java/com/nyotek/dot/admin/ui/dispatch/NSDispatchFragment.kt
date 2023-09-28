@@ -1,13 +1,17 @@
-package com.nyotek.dot.admin.ui.fleets
+package com.nyotek.dot.admin.ui.dispatch
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.gson.Gson
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.BrandLogoHelper
+import com.nyotek.dot.admin.common.DispatchSpinnerAdapter
 import com.nyotek.dot.admin.common.FilterHelper
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSServiceConfig
@@ -16,36 +20,41 @@ import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.status
+import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCreateFleetBinding
-import com.nyotek.dot.admin.databinding.NsFragmentFleetsBinding
+import com.nyotek.dot.admin.databinding.NsFragmentDispatchBinding
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
 
-class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleetsBinding>(),
+class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragmentDispatchBinding>(),
     NSFileUploadCallback {
 
-    override val viewModel: NSFleetViewModel by lazy {
-        ViewModelProvider(this)[NSFleetViewModel::class.java]
+    //Get Service list
+    override val viewModel: NSDispatchViewModel by lazy {
+        ViewModelProvider(this)[NSDispatchViewModel::class.java]
     }
 
-    private var fleetRecycleAdapter: NSFleetManagementRecycleAdapter? = null
+    private var dispatchRecycleAdapter: NSDispatchManagementRecycleAdapter? = null
     private var isFragmentLoad = false
     private val brandLogoHelper: BrandLogoHelper = BrandLogoHelper(this, callback = this)
 
     companion object {
-        fun newInstance() = NSFleetFragment()
+        fun newInstance() = NSDispatchFragment()
     }
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): NsFragmentFleetsBinding {
-        return NsFragmentFleetsBinding.inflate(inflater, container, false)
+    ): NsFragmentDispatchBinding {
+        return NsFragmentDispatchBinding.inflate(inflater, container, false)
     }
 
     override fun setupViews() {
@@ -82,8 +91,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
             stringResource.apply {
                 setLayoutHeader(
                     layoutHomeHeader,
-                    fleetManagement,
-                    createFleet,
+                    dispatchManagement,
                     isSearch = true
                 )
             }
@@ -95,7 +103,9 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
      */
     private fun viewCreated() {
         viewModel.apply {
-            getFleetFromApi(!isFragmentLoad)
+            binding.layoutSpinner.clDispatchBorderBg.gone()
+            setDispatchServiceFilter(!isFragmentLoad)
+            //getFleetFromApi(!isFragmentLoad)
             isFragmentLoad = true
         }
     }
@@ -112,7 +122,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                     }
 
                     srlRefresh.setOnRefreshListener {
-                        getFleetFromApi(false)
+                        callDispatchFromService(selectedServiceId, false)
                     }
 
                     tvHeaderBtn.setOnClickListener {
@@ -123,34 +133,64 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         }
     }
 
-    private fun getFleetFromApi(isShowProgress: Boolean) {
-        viewModel.apply {
-            getFleetList(isShowProgress) {
-                binding.srlRefresh.isRefreshing = false
-                setFleetData(it)
+    private fun setDispatchServiceFilter(isShowProgress: Boolean) {
+        binding.apply {
+            viewModel.apply {
+                getServiceListApi {
+                    layoutSpinner.clDispatchBorderBg.visible()
+                    val adapter = DispatchSpinnerAdapter(requireContext(), it)
+                    layoutSpinner.spinnerDispatchSelect.adapter = adapter
+                    layoutSpinner.spinnerDispatchSelect.onItemSelectedListener = object : OnItemSelectedListener {
+                        override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                            val model: NSGetServiceListData = it[position]
+                            callDispatchFromService(model.serviceId, isShowProgress)
+                        }
+
+                        override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                        }
+
+                    }
+                }
             }
         }
     }
 
-    private fun setFleetData(fleetList: MutableList<FleetData>) {
+    private fun callDispatchFromService(serviceId: String?, isShowProgress: Boolean) {
+        viewModel.apply {
+            binding.apply {
+                selectedServiceId = serviceId
+                if (serviceId?.isNotEmpty() == true) {
+                    getDispatchFromService(serviceId, isShowProgress) { item ->
+                        binding.srlRefresh.isRefreshing = false
+                        setDispatchData(item)
+                    }
+                } else {
+                    binding.srlRefresh.isRefreshing = false
+                }
+            }
+        }
+    }
+
+    private fun setDispatchData(dispatchList: MutableList<NSDispatchOrderListData>) {
         binding.apply {
             viewModel.apply {
 
-                FilterHelper(activity, binding.rvFleetsFilter, if (filterList.isEmpty()) FilterHelper.getCommonFilterLists() else filterList) { _, list ->
+                FilterHelper(activity, binding.rvDispatchFilter, if (filterList.isEmpty()) FilterHelper.getDispatchFilterLists() else filterList) { _, list ->
                     viewModel.apply {
                         filterList = list
-                        setFilterData(fleetList, list)
+                        setFilterData(dispatchList, list)
                     }
                 }
 
                 layoutHomeHeader.etSearch.addOnTextChangedListener(
                     onTextChanged = { text, _, _, _ ->
                         layoutHomeHeader.ivClearData.setVisibility(text.toString().isNotEmpty())
-                        setFilterData(fleetList, filterList, text.toString())
+                        setFilterData(dispatchList, filterList, text.toString())
                     }
                 )
 
-                setFilterData(fleetList, filterList)
+                setFilterData(dispatchList, filterList)
             }
         }
     }
@@ -163,13 +203,11 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         with(binding) {
             with(viewModel) {
                 with(rvFleetsList) {
-                    fleetRecycleAdapter = NSFleetManagementRecycleAdapter({ model ->
-                        openFleetDetail(model)
-                    }, {serviceId, isEnable ->
-                        fleetEnableDisable(serviceId, isEnable)
+                    dispatchRecycleAdapter = NSDispatchManagementRecycleAdapter(activity, { model, isActive ->
+                        //openFleetDetail(model)
                     })
 
-                    setupWithAdapterAndCustomLayoutManager(fleetRecycleAdapter!!, GridLayoutManager(activity, 5))
+                    setupWithAdapterAndCustomLayoutManager(dispatchRecycleAdapter!!, GridLayoutManager(activity, 3))
                 }
             }
         }
@@ -179,37 +217,37 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         val gson = Gson().toJson(model)
         val bundle = bundleOf(NSConstants.FLEET_DETAIL_KEY to gson)
         fleetManagementFragmentChangeCallback?.setFragment(
-            this@NSFleetFragment.javaClass.simpleName,
+            this@NSDispatchFragment.javaClass.simpleName,
             NSFleetDetailFragment.newInstance(bundle),
             true, bundle
         )
     }
 
-    private fun setFilterData(fleetList: MutableList<FleetData>,
+    private fun setFilterData(fleetList: MutableList<NSDispatchOrderListData>,
         filterList: MutableList<ActiveInActiveFilter>,
         searchText: String = binding.layoutHomeHeader.etSearch.text.toString()
     ) {
         with(viewModel) {
-            val filterTypes = getFilterSelectedTypes(filterList)
-            if (filterTypes.isNotEmpty()) {
+            val filterTypes = getTypesFilterSelected(filterList)
 
-                val filter = fleetList.filter { filterTypes.contains(if (it.isActive) NSConstants.ACTIVE else NSConstants.IN_ACTIVE) } as MutableList<FleetData>
-                setAdapterData(if (searchText.isEmpty()) filter else filter.filter { getLngValue(
-                    it.name
-                ).lowercase().contains(searchText.lowercase()) } as MutableList<FleetData>)
+            if (filterTypes.isNotEmpty()) {
+                val filter = fleetList.filter { it.status.any { statusFilter -> filterTypes.contains(NSUtilities.capitalizeFirstLetter(statusFilter.status.replace("_", " "))) }} as MutableList<NSDispatchOrderListData>
+                setAdapterData(if (searchText.isEmpty()) filter else filter.filter {
+                    (it.userMetadata?.userName?.lowercase()?:"").contains(searchText.lowercase()) or
+                            (it.userMetadata?.userPhone?.lowercase()?:"").contains(searchText.lowercase())
+                } as MutableList<NSDispatchOrderListData>)
 
             } else {
 
-                setAdapterData(if (searchText.isEmpty()) fleetList else fleetList.filter {
-                    getLngValue(it.name).lowercase().contains(searchText.lowercase())
-                } as MutableList<FleetData>)
+                setAdapterData(if (searchText.isEmpty()) fleetList else fleetList.filter { (it.userMetadata?.userName?.lowercase()?:"").contains(searchText.lowercase()) or (it.userMetadata?.userPhone?.lowercase()?:"").contains(searchText.lowercase())
+                } as MutableList<NSDispatchOrderListData>)
 
             }
         }
     }
 
-    private fun setAdapterData(serviceItemList: MutableList<FleetData>) {
-        fleetRecycleAdapter?.apply {
+    private fun setAdapterData(serviceItemList: MutableList<NSDispatchOrderListData>) {
+        dispatchRecycleAdapter?.apply {
             setData(serviceItemList)
         }
     }
@@ -305,9 +343,9 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                                 createCompanyRequest.name = name
                                 createCompanyRequest.slogan = slogan
 
-                                createFleet {
-                                    setFleetData(it)
-                                }
+                                /*createFleet {
+                                    setDispatchData(it)
+                                }*/
                             }
                         }
                     }

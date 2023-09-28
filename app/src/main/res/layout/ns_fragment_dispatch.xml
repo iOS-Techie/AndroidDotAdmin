@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ui.fleets.NSFleetFragment">
+
+    <include
+        android:id="@+id/layout_home_header"
+        layout="@layout/layout_home_header" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_dispatch_filter"
+        style="@style/LayoutWidthHeightMatchMatch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_8sdp"
+        android:paddingBottom="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/layout_spinner"
+        app:layout_constraintTop_toBottomOf="@id/layout_home_header"
+        tools:listitem="@layout/layout_filter_vendor"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+
+    <include android:id="@+id/layout_spinner"
+        layout="@layout/layout_spinner_with_border"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/layout_home_header"/>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_refresh"
+        style="@style/LayoutWidthHeightZero"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_dispatch_filter">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_fleets_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/_2sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="5"
+            tools:listitem="@layout/layout_capabilities" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

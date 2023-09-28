@@ -1,18 +1,54 @@
-package com.nyotek.dot.admin.ui.fleets
+package com.nyotek.dot.admin.ui.dispatch
 
 import android.app.Application
-import com.nyotek.dot.admin.common.NSSingleLiveEvent
+import com.nyotek.dot.admin.common.NSDateTimeHelper
 import com.nyotek.dot.admin.common.NSViewModel
-import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.repository.NSDispatchRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
+import com.nyotek.dot.admin.repository.NSServiceRepository
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
+import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResponse
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListResponse
 
-class NSFleetViewModel(application: Application) : NSViewModel(application) {
+class NSDispatchViewModel(application: Application) : NSViewModel(application) {
     var createCompanyRequest: NSCreateCompanyRequest = NSCreateCompanyRequest()
     var urlToUpload: String = ""
     var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
+    var selectedServiceId: String? = null
+
+    fun getServiceListApi(callback: ((MutableList<NSGetServiceListData>) -> Unit)) {
+        callCommonApi({ obj ->
+            NSServiceRepository.getServiceList(obj)
+        }, { data, _ ->
+            if (data is NSGetServiceListResponse) {
+                data.data.sortBy { it.serviceId }
+                val list = data.data.filter { it.isActive } as MutableList<NSGetServiceListData>
+                callback.invoke(list)
+            }
+        })
+    }
+
+    fun getDispatchFromService(
+        serviceId: String?,
+        isShowProgress: Boolean,
+        callback: ((MutableList<NSDispatchOrderListData>) -> Unit?)
+    ) {
+        if (isShowProgress) showProgress()
+
+        callCommonApi({ obj ->
+            NSDispatchRepository.getDispatchFromService(serviceId!!, obj)
+        }, { data, _ ->
+            hideProgress()
+            if (data is NSDispatchOrderListResponse) {
+                data.orderData.sortByDescending { NSDateTimeHelper.getCommonDateView(it.status.first().statusCapturedTime) }
+                callback.invoke(data.orderData)
+            }
+        })
+    }
 
     /**
      * Get Fleet list

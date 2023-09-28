@@ -326,15 +326,15 @@ object NSUtilities {
         }
     }
 
-    fun capitalizeFirstLetter(sentence: String): String {
-        if (sentence.isEmpty()) {
-            return sentence
+    fun capitalizeFirstLetter(input: String): String {
+        val words = input.split(" ")
+        val capitalizedWords = words.map { word ->
+            if (word.isNotEmpty()) {
+                word.substring(0, 1).uppercase() + word.substring(1).lowercase()
+            } else {
+                ""
+            }
         }
-
-        val firstChar = sentence[0]
-        val capitalizedFirstChar = firstChar.uppercaseChar()
-        val lowercaseRest = sentence.substring(1).lowercase()
-
-        return "$capitalizedFirstChar$lowercaseRest"
+        return capitalizedWords.joinToString(" ")
     }
 }

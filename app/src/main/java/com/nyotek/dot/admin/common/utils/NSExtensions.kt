@@ -48,6 +48,7 @@ import com.nyotek.dot.admin.common.SafeClickListener
 import com.nyotek.dot.admin.common.SingleClickListener
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import java.text.DecimalFormat
@@ -436,6 +437,10 @@ fun ImageView.setCircleImage(resource: Int = 0, url: String? = null) {
 
 fun ImageView.glide(resource: Int = 0, url: String? = null) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).into(this)
+}
+
+fun ImageView.setGlideWithOutPlace(url: String? = null) {
+    Glide.with(NSApplication.getInstance().applicationContext).load(url).into(this)
 }
 
 fun ImageView.glideCenter(resource: Int = 0, url: String? = null) {

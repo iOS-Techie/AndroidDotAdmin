@@ -122,9 +122,8 @@ class NSServiceManagementFragment :
         binding.apply {
             viewModel.apply {
                 srlRefresh.isRefreshing = false
-                var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
 
-                FilterHelper(activity, binding.rvServiceFilter) { _, list ->
+                FilterHelper(activity, binding.rvServiceFilter, if (filterList.isEmpty()) FilterHelper.getCommonFilterLists() else filterList) { _, list ->
                     viewModel.apply {
                         filterList = list
                         filterData(serviceList, fleetList, capabilities, filterList)

@@ -47,7 +47,6 @@ class NSServiceManagementRecycleAdapter(
                     switchService.switchEnableDisable(isActive)
                     tvItemActive.status(isActive)
                     tvViewMore.text = update
-                    tvDescription.text = description
                     tvViewMore.setTextColor(ColorResources.getWhiteColor())
                     spinner.tvCommonTitle.text = capability.lowercase()
                     ColorResources.setBackgroundTint(clViewMore, ColorResources.getPrimaryColor())
@@ -55,7 +54,7 @@ class NSServiceManagementRecycleAdapter(
 
                 tvItemTitle.text = response.name
                 tvDate.text = NSDateTimeHelper.getDateForUser(response.created)
-
+                tvDescription.text = description
                 switchService.setOnClickListener {
                     isActive = !isActive
                     switchService.switchEnableDisable(isActive)

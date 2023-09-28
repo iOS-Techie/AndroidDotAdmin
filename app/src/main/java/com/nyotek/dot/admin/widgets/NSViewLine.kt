@@ -46,6 +46,9 @@ class NSViewLine : View {
             R.id.view_line_decoration -> {
                 ColorResources.setBackground(this,getColorWithAlpha(ColorResources.getPrimaryColor(), 100f))
             }
+            R.id.view_line_dispatch -> {
+                ColorResources.setCardBackground(this, 0f, 0, ColorResources.getBorderColor(), ColorResources.getBorderColor())
+            }
             else -> {
                 ColorResources.setBackground(this, ColorResources.getBorderColor())
             }

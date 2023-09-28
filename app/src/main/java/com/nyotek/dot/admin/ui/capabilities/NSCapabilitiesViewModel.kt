@@ -8,6 +8,7 @@ import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSLanguageRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCapabilityRequest
+import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.NSCapabilitiesBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSCapabilitiesResponse
@@ -15,6 +16,8 @@ import com.nyotek.dot.admin.repository.network.responses.NSFleetBlankDataRespons
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 
 class NSCapabilitiesViewModel(application: Application) : NSViewModel(application) {
+
+    var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
 
     /**
      * Get Capabilities List

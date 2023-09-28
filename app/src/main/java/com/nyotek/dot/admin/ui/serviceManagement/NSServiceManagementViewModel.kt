@@ -1,9 +1,11 @@
 package com.nyotek.dot.admin.ui.serviceManagement
 
 import android.app.Application
+import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSServiceRepository
+import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
@@ -12,6 +14,8 @@ import com.nyotek.dot.admin.repository.network.responses.NSServiceCapabilityResp
 import com.nyotek.dot.admin.repository.network.responses.ServiceCapabilitiesDataItem
 
 class NSServiceManagementViewModel(application: Application) : NSViewModel(application) {
+
+    var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
 
     /**
      * create service list
@@ -48,10 +52,23 @@ class NSServiceManagementViewModel(application: Application) : NSViewModel(appli
             NSServiceRepository.getServiceList(obj)
         }, { data, _ ->
             if (data is NSGetServiceListResponse) {
-                data.data.sortByDescending { it.serviceId }
+                removeItemById(NSConstants.SERVICE_ID, data.data)
+                data.data.sortBy { it.serviceId }
                 getCapabilityList(data.data, callback)
             }
         })
+    }
+
+    private fun removeItemById(idToRemove: String, modelList: MutableList<NSGetServiceListData>): Boolean {
+        val iterator = modelList.iterator()
+        while (iterator.hasNext()) {
+            val model = iterator.next()
+            if (model.serviceId == idToRemove) {
+                iterator.remove()
+                return true // Item found and removed
+            }
+        }
+        return false // Item not found
     }
 
     private fun getCapabilityList(list: MutableList<NSGetServiceListData>, callback: ((MutableList<NSGetServiceListData>, MutableList<FleetData>, MutableList<CapabilitiesDataItem>) -> Unit)) {

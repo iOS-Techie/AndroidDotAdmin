@@ -99,6 +99,18 @@ abstract class NSViewModel(mApplication: Application) : AndroidViewModel(mApplic
         return selectedFilterList
     }
 
+    fun getTypesFilterSelected(list: MutableList<ActiveInActiveFilter>): MutableList<String> {
+        val selectedFilterList: MutableList<String> = arrayListOf()
+        for (data in list) {
+            if (data.isActive && data.key != NSConstants.ALL) {
+                if (data.title?.isNotEmpty() == true) {
+                    selectedFilterList.add(data.title ?: "")
+                }
+            }
+        }
+        return selectedFilterList
+    }
+
     override fun <T> onSuccess(data: T) {
         isClProgressVisible.value = true
         if (data != null) {

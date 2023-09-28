@@ -20,6 +20,7 @@ import com.nyotek.dot.admin.repository.network.responses.NSNavigationResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserDetailResponse
 import com.nyotek.dot.admin.ui.dashboard.tabs.CapabilitiesTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.DashboardMainTabFragment
+import com.nyotek.dot.admin.ui.dashboard.tabs.DispatchTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.FleetTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.ServicesTabFragment
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
@@ -166,6 +167,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
         try {
             var isVendorAdded = false
             var isServiceManagerAdded = false
+            var isDispatchAdded = false
 
             viewModel.apply {
                 viewPager.setPager(activity, mFragmentList) {position ->
@@ -180,6 +182,10 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                         isVendorAdded = true
                         fragment.setFragment()
                         instance.setSelectedNavigationType(NSConstants.FLEETS_TAB)
+                    } else if (fragment is DispatchTabFragment && !isDispatchAdded) {
+                        isDispatchAdded = true
+                        fragment.setFragment()
+                        instance.setSelectedNavigationType(NSConstants.DISPATCH_TAB)
                     } else if (fragment is ServicesTabFragment && !isServiceManagerAdded) {
                         isServiceManagerAdded = true
                         instance.setSelectedNavigationType(NSConstants.SERVICE_TAB)
@@ -226,6 +232,9 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
             NSConstants.SERVICE_TAB -> {
                 setFragmentBack()
             }
+            NSConstants.DISPATCH_TAB -> {
+                setFragmentBack()
+            }
         }
     }
 
@@ -245,6 +254,10 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                 }
 
                 is CapabilitiesTabFragment -> {
+                    fragment.onBackClick(this@NSDashboardFragment)
+                }
+
+                is DispatchTabFragment -> {
                     fragment.onBackClick(this@NSDashboardFragment)
                 }
             }
