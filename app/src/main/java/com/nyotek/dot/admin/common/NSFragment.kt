@@ -49,6 +49,12 @@ open class NSFragment : Fragment() {
          }
     }
 
+    var dispatchManagementFragmentChangeCallback: NSFragmentChangeCallback? = object : NSFragmentChangeCallback {
+        override fun setFragment(previousFragmentName: String, fragment: Fragment, isBackStack: Boolean,  bundle: Bundle) {
+            EventBus.getDefault().post(NSDispatchCall(fragment, bundle))
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context

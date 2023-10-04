@@ -33,6 +33,7 @@ class NSConstants {
         //Keys
         const val USER_DETAIL_KEY = "user_detail_key"
         const val FLEET_DETAIL_KEY = "fleet_detail_key"
+        const val DISPATCH_DETAIL_KEY = "dispatch_detail_key"
         const val Job_TITLE_LIST_KEY = "job_title_list_key"
         const val VEHICLE_DETAIL_KEY = "vendor_detail_key"
         const val DRIVER_DETAIL_KEY = "driver_detail_key"

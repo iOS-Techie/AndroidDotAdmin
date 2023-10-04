@@ -934,6 +934,17 @@ class NSApiManager {
             request(authorised3020Client.dispatchFromService(serviceId), callback)
         }
     }
+
+    /**
+     * To call the dispatch detail data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getDispatchDetail(dispatchId: String, callback: NSRetrofitCallback<DispatchDetailResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3020Client.dispatchDetail(dispatchId), callback)
+        }
+    }
 }
 
 /**
@@ -1124,4 +1135,6 @@ interface RTApiInterface {
     @GET("dispatches/s/{service_id}")
     suspend fun dispatchFromService(@Path("service_id") serviceId: String): retrofit2.Response<NSDispatchOrderListResponse>
 
+    @GET("dispatch/{dispatch_id}")
+    suspend fun dispatchDetail(@Path("dispatch_id") dispatchId: String): retrofit2.Response<DispatchDetailResponse>
 }

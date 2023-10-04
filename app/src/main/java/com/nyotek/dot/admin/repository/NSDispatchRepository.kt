@@ -9,6 +9,7 @@ import com.nyotek.dot.admin.repository.network.requests.NSVehicleEnableDisableRe
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleUpdateImageRequest
+import com.nyotek.dot.admin.repository.network.responses.DispatchDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
@@ -50,6 +51,34 @@ object NSDispatchRepository : BaseRepository() {
 
                 override fun onRefreshToken() {
                     getDispatchFromService(id, viewModelCallback)
+                }
+            })
+        }
+    }
+
+    /**
+     * To get dispatch detail from API
+     *
+     * @param viewModelCallback The callback to communicate back to the view model
+     */
+    fun getDispatchDetail(
+        id: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiManager.getDispatchDetail(id, object :
+                NSRetrofitCallback<DispatchDetailResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_DISPATCH_DETAIL
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    getDispatchDetail(id, viewModelCallback)
                 }
             })
         }

@@ -15,6 +15,7 @@ import com.nyotek.dot.admin.databinding.FragmentDispatchTabBinding
 import com.nyotek.dot.admin.databinding.FragmentFleetTabBinding
 import com.nyotek.dot.admin.repository.network.responses.FragmentSelectModel
 import com.nyotek.dot.admin.ui.dispatch.NSDispatchFragment
+import com.nyotek.dot.admin.ui.dispatch.detail.NSDispatchDetailFragment
 import com.nyotek.dot.admin.ui.fleets.NSFleetFragment
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
 import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
@@ -54,6 +55,7 @@ class DispatchTabFragment : NSFragment() {
     private fun setFragmentList() {
         mFragmentList.clear()
         mFragmentList.add(FragmentSelectModel(0, NSDispatchFragment.newInstance()))
+        mFragmentList.add(FragmentSelectModel(1, NSDispatchDetailFragment.newInstance(bundleOf())))
        /* mFragmentList.add(FragmentSelectModel(1, NSFleetDetailFragment.newInstance(bundleOf())))
         mFragmentList.add(FragmentSelectModel(2, NSVehicleDetailFragment.newInstance(bundleOf())))
         mFragmentList.add(FragmentSelectModel(2, NSDriverDetailFragment.newInstance(bundleOf())))*/
@@ -72,13 +74,13 @@ class DispatchTabFragment : NSFragment() {
     @Subscribe(threadMode = ThreadMode.POSTING)
     fun onDispatchCall(event: NSDispatchCall) {
 
-        /*when (event.fragment) {
-            is NSFleetDetailFragment -> {
-                binding.fleetPager.setCurrentItem(1, false)
-                (mFragmentList[1].framgents as NSFleetDetailFragment).loadFragment(event.bundle)
+        when (event.fragment) {
+            is NSDispatchDetailFragment -> {
+                binding.dispatchPager.setCurrentItem(1, false)
+                (mFragmentList[1].framgents as NSDispatchDetailFragment).loadFragment(event.bundle)
             }
 
-            is NSVehicleDetailFragment -> {
+            /*is NSVehicleDetailFragment -> {
                 binding.fleetPager.setCurrentItem(2, false)
                 (mFragmentList[2].framgents as NSVehicleDetailFragment).resetFragment()
                 (mFragmentList[2].framgents as NSVehicleDetailFragment).loadFragment(event.bundle)
@@ -88,8 +90,8 @@ class DispatchTabFragment : NSFragment() {
                 binding.fleetPager.setCurrentItem(3, false)
                 (mFragmentList[3].framgents as NSDriverDetailFragment).resetFragment()
                 (mFragmentList[3].framgents as NSDriverDetailFragment).loadFragment(event.bundle)
-            }
-        }*/
+            }*/
+        }
     }
 
     fun onBackClick(callback: NSBackClickCallback) {

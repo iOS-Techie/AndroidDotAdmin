@@ -10,6 +10,7 @@ import com.nyotek.dot.admin.common.utils.glide
 import com.nyotek.dot.admin.common.utils.glide200
 import com.nyotek.dot.admin.common.utils.setGlideRound
 import com.nyotek.dot.admin.common.utils.setGlideWithOutPlace
+import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.databinding.LayoutAssignedListBinding
@@ -20,14 +21,14 @@ import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 
 class NSDispatchManagementRecycleAdapter(
     private val activity: Activity,
-    private val callback: ((NSDispatchOrderListData, Boolean) -> Unit)
+    private val callback: ((NSDispatchOrderListData) -> Unit)
 ) : BaseViewBindingAdapter<LayoutDispatchListBinding, NSDispatchOrderListData>(
 
     bindingInflater = { inflater, parent, attachToParent ->
         LayoutDispatchListBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource,_ ->
+    onBind = { binding, response, _,_ ->
         binding.apply {
             response.apply {
                 ColorResources.setCardBackground(clDispatchDetailView, 8f, width = 1)
@@ -44,6 +45,10 @@ class NSDispatchManagementRecycleAdapter(
                 tvOrderTitle.getMapValue(response.vendorName)
                 tvStartingLocation.text = response.pickup?.addressLine
                 tvEndingLocation.text = response.destination?.addressLine
+
+                clDispatchView.setSafeOnClickListener {
+                    callback.invoke(response)
+                }
             }
         }
     }

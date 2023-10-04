@@ -1,4 +1,4 @@
-package com.nyotek.dot.admin.ui.dispatch
+package com.nyotek.dot.admin.ui.dispatch.detail
 
 import android.app.Application
 import com.nyotek.dot.admin.common.NSDateTimeHelper
@@ -14,7 +14,7 @@ import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResp
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListResponse
 
-class NSDispatchViewModel(application: Application) : NSViewModel(application) {
+class NSDispatchDetailViewModel(application: Application) : NSViewModel(application) {
     var createCompanyRequest: NSCreateCompanyRequest = NSCreateCompanyRequest()
     var urlToUpload: String = ""
     var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()

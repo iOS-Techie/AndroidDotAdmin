@@ -32,6 +32,7 @@ import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
+import com.nyotek.dot.admin.ui.dispatch.detail.NSDispatchDetailFragment
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
 
 class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragmentDispatchBinding>(),
@@ -136,7 +137,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
     private fun setDispatchServiceFilter(isShowProgress: Boolean) {
         binding.apply {
             viewModel.apply {
-                getServiceListApi {
+                getServiceListApi(isShowProgress) {
                     layoutSpinner.clDispatchBorderBg.visible()
                     val adapter = DispatchSpinnerAdapter(requireContext(), it)
                     layoutSpinner.spinnerDispatchSelect.adapter = adapter
@@ -203,9 +204,9 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
         with(binding) {
             with(viewModel) {
                 with(rvFleetsList) {
-                    dispatchRecycleAdapter = NSDispatchManagementRecycleAdapter(activity, { model, isActive ->
-                        //openFleetDetail(model)
-                    })
+                    dispatchRecycleAdapter = NSDispatchManagementRecycleAdapter(activity) {
+                        openDispatchDetail(it)
+                    }
 
                     setupWithAdapterAndCustomLayoutManager(dispatchRecycleAdapter!!, GridLayoutManager(activity, 3))
                 }
@@ -213,12 +214,12 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
         }
     }
 
-    private fun openFleetDetail(model: FleetData) {
+    private fun openDispatchDetail(model: NSDispatchOrderListData) {
         val gson = Gson().toJson(model)
-        val bundle = bundleOf(NSConstants.FLEET_DETAIL_KEY to gson)
-        fleetManagementFragmentChangeCallback?.setFragment(
+        val bundle = bundleOf(NSConstants.DISPATCH_DETAIL_KEY to gson)
+        dispatchManagementFragmentChangeCallback?.setFragment(
             this@NSDispatchFragment.javaClass.simpleName,
-            NSFleetDetailFragment.newInstance(bundle),
+            NSDispatchDetailFragment.newInstance(bundle),
             true, bundle
         )
     }

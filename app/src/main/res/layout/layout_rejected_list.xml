@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+        android:id="@+id/tv_driver_name"
+        style="@style/LayoutWidthHeightZeroWrap"
+        android:layout_height="@dimen/_10sdp"
+        tools:text="Order Placed"
+        android:textSize="@dimen/_4sdp"
+        android:textAlignment="viewStart"
+        android:fontFamily="@font/archivo_medium"
+        android:paddingStart="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_2sdp"
+        android:gravity="center_vertical|start"
+        android:includeFontPadding="false"
+        app:layout_constraintEnd_toStartOf="@id/tv_vehicle_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_line_rejected"/>
+
+    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+        android:id="@+id/tv_vehicle_name"
+        style="@style/LayoutWidthHeightZeroWrap"
+        android:layout_height="@dimen/_10sdp"
+        tools:text="Order Placed"
+        android:textSize="@dimen/_4sdp"
+        android:textAlignment="viewStart"
+        android:fontFamily="@font/archivo_medium"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_2sdp"
+        android:gravity="center_vertical|start"
+        android:includeFontPadding="false"
+        app:layout_constraintStart_toEndOf="@id/tv_driver_name"
+        app:layout_constraintEnd_toStartOf="@id/tv_date"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_line_rejected"/>
+
+    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+        android:id="@+id/tv_date"
+        style="@style/LayoutWidthHeightZeroWrap"
+        android:layout_height="@dimen/_10sdp"
+        tools:text="Order Placed"
+        android:textSize="@dimen/_4sdp"
+        android:textAlignment="viewStart"
+        android:fontFamily="@font/archivo_medium"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_2sdp"
+        android:gravity="center_vertical|start"
+        android:includeFontPadding="false"
+        app:layout_constraintStart_toEndOf="@id/tv_vehicle_name"
+        app:layout_constraintEnd_toStartOf="@id/tv_time"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_line_rejected"/>
+
+    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+        android:id="@+id/tv_time"
+        style="@style/LayoutWidthHeightZeroWrap"
+        android:layout_height="@dimen/_10sdp"
+        tools:text="Order Placed"
+        android:textSize="@dimen/_4sdp"
+        android:textAlignment="viewStart"
+        android:fontFamily="@font/archivo_medium"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/_2sdp"
+        android:gravity="center_vertical|start"
+        android:includeFontPadding="false"
+        app:layout_constraintStart_toEndOf="@id/tv_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_line_rejected"/>
+
+    <View
+        android:id="@+id/view_line_rejected"
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="@color/line_divider"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
