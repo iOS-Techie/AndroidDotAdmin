@@ -104,7 +104,9 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
      */
     private fun viewCreated() {
         viewModel.apply {
-            binding.layoutSpinner.clDispatchBorderBg.gone()
+            if (!isFragmentLoad) {
+                binding.layoutSpinner.clDispatchBorderBg.gone()
+            }
             setDispatchServiceFilter(!isFragmentLoad)
             //getFleetFromApi(!isFragmentLoad)
             isFragmentLoad = true
@@ -123,7 +125,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
                     }
 
                     srlRefresh.setOnRefreshListener {
-                        callDispatchFromService(selectedServiceId, false)
+                        callDispatchFromService(selectedServiceId, selectedServiceLogo, false)
                     }
 
                     tvHeaderBtn.setOnClickListener {
@@ -144,7 +146,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
                     layoutSpinner.spinnerDispatchSelect.onItemSelectedListener = object : OnItemSelectedListener {
                         override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                             val model: NSGetServiceListData = it[position]
-                            callDispatchFromService(model.serviceId, isShowProgress)
+                            callDispatchFromService(model.serviceId, model.logoUrl, isShowProgress)
                         }
 
                         override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -157,9 +159,10 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
         }
     }
 
-    private fun callDispatchFromService(serviceId: String?, isShowProgress: Boolean) {
+    private fun callDispatchFromService(serviceId: String?, serviceLogo: String?, isShowProgress: Boolean) {
         viewModel.apply {
             binding.apply {
+                selectedServiceLogo = serviceLogo
                 selectedServiceId = serviceId
                 if (serviceId?.isNotEmpty() == true) {
                     getDispatchFromService(serviceId, isShowProgress) { item ->
@@ -249,6 +252,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
 
     private fun setAdapterData(serviceItemList: MutableList<NSDispatchOrderListData>) {
         dispatchRecycleAdapter?.apply {
+            setServiceLogo(viewModel.selectedServiceLogo)
             setData(serviceItemList)
         }
     }

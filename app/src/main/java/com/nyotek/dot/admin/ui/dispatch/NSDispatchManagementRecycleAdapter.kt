@@ -19,6 +19,8 @@ import com.nyotek.dot.admin.databinding.LayoutFleetItemBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 
+private var selectedServiceLogo: String? = null
+
 class NSDispatchManagementRecycleAdapter(
     private val activity: Activity,
     private val callback: ((NSDispatchOrderListData) -> Unit)
@@ -34,7 +36,19 @@ class NSDispatchManagementRecycleAdapter(
                 ColorResources.setCardBackground(clDispatchDetailView, 8f, width = 1)
                 ColorResources.setBackground(viewLineDivider, ColorResources.getSecondaryDarkColor())
                 dispatchViewTitle.text = response.rId
-                tvOrderPlaces.text = NSUtilities.capitalizeFirstLetter(response.status.first().status.replace("_", " "))
+                ivHubzIcon.setGlideWithOutPlace(selectedServiceLogo)
+                val finalStatus = response.status.first().status
+                ColorResources.apply {
+                    if (finalStatus.lowercase() == "delivered") {
+                        setCardBackground(tvOrderPlaces, 100f, 0, getGreenColor())
+                    } else if (finalStatus.lowercase() == "cancelled") {
+                        setCardBackground(tvOrderPlaces, 100f, 0, getErrorColor())
+                    } else {
+                        setCardBackground(tvOrderPlaces, 100f, 0, getPrimaryColor())
+                    }
+                }
+
+                tvOrderPlaces.text = NSUtilities.capitalizeFirstLetter(finalStatus.replace("_", " "))
                 tvDriverTitle.text = response.userMetadata?.userName
                 tvDescription.text = response.userMetadata?.userPhone
                 tvModelTitle.text = response.assignedDriverId
@@ -52,4 +66,8 @@ class NSDispatchManagementRecycleAdapter(
             }
         }
     }
-)
+) {
+    fun setServiceLogo(logo: String?) {
+        selectedServiceLogo = logo
+    }
+}

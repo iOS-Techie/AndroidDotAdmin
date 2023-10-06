@@ -19,6 +19,7 @@ class NSDispatchViewModel(application: Application) : NSViewModel(application) {
     var urlToUpload: String = ""
     var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
     var selectedServiceId: String? = null
+    var selectedServiceLogo: String? = null
 
     fun getServiceListApi(isShowProgress: Boolean, callback: ((MutableList<NSGetServiceListData>) -> Unit)) {
         if (isShowProgress) showProgress()

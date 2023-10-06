@@ -37,5 +37,8 @@ data class NSGetServiceListData(
 	val lastModified: String? = null,
 
 	@field:SerializedName("get_nearest_url")
-	val getNearestUrl: String? = null
+	val getNearestUrl: String? = null,
+
+	@field:SerializedName("logo_url")
+	val logoUrl: String? = null
 )

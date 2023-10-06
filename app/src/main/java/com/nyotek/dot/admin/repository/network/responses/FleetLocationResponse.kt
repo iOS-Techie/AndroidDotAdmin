@@ -92,11 +92,23 @@ data class Properties(
 	@field:SerializedName("ref_type")
 	val refType: String? = null,
 
+	@field:SerializedName("ref_status")
+	val refStatus: String? = null,
+
 	@field:SerializedName("longitude")
 	val longitude: Double = 0.0,
 
+	@field:SerializedName("dest_lng")
+	val destLongitude: Double = 0.0,
+
+	@field:SerializedName("dest_lat")
+	val destLatitude: Double = 0.0,
+
 	@field:SerializedName("ts")
 	val ts: String? = null,
+
+	@field:SerializedName("dest_geom")
+	val destGeom: String? = null,
 
 	@field:SerializedName("dispatch_count")
 	val dispatchCount: Int = 0,

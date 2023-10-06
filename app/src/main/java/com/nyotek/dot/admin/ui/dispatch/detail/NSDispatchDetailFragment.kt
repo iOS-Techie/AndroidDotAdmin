@@ -5,11 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
+import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.utils.glide200
+import com.nyotek.dot.admin.common.utils.glideCenter
+import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
+import com.nyotek.dot.admin.common.utils.setGlideRound
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDispatchDetailBinding
+import com.nyotek.dot.admin.repository.network.responses.VehicleData
 
 class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel, NsFragmentDispatchDetailBinding>() {
 
@@ -44,6 +50,10 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         initUI()
         viewCreated()
         setListener()
+        viewModel.getDispatchDetail(bundle?.getString(NSConstants.DISPATCH_DETAIL_KEY)) { vehicleData ->
+            setCustomerDetail()
+            setVehicleDetail(vehicleData)
+        }
     }
 
     override fun observeViewModel() {
@@ -155,6 +165,36 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                         onBackPress()
                     }
                 }
+            }
+        }
+    }
+
+    private fun setVehicleDetail(vehicleData: VehicleData?) {
+        binding.apply {
+            viewModel.apply {
+                layoutVehicle.apply {
+                    vehicleData?.apply {
+                        ivIcon.glideWithPlaceHolder(url = vehicleImg)
+                        layoutName.tvDetail.text = vehicleData.manufacturer
+                        layoutNumber.tvDetail.text = model
+                        layoutEmail.tvDetail.text = registrationNo
+                    }
+                }
+                layoutVehicleSecond.apply {
+                    vehicleData?.apply {
+                        layoutName.tvDetail.text = vehicleData.loadCapacity
+                        layoutNumber.tvDetail.text = manufacturingYear
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setCustomerDetail() {
+        binding.apply {
+            viewModel.apply {
+                layoutCustomer.layoutName.tvDetail.text = dispatchSelectedData?.userMetadata?.userName
+                layoutCustomer.layoutNumber.tvDetail.text = dispatchSelectedData?.userMetadata?.userPhone
             }
         }
     }

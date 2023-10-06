@@ -439,6 +439,10 @@ fun ImageView.glide(resource: Int = 0, url: String? = null) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).into(this)
 }
 
+fun ImageView.glideWithPlaceHolder(resource: Int = R.drawable.ic_place_holder_product, url: String? = null) {
+    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).placeholder(resource).into(this)
+}
+
 fun ImageView.setGlideWithOutPlace(url: String? = null) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url).into(this)
 }

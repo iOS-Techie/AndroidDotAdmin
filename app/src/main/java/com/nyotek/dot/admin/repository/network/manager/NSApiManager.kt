@@ -945,6 +945,28 @@ class NSApiManager {
             request(authorised3020Client.dispatchDetail(dispatchId), callback)
         }
     }
+
+    /**
+     * To call the dispatch detail data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun updateDispatchOrderStatus(orderId: String, callback: NSRetrofitCallback<NSBlankDataResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3020Client.updateDispatchOrderStatus(orderId), callback)
+        }
+    }
+
+    /**
+     * To call the location history dispatch data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getLocationHistoryDispatch(dispatchId: String, callback: NSRetrofitCallback<FleetLocationResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedLocationClient.getLocationHistoryDispatch(dispatchId), callback)
+        }
+    }
 }
 
 /**
@@ -1137,4 +1159,10 @@ interface RTApiInterface {
 
     @GET("dispatch/{dispatch_id}")
     suspend fun dispatchDetail(@Path("dispatch_id") dispatchId: String): retrofit2.Response<DispatchDetailResponse>
+
+    @GET("dispatch/{order_id}/status")
+    suspend fun updateDispatchOrderStatus(@Path("order_id") orderId: String): retrofit2.Response<NSBlankDataResponse>
+
+    @GET("location/history/ref/{dispatch_id}")
+    suspend fun getLocationHistoryDispatch(@Path("dispatch_id") dispatchId: String): retrofit2.Response<FleetLocationResponse>
 }

@@ -1,23 +1,12 @@
 package com.nyotek.dot.admin.repository.network.responses
 
+import com.google.firebase.crashlytics.internal.metadata.UserMetadata
 import com.google.gson.annotations.SerializedName
 
 data class DispatchDetailResponse(
 
 	@field:SerializedName("data")
 	val data: DispatchData? = null
-)
-
-data class UserMetadata(
-
-	@field:SerializedName("phone")
-	val phone: String? = null,
-
-	@field:SerializedName("user_id")
-	val userId: String? = null,
-
-	@field:SerializedName("username")
-	val username: String? = null
 )
 
 data class StatusItem(

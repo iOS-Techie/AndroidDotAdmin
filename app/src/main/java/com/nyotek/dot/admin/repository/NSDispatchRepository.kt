@@ -10,7 +10,9 @@ import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleUpdateImageRequest
 import com.nyotek.dot.admin.repository.network.responses.DispatchDetailResponse
+import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
 import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
+import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSVehicleAssignBlankDataResponse
@@ -79,6 +81,62 @@ object NSDispatchRepository : BaseRepository() {
 
                 override fun onRefreshToken() {
                     getDispatchDetail(id, viewModelCallback)
+                }
+            })
+        }
+    }
+
+    /**
+     * To update dispatch order status from API
+     *
+     * @param viewModelCallback The callback to communicate back to the view model
+     */
+    fun updateDispatchOrderStatus(
+        id: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiManager.updateDispatchOrderStatus(id, object :
+                NSRetrofitCallback<NSBlankDataResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_DISPATCH_ORDER_STATUS
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    updateDispatchOrderStatus(id, viewModelCallback)
+                }
+            })
+        }
+    }
+
+    /**
+     * To get dispatch location history from API
+     *
+     * @param viewModelCallback The callback to communicate back to the view model
+     */
+    fun getDispatchLocationHistory(
+        id: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiManager.getLocationHistoryDispatch(id, object :
+                NSRetrofitCallback<FleetLocationResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_DISPATCH_LOCATION_HISTORY
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    getDispatchLocationHistory(id, viewModelCallback)
                 }
             })
         }
