@@ -1,5 +1,7 @@
 package com.nyotek.dot.admin.common
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -26,15 +28,6 @@ open class NSActivity : AppCompatActivity(), NSReplaceFragmentCallback, NSProgre
     private var allowBackPress = true
     private lateinit var rlLayout: RelativeLayout
     private var localeChangerAppCompatDelegate: LocaleChangerAppCompatDelegate? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (!this.localClassName.contains("NSSplashActivity")) {
-            val window: Window = window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ColorResources.getSecondaryColor()
-        }
-    }
 
     override fun onStart() {
         super.onStart()
@@ -129,6 +122,10 @@ open class NSActivity : AppCompatActivity(), NSReplaceFragmentCallback, NSProgre
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
             )
             paramsForProgressBar.addRule(RelativeLayout.CENTER_IN_PARENT)
+            val colorFilter = PorterDuffColorFilter(ColorResources.getPrimaryColor(), PorterDuff.Mode.SRC_IN)
+            progressBar.indeterminateDrawable.colorFilter = colorFilter
+            progressBar.progressTintList = ColorResources.getPrimaryColorState()
+
             rlLayout.addView(progressBar, paramsForProgressBar)
             rlLayout.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
             val paramsForRelativeLayout = RelativeLayout.LayoutParams(
@@ -169,7 +166,7 @@ open class NSActivity : AppCompatActivity(), NSReplaceFragmentCallback, NSProgre
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        EventBus.getDefault().post(NSOutSideTouchEvent())
+       // EventBus.getDefault().post(NSOutSideTouchEvent())
         return super.dispatchTouchEvent(ev)
     }
 }

@@ -30,7 +30,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:gravity="start"
-            />
+            android:spinnerMode="dropdown"
+            android:overlapAnchor="false"/>
 
         <ImageView
             android:id="@+id/iv_spinner_ico"

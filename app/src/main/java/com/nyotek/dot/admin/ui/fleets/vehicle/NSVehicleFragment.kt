@@ -150,7 +150,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
         with(binding) {
             with(viewModel) {
                 with(rvVehicleList) {
-                    vehicleRecycleAdapter = NSVehicleRecycleAdapter({ response, position ->
+                    vehicleRecycleAdapter = NSVehicleRecycleAdapter(activity, { response, position ->
                         editVehicleData(response, position)
                     }, { serviceId, isEnable ->
                         vehicleEnableDisable(serviceId, isEnable)

@@ -107,8 +107,11 @@ open class NSFragment : Fragment() {
      */
     //Use of Outside change to Protected
     private fun showAlertDialog(message: String?, callback: ((Boolean) -> Unit)? = null) {
-        val errorMessage: String = message ?: stringResource.somethingWentWrong
-        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, callback = callback)
+        if (message != null) {
+            if (message.isNotEmpty()) {
+                NSAlertUtils.showAlertDialog(mContext as FragmentActivity, message, callback = callback)
+            }
+        }
     }
 
     /**
@@ -117,8 +120,17 @@ open class NSFragment : Fragment() {
      * @param message The message to show as alert message
      */
     protected fun showSuccessDialog(title: String?, message: String?, alertKey: String = NSConstants.POSITIVE_CLICK, callback: ((Boolean) -> Unit)? = null) {
-        val errorMessage: String = message ?: stringResource.somethingWentWrong
-        NSAlertUtils.showAlertDialog(mContext as FragmentActivity, errorMessage, title, alertKey = alertKey, callback = callback)
+        if (message != null) {
+            if (message.isNotEmpty()) {
+                NSAlertUtils.showAlertDialog(
+                    mContext as FragmentActivity,
+                    message,
+                    title,
+                    alertKey = alertKey,
+                    callback = callback
+                )
+            }
+        }
     }
 
     /**

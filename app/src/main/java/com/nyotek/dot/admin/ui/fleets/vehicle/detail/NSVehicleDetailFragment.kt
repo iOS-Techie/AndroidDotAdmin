@@ -232,7 +232,7 @@ class NSVehicleDetailFragment :
                         negativeButton = stringResource.cancel
                     ) { isCancel ->
                         if (!isCancel) {
-                            assignVehicleToDriver(arrayListOf())
+                            assignVehicleToDriver(true, arrayListOf())
                         }
                     }
                 }
@@ -254,7 +254,7 @@ class NSVehicleDetailFragment :
     private fun setUpdateDriverList(employeeList: MutableList<EmployeeDataItem>) {
         binding.apply {
             val nameList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
-            val idList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
+            var idList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
 
             val spinnerList = SpinnerData(idList, nameList)
             spinner.spinnerAppSelect.setPlaceholderAdapter(
@@ -267,7 +267,7 @@ class NSVehicleDetailFragment :
                 if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
                     viewModel.apply {
                         viewModel.driverId = selectedId
-                        assignVehicleToDriver(vehicleDataItem?.capabilities?: arrayListOf())
+                        assignVehicleToDriver(false, vehicleDataItem?.capabilities?: arrayListOf())
                     }
                 }
             }
@@ -276,6 +276,7 @@ class NSVehicleDetailFragment :
             tvUserTitle.text = viewModel.driverId ?: ""
             tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
 
+            idList = employeeList.map { it.userId ?: "" }.toMutableList()
             val spinnerPosition = idList.indexOf(viewModel.driverId)
             val isVisible = spinnerPosition != -1
             clVehicleItem.setVisibility(isVisible)
@@ -286,12 +287,15 @@ class NSVehicleDetailFragment :
     /***
      * Assign Vehicle To Selected Driver
      */
-    private fun assignVehicleToDriver(capabilities: MutableList<String>) {
+    private fun assignVehicleToDriver(isFromDelete: Boolean, capabilities: MutableList<String>) {
         viewModel.apply {
             driverId?.let {
-                assignVehicle(
+                assignVehicle(isFromDelete,
                     it, capabilities = capabilities
                 ) {
+                    if (isFromDelete) {
+                        viewModel.driverId = ""
+                    }
                     setUpdateDriverList(employeeViewModel.employeeList)
                 }
             }

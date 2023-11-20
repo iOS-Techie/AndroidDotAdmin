@@ -159,16 +159,32 @@ object NSDateTimeHelper {
     fun formatDateToNowOrDateTime(inputDateString: String): String {
         val stringResource = StringResourceResponse()
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
-        val inputDate = inputFormat.parse(inputDateString)
-        val currentTime = System.currentTimeMillis()
-        val dateDifference = currentTime - inputDate.time
-        val secondsDifference = dateDifference / 1000
+        try {
+            val inputDate = inputFormat.parse(inputDateString)
+            val currentTime = System.currentTimeMillis()
+            val dateDifference = currentTime - inputDate.time
+            val secondsDifference = dateDifference / 1000
 
-        return when {
-            secondsDifference < 60 -> stringResource.justNow // Less than a minute ago
-            secondsDifference < 3600 -> "${secondsDifference / 60}m ago" // Less than an hour ago
-            secondsDifference < 86400 -> "${secondsDifference / 3600}h ago" // Less than a day ago
-            else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(inputDate) // Default format for older dates
+            return when {
+                secondsDifference < 60 -> stringResource.justNow // Less than a minute ago
+                secondsDifference < 3600 -> "${secondsDifference / 60}m ago" // Less than an hour ago
+                secondsDifference < 86400 -> "${secondsDifference / 3600}h ago" // Less than a day ago
+                else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(inputDate) // Default format for older dates
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val inputNewFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            val inputNewDate = inputNewFormat.parse(inputDateString)
+            val currentTime = System.currentTimeMillis()
+            val dateDifference = currentTime - inputNewDate!!.time
+            val secondsDifference = dateDifference / 1000
+
+            return when {
+                secondsDifference < 60 -> stringResource.justNow // Less than a minute ago
+                secondsDifference < 3600 -> "${secondsDifference / 60}m ago" // Less than an hour ago
+                secondsDifference < 86400 -> "${secondsDifference / 3600}h ago" // Less than a day ago
+                else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(inputNewDate) // Default format for older dates
+            }
         }
     }
 }

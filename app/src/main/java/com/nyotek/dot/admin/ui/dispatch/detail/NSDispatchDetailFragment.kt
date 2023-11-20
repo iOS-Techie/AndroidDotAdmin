@@ -6,12 +6,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.utils.glide200
-import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
-import com.nyotek.dot.admin.common.utils.setGlideRound
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDispatchDetailBinding

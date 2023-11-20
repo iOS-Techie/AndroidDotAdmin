@@ -62,7 +62,7 @@ class NSDashboardTabFragment :
         super.loadFragment()
         getCurrentLocation()
         isFragmentLoad = true
-        viewModel.getFleetLocations("", true) {
+        viewModel.getFleetLocations("", true, isFromFleetDetail = false) {
             initMapView(it)
         }
     }
@@ -133,7 +133,7 @@ class NSDashboardTabFragment :
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun getCurrentLocation(event: NSAddress) {
-        viewModel.getFleetLocations("", false) {
+        viewModel.getFleetLocations("", false, isFromFleetDetail = false) {
             initMapView(it)
         }
         val address = event.addresses[0].getAddressLine(0).toString()

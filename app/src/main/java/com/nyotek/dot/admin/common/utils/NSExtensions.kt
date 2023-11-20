@@ -48,7 +48,6 @@ import com.nyotek.dot.admin.common.SafeClickListener
 import com.nyotek.dot.admin.common.SingleClickListener
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
-import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import java.text.DecimalFormat
@@ -454,8 +453,11 @@ fun ImageView.glideCenter(resource: Int = 0, url: String? = null) {
         )).into(this)
 }
 
-fun ImageView.setGlideRound(activity: Activity, url: String?, resource: Int = R.drawable.ic_place_holder_product, scale: String? = "fill", corners: Int = 30) {
-    val transform = if (scale == "fill") CenterCrop() else FitCenter()
+fun ImageView.setGlideWithPlaceHolder(
+    activity: Activity,
+    url: String?,
+    resource: Int = R.drawable.ic_place_holder_product
+) {
     Glide.with(activity.applicationContext).load(if (url.isNullOrBlank()) resource else url).placeholder(resource).error(resource).circleCrop().into(this)
 }
 

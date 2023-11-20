@@ -11,8 +11,8 @@ import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeEditCallback
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
-import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -127,7 +127,7 @@ class NSDriverDetailFragment :
                     if (isApiCall) {
                         //Get Vehicle Detail
                         vehicleViewModel.apply {
-                            getVehicleList(true, viewModel.fleetModel?.vendorId?:"", arrayListOf()) {
+                            getVehicleList(true, viewModel.fleetModel?.vendorId?:"", arrayListOf(), isFromDriverDetail = true) {
                                 setVehicleList(it)
                             }
                         }
@@ -189,9 +189,7 @@ class NSDriverDetailFragment :
                 clDriverItem.setVisibility(isVisible)
 
                 vehicleData?.apply {
-                    if (vehicleImg?.isNotEmpty() == true) {
-                        icDriverImg.glideCenter(url = vehicleImg)
-                    }
+                    icDriverImg.setGlideWithPlaceHolder(activity, url = vehicleImg)
                     tvUserTitle.text = manufacturer?:""
                     tvStatus.text = model?:""
                     updateVehicle(vehicleData)
@@ -230,12 +228,12 @@ class NSDriverDetailFragment :
 
     private fun assignVehicleToDriver(selectedId: String = "", capabilities: MutableList<String>, isDelete: Boolean) {
         viewModel.apply {
-            assignVehicle(
+            assignVehicle(isDelete,
                 employeeDataItem?.userId!!, selectedId,
                 capabilities
             ) {
                 if (it) {
-                    getDriverVehicleDetail(employeeDataItem?.vehicleId) { vehicleData ->
+                    getDriverVehicleDetail(isDelete, employeeDataItem?.vehicleId) { vehicleData ->
                         setDriverVehicleDetail(if (isDelete) VehicleData() else vehicleData)
                     }
                 }

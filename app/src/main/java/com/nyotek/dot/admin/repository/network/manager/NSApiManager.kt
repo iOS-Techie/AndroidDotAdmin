@@ -1094,19 +1094,19 @@ interface RTApiInterface {
     @GET("/capability/list")
     suspend fun getCapabilities(): retrofit2.Response<NSCapabilitiesResponse>
 
-    @PATCH("capability/admin/disable")
+    @PATCH("capability/disable")
     suspend fun disableCapabilities(@Body request: NSCapabilitiesRequest): retrofit2.Response<NSFleetBlankDataResponse>
 
-    @PATCH("capability/admin/enable")
+    @PATCH("capability/enable")
     suspend fun enableCapabilities(@Body request: NSCapabilitiesRequest): retrofit2.Response<NSFleetBlankDataResponse>
 
-    @DELETE("admin/capability/{capability_id}")
+    @DELETE("capability/{capability_id}")
     suspend fun capabilityDelete(@Path("capability_id") id: String): retrofit2.Response<NSCapabilitiesBlankDataResponse>
 
     @POST("capability/admin")
     suspend fun createCapability(@Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
-    @PUT("capability/{capability_id}/admin")
+    @PUT("capability/{capability_id}/label")
     suspend fun updateCapability(@Path("capability_id") id: String, @Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
     @GET("service/management/{service_id}")

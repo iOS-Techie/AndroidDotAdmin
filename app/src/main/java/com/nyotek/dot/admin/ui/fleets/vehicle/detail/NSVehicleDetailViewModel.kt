@@ -45,12 +45,14 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
         NSVehicleRepository.updateVehicleImage(request, this)
     }
 
-    fun assignVehicle(driverId: String, vehicleId: String? = vehicleDataItem?.id, capabilities: MutableList<String> = vehicleDataItem?.capabilities?: arrayListOf(), callback: (Boolean) -> Unit) {
+    fun assignVehicle(isFromDelete: Boolean, driverId: String, vehicleId: String? = vehicleDataItem?.id, capabilities: MutableList<String> = vehicleDataItem?.capabilities?: arrayListOf(), callback: (Boolean) -> Unit) {
+        if (isFromDelete) showProgress()
         val request = NSAssignVehicleRequest(driverId, fleetModel?.vendorId, vehicleId, capabilities)
 
         callCommonApi({ obj ->
             NSVehicleRepository.assignVehicle(request, obj)
         }, { _, isSuccess ->
+            hideProgress()
             if (isSuccess) {
                 callback.invoke(true)
             }

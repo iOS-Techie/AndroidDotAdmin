@@ -220,14 +220,19 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
         }
     }
 
-    fun assignVehicle(driverId: String, vehicleId: String? = "", capabilities: MutableList<String>, callback: ((Boolean) -> Unit)) {
+    fun assignVehicle(isForDelete: Boolean, driverId: String, vehicleId: String? = "", capabilities: MutableList<String>, callback: ((Boolean) -> Unit)) {
+        if (isForDelete) showProgress()
         val request = NSAssignVehicleRequest(driverId, fleetModel?.vendorId, vehicleId, capabilities)
         callCommonApi({ obj ->
             NSVehicleRepository.assignVehicle(request, obj)
         }, { _, isSuccess ->
-            hideProgress()
             if (isSuccess) {
+                if (!isForDelete) {
+                    hideProgress()
+                }
                 callback.invoke(true)
+            } else {
+                hideProgress()
             }
         })
     }
@@ -242,17 +247,20 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                     hideProgress()
                 }
                 if (data is NSAssignVehicleDriverResponse) {
-                    getDriverVehicleDetail(data.data?.vehicleId, callback)
+                    getDriverVehicleDetail(false, data.data?.vehicleId, callback)
                 } else {
+                    callback.invoke(VehicleData())
                     hideProgress()
                 }
             })
         }
     }
 
-    fun getDriverVehicleDetail(vehicleId: String?, callback: ((VehicleData?) -> Unit)) {
+    fun getDriverVehicleDetail(isForDelete: Boolean, vehicleId: String?, callback: ((VehicleData?) -> Unit)) {
         if (vehicleId != null) {
-            showProgress()
+            if (!isForDelete) {
+                showProgress()
+            }
             callCommonApi({ obj ->
                 NSVehicleRepository.getDriverVehicleDetail(vehicleId, obj)
             }, { data, _ ->
@@ -263,6 +271,9 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                     callback.invoke(VehicleData())
                 }
             }, false)
+        } else {
+            callback.invoke(VehicleData())
+            hideProgress()
         }
     }
 

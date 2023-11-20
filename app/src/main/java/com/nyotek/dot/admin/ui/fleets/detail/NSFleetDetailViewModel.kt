@@ -179,7 +179,17 @@ class NSFleetDetailViewModel(application: Application) : NSViewModel(application
     }
 
     fun updateFleetLogo() {
-        NSFleetRepository.updateFleetLogo(fleetLogoUpdateRequest, this)
+        showProgress()
+        callCommonApi({ obj ->
+            NSFleetRepository.updateFleetLogo(fleetLogoUpdateRequest, obj)
+        }, { data, _ ->
+            if (data is NSUpdateFleetLogoResponse) {
+                isProgressVisible = false
+                hideProgress()
+            } else {
+                hideProgress()
+            }
+        })
     }
 
     fun updateFleetLogoScale(logoScale: String) {
@@ -198,10 +208,6 @@ class NSFleetDetailViewModel(application: Application) : NSViewModel(application
 
     override fun apiResponse(data: Any) {
         when(data) {
-            is NSUpdateFleetLogoResponse -> {
-                isProgressVisible = false
-                isProgressShowing.value = false
-            }
             is NSFleetBlankDataResponse -> {
                 if ((checkFocus() == 4 || checkFocus() == 3) && isProgressVisible) {
                     isProgressVisible = false

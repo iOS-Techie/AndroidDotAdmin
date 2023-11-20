@@ -6,17 +6,10 @@ import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getMapValue
-import com.nyotek.dot.admin.common.utils.glide
-import com.nyotek.dot.admin.common.utils.glide200
-import com.nyotek.dot.admin.common.utils.setGlideRound
+import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setGlideWithOutPlace
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
-import com.nyotek.dot.admin.common.utils.status
-import com.nyotek.dot.admin.common.utils.switchEnableDisable
-import com.nyotek.dot.admin.databinding.LayoutAssignedListBinding
 import com.nyotek.dot.admin.databinding.LayoutDispatchListBinding
-import com.nyotek.dot.admin.databinding.LayoutFleetItemBinding
-import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 
 private var selectedServiceLogo: String? = null
@@ -55,7 +48,11 @@ class NSDispatchManagementRecycleAdapter(
                 tvModelDescription.text = ""
                 //val brandUrl = response.mediaUrl["0"]
                 //ivHubzIcon.setGlideWithOutPlace(brandUrl)
-                ivProductIconRound.setGlideRound(activity, response.vendorLogoUrl, R.drawable.ic_place_holder_product, "fill", 100)
+                ivProductIconRound.setGlideWithPlaceHolder(
+                    activity,
+                    response.vendorLogoUrl,
+                    R.drawable.ic_place_holder_product
+                )
                 tvOrderTitle.getMapValue(response.vendorName)
                 tvStartingLocation.text = response.pickup?.addressLine
                 tvEndingLocation.text = response.destination?.addressLine

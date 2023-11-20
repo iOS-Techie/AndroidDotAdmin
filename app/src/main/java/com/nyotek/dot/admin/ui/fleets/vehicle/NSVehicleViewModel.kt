@@ -43,7 +43,7 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
         if (isShowProgress) showProgress()
         getCapabilitiesList(isShowError = isShowError, isCapabilityCheck = isCapabilityCheck) {
             if (id != null && callback != null) {
-                getVehicleList(false, id, it, callback)
+                getVehicleList(false, id, it, false, callback)
             } else {
                 hideProgress()
                 capCallback.invoke(it)
@@ -55,12 +55,14 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
      * Get vehicle list
      *
      */
-    fun getVehicleList(isShowProgress: Boolean, refId: String, list: MutableList<CapabilitiesDataItem>, callback: (MutableList<VehicleDataItem>) -> Unit) {
+    fun getVehicleList(isShowProgress: Boolean, refId: String, list: MutableList<CapabilitiesDataItem>, isFromDriverDetail: Boolean, callback: (MutableList<VehicleDataItem>) -> Unit) {
         if (isShowProgress) showProgress()
         callCommonApi({ obj ->
             NSVehicleRepository.getVehicleList(refId, obj)
         }, { data, _ ->
-            hideProgress()
+            if (!isFromDriverDetail) {
+                hideProgress()
+            }
             if (data is NSVehicleResponse) {
                 data.data.sortByDescending { it.id }
 

@@ -359,7 +359,7 @@ class NSFleetDetailFragment :
                     viewModel.apply {
                         layoutAddress.edtValue.text = addressModel?.addr1 ?: ""
                         //getServiceList(true)
-                        mapViewModel.getFleetLocations(fleetModel.vendorId, true) { fleet ->
+                        mapViewModel.getFleetLocations(fleetModel.vendorId, false, isFromFleetDetail = true) { fleet ->
                             setFleetLocationList(fleet)
                         }
                     }

@@ -140,7 +140,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
      */
     fun getFleetLocations(
         vendorId: String?,
-        isShowProgress: Boolean,
+        isShowProgress: Boolean, isFromFleetDetail: Boolean = false,
         callback: ((FleetDataItem?) -> Unit?)
     ) {
         if (isShowProgress) showProgress()
@@ -148,7 +148,9 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         callCommonApi({ obj ->
             NSFleetRepository.getFleetLocations(vendorId!!, obj)
         }, { data, _ ->
-            hideProgress()
+            if (!isFromFleetDetail) {
+                hideProgress()
+            }
             if (data is FleetLocationResponse) {
                 callback.invoke(data.fleetDataItem)
             }

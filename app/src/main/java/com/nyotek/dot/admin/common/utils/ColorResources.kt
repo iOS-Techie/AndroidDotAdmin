@@ -17,6 +17,10 @@ object ColorResources {
         intArrayOf(-android.R.attr.state_enabled)
     )
 
+    val singleStates = arrayOf(
+        intArrayOf()
+    )
+
     fun getBrandLogo(): String {
         return if (resourceData.brandLogo?.isNotEmpty() == true) {
             resourceData.brandLogo!!
@@ -202,5 +206,14 @@ object ColorResources {
         gD.cornerRadius = radius
         gD.setStroke(width, stroke, 10f, 6f)
         view.background = gD
+    }
+
+    fun getPrimaryColorState(): ColorStateList {
+        with(resourceData) {
+            val colors = intArrayOf(
+                getColor(primary)
+            )
+            return  ColorStateList(singleStates, colors)
+        }
     }
 }
