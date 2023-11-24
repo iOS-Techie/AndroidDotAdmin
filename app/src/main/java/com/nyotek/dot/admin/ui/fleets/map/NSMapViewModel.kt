@@ -23,6 +23,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
     var selectedAddressId: String = ""
     var currentAddressData: AddressData? = null
     var selectedAddressModel: AddressData? = null
+    var tempFleetDataItem: FleetDataItem? = null
 
     private fun editAddress(callback: ((AddressData?) -> Unit)) {
         if (currentAddressData != null) {

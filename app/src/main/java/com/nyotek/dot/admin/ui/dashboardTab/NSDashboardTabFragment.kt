@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mapbox.maps.MapView
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSDateTimeHelper
+import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
 import com.nyotek.dot.admin.common.callbacks.NSMapDriverClickCallback
@@ -21,6 +23,7 @@ import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardTabBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
+import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeFragment
 import com.nyotek.dot.admin.ui.fleets.map.NSMapViewModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -32,6 +35,7 @@ class NSDashboardTabFragment :
 
     private var isFragmentLoad: Boolean = false
     private var mapBoxView: MapBoxView? = null
+    private var mapView: MapView? = null
     private var capabilitiesRecycleAdapter: NSDispatchOrderRecycleAdapter? = null
 
     override val viewModel: NSMapViewModel by lazy {
@@ -47,15 +51,22 @@ class NSDashboardTabFragment :
         container: ViewGroup?
     ): NsFragmentDashboardTabBinding {
         mapBoxView = MapBoxView(requireContext())
+        mapView = MapView(requireContext())
         return NsFragmentDashboardTabBinding.inflate(inflater, container, false)
     }
 
     override fun setupViews() {
         super.setupViews()
+        setFrameToMapView()
         baseObserveViewModel(viewModel)
         observeViewModel()
         initMapBox()
         initUI()
+    }
+
+    private fun setFrameToMapView() {
+        binding.mapView.removeAllViews()
+        binding.mapView.addView(mapView!!)
     }
 
     override fun loadFragment() {
@@ -68,8 +79,9 @@ class NSDashboardTabFragment :
     }
 
     private fun initMapView(fleetData: FleetDataItem?) {
+        viewModel.tempFleetDataItem = fleetData
         mapBoxView?.initMapView(
-            requireContext(), binding.mapView,
+            requireContext(), mapView!!,
             fleetData, mapCallback = this
         )
     }
@@ -80,7 +92,7 @@ class NSDashboardTabFragment :
     private fun initMapBox() {
         mapBoxView?.initMapView(
             requireContext(),
-            binding.mapView,
+            mapView!!,
             FleetDataItem(), mapCallback = this
         )
     }
@@ -156,6 +168,20 @@ class NSDashboardTabFragment :
                 return
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMapReset(event: NSOnMapResetEvent) {
+        binding.mapView.removeAllViews()
+        mapView = MapView(requireContext())
+        binding.mapView.addView(mapView)
+        mapBoxView?.clearMap()
+        mapBoxView = MapBoxView(requireContext())
+        mapBoxView?.initMapView(
+            requireContext(),
+            mapView!!,
+            viewModel.tempFleetDataItem?:FleetDataItem()
+        )
     }
 
     override fun onDriverMap(driverId: String, isDialogDismiss: Boolean) {

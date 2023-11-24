@@ -165,9 +165,6 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
     // Add Fragments to Tabs
     private fun setupViewPager(activity: FragmentActivity, viewPager: ViewPager2) {
         try {
-            var isVendorAdded = false
-            var isServiceManagerAdded = false
-            var isDispatchAdded = false
 
             viewModel.apply {
                 viewPager.setPager(activity, mFragmentList) {position ->
@@ -175,25 +172,32 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                     val fragment = mFragmentList[position]
                     val instance = NSApplication.getInstance()
 
-                    if (fragment is CapabilitiesTabFragment) {
-                        instance.setSelectedNavigationType(NSConstants.CAPABILITIES_TAB)
-                        fragment.setFragment()
-                    } else if (fragment is FleetTabFragment) {
-                        isVendorAdded = true
-                        fragment.setFragment()
-                        EventBus.getDefault().post(NSOnMapResetEvent(false))
-                        instance.setSelectedNavigationType(NSConstants.FLEETS_TAB)
-                    } else if (fragment is DispatchTabFragment && !isDispatchAdded) {
-                        isDispatchAdded = true
-                        fragment.setFragment()
-                        instance.setSelectedNavigationType(NSConstants.DISPATCH_TAB)
-                    } else if (fragment is ServicesTabFragment && !isServiceManagerAdded) {
-                        isServiceManagerAdded = true
-                        instance.setSelectedNavigationType(NSConstants.SERVICE_TAB)
-                        fragment.setFragment()
-                    } else if (fragment is DashboardMainTabFragment) {
-                        EventBus.getDefault().post(NSOnMapResetEvent(true))
-                        instance.setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
+                    when (fragment) {
+                        is CapabilitiesTabFragment -> {
+                            instance.setSelectedNavigationType(NSConstants.CAPABILITIES_TAB)
+                            fragment.setFragment()
+                        }
+
+                        is FleetTabFragment -> {
+                            fragment.setFragment()
+                            EventBus.getDefault().post(NSOnMapResetEvent(false))
+                            instance.setSelectedNavigationType(NSConstants.FLEETS_TAB)
+                        }
+
+                        is DispatchTabFragment -> {
+                            fragment.setFragment()
+                            instance.setSelectedNavigationType(NSConstants.DISPATCH_TAB)
+                        }
+
+                        is ServicesTabFragment -> {
+                            instance.setSelectedNavigationType(NSConstants.SERVICE_TAB)
+                            fragment.setFragment()
+                        }
+
+                        is DashboardMainTabFragment -> {
+                            EventBus.getDefault().post(NSOnMapResetEvent(true))
+                            instance.setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
+                        }
                     }
                 }
             }
@@ -225,18 +229,10 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onBackPress(@Suppress("UNUSED_PARAMETER") event: NSOnBackPressEvent) {
         when (NSApplication.getInstance().getSelectedNavigationType()) {
-            NSConstants.CAPABILITIES_TAB -> {
-                setFragmentBack()
-            }
-            NSConstants.FLEETS_TAB -> {
-                setFragmentBack()
-            }
-            NSConstants.SERVICE_TAB -> {
-                setFragmentBack()
-            }
-            NSConstants.DISPATCH_TAB -> {
-                setFragmentBack()
-            }
+            NSConstants.CAPABILITIES_TAB -> setFragmentBack()
+            NSConstants.FLEETS_TAB -> setFragmentBack()
+            NSConstants.SERVICE_TAB -> setFragmentBack()
+            NSConstants.DISPATCH_TAB -> setFragmentBack()
         }
     }
 
