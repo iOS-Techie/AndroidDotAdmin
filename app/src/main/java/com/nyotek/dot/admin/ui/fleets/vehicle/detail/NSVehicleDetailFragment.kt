@@ -16,6 +16,7 @@ import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -232,7 +233,8 @@ class NSVehicleDetailFragment :
                         negativeButton = stringResource.cancel
                     ) { isCancel ->
                         if (!isCancel) {
-                            assignVehicleToDriver(true, arrayListOf())
+                            deleteVehicleToDriver()
+                            //assignVehicleToDriver(true, arrayListOf())
                         }
                     }
                 }
@@ -240,9 +242,14 @@ class NSVehicleDetailFragment :
                 OnTextUpdateHelper(
                     layoutNotes.edtValue,
                     vehicleDataItem?.additionalNote ?: "") {
-                    vehicleDataItem?.additionalNote = it
-                    vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
-                    viewModel.updateNotes(layoutNotes.edtValue.text.toString())
+                    val enteredNotes: String = layoutNotes.edtValue.text.toString()
+                    val additionNotes: String = vehicleDataItem?.additionalNote?:""
+
+                    if (additionNotes != enteredNotes) {
+                        viewModel.updateNotes(enteredNotes)
+                        vehicleDataItem?.additionalNote = it
+                        vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
+                    }
                 }
             }
         }
@@ -281,6 +288,14 @@ class NSVehicleDetailFragment :
             val isVisible = spinnerPosition != -1
             clVehicleItem.setVisibility(isVisible)
             viewLineTextSub.setVisibilityIn(isVisible)
+
+            if (viewModel.driverId?.isNotEmpty() == true && idList.isValidList() && spinnerPosition >= 0) {
+                employeeViewModel.getDriverLocation(viewModel.driverId) {
+                    mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, it)
+                }
+            } else {
+                mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, FleetDataItem())
+            }
         }
     }
 
@@ -291,11 +306,23 @@ class NSVehicleDetailFragment :
         viewModel.apply {
             driverId?.let {
                 assignVehicle(isFromDelete,
-                    it, capabilities = capabilities
+                    it, capabilities = capabilities, vehicleId = if (isFromDelete) "" else vehicleDataItem?.id
                 ) {
                     if (isFromDelete) {
                         viewModel.driverId = ""
                     }
+                    setUpdateDriverList(employeeViewModel.employeeList)
+                }
+            }
+        }
+    }
+
+    private fun deleteVehicleToDriver() {
+        viewModel.apply {
+            driverId?.let {
+                deleteVehicle(it
+                ) {
+                    viewModel.driverId = ""
                     setUpdateDriverList(employeeViewModel.employeeList)
                 }
             }

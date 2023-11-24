@@ -75,6 +75,7 @@ class NSApiErrorHandler {
         const val ERROR_VEHICLE_DETAIL = "error_vehicle_detail"
         const val ERROR_DRIVER_VEHICLE_DETAIL = "error_driver_vehicle_detail"
         const val ERROR_ASSIGN_VEHICLE_DETAIL = "error_assign_vehicle_detail"
+        const val ERROR_DELETE_VEHICLE_DETAIL = "error_delete_vehicle_detail"
         const val ERROR_SERVICE_FLEET_UPDATE = "error_update_fleets_update"
         const val ERROR_ASSIGN_VEHICLE_DRIVER = "error_assign_vehicle_driver"
         const val ERROR_DRIVER_LOCATION = "error_driver_locations"

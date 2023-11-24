@@ -1,20 +1,26 @@
 package com.nyotek.dot.admin.ui.fleets.employee
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
+import com.mapbox.maps.MapView
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.NSOnCheckDetailScreen
+import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeEditCallback
@@ -53,6 +59,7 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
     private var addEmployeeDialog: AlertDialog? = null
     private var empAdapter: NSEmployeeRecycleAdapter? = null
     private var mapBoxView: MapBoxView? = null
+    private var mapView: MapView? = null
 
 
     companion object {
@@ -226,6 +233,9 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
 
     private fun editEmployeeData(response: EmployeeDataItem, position: Int) {
         viewModel.apply {
+           // mapBoxView?.clearMap()
+            //binding.mapFragmentEmployee.removeAllViews()
+            viewModel.isDetailScreenOpen = true
             val bundle = bundleOf(
                 NSConstants.DRIVER_DETAIL_KEY to Gson().toJson(response),
                 NSConstants.FLEET_DETAIL_KEY to strVendorDetail,
@@ -237,7 +247,14 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                     override fun onEmployee(empDataItem: EmployeeDataItem) {
                         empAdapter?.updateSingleData(empDataItem, position)
                     }
-                }),
+                }) {
+                    mapBoxView?.clearMap()
+                    mapBoxView?.initMapView(
+                        requireContext(),
+                        binding.mapFragmentEmployee,
+                        fleetData
+                    )
+                },
                 true, bundle
             )
         }
@@ -382,5 +399,35 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                 return
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMapReset(event: NSOnMapResetEvent) {
+            if (viewModel.isMapReset) {
+                viewModel.isMapReset = false
+                if (!viewModel.isDetailScreenOpen) {
+                    mapBoxView?.clearMap()
+                    mapBoxView?.initMapView(
+                        requireContext(),
+                        binding.mapFragmentEmployee,
+                        fleetData
+                    )
+                }
+            }
+            if (event.isReset) {
+                viewModel.isMapReset = event.isReset
+                binding.mapFragmentEmployee.removeAllViews()
+            }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun checkDetailScreen(event: NSOnCheckDetailScreen) {
+        viewModel.isDetailScreenOpen = false
+        mapBoxView?.clearMap()
+        mapBoxView?.initMapView(
+            requireContext(),
+            binding.mapFragmentEmployee,
+            fleetData
+        )
     }
 }

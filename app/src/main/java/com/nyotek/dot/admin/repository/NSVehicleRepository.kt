@@ -5,6 +5,7 @@ import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
 import com.nyotek.dot.admin.repository.network.error.NSApiErrorHandler
 import com.nyotek.dot.admin.repository.network.requests.NSAssignVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSUpdateCapabilitiesRequest
+import com.nyotek.dot.admin.repository.network.requests.NSVehicleDeleteRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleEnableDisableRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
@@ -256,6 +257,29 @@ object NSVehicleRepository : BaseRepository() {
 
                 override fun onRefreshToken() {
                     assignVehicle(request, viewModelCallback)
+                }
+            })
+        }
+    }
+
+    fun deleteVehicle(
+        request: NSVehicleDeleteRequest,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiManager.deleteVehicle(request, object :
+                NSRetrofitCallback<NSVehicleAssignBlankDataResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_DELETE_VEHICLE_DETAIL
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body()?:NSVehicleAssignBlankDataResponse())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    deleteVehicle(request, viewModelCallback)
                 }
             })
         }

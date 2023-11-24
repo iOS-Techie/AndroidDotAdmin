@@ -178,9 +178,10 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                     if (fragment is CapabilitiesTabFragment) {
                         instance.setSelectedNavigationType(NSConstants.CAPABILITIES_TAB)
                         fragment.setFragment()
-                    } else if (fragment is FleetTabFragment && !isVendorAdded) {
+                    } else if (fragment is FleetTabFragment) {
                         isVendorAdded = true
                         fragment.setFragment()
+                        EventBus.getDefault().post(NSOnMapResetEvent(false))
                         instance.setSelectedNavigationType(NSConstants.FLEETS_TAB)
                     } else if (fragment is DispatchTabFragment && !isDispatchAdded) {
                         isDispatchAdded = true
@@ -191,6 +192,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                         instance.setSelectedNavigationType(NSConstants.SERVICE_TAB)
                         fragment.setFragment()
                     } else if (fragment is DashboardMainTabFragment) {
+                        EventBus.getDefault().post(NSOnMapResetEvent(true))
                         instance.setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
                     }
                 }

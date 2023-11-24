@@ -8,6 +8,7 @@ import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.callbacks.NSEmployeeEditCallback
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
@@ -26,6 +27,7 @@ import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
+import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeFragment
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeViewModel
 import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleViewModel
 import org.greenrobot.eventbus.Subscribe
@@ -48,9 +50,11 @@ class NSDriverDetailFragment :
     companion object {
 
         private var empCallback: NSEmployeeEditCallback? = null
-        fun newInstance(bundle: Bundle?, callback: NSEmployeeEditCallback? = null) = NSDriverDetailFragment().apply {
+        private var onMapUpdate: ((Boolean) -> Unit)? = null
+        fun newInstance(bundle: Bundle?, callback: NSEmployeeEditCallback? = null, onMapUpdateCallback: ((Boolean) -> Unit)? = null) = NSDriverDetailFragment().apply {
             arguments = bundle
             empCallback = callback
+            onMapUpdate = onMapUpdateCallback
         }
     }
 
@@ -86,17 +90,10 @@ class NSDriverDetailFragment :
         }
     }
 
-    override fun observeViewModel() {
-        super.observeViewModel()
-        viewModel.apply {
-            isDriverLocationAvailable.observe(viewLifecycleOwner) {
-                mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver, it)
-            }
-        }
-    }
-
     fun resetFragment() {
         viewModel.apply {
+            mapBoxView?.clearMap()
+            binding.mapFragmentDriver.removeAllViews()
             strVehicleDetail = ""
             employeeDataItem = null
             initDriverDetail(false)
@@ -196,7 +193,9 @@ class NSDriverDetailFragment :
                 }
 
                 if (employeeDataItem?.userId?.isNotEmpty() == true) {
-                    getDriverLocation(employeeDataItem?.userId!!)
+                    getDriverLocation(employeeDataItem?.userId!!) {
+                        mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver, it)
+                    }
                 }
             }
         }
@@ -297,6 +296,25 @@ class NSDriverDetailFragment :
             event.locationResult.lastLocation?.apply {
                 mapBoxView?.setCurrentLatLong(latitude, longitude)
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMapReset(event: NSOnMapResetEvent) {
+        if (viewModel.isMapReset) {
+            viewModel.isMapReset = false
+            onMapUpdate?.invoke(true)
+            binding.mapFragmentDriver.removeAllViews()
+            mapBoxView?.clearMap()
+            mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver,
+                viewModel.driverDetailFleetData
+            )
+
+        }
+        if (event.isReset) {
+            viewModel.isMapReset = event.isReset
+            binding.mapFragmentDriver.removeAllViews()
+            mapBoxView?.clearMap()
         }
     }
 }

@@ -8,6 +8,7 @@ import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.repository.NSVehicleRepository
 import com.nyotek.dot.admin.repository.network.requests.NSAssignVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSUpdateCapabilitiesRequest
+import com.nyotek.dot.admin.repository.network.requests.NSVehicleDeleteRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleUpdateImageRequest
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
@@ -51,6 +52,20 @@ class NSVehicleDetailViewModel(application: Application) : NSViewModel(applicati
 
         callCommonApi({ obj ->
             NSVehicleRepository.assignVehicle(request, obj)
+        }, { _, isSuccess ->
+            hideProgress()
+            if (isSuccess) {
+                callback.invoke(true)
+            }
+        })
+    }
+
+    fun deleteVehicle(driverId: String, callback: (Boolean) -> Unit) {
+        showProgress()
+        val request = NSVehicleDeleteRequest(driverId, fleetModel?.vendorId)
+
+        callCommonApi({ obj ->
+            NSVehicleRepository.deleteVehicle(request, obj)
         }, { _, isSuccess ->
             hideProgress()
             if (isSuccess) {

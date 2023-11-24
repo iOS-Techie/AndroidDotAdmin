@@ -12,6 +12,7 @@ import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.DispatchDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
+import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
@@ -29,8 +30,28 @@ class NSDispatchDetailViewModel(application: Application) : NSViewModel(applicat
         if (strDispatch?.isNotEmpty() == true) {
             dispatchSelectedData = Gson().fromJson(strDispatch, NSDispatchOrderListData::class.java)
             if (dispatchSelectedData?.dispatchId?.isNotEmpty() == true) {
+               // getAssignVehicleDriver(dispatchSelectedData?.assignedDriverId, dispatchSelectedData?.vendorId?:"", true, callback)
                 getLocationHistory(true, dispatchSelectedData!!.dispatchId!!, callback)
             }
+        }
+    }
+
+    fun getAssignVehicleDriver(driverId: String?, fleetId: String, isShowProgress: Boolean, callback: ((VehicleData?) -> Unit)) {
+        if (driverId != null) {
+            if (isShowProgress) showProgress()
+            callCommonApi({ obj ->
+                NSVehicleRepository.getAssignVehicleDriver(driverId, fleetId, obj)
+            }, { data, isSuccess ->
+                if (!isSuccess) {
+                    hideProgress()
+                }
+                if (data is NSAssignVehicleDriverResponse) {
+                    getDriverVehicleDetail(data.data?.vehicleId, callback)
+                } else {
+                    callback.invoke(VehicleData())
+                    hideProgress()
+                }
+            })
         }
     }
 
@@ -46,12 +67,15 @@ class NSDispatchDetailViewModel(application: Application) : NSViewModel(applicat
                     if (location != null) {
                         getDriverVehicleDetail(location.vehicleId, callback)
                     } else {
+                        callback.invoke(VehicleData())
                         hideProgress()
                     }
                 } else {
+                    callback.invoke(VehicleData())
                     hideProgress()
                 }
             } else {
+                callback.invoke(VehicleData())
                 hideProgress()
             }
         })

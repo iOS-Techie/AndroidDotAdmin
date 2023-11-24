@@ -913,6 +913,12 @@ class NSApiManager {
         }
     }
 
+    suspend fun deleteVehicle(request: NSVehicleDeleteRequest, callback: NSRetrofitCallback<NSVehicleAssignBlankDataResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedFleetClient.deleteVehicle(request), callback)
+        }
+    }
+
     /**
      * To call the dispatch list data API
      *
@@ -1150,6 +1156,9 @@ interface RTApiInterface {
 
     @POST("driver/vehicle")
     suspend fun assignVehicle(@Body request: NSAssignVehicleRequest): retrofit2.Response<NSVehicleAssignBlankDataResponse>
+
+    @POST("driver/vehicle")
+    suspend fun deleteVehicle(@Body request: NSVehicleDeleteRequest): retrofit2.Response<NSVehicleAssignBlankDataResponse>
 
     @GET("dispatches/d/{driver_id}")
     suspend fun dispatchDrivers(@Path("driver_id") driverId: String): retrofit2.Response<NSDispatchOrderListResponse>

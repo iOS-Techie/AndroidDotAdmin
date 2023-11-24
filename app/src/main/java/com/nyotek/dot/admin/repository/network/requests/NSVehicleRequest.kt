@@ -85,3 +85,12 @@ data class NSAssignVehicleRequest(
 	@field:SerializedName("capabilities")
 	val capabilityId: MutableList<String> = arrayListOf()
 )
+
+data class NSVehicleDeleteRequest(
+
+	@field:SerializedName("driver_id")
+	val driverId: String? = null,
+
+	@field:SerializedName("fleet_id")
+	val fleetId: String? = null
+)

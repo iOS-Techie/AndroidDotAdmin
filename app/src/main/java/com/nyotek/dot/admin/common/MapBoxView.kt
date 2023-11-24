@@ -1,12 +1,11 @@
 package com.nyotek.dot.admin.common
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Looper
-import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.gson.Gson
 import com.mapbox.common.TileStore
 import com.mapbox.geojson.Feature
@@ -28,11 +27,9 @@ import com.mapbox.maps.extension.style.layers.generated.symbolLayer
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.maps.extension.style.sources.getSource
-import com.mapbox.maps.plugin.animation.CameraAnimationsLifecycleListener
-import com.mapbox.maps.plugin.animation.CameraAnimatorType
+import com.mapbox.maps.extension.style.sources.getSourceAs
 import com.mapbox.maps.plugin.animation.MapAnimationOptions.Companion.mapAnimationOptions
 import com.mapbox.maps.plugin.animation.camera
-import com.mapbox.maps.plugin.animation.flyTo
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.viewannotation.ViewAnnotationManager
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
@@ -46,7 +43,6 @@ import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.InfoWindowMultilineBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
-import java.util.logging.Handler
 import kotlin.math.abs
 
 
@@ -73,6 +69,20 @@ class MapBoxView(private val context: Context) {
 //        MapboxOptions.mapsOptions.tileStore = tileStore
 //        MapboxOptions.mapsOptions.tileStoreUsageMode = TileStoreUsageMode.READ_ONLY
 
+    }
+
+    fun initMapView(context: Context, frameLayout: FrameLayout, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null) {
+        fleetDataItem = fleetData
+        callback = mapCallback
+        mapView?.removeAllViews()
+        val view = MapView(context)
+        frameLayout.removeAllViews()
+        frameLayout.addView(view)
+        mapView = view
+        map = view.getMapboxMap()
+        viewAnnotationManager = view.viewAnnotationManager
+        initAddMarker(context, mapStyle)
+        initStyleMap()
     }
 
     fun initMapView(context: Context, view: MapView, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null) {
@@ -122,7 +132,7 @@ class MapBoxView(private val context: Context) {
         }
     }
 
-    public fun moveCamera(point: Point, zoom: Double = 13.0, pitch: Double = 10.0) {
+    fun moveCamera(point: Point, zoom: Double = 13.0, pitch: Double = 10.0) {
         val cameraPosition = CameraOptions.Builder()
             .center(point)
             .zoom(zoom)
@@ -130,6 +140,28 @@ class MapBoxView(private val context: Context) {
             .build()
         // set camera position
         map?.setCamera(cameraPosition)
+    }
+
+    fun getMapView(): MapView? {
+        return mapView
+    }
+
+    fun clearMap() {
+        mapView?.removeAllViews()
+        map = null
+        mapMarker = null
+        styleMap = null
+        fleetDataItem = null
+        viewAnnotationManager = null
+        viewAnnotation = null
+        map = null
+        latitude = 0.0
+        longitude = 0.0
+        styleMap = null
+        mapMarker = null
+        mapView = null
+        callback = null
+        isDialogDisplay = false
     }
 
     private fun initAddMarker(context: Context, mapStyle: String) {
@@ -193,6 +225,14 @@ class MapBoxView(private val context: Context) {
                 val builder = GeoJsonSource.Builder(NSConstants.SOURCE_ID)
                     .featureCollection(featureCollection)
                 styleMap?.addSource(builder.build())
+            }
+        } else {
+            val emptyFeatureCollection = FeatureCollection.fromFeatures(ArrayList())
+            if (emptyFeatureCollection.features() != null) {
+                styleMap?.setStyleGeoJSONSourceData(
+                    NSConstants.SOURCE_ID, "",
+                    GeoJSONSourceData.valueOf(emptyFeatureCollection.features()!!)
+                )
             }
         }
     }
@@ -309,137 +349,5 @@ class MapBoxView(private val context: Context) {
             /*ivClose.setOnClickListener {
                 viewAnnotationManager?.removeViewAnnotation(viewAnnotation!!)
             }*/
-    }
-
-    private fun _addViewAnnotation(coordinate: Point) {
-        val difference = ((map?.cameraState?.zoom ?: 0.0) - 17.0f)
-        var zoom = 17.0
-        var duration = 2.0
-        if (difference >= 0) {
-            zoom = map?.cameraState?.zoom ?: 17.0
-            duration = 0.0
-        } else {
-            duration = Math.abs(difference / 5)
-        }
-
-        val camera = CameraOptions.Builder()
-            .center(coordinate)
-            .zoom(zoom)
-            .build()
-
-
-        map?.flyTo(
-            camera,
-            mapAnimationOptions {
-                duration(duration.toLong())
-            }
-        )
-
-//        val options = MapAnimationOptions.Builder()
-//        options.duration(5)
-//        options.startDelay(0)
-//      //  options.interpolator(AccelerateDecelerateInterpolator())
-//        //(markerId, duration.toLong(), 0, AccelerateDecelerateInterpolator())
-//
-//        mapView?.camera?.easeTo(camera, options.build(), object : Animator.AnimatorListener {
-//            override fun onAnimationStart(p0: Animator) {
-//
-//            }
-//
-//            override fun onAnimationEnd(p0: Animator) {
-//                val options = ViewAnnotationOptions.Builder()
-//                    .geometry(coordinate)
-//                    .width(391)
-//                    .height(270)
-//                    //.associatedFeatureId(markerId)
-//                    .allowOverlap(false)
-//                    .anchor(ViewAnnotationAnchor.BOTTOM)
-//                    .build()
-//
-//            }
-//
-//            override fun onAnimationCancel(p0: Animator) {
-//
-//            }
-//
-//            override fun onAnimationRepeat(p0: Animator) {
-//
-//            }
-//
-//
-//        })
-//        mapView?.camera?.easeTo(camera, duration, object : CancelableCallback {
-//            override fun onCancel() {
-//                // Handle cancellation if needed
-//            }
-//
-//            override fun onFinish() {
-//                val options = ViewAnnotationOptions.Builder()
-//                    .geometry(Point.fromLngLat(coordinate.longitude, coordinate.latitude))
-//                    .width(391.0)
-//                    .height(270.0)
-//                    .associatedFeatureId(markerId)
-//                    .allowOverlap(false)
-//                    .anchor(Anchor.BOTTOM)
-//                    .build()
-//
-//                val annotationView = AnnotationView.instanceFromNib()
-//                annotationView.title = markerId
-//                annotationView.location = String.format("%.6f, %.6f", coordinate.latitude, coordinate.longitude)
-//
-//                val feature = _featureCollection?.features?.firstOrNull { it.properties?.rawValue?.get("driver_id") as? String == markerId }
-//                val property = feature?.properties
-//
-//                if (property != null) {
-//                    val vehicleId = property.rawValue["vehicle_id"] as? String
-//                    if (!Utils.stringIsNullOrEmpty(vehicleId)) {
-//                        annotationView.vehicle = vehicleId
-//                    }
-//
-//                    val fleet = property.rawValue["fleet_id"] as? String
-//                    if (fleet != null) {
-//                        val name = NYOFLEET.getFleetNameById(fleetId = fleet)
-//                        annotationView.fleet = name ?: fleet
-//                    }
-//
-//                    val driverStatus = property.rawValue["driver_status"] as? String
-//                    if (!Utils.stringIsNullOrEmpty(driverStatus)) {
-//                        annotationView.driverStatus = driverStatus?.capitalize()
-//                    }
-//
-//                    val refId = property.rawValue["ref_id"] as? String
-//                    if (!Utils.stringIsNullOrEmpty(refId)) {
-//                        annotationView.refId = refId
-//                    }
-//
-//                    val dispatchCount = property.rawValue["dispatch_count"] as? Double
-//                    if (dispatchCount != null && dispatchCount > 0) {
-//                        println("dispatch_count Inside : $dispatchCount")
-//                        annotationView.dispatchCount = dispatchCount.toInt().toString()
-//                    }
-//
-//                    val ts = property.rawValue["ts"] as? String
-//                    if (ts != null) {
-//                        val date = Utils.stringToDate(ts, format = kFormatDateISO8601UTC2)
-//                        annotationView.time = date?.timeAgoSince ?: ts
-//                    }
-//                }
-//
-//                annotationView.setUpData {
-//                    println("See all called driver id : $markerId")
-//                    _getDispatchListByDriver(driverId = markerId ?: "")
-//                }
-//
-//                try {
-//                    _mapView?.viewAnnotations?.add(annotationView, options)
-//                    _mapView?.viewAnnotations?.update(annotationView, ViewAnnotationOptions.Builder()
-//                        .offsetY(markerHeight)
-//                        .build()
-//                    )
-//                } catch (e: Exception) {
-//                    // Handle exceptions if necessary
-//                }
-//            }
-//        })
     }
 }

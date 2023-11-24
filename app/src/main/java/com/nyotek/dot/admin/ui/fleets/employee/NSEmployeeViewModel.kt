@@ -30,7 +30,6 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var jobTitleList: MutableList<JobListDataItem> = arrayListOf()
     var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
     var isEmployeeListAvailable = NSSingleLiveEvent<MutableList<EmployeeDataItem>>()
-    var isDriverLocationAvailable = NSSingleLiveEvent<FleetDataItem?>()
     var strVendorDetail: String? = null
     var vendorModel: FleetData? = null
     var vendorId: String? = null
@@ -43,6 +42,8 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var employeeDataItem: EmployeeDataItem? = null
     var fleetModel: FleetData? = null
     var vehicleDataList: MutableList<VehicleDataItem> = arrayListOf()
+    var isMapReset: Boolean = false
+    var isDetailScreenOpen: Boolean = false
 
     fun getVendorDetail() {
         if (!strVendorDetail.isNullOrEmpty()) {
@@ -137,6 +138,7 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                 }
             })
         } else {
+            isEmployeeListAvailable.postValue(arrayListOf())
             hideProgress()
         }
     }
@@ -204,7 +206,8 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
         })
     }
 
-    fun getDriverLocation(driverId: String?) {
+    var driverDetailFleetData: FleetDataItem? = null
+    fun getDriverLocation(driverId: String?, callback: (FleetDataItem?) -> Unit) {
         if (driverId?.isNotEmpty() == true) {
             showProgress()
             callCommonApi({ obj ->
@@ -213,7 +216,8 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                 hideProgress()
                 if (isSuccess) {
                     if (data is FleetLocationResponse) {
-                        isDriverLocationAvailable.value = data.fleetDataItem
+                        driverDetailFleetData = data.fleetDataItem
+                        callback.invoke(data.fleetDataItem)
                     }
                 }
             })

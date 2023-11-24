@@ -20,7 +20,7 @@
             android:layout_height="@dimen/_5sdp"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:button="@drawable/checkbox_fill_fix"
+            android:button="@drawable/checkbox_fill_fix_small"
             android:clickable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

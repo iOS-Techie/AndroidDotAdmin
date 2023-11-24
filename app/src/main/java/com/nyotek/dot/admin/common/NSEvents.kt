@@ -25,6 +25,8 @@ class NSPermissionEvent(
 )
 
 class NSOnBackPressEvent
+class NSOnMapResetEvent(val isReset: Boolean)
+class NSOnCheckDetailScreen(val isOpen: Boolean)
 
 class NSOnBackPressReceiveEvent
 
