@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.FrameLayout
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.gson.Gson
 import com.mapbox.common.TileStore
 import com.mapbox.geojson.Feature
@@ -248,7 +247,7 @@ class MapBoxView(private val context: Context) {
     private fun prepareViewAnnotation(feature: Feature?) {
         val difference = ((map?.cameraState?.zoom ?: 0.0) - 17.0f)
         var zoom = 17.0
-        var duration = 2.0
+        val duration: Double
         if (difference >= 0) {
             zoom = map?.cameraState?.zoom ?: 17.0
             duration = 0.0
@@ -266,13 +265,11 @@ class MapBoxView(private val context: Context) {
             .anchor(ScreenCoordinate(point.latitude(), point.longitude()))
             .build()
 
-        val cancellable = mapView?.camera?.flyTo(
+        mapView?.camera?.flyTo(
             camera,
             mapAnimationOptions {
                 duration(finalDuration.toLong())
             })
-
-        var isAdd: Boolean = true
 
         fun callDialogMap() {
             viewAnnotation = viewAnnotationManager?.addViewAnnotation(

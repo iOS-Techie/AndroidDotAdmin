@@ -11,15 +11,14 @@ import com.nyotek.dot.admin.databinding.LayoutAssignedListBinding
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 
 class NSDispatchOrderRecycleAdapter(
-    private val activity: Activity,
-    private val callback: ((NSDispatchOrderListData, Boolean) -> Unit)
+    private val activity: Activity
 ) : BaseViewBindingAdapter<LayoutAssignedListBinding, NSDispatchOrderListData>(
 
     bindingInflater = { inflater, parent, attachToParent ->
         LayoutAssignedListBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource,_ ->
+    onBind = { binding, response, _,_ ->
         binding.apply {
             response.apply {
                 ColorResources.setCardBackground(clDispatchDetailView, 8f, width = 1)

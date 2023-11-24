@@ -171,7 +171,7 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
         }, { data, _ ->
             hideProgress()
             if (data is NSDispatchOrderListResponse) {
-                callback.invoke(data.orderData?: arrayListOf())
+                callback.invoke(data.orderData)
             }
         })
     }

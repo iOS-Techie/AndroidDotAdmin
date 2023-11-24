@@ -466,7 +466,7 @@ fun ImageView.glide200(resource: Int = 0, url: String? = null, scale: String?) {
         RequestOptions().transform(
             if (scale.equals(NSConstants.FILL)) CenterCrop() else FitCenter(),
             RoundedCorners(20)
-        ).override(200, 200)
+        )
     ).placeholder(R.drawable.ic_place_holder_img)
         .error(R.drawable.ic_place_holder_img).into(this)
 }

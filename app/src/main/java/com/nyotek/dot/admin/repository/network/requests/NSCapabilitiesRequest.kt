@@ -12,7 +12,9 @@ data class NSCapabilitiesRequest(
 open class NSCreateCapabilityRequest(
 	@SerializedName("label")
 	@Expose
-	var label: HashMap<String, String> = hashMapOf()
+	var label: HashMap<String, String> = hashMapOf(),
+	@field:SerializedName("img_url")
+	val imageUrl: String? = null,
 )
 
 data class NSServiceCapabilitiesRequest(

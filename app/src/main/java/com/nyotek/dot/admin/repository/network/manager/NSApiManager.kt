@@ -1109,7 +1109,7 @@ interface RTApiInterface {
     @DELETE("capability/{capability_id}")
     suspend fun capabilityDelete(@Path("capability_id") id: String): retrofit2.Response<NSCapabilitiesBlankDataResponse>
 
-    @POST("capability/admin")
+    @POST("capability")
     suspend fun createCapability(@Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
     @PUT("capability/{capability_id}/label")

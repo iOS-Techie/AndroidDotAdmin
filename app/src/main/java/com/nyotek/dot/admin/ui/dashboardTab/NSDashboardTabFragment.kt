@@ -18,12 +18,12 @@ import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
 import com.nyotek.dot.admin.common.callbacks.NSMapDriverClickCallback
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardTabBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
-import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeFragment
 import com.nyotek.dot.admin.ui.fleets.map.NSMapViewModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -60,7 +60,7 @@ class NSDashboardTabFragment :
         setFrameToMapView()
         baseObserveViewModel(viewModel)
         observeViewModel()
-        initMapBox()
+        initMapView(FleetDataItem())
         initUI()
     }
 
@@ -83,17 +83,6 @@ class NSDashboardTabFragment :
         mapBoxView?.initMapView(
             requireContext(), mapView!!,
             fleetData, mapCallback = this
-        )
-    }
-
-    /***
-     * Init MapBox
-     */
-    private fun initMapBox() {
-        mapBoxView?.initMapView(
-            requireContext(),
-            mapView!!,
-            FleetDataItem(), mapCallback = this
         )
     }
 
@@ -143,15 +132,17 @@ class NSDashboardTabFragment :
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     fun getCurrentLocation(event: NSAddress) {
         viewModel.getFleetLocations("", false, isFromFleetDetail = false) {
             initMapView(it)
         }
-        val address = event.addresses[0].getAddressLine(0).toString()
-        if (address.isNotEmpty()) {
-            event.locationResult.lastLocation?.apply {
-                mapBoxView?.setCurrentLatLong(latitude, longitude)
+        if (event.addresses.isValidList()) {
+            val address = event.addresses[0].getAddressLine(0).toString()
+            if (address.isNotEmpty()) {
+                event.locationResult.lastLocation?.apply {
+                    mapBoxView?.setCurrentLatLong(latitude, longitude)
+                }
             }
         }
     }
@@ -171,7 +162,7 @@ class NSDashboardTabFragment :
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMapReset(event: NSOnMapResetEvent) {
+    fun onMapReset(@Suppress("UNUSED_PARAMETER") event: NSOnMapResetEvent) {
         binding.mapView.removeAllViews()
         mapView = MapView(requireContext())
         binding.mapView.addView(mapView)
@@ -213,9 +204,7 @@ class NSDashboardTabFragment :
                 with(rvAssignedList) {
                     list.sortByDescending { NSDateTimeHelper.getDateValue(it.status[0].statusCapturedTime)}
                     if (capabilitiesRecycleAdapter == null) {
-                        capabilitiesRecycleAdapter = NSDispatchOrderRecycleAdapter(activity, { model, isDelete ->
-
-                        })
+                        capabilitiesRecycleAdapter = NSDispatchOrderRecycleAdapter(activity)
 
                         setupWithAdapterAndCustomLayoutManager(
                             capabilitiesRecycleAdapter!!,

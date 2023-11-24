@@ -43,7 +43,6 @@ class NSApplication : Application() {
     private var localMapLanguageList: HashMap<String, MutableList<LanguageSelectModel>> = hashMapOf()
     private var capabilityItemList: HashMap<String, ServiceCapabilitiesDataItem> = hashMapOf()
     private var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
-    private var stringMap: HashMap<String, String> = hashMapOf()
 
     override fun onCreate() {
         super.onCreate()
@@ -117,14 +116,6 @@ class NSApplication : Application() {
 
     fun setStringModel(resources: HashMap<String, String>) {
         stringResource = resources
-    }
-
-    fun getStringMap(): HashMap<String, String> {
-        return stringMap
-    }
-
-    fun setStringMap(resources: HashMap<String, String>) {
-        stringMap = resources
     }
 
     /**

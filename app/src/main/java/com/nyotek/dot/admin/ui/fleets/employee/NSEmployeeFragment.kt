@@ -421,7 +421,7 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun checkDetailScreen(event: NSOnCheckDetailScreen) {
+    fun checkDetailScreen(@Suppress("UNUSED_PARAMETER") event: NSOnCheckDetailScreen) {
         viewModel.isDetailScreenOpen = false
         mapBoxView?.clearMap()
         mapBoxView?.initMapView(

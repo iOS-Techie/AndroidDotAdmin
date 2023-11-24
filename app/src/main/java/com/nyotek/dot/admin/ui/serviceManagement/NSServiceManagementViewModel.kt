@@ -32,7 +32,7 @@ class NSServiceManagementViewModel(application: Application) : NSViewModel(appli
                     obj
                 )
             }, { _, _ ->
-                getServiceListApi(false) { serviceList, fleetList, _ ->
+                getServiceListApi(false) { _, _, _ ->
 
                 }
             })

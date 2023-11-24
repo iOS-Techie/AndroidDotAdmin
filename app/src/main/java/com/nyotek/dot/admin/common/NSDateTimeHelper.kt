@@ -48,7 +48,8 @@ object NSDateTimeHelper {
     }
 
     private fun getConvertedDateInDate(
-        dateString: String?, inputPattern: String, outputPattern: String): Date {
+        dateString: String?, @Suppress("SameParameterValue") inputPattern: String
+    ): Date {
         val calendar = Calendar.getInstance()
         val format = SimpleDateFormat(inputPattern, Locale.ENGLISH)
         format.timeZone = TimeZone.getTimeZone("UTC")
@@ -105,7 +106,7 @@ object NSDateTimeHelper {
      * @param dateString The date string
      */
     fun getCommonDateView(dateString: String?) =
-        getConvertedDateInDate(dateString, DATE_FORMAT_FROM_API, DATE_FORMAT_ORDER_SHOW)
+        getConvertedDateInDate(dateString, DATE_FORMAT_FROM_API)
 
     /**
      * To get the current dateTime string
@@ -162,14 +163,14 @@ object NSDateTimeHelper {
         try {
             val inputDate = inputFormat.parse(inputDateString)
             val currentTime = System.currentTimeMillis()
-            val dateDifference = currentTime - inputDate.time
+            val dateDifference = currentTime - (inputDate?.time?:(Date().time))
             val secondsDifference = dateDifference / 1000
 
             return when {
                 secondsDifference < 60 -> stringResource.justNow // Less than a minute ago
                 secondsDifference < 3600 -> "${secondsDifference / 60}m ago" // Less than an hour ago
                 secondsDifference < 86400 -> "${secondsDifference / 3600}h ago" // Less than a day ago
-                else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(inputDate) // Default format for older dates
+                else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(inputDate?:Date()) // Default format for older dates
             }
         } catch (e: Exception) {
             e.printStackTrace()

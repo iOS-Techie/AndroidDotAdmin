@@ -80,10 +80,7 @@ class NSSplashViewModel(application: Application) : NSViewModel(application) {
                 map[languageStr.key] = languageStr.value?:""
             }
         }
-        val languageString = Gson().toJson(map)
-        val stringResource = Gson().fromJson(languageString, StringResourceResponse::class.java)
         NSApplication.getInstance().setStringModel(map)
-        NSApplication.getInstance().setStringMap(map)
     }
 
     override fun apiResponse(data: Any) {

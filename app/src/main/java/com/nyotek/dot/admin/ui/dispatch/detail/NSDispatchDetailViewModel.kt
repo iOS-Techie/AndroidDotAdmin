@@ -115,23 +115,23 @@ class NSDispatchDetailViewModel(application: Application) : NSViewModel(applicat
         })
     }
 
-    fun getDispatchFromService(
-        dispatchId: String?,
-        isShowProgress: Boolean,
-        callback: ((MutableList<NSDispatchOrderListData>) -> Unit?)
-    ) {
-        if (isShowProgress) showProgress()
-
-        callCommonApi({ obj ->
-            NSDispatchRepository.getDispatchDetail(dispatchId!!, obj)
-        }, { data, _ ->
-            hideProgress()
-            if (data is DispatchDetailResponse) {
-                /*data.orderData.sortByDescending { NSDateTimeHelper.getCommonDateView(it.status.first().statusCapturedTime) }
-                callback.invoke(data.orderData)*/
-            }
-        })
-    }
+//    fun getDispatchFromService(
+//        dispatchId: String?,
+//        isShowProgress: Boolean,
+//        callback: ((MutableList<NSDispatchOrderListData>) -> Unit?)
+//    ) {
+//        if (isShowProgress) showProgress()
+//
+//        callCommonApi({ obj ->
+//            NSDispatchRepository.getDispatchDetail(dispatchId!!, obj)
+//        }, { data, _ ->
+//            hideProgress()
+//            if (data is DispatchDetailResponse) {
+//                /*data.orderData.sortByDescending { NSDateTimeHelper.getCommonDateView(it.status.first().statusCapturedTime) }
+//                callback.invoke(data.orderData)*/
+//            }
+//        })
+//    }
 
     /**
      * Get Fleet list

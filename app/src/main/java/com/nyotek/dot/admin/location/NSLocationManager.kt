@@ -65,6 +65,7 @@ class NSLocationManager(context: Context) {
      *
      * @return The location request object containing the required time
      */
+    @Suppress("DEPRECATION")
     private fun getLocationRequestObject(): LocationRequest {
         return LocationRequest.create().apply {
             interval = UPDATE_INTERVAL_IN_MILLISECONDS
