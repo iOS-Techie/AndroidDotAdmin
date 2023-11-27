@@ -721,3 +721,8 @@ fun Spinner.setPlaceholderAdapter(
         setSelection(spinnerPosition)
     }
 }
+
+fun TextView.setTexts(text: String?) {
+    val stringResource = StringResourceResponse()
+    this.text = if (text?.isNotEmpty() == true) text else stringResource.unknown
+}

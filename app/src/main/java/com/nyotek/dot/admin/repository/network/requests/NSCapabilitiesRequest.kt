@@ -20,7 +20,7 @@ open class NSCreateCapabilityRequest(
 data class NSServiceCapabilitiesRequest(
 
 	@field:SerializedName("service_id")
-	val service_id: String? = null,
+	val serviceId: String? = null,
 
 	@field:SerializedName("capability_id")
 	val capabilityId: String? = null

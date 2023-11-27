@@ -84,6 +84,7 @@ class StringResourceResponse {
 	val view: String = map["view"] ?: ""
 	val logIn: String = map["log_in"] ?: ""
 	val add: String = map["add"] ?: ""
+	val unknown: String = map["unknown"] ?: ""
 	val deduct: String = map["deduct"] ?: ""
 	val month: String = map["month"] ?: ""
 	val success: String = map["success"] ?: ""

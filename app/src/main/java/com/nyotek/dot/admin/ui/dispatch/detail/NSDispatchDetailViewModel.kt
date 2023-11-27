@@ -9,8 +9,10 @@ import com.nyotek.dot.admin.repository.NSServiceRepository
 import com.nyotek.dot.admin.repository.NSVehicleRepository
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
+import com.nyotek.dot.admin.repository.network.responses.DispatchData
 import com.nyotek.dot.admin.repository.network.responses.DispatchDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
 import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
@@ -25,37 +27,39 @@ class NSDispatchDetailViewModel(application: Application) : NSViewModel(applicat
     var filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
     var selectedServiceId: String? = null
     var dispatchSelectedData: NSDispatchOrderListData? = null
+    var isMapReset: Boolean = false
+    var currentMapFleetData: FleetDataItem? = null
 
-    fun getDispatchDetail(strDispatch: String?, callback: ((VehicleData?) -> Unit)) {
+    fun getDispatchDetail(strDispatch: String?, callback: ((DispatchData, FleetDataItem, VehicleData?) -> Unit)) {
         if (strDispatch?.isNotEmpty() == true) {
             dispatchSelectedData = Gson().fromJson(strDispatch, NSDispatchOrderListData::class.java)
             if (dispatchSelectedData?.dispatchId?.isNotEmpty() == true) {
                // getAssignVehicleDriver(dispatchSelectedData?.assignedDriverId, dispatchSelectedData?.vendorId?:"", true, callback)
-                getLocationHistory(true, dispatchSelectedData!!.dispatchId!!, callback)
+                getDispatchFromService(dispatchSelectedData!!.dispatchId!!, true, callback)
+                //getLocationHistory(true, dispatchSelectedData!!.dispatchId!!, callback)
             }
         }
     }
 
-    fun getAssignVehicleDriver(driverId: String?, fleetId: String, isShowProgress: Boolean, callback: ((VehicleData?) -> Unit)) {
-        if (driverId != null) {
-            if (isShowProgress) showProgress()
-            callCommonApi({ obj ->
-                NSVehicleRepository.getAssignVehicleDriver(driverId, fleetId, obj)
-            }, { data, isSuccess ->
-                if (!isSuccess) {
-                    hideProgress()
-                }
-                if (data is NSAssignVehicleDriverResponse) {
-                    getDriverVehicleDetail(data.data?.vehicleId, callback)
-                } else {
-                    callback.invoke(VehicleData())
-                    hideProgress()
-                }
-            })
-        }
+    private fun getDispatchFromService(
+        dispatchId: String?,
+        isShowProgress: Boolean,
+        callback: ((DispatchData, FleetDataItem, VehicleData?) -> Unit)
+    ) {
+        if (isShowProgress) showProgress()
+        callCommonApi({ obj ->
+            NSDispatchRepository.getDispatchDetail(dispatchId!!, obj)
+        }, { data, _ ->
+            //hideProgress()
+            if (data is DispatchDetailResponse) {
+                getLocationHistory(isShowProgress, dispatchId!!, data.data?:DispatchData(), callback)
+            } else {
+                getLocationHistory(isShowProgress, dispatchId!!, DispatchData(), callback)
+            }
+        })
     }
 
-    private fun getLocationHistory(isShowProgress: Boolean, dispatchId: String, callback: ((VehicleData?) -> Unit)) {
+    private fun getLocationHistory(isShowProgress: Boolean, dispatchId: String, dispatchData: DispatchData, callback: ((DispatchData, FleetDataItem, VehicleData?) -> Unit)) {
         if (isShowProgress) showProgress()
         callCommonApi({ obj ->
             NSDispatchRepository.getDispatchLocationHistory(dispatchId, obj)
@@ -65,23 +69,42 @@ class NSDispatchDetailViewModel(application: Application) : NSViewModel(applicat
                 if (features.isNotEmpty()) {
                     val location = features.first().properties
                     if (location != null) {
-                        getDriverVehicleDetail(location.vehicleId, callback)
+                        getDriverVehicleDetail(location.vehicleId, dispatchData, data.fleetDataItem?:FleetDataItem(), callback)
                     } else {
-                        callback.invoke(VehicleData())
+                        callback.invoke(dispatchData, FleetDataItem(), VehicleData())
                         hideProgress()
                     }
                 } else {
-                    callback.invoke(VehicleData())
+                    callback.invoke(dispatchData, FleetDataItem(), VehicleData())
                     hideProgress()
                 }
             } else {
-                callback.invoke(VehicleData())
+                callback.invoke(dispatchData, FleetDataItem(), VehicleData())
                 hideProgress()
             }
         })
     }
 
-    private fun getDriverVehicleDetail(vehicleId: String?, callback: ((VehicleData?) -> Unit)) {
+   /* fun getAssignVehicleDriver(driverId: String?, fleetId: String, isShowProgress: Boolean, dispatchData: DispatchData, callback: ((DispatchData, VehicleData?) -> Unit)) {
+        if (driverId != null) {
+            if (isShowProgress) showProgress()
+            callCommonApi({ obj ->
+                NSVehicleRepository.getAssignVehicleDriver(driverId, fleetId, obj)
+            }, { data, isSuccess ->
+                if (!isSuccess) {
+                    hideProgress()
+                }
+                if (data is NSAssignVehicleDriverResponse) {
+                    getDriverVehicleDetail(data.data?.vehicleId, dispatchData, callback)
+                } else {
+                    callback.invoke(dispatchData, VehicleData())
+                    hideProgress()
+                }
+            })
+        }
+    }*/
+
+    private fun getDriverVehicleDetail(vehicleId: String?, dispatchData: DispatchData, fleetDataItem: FleetDataItem, callback: ((DispatchData, FleetDataItem, VehicleData?) -> Unit)) {
         if (vehicleId != null) {
             showProgress()
             callCommonApi({ obj ->
@@ -89,9 +112,9 @@ class NSDispatchDetailViewModel(application: Application) : NSViewModel(applicat
             }, { data, _ ->
                 hideProgress()
                 if (data is NSDriverVehicleDetailResponse) {
-                    callback.invoke(data.data)
+                    callback.invoke(dispatchData, fleetDataItem, data.data)
                 } else {
-                    callback.invoke(VehicleData())
+                    callback.invoke(dispatchData, fleetDataItem, VehicleData())
                 }
             }, false)
         }
@@ -115,23 +138,7 @@ class NSDispatchDetailViewModel(application: Application) : NSViewModel(applicat
         })
     }
 
-//    fun getDispatchFromService(
-//        dispatchId: String?,
-//        isShowProgress: Boolean,
-//        callback: ((MutableList<NSDispatchOrderListData>) -> Unit?)
-//    ) {
-//        if (isShowProgress) showProgress()
-//
-//        callCommonApi({ obj ->
-//            NSDispatchRepository.getDispatchDetail(dispatchId!!, obj)
-//        }, { data, _ ->
-//            hideProgress()
-//            if (data is DispatchDetailResponse) {
-//                /*data.orderData.sortByDescending { NSDateTimeHelper.getCommonDateView(it.status.first().statusCapturedTime) }
-//                callback.invoke(data.orderData)*/
-//            }
-//        })
-//    }
+
 
     /**
      * Get Fleet list

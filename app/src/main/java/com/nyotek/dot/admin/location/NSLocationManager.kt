@@ -10,9 +10,15 @@ import android.os.Looper
 import android.os.SystemClock
 import com.google.android.gms.location.*
 import com.nyotek.dot.admin.common.*
+import com.nyotek.dot.admin.common.utils.NSUtilities
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * The class to handle the location details
@@ -181,5 +187,46 @@ class NSLocationManager(context: Context) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun calculateDurationDistance(lat1: Double?, lon1: Double?, lat2: Double?, lon2: Double?, callback: (String, Double) -> Unit) {
+        val distance =  meterDistanceBetweenPoints(lat1?:0.0, lon1?:0.0, lat2?:0.0, lon2?:0.0)
+        callback.invoke(calculateDuration(distance), distance)
+    }
+
+    private fun meterDistanceBetweenPoints(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+
+        val earthRadiusKm: Double = 6371.0
+
+        val dLat = degreesToRadians(lat2 - lat1)
+        val dLon = degreesToRadians(lon2 - lon1)
+
+        val latA = degreesToRadians(lat1)
+        val latB = degreesToRadians(lat2)
+
+        val a = sin(dLat/2) * sin(dLat/2) +
+                sin(dLon/2) * sin(dLon/2) * cos(latA) * cos(latB)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return NSUtilities.convertToArabic((earthRadiusKm * c).toString()).toDouble()
+    }
+
+    private fun degreesToRadians(degrees: Double):Double {
+        return degrees * Math.PI / 180
+    }
+    private fun calculateDuration(distance: Double): String {
+        val hours = (distance/50)
+        val remainder = hours.rem(1) * 60
+        val hrs = hours.roundToInt()
+        val minutes = remainder.roundToInt()
+
+        if (hrs > 0 && minutes > 0) {
+            return "$hrs h $minutes Min"
+        } else if (hrs > 0) {
+            return "$hrs h"
+        } else if (minutes > 0) {
+            return "$minutes Min"
+        }
+
+        return "1 Min"
     }
 }

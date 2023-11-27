@@ -5,14 +5,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
+import com.nyotek.dot.admin.common.MapBoxView
+import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.NSOnMapResetEvent
+import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
+import com.nyotek.dot.admin.common.utils.setTexts
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDispatchDetailBinding
+import com.nyotek.dot.admin.repository.network.responses.DispatchData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
+import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel, NsFragmentDispatchDetailBinding>() {
 
@@ -22,6 +31,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
     }
 
     private var isFragmentLoad = false
+    private var mapBoxView: MapBoxView? = null
 
     companion object {
         fun newInstance(bundle: Bundle?) = NSDispatchDetailFragment().apply {
@@ -33,6 +43,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         inflater: LayoutInflater,
         container: ViewGroup?
     ): NsFragmentDispatchDetailBinding {
+        mapBoxView = MapBoxView(requireContext())
         return NsFragmentDispatchDetailBinding.inflate(inflater, container, false)
     }
 
@@ -47,7 +58,11 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         initUI()
         viewCreated()
         setListener()
-        viewModel.getDispatchDetail(bundle?.getString(NSConstants.DISPATCH_DETAIL_KEY)) { vehicleData ->
+
+        viewModel.getDispatchDetail(bundle?.getString(NSConstants.DISPATCH_DETAIL_KEY)) { dispatchData, fleetDataItem, vehicleData ->
+            viewModel.currentMapFleetData = fleetDataItem
+            mapBoxView?.initMapView(requireContext(), binding.mapFragmentEmployee, fleetDataItem)
+            setDispatchDetail(dispatchData)
             setCustomerDetail()
             setVehicleDetail(vehicleData)
         }
@@ -84,6 +99,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 tvDriverId.text = "ID: #908787"
                 tvCustomerId.text = "ID: #908787"
                 tvVendorId.text = "ID: #908787"
+                binding.mapFragmentEmployee.removeAllViews()
 
                 layoutDriver.apply {
                     layoutName.tvItemTitle.text = name
@@ -193,6 +209,38 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 layoutCustomer.layoutName.tvDetail.text = dispatchSelectedData?.userMetadata?.userName
                 layoutCustomer.layoutNumber.tvDetail.text = dispatchSelectedData?.userMetadata?.userPhone
             }
+        }
+    }
+
+    private fun setDispatchDetail(dispatchData: DispatchData) {
+        binding.apply {
+            viewModel.apply {
+                layoutVendor.apply {
+                    layoutVendor.layoutName.tvDetail.getMapValue(dispatchData.vendorName)
+                    tvAddress.setTexts(dispatchData.pickup?.addressLine)
+                    tvDestinationAddress.setTexts(dispatchData.destination?.addressLine)
+                    NSApplication.getInstance().getLocationManager().calculateDurationDistance(dispatchData.pickup?.lat,dispatchData.pickup?.lng, dispatchData.destination?.lat,dispatchData.destination?.lng) { time, distance ->
+                        tvSpeed.text = distance.toInt().toString()
+                    }
+                }
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMapReset(event: NSOnMapResetEvent) {
+        if (viewModel.isMapReset) {
+            viewModel.isMapReset = false
+            binding.mapFragmentEmployee.removeAllViews()
+            mapBoxView?.clearMap()
+            mapBoxView?.initMapView(requireContext(), binding.mapFragmentEmployee,
+                viewModel.currentMapFleetData
+            )
+        }
+        if (event.isReset) {
+            viewModel.isMapReset = event.isReset
+            binding.mapFragmentEmployee.removeAllViews()
+            mapBoxView?.clearMap()
         }
     }
 }

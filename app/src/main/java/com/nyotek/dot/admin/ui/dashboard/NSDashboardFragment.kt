@@ -186,6 +186,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
 
                         is DispatchTabFragment -> {
                             fragment.setFragment()
+                            EventBus.getDefault().post(NSOnMapResetEvent(false))
                             instance.setSelectedNavigationType(NSConstants.DISPATCH_TAB)
                         }
 

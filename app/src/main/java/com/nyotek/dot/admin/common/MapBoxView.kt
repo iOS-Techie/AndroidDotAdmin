@@ -1,5 +1,6 @@
 package com.nyotek.dot.admin.common
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
@@ -26,7 +27,6 @@ import com.mapbox.maps.extension.style.layers.generated.symbolLayer
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.maps.extension.style.sources.getSource
-import com.mapbox.maps.extension.style.sources.getSourceAs
 import com.mapbox.maps.plugin.animation.MapAnimationOptions.Companion.mapAnimationOptions
 import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
@@ -70,6 +70,7 @@ class MapBoxView(private val context: Context) {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun initMapView(context: Context, frameLayout: FrameLayout, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null) {
         fleetDataItem = fleetData
         callback = mapCallback
@@ -78,6 +79,12 @@ class MapBoxView(private val context: Context) {
         frameLayout.removeAllViews()
         frameLayout.addView(view)
         mapView = view
+
+        mapView?.setOnTouchListener { view, _ ->
+            view.parent.requestDisallowInterceptTouchEvent(true)
+            false
+        }
+
         map = view.getMapboxMap()
         viewAnnotationManager = view.viewAnnotationManager
         initAddMarker(context, mapStyle)
