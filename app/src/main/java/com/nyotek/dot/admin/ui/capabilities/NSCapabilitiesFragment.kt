@@ -124,7 +124,6 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
             with(binding) {
                 with(rvCapabilitiesList) {
 
-
                     FilterHelper(activity, binding.rvCapabilityFilter, if (filterList.isEmpty()) FilterHelper.getCommonFilterLists() else filterList) { _, list ->
                         viewModel.apply {
                             filterList = list
@@ -147,6 +146,7 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                         isNestedScrollingEnabled = false
                     }
                     filterData(capabilities, filterList)
+                    viewModel.hideProgress()
                 }
             }
         }
@@ -263,6 +263,8 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                                     dialog.dismiss()
                                     if (list.isValidList()) {
                                         setAdapter(list)
+                                    } else {
+                                        viewModel.hideProgress()
                                     }
                                 }
                             }

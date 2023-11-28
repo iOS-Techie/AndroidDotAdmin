@@ -7,6 +7,7 @@ import com.nyotek.dot.admin.common.NSDateTimeHelper
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.status
@@ -75,8 +76,10 @@ class NSServiceManagementRecycleAdapter(
 
                     //Compare Select All for Main FleetList with capability fleet list
                     val list = fleetItemList.map { it.vendorId!! } as MutableList<String>
-                    capabilityItem.fleets.sortBy { it }
-                    list.sortBy { it }
+                    if (capabilityItem.fleets.isValidList()) {
+                        capabilityItem.fleets.sortBy { it }
+                        list.sortBy { it }
+                    }
                     layoutFleets.cbCheck.isChecked = capabilityItem.fleets == list
 
                     //Add Fleet Selected or not

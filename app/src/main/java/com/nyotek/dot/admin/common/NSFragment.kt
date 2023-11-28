@@ -374,13 +374,13 @@ open class NSFragment : Fragment() {
     fun setLayoutHeader(bind: LayoutHomeHeaderBinding, headerTitle: String, headerButton: String = "", isSearch: Boolean = false, isProfile: Boolean = false, isBack: Boolean = false) {
         bind.apply {
             stringResource.apply {
-                viewSpace.setVisibility(!isBack)
                 ivBack.rotation = if (isLanguageSelected()) 180f else 0f
                 ivProfile.setCircleImage(R.drawable.ic_profile_demo)
-                clProfileDetail.setVisibility(isProfile)
                 etSearch.hint = searchHere
                 tvHeaderTitle.text = headerTitle
                 tvHeaderBtn.text = headerButton
+                clProfileDetail.setVisibility(isProfile)
+                viewSpace.setVisibility(!isBack)
                 tvHeaderBtn.setVisibility(headerButton.isNotEmpty())
                 clSearch.setVisibility(isSearch)
                 ivBack.setVisibility(isBack)

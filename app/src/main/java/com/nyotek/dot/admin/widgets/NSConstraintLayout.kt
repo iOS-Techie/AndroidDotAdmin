@@ -85,10 +85,10 @@ class NSConstraintLayout : ConstraintLayout {
                 ColorResources.setCardBackground(this, 10f, 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
             }
             R.id.cl_vehicle_detail_bottom -> {
-                ColorResources.setCardBackground(this, getRadius(10f), 0, ColorResources.getBackgroundColor(), ColorResources.getBackgroundColor())
+                ColorResources.setCardBackground(this, getRadius(6f), 0, ColorResources.getBackgroundColor(), ColorResources.getBackgroundColor())
             }
             R.id.cl_vehicle_detail_sub_bottom -> {
-                ColorResources.setCardBackground(this, getRadius(10f), 0, ColorResources.getWhiteColor(), ColorResources.getWhiteColor())
+                ColorResources.setCardBackground(this, getRadius(6f), 0, ColorResources.getWhiteColor(), ColorResources.getWhiteColor())
             }
             R.id.cl_track -> {
                 ColorResources.setCardBackground(this, getRadius(100f), 1, ColorResources.getWhiteColor(), ColorResources.getPrimaryColor())

@@ -35,7 +35,7 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
     ) {
         if (isShowProgress) showProgress()
         getCapabilitiesList(isShowError = isShowError, isCapabilityCheck = isCapabilityCheck) {
-            hideProgress()
+            //hideProgress()
             callback.invoke(it)
         }
     }

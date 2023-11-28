@@ -50,18 +50,22 @@ class NSDashboardTabFragment :
         inflater: LayoutInflater,
         container: ViewGroup?
     ): NsFragmentDashboardTabBinding {
-        mapBoxView = MapBoxView(requireContext())
-        mapView = MapView(requireContext())
+        if (isAdded) {
+            mapBoxView = MapBoxView(requireContext())
+            mapView = MapView(requireContext())
+        }
         return NsFragmentDashboardTabBinding.inflate(inflater, container, false)
     }
 
     override fun setupViews() {
         super.setupViews()
-        setFrameToMapView()
-        baseObserveViewModel(viewModel)
-        observeViewModel()
-        initMapView(FleetDataItem())
-        initUI()
+        if (isAdded) {
+            setFrameToMapView()
+            baseObserveViewModel(viewModel)
+            observeViewModel()
+            initMapView(FleetDataItem())
+            initUI()
+        }
     }
 
     private fun setFrameToMapView() {
@@ -71,10 +75,12 @@ class NSDashboardTabFragment :
 
     override fun loadFragment() {
         super.loadFragment()
-        getCurrentLocation()
-        isFragmentLoad = true
-        viewModel.getFleetLocations("", true, isFromFleetDetail = false) {
-            initMapView(it)
+        if (isAdded) {
+            getCurrentLocation()
+            isFragmentLoad = true
+            viewModel.getFleetLocations("", true, isFromFleetDetail = false) {
+                initMapView(it)
+            }
         }
     }
 
