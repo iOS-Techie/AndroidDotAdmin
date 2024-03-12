@@ -19,5 +19,6 @@
     <color name="primary">#001D52</color>
     <color name="background">#EEF1F8</color>
     <color name="gray_light">#C1C1C1</color>
+    <color name="icon_bg">#E6E9EE</color>
 
 </resources>

@@ -12,7 +12,7 @@ import com.nyotek.dot.admin.databinding.LayoutDispatchSpinnerItemBinding
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 
-class DispatchSpinnerAdapter(private val context: Context, private val items: List<NSGetServiceListData>) : BaseAdapter() {
+class DispatchSpinnerAdapter(private val context: Context, private val items: MutableList<NSGetServiceListData>) : BaseAdapter() {
 
     override fun getCount(): Int {
         return items.size

@@ -13,14 +13,25 @@ import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCommonTextBinding
 import com.nyotek.dot.admin.databinding.LayoutCommonTextviewBinding
 import com.nyotek.dot.admin.databinding.LayoutTagTextBinding
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListResponse
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetServiceListRecycleAdapter
 
 
 /**
- * The language class that handles tasks that are common throughout the application languages
+ * The language class that handles tasks that are common throughout the application services
  */
 object NSServiceConfig {
+
+    private var serviceResponse: NSGetServiceListResponse? = null
+
+    fun setServiceResponse(response: NSGetServiceListResponse) {
+        serviceResponse = response
+    }
+
+    fun getServiceResponse(): NSGetServiceListResponse? {
+        return serviceResponse
+    }
 
     fun setFleetDetail(activity: Activity, isDialog: Boolean, layoutName: LayoutCommonTextBinding,
                        layoutUrl: LayoutCommonTextBinding,

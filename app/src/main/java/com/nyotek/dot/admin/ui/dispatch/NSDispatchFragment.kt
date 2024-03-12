@@ -7,6 +7,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.gson.Gson
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
@@ -21,6 +22,7 @@ import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.setGlideWithHolder
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.status
@@ -29,11 +31,15 @@ import com.nyotek.dot.admin.databinding.LayoutCreateFleetBinding
 import com.nyotek.dot.admin.databinding.NsFragmentDispatchBinding
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
-import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
 import com.nyotek.dot.admin.ui.dispatch.detail.NSDispatchDetailFragment
-import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragmentDispatchBinding>(),
     NSFileUploadCallback {
@@ -67,9 +73,12 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
 
     override fun loadFragment() {
         super.loadFragment()
-        initUI()
-        viewCreated()
-        setListener()
+        if (!NSConstants.isFragmentDispatchLoad) {
+            NSConstants.isFragmentDispatchLoad = true
+            initUI()
+            viewCreated()
+            setListener()
+        }
     }
 
     override fun observeViewModel() {
@@ -107,8 +116,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
             if (!isFragmentLoad) {
                 binding.layoutSpinner.clDispatchBorderBg.gone()
             }
-            setDispatchServiceFilter(!isFragmentLoad)
-            //getFleetFromApi(!isFragmentLoad)
+            setDispatchList(!isFragmentLoad)
             isFragmentLoad = true
         }
     }
@@ -125,7 +133,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
                     }
 
                     srlRefresh.setOnRefreshListener {
-                        callDispatchFromService(selectedServiceId, selectedServiceLogo, false)
+                        getDispatchListData(false, isSwipeRefresh = true, selectedServiceId)
                     }
 
                     tvHeaderBtn.setOnClickListener {
@@ -136,42 +144,45 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
         }
     }
 
-    private fun setDispatchServiceFilter(isShowProgress: Boolean) {
+    private fun setDispatchList(isShowProgress: Boolean) {
         binding.apply {
             viewModel.apply {
-                getServiceListApi(isShowProgress) {
+                var isApiCalled = false
+                getDispatchList(isShowProgress, false) {
+                    val serviceList = it.serviceList
+                    val dispatchList = it.dispatchList
+
                     layoutSpinner.clDispatchBorderBg.visible()
-                    val adapter = DispatchSpinnerAdapter(requireContext(), it)
+                    val adapter = DispatchSpinnerAdapter(requireContext(), serviceList)
                     layoutSpinner.spinnerDispatchSelect.adapter = adapter
                     layoutSpinner.spinnerDispatchSelect.onItemSelectedListener = object : OnItemSelectedListener {
                         override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                            val model: NSGetServiceListData = it[position]
-                            callDispatchFromService(model.serviceId, model.logoUrl, isShowProgress)
+                            val model: NSGetServiceListData = serviceList[position]
+                            selectedServiceLogo = model.logoUrl
+                            selectedServiceId = model.serviceId
+
+                            if (!isApiCalled) {
+                                isApiCalled = true
+                                setDispatchData(dispatchList)
+                            } else {
+                                getDispatchListData(true, isSwipeRefresh = true, selectedServiceId)
+                            }
                         }
 
                         override fun onNothingSelected(p0: AdapterView<*>?) {
 
                         }
-
                     }
                 }
             }
         }
     }
 
-    private fun callDispatchFromService(serviceId: String?, serviceLogo: String?, isShowProgress: Boolean) {
+    private fun getDispatchListData(isShowProgress: Boolean, isSwipeRefresh: Boolean, serviceId: String?) {
         viewModel.apply {
-            binding.apply {
-                selectedServiceLogo = serviceLogo
-                selectedServiceId = serviceId
-                if (serviceId?.isNotEmpty() == true) {
-                    getDispatchFromService(serviceId, isShowProgress) { item ->
-                        binding.srlRefresh.isRefreshing = false
-                        setDispatchData(item)
-                    }
-                } else {
-                    binding.srlRefresh.isRefreshing = false
-                }
+            getDispatchList(isShowProgress, isSwipeRefresh, serviceId?:"") { dispatch ->
+                binding.srlRefresh.isRefreshing = false
+                setDispatchData(dispatch.dispatchList)
             }
         }
     }
@@ -207,10 +218,17 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
         with(binding) {
             with(viewModel) {
                 with(rvFleetsList) {
-                    dispatchRecycleAdapter = NSDispatchManagementRecycleAdapter(activity) {
+                    dispatchRecycleAdapter = NSDispatchManagementRecycleAdapter({ vendorId, vendorIcon, vendorName ->
+                        getVendorInfo(vendorId) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                vendorIcon.setGlideWithHolder(it?.logo, it?.logoScale, 200)
+                                vendorName.text = getLngValue(it?.name)
+                            }
+                        }
+                    }) {
                         openDispatchDetail(it)
                     }
-
+                    rvFleetsList.setHasFixedSize(true)
                     setupWithAdapterAndCustomLayoutManager(dispatchRecycleAdapter!!, GridLayoutManager(activity, 3))
                 }
             }
@@ -219,7 +237,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
 
     private fun openDispatchDetail(model: NSDispatchOrderListData) {
         val gson = Gson().toJson(model)
-        val bundle = bundleOf(NSConstants.DISPATCH_DETAIL_KEY to gson)
+        val bundle = bundleOf(NSConstants.DISPATCH_DETAIL_KEY to gson, NSConstants.VENDOR_SERVICE_ID_KEY to viewModel.selectedServiceId)
         dispatchManagementFragmentChangeCallback?.setFragment(
             this@NSDispatchFragment.javaClass.simpleName,
             NSDispatchDetailFragment.newInstance(bundle),
@@ -231,21 +249,16 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
         filterList: MutableList<ActiveInActiveFilter>,
         searchText: String = binding.layoutHomeHeader.etSearch.text.toString()
     ) {
-        with(viewModel) {
-            val filterTypes = getTypesFilterSelected(filterList)
+        viewModel.apply {
+            viewModelScope.launch {
+                val filterTypes = getTypesFilterSelectedAsync(filterList)
 
-            if (filterTypes.isNotEmpty()) {
-                val filter = fleetList.filter { it.status.any { statusFilter -> filterTypes.contains(NSUtilities.capitalizeFirstLetter(statusFilter.status.replace("_", " "))) }} as MutableList<NSDispatchOrderListData>
-                setAdapterData(if (searchText.isEmpty()) filter else filter.filter {
-                    (it.userMetadata?.userName?.lowercase()?:"").contains(searchText.lowercase()) or
-                            (it.userMetadata?.userPhone?.lowercase()?:"").contains(searchText.lowercase())
-                } as MutableList<NSDispatchOrderListData>)
-
-            } else {
-
-                setAdapterData(if (searchText.isEmpty()) fleetList else fleetList.filter { (it.userMetadata?.userName?.lowercase()?:"").contains(searchText.lowercase()) or (it.userMetadata?.userPhone?.lowercase()?:"").contains(searchText.lowercase())
-                } as MutableList<NSDispatchOrderListData>)
-
+                if (filterTypes.isNotEmpty()) {
+                    val filter = filterDataConcurrently(fleetList, filterTypes)
+                    setAdapterData(if (searchText.isEmpty()) filter else filterDataConcurrently(filter, searchText))
+                } else {
+                    setAdapterData(if (searchText.isEmpty()) fleetList else filterDataConcurrently(fleetList, searchText))
+                }
             }
         }
     }
@@ -362,9 +375,11 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
     override fun onFileUrl(url: String, width: Int, height: Int) {
         viewModel.apply {
             urlToUpload = url
-            createCompanyRequest.logo = url
-            createCompanyRequest.logoHeight = height
-            createCompanyRequest.logoWidth = width
+            createCompanyRequest.apply {
+                logo = url
+                logoHeight = height
+                logoWidth = width
+            }
         }
     }
 }

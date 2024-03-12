@@ -52,7 +52,7 @@ abstract class NSRetrofitCallback<T>(
                     }
                 })
             }
-            //onErrorResponse(response)
+            onErrorResponse(response)
         }
     }
 

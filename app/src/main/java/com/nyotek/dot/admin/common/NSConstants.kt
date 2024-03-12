@@ -6,6 +6,8 @@ package com.nyotek.dot.admin.common
  */
 class NSConstants {
     companion object {
+        const val DEVICE_ID_STORE = "device_id_store"
+        const val DEVICE_ID_STORE_VALUE = "device_id_store_value"
         const val KEY_ALERT_EMPLOYEE_DELETE = "alertButtonEmployeeDelete"
         const val KEY_ALERT_EMPLOYEE_VEHICLE_DELETE = "alertButtonEmployeeVehicleDelete"
         const val KEY_ALERT_EMPLOYEE_VEHICLE_DELETE_DETAIL = "alertButtonEmployeeVehicleDeleteDetail"
@@ -37,6 +39,7 @@ class NSConstants {
         const val Job_TITLE_LIST_KEY = "job_title_list_key"
         const val VEHICLE_DETAIL_KEY = "vendor_detail_key"
         const val DRIVER_DETAIL_KEY = "driver_detail_key"
+        const val VENDOR_SERVICE_ID_KEY = "vendor_service_id_key"
         var IS_LANGUAGE_UPDATE = false
 
         const val FILL = "fill"
@@ -53,5 +56,7 @@ class NSConstants {
         const val LOAD_CAPACITY = "load_capacity"
         const val NOTES = "notes"
         const val MANUFACTURE_YEAR = "manufacture_year"
+        var isFragmentDispatchLoad: Boolean = false
+
     }
 }

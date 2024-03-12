@@ -1,11 +1,14 @@
 package com.nyotek.dot.admin.repository
 
+import com.nyotek.dot.admin.common.NSServiceConfig
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
 import com.nyotek.dot.admin.repository.network.error.NSApiErrorHandler
 import com.nyotek.dot.admin.repository.network.requests.NSCreateServiceRequest
 import com.nyotek.dot.admin.repository.network.requests.NSServiceRequest
-import com.nyotek.dot.admin.repository.network.responses.*
+import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
+import com.nyotek.dot.admin.repository.network.responses.NSCreateServiceResponse
+import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,22 +27,27 @@ object NSServiceRepository : BaseRepository() {
     fun getServiceList(
         viewModelCallback: NSGenericViewModelCallback
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            apiManager.getServiceList(object :
-                NSRetrofitCallback<NSGetServiceListResponse>(
-                    viewModelCallback,
-                    NSApiErrorHandler.ERROR_GET_SERVICE_LIST
-                ) {
-                override fun <T> onResponse(response: Response<T>) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        viewModelCallback.onSuccess(response.body())
+        if (NSServiceConfig.getServiceResponse() != null) {
+            viewModelCallback.onSuccess(NSServiceConfig.getServiceResponse())
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                apiManager.getServiceList(object :
+                    NSRetrofitCallback<NSGetServiceListResponse>(
+                        viewModelCallback,
+                        NSApiErrorHandler.ERROR_GET_SERVICE_LIST
+                    ) {
+                    override fun <T> onResponse(response: Response<T>) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            NSServiceConfig.setServiceResponse(response.body() as NSGetServiceListResponse)
+                            viewModelCallback.onSuccess(response.body())
+                        }
                     }
-                }
 
-                override fun onRefreshToken() {
-                    getServiceList(viewModelCallback)
-                }
-            })
+                    override fun onRefreshToken() {
+                        getServiceList(viewModelCallback)
+                    }
+                })
+            }
         }
     }
 

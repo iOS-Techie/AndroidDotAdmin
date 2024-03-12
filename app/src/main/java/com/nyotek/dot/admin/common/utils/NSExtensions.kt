@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -32,10 +33,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.franmontiel.localechanger.LocaleChanger
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.DelayedClickListener
@@ -50,9 +55,17 @@ import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.io.Serializable
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
+import kotlin.Triple
 
 /**
  * This is the file that contains the all the extensions functions.
@@ -604,6 +617,9 @@ fun RecyclerView.setupWithAdapterAndCustomLayoutManager(adapter: RecyclerView.Ad
     this.layoutManager = layoutManager
 }
 
+private const val DEBOUNCE_DELAY = 1000L
+private val debounceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+private var debounceJob: Job? = null
 fun EditText.addOnTextChangedListener(
     beforeTextChanged: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
     onTextChanged: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
@@ -615,7 +631,15 @@ fun EditText.addOnTextChangedListener(
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            onTextChanged?.invoke(s, start, before, count)
+            debounceJob?.cancel()
+
+            // Start a new debounce job
+            debounceJob = debounceScope.launch {
+                delay(DEBOUNCE_DELAY)
+
+                // Perform search operation here
+                onTextChanged?.invoke(s, start, before, count)
+            }
         }
 
         override fun afterTextChanged(s: Editable?) {
@@ -725,4 +749,62 @@ fun Spinner.setPlaceholderAdapter(
 fun TextView.setTexts(text: String?) {
     val stringResource = StringResourceResponse()
     this.text = if (text?.isNotEmpty() == true) text else stringResource.unknown
+}
+
+fun ImageView.setGlideWithHolder(url: String?, scale: String? = "fill", widthHeight: Int, corners: Int = 30, placeHolder: Int = R.drawable.ic_place_holder_product) {
+    val transform = if (scale == "fill") CenterCrop() else FitCenter()
+    Glide.with(this.context).load(url).placeholder(placeHolder).error(placeHolder).apply(
+        if (corners > 0) {
+            RequestOptions().transform(
+                transform,
+                RoundedCorners(corners)
+            ).override(widthHeight, widthHeight)
+        } else {
+            RequestOptions().transform(
+                transform
+            ).override(widthHeight, widthHeight)
+        }
+    ).into(this)
+}
+
+fun ImageView.glideNormal(url: String? = null, callback: (Boolean) -> Unit) {
+    Glide.with(NSApplication.getInstance().applicationContext)
+        .load(url)
+        .listener(object : RequestListener<Drawable> {
+
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>,
+                isFirstResource: Boolean
+            ): Boolean {
+                callback.invoke(false)
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable,
+                model: Any,
+                target: Target<Drawable>?,
+                dataSource: DataSource,
+                isFirstResource: Boolean
+            ): Boolean {
+                callback.invoke(true)
+                return false
+            }
+        })
+        .into(this)
+}
+
+public data class Quadruple<out A, out B, out C, out D>(
+    public val first: A,
+    public val second: B,
+    public val third: C,
+    public val fourth: D
+) : Serializable {
+
+    /**
+     * Returns string representation of the [Triple] including its [first], [second], [third] and [fourth] values.
+     */
+    public override fun toString(): String = "($first, $second, $third $fourth)"
 }

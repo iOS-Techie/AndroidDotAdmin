@@ -15,7 +15,6 @@ class NSCommonRecycleView : RecyclerView {
     private var languageTitleRecycleAdapter: NSLanguageCommonRecycleAdapter? = null
     var languageSelectCallback: NSLanguageSelectedCallback? = null
     var selectedLanguage: String = ""
-    var languageTitleList: MutableList<LanguageSelectModel> = arrayListOf()
 
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
@@ -42,11 +41,12 @@ class NSCommonRecycleView : RecyclerView {
     private fun init(context: Context) {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         languageTitleRecycleAdapter =
-            NSLanguageCommonRecycleAdapter(context) { language, isNotify ->
+            NSLanguageCommonRecycleAdapter(context) { language, isNotify, list ->
                 selectedLanguage = language
                 languageSelectCallback?.onItemSelect(language)
                 if (isNotify) {
-                    notifyAdapter()
+                    setAdapter(list, language)
+                    //notifyAdapter()
                 }
             }
         adapter = languageTitleRecycleAdapter
@@ -61,17 +61,16 @@ class NSCommonRecycleView : RecyclerView {
 
     private fun getLocalLanguageList() {
         if (NSApplication.getInstance().getFleetLanguageList().isValidList()) {
-            setAdapter(NSApplication.getInstance().getFleetLanguageList())
+            setAdapter(NSApplication.getInstance().getFleetLanguageList(), "")
         } else {
             NSUtilities.localLanguageApiCall("") {
-                setAdapter(it.data)
+                setAdapter(it.data, "")
             }
         }
     }
 
     fun refreshAdapter() {
-        val mainList: MutableList<LanguageSelectModel> =
-            NSApplication.getInstance().getFleetLanguageList()
+        val mainList: MutableList<LanguageSelectModel> = NSApplication.getInstance().getFleetLanguageList()
         //val mainList: MutableList<LanguageSelectModel> = arrayListOf()
         val mapList = NSApplication.getInstance().getMapLocalLanguages()
         val tempList: MutableList<LanguageSelectModel> = arrayListOf()
@@ -86,12 +85,22 @@ class NSCommonRecycleView : RecyclerView {
         setAdapterData(mainList)
     }
 
-    private fun setAdapter(list: MutableList<LanguageSelectModel>) {
+    private fun setAdapter(list: MutableList<LanguageSelectModel>, language: String) {
         if (list.isValidList()) {
-            selectedLanguage = list[0].locale ?: ""
-            list[0].isSelected = true
+            val updatedList = list.map { it.copy(isSelected = false) }.toMutableList()
+            if (list.isValidList()) {
+                if (language.isNotEmpty()) {
+                    selectedLanguage = language
+                    updatedList.find { it.locale == language }?.isSelected = true
+                } else {
+                    selectedLanguage = updatedList[0].locale ?: ""
+                    updatedList[0].isSelected = true
+                }
+            }
+            setAdapterData(updatedList)
+        } else {
+            setAdapterData(arrayListOf())
         }
-        setAdapterData(list)
     }
 
     private fun setAdapterData(list: MutableList<LanguageSelectModel>) {

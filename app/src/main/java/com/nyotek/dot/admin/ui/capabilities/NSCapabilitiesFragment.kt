@@ -242,7 +242,7 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                             layoutName.rvLanguageTitle.visibility = View.VISIBLE
                             layoutName.edtValue.setText("")
 
-                            layoutName.rvLanguageTitle.refreshAdapter()
+                            //layoutName.rvLanguageTitle.refreshAdapter()
                             NSUtilities.setLanguageText(
                                 layoutName.edtValue,
                                 layoutName.rvLanguageTitle,

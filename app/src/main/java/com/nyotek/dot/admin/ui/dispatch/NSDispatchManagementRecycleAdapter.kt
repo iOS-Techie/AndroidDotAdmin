@@ -1,36 +1,40 @@
 package com.nyotek.dot.admin.ui.dispatch
 
-import android.app.Activity
-import com.nyotek.dot.admin.R
+import android.widget.ImageView
+import android.widget.TextView
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
-import com.nyotek.dot.admin.common.utils.getMapValue
-import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
-import com.nyotek.dot.admin.common.utils.setGlideWithOutPlace
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
+import com.nyotek.dot.admin.common.utils.setTexts
 import com.nyotek.dot.admin.databinding.LayoutDispatchListBinding
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private var selectedServiceLogo: String? = null
 
 class NSDispatchManagementRecycleAdapter(
-    private val activity: Activity,
-    private val callback: ((NSDispatchOrderListData) -> Unit)
+    private val vendorCallback: (String, ImageView, TextView) -> Unit,
+    private val callback: (NSDispatchOrderListData) -> Unit
 ) : BaseViewBindingAdapter<LayoutDispatchListBinding, NSDispatchOrderListData>(
 
     bindingInflater = { inflater, parent, attachToParent ->
         LayoutDispatchListBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _,_ ->
+    onBind = { binding, response, stringResource,_ ->
         binding.apply {
             response.apply {
                 ColorResources.setCardBackground(clDispatchDetailView, 8f, width = 1)
                 ColorResources.setBackground(viewLineDivider, ColorResources.getSecondaryDarkColor())
-                dispatchViewTitle.text = response.rId
-                ivHubzIcon.setGlideWithOutPlace(selectedServiceLogo)
-                val finalStatus = response.status.first().status
+
+                val orderId = stringResource.orderId + ":"
+                tvOrderTitle.text = orderId
+                tvOrderId.text = rId
+                val finalStatus = status.first().status
                 ColorResources.apply {
                     if (finalStatus.lowercase() == "delivered") {
                         setCardBackground(tvOrderPlaces, 100f, 0, getGreenColor())
@@ -41,24 +45,26 @@ class NSDispatchManagementRecycleAdapter(
                     }
                 }
 
-                tvOrderPlaces.text = NSUtilities.capitalizeFirstLetter(finalStatus.replace("_", " "))
-                tvDriverTitle.text = response.userMetadata?.userName
-                tvDescription.text = response.userMetadata?.userPhone
-                tvModelTitle.text = response.assignedDriverId
+                //val capitalizedText = finalStatus//NSUtilities.capitalizeFirstLetter(finalStatus.replace("_", " "))
+                tvOrderPlaces.text = finalStatus
+
+                userMetadata?.apply {
+                    tvDriverTitle.text = userName
+                    tvDescription.text = userPhone
+                }
+
+                tvModelTitle.text = assignedDriverId
                 tvModelDescription.text = ""
-                //val brandUrl = response.mediaUrl["0"]
-                //ivHubzIcon.setGlideWithOutPlace(brandUrl)
-                ivProductIconRound.setGlideWithPlaceHolder(
-                    activity,
-                    response.vendorLogoUrl,
-                    R.drawable.ic_place_holder_product
-                )
-                tvOrderTitle.getMapValue(response.vendorName)
-                tvStartingLocation.text = response.pickup?.addressLine
-                tvEndingLocation.text = response.destination?.addressLine
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    vendorCallback.invoke(vendorId?:"", ivHubzIcon, dispatchViewTitle)
+                }
+
+                tvStartingLocation.setTexts(pickup?.addressLine)
+                tvEndingLocation.setTexts(destination?.addressLine)
 
                 clDispatchView.setSafeOnClickListener {
-                    callback.invoke(response)
+                    callback.invoke(this)
                 }
             }
         }

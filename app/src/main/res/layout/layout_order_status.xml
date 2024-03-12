@@ -45,7 +45,7 @@
             app:layout_constraintEnd_toEndOf="@id/iv_status_timeline"/>
 
         <com.nyotek.dot.admin.widgets.NSPrimaryTextView
-            android:id="@+id/tv_product_title"
+            android:id="@+id/tv_status_title"
             style="@style/LayoutWidthHeightZeroWrap"
             tools:text="Order Placed"
             android:textSize="@dimen/_4sdp"

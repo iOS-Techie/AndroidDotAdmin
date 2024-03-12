@@ -47,7 +47,7 @@ data class NSDispatchOrderListData(
     var assignedDriverId: String? = null,
     @SerializedName("status")
     @Expose
-    var status: List<UserStatus> = arrayListOf(),
+    var status: MutableList<UserStatus> = arrayListOf(),
     @SerializedName("modified_at")
     @Expose
     var modifiedAt: String? = null,
@@ -75,9 +75,6 @@ data class NSDispatchOrderListData(
     @SerializedName("vendor_bid")
     @Expose
     var vendorBid: String? = null,
-    @SerializedName("vendor_payload")
-    @Expose
-    var vendorPayload: String? = null,
     @SerializedName("vendor_name")
     @Expose
     var vendorName: HashMap<String, String> = hashMapOf(),
@@ -129,7 +126,7 @@ data class UserMetaData(
 
 data class UserStatus(
     @SerializedName("status")
-    val status: String = "",
+    var status: String = "",
     @SerializedName("status_captured_time")
     val statusCapturedTime: String = "",
     @SerializedName("ref_id")

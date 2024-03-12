@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.FrameLayout
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.crashlytics.internal.settings.Settings.FeatureFlagData
 import com.google.gson.Gson
 import com.mapbox.common.TileStore
 import com.mapbox.geojson.Feature
@@ -40,8 +41,14 @@ import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.InfoWindowMultilineBinding
+import com.nyotek.dot.admin.repository.network.responses.FeaturesItem
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 
@@ -138,6 +145,20 @@ class MapBoxView(private val context: Context) {
         }
     }
 
+    fun goToDispatchMapPosition(list: List<FeaturesItem>?, zoom: Double = 17.0, pitch: Double = 10.0) {
+        if (list.isValidList()) {
+            val featureData = list?.first()
+            val property = featureData?.properties
+            val latitude = property?.latitude
+            val longitude = property?.longitude
+            moveCamera(
+                Point.fromLngLat(
+                    longitude ?: 0.0, latitude ?: 0.0
+                ), zoom, pitch
+            )
+        }
+    }
+
     fun moveCamera(point: Point, zoom: Double = 13.0, pitch: Double = 10.0) {
         val cameraPosition = CameraOptions.Builder()
             .center(point)
@@ -215,26 +236,58 @@ class MapBoxView(private val context: Context) {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun loadMap(isUpdate: Boolean) {
         if (fleetDataItem?.features.isValidList()) {
-            if (isUpdate) {
-                val featureCollection = FeatureCollection.fromJson(Gson().toJson(fleetDataItem ?: FleetDataItem()))
-                if (featureCollection.features() != null) {
-                    styleMap?.setStyleGeoJSONSourceData(
-                        NSConstants.SOURCE_ID, "",
-                        GeoJSONSourceData.valueOf(featureCollection.features()!!)
-                    )
+            GlobalScope.launch(Dispatchers.Main) {
+                if (isUpdate) {
+                    updateGeoJsonSourceAsync()
+                } else {
+                    addGeoJsonSourceAsync()
                 }
-            } else {
-                val featureCollection =
-                    FeatureCollection.fromJson(Gson().toJson(fleetDataItem ?: FleetDataItem()))
-                val builder = GeoJsonSource.Builder(NSConstants.SOURCE_ID)
-                    .featureCollection(featureCollection)
-                styleMap?.addSource(builder.build())
             }
         } else {
-            val emptyFeatureCollection = FeatureCollection.fromFeatures(ArrayList())
-            if (emptyFeatureCollection.features() != null) {
+            GlobalScope.launch(Dispatchers.Main) {
+                setEmptyGeoJsonSourceAsync()
+            }
+        }
+    }
+
+    private suspend fun updateGeoJsonSourceAsync() {
+        val featureCollection = withContext(Dispatchers.IO) {
+            FeatureCollection.fromJson(Gson().toJson(fleetDataItem ?: FleetDataItem()))
+        }
+
+        if (featureCollection.features() != null) {
+            withContext(Dispatchers.Main) {
+                styleMap?.setStyleGeoJSONSourceData(
+                    NSConstants.SOURCE_ID, "",
+                    GeoJSONSourceData.valueOf(featureCollection.features()!!)
+                )
+            }
+        }
+    }
+
+    private suspend fun addGeoJsonSourceAsync() {
+        val featureCollection = withContext(Dispatchers.IO) {
+            FeatureCollection.fromJson(Gson().toJson(fleetDataItem ?: FleetDataItem()))
+        }
+
+        val builder = GeoJsonSource.Builder(NSConstants.SOURCE_ID)
+            .featureCollection(featureCollection)
+
+        withContext(Dispatchers.Main) {
+            styleMap?.addSource(builder.build())
+        }
+    }
+
+    private suspend fun setEmptyGeoJsonSourceAsync() {
+        val emptyFeatureCollection = withContext(Dispatchers.IO) {
+            FeatureCollection.fromFeatures(ArrayList())
+        }
+
+        if (emptyFeatureCollection.features() != null) {
+            withContext(Dispatchers.Main) {
                 styleMap?.setStyleGeoJSONSourceData(
                     NSConstants.SOURCE_ID, "",
                     GeoJSONSourceData.valueOf(emptyFeatureCollection.features()!!)

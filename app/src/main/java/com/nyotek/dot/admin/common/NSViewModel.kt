@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
@@ -18,6 +19,11 @@ import com.nyotek.dot.admin.repository.network.responses.NSCapabilitiesResponse
 import com.nyotek.dot.admin.repository.network.responses.NSErrorResponse
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -109,6 +115,13 @@ abstract class NSViewModel(mApplication: Application) : AndroidViewModel(mApplic
             }
         }
         return selectedFilterList
+    }
+
+    suspend fun getTypesFilterSelectedAsync(list: MutableList<ActiveInActiveFilter>): MutableList<String> = coroutineScope {
+        val selectedFilterListDeferred = async {
+            getTypesFilterSelected(list)
+        }
+        selectedFilterListDeferred.await()
     }
 
     override fun <T> onSuccess(data: T) {
@@ -255,8 +268,16 @@ abstract class NSViewModel(mApplication: Application) : AndroidViewModel(mApplic
             if (!isSuccess) {
                 callback?.invoke(arrayListOf())
             } else if (data is FleetListResponse) {
-                (data.data as MutableList<FleetData>).sortByDescending { it.vendorId }
-                callback?.invoke(data.data)
+                val list: MutableList<FleetData> = arrayListOf()
+                list.addAll(data.data)
+                viewModelScope.launch {
+                    val sortedList = withContext(Dispatchers.Default) {
+                       list.apply {
+                            sortByDescending { it.vendorId }
+                        }
+                    }
+                    callback?.invoke(sortedList)
+                }
             }
 
         }, isShowError)

@@ -2,23 +2,36 @@ package com.nyotek.dot.admin.ui.dispatch.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSOnMapResetEvent
+import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
+import com.nyotek.dot.admin.common.utils.glideNormal
 import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
+import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.setGlideWithHolder
+import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setTexts
+import com.nyotek.dot.admin.common.utils.setVisibility
+import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDispatchDetailBinding
 import com.nyotek.dot.admin.repository.network.responses.DispatchData
+import com.nyotek.dot.admin.repository.network.responses.DocumentDataItem
+import com.nyotek.dot.admin.repository.network.responses.StatusItem
+import com.nyotek.dot.admin.repository.network.responses.UserMetaData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
+import com.nyotek.dot.admin.repository.network.responses.VendorDetailResponse
 import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,6 +45,8 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
 
     private var isFragmentLoad = false
     private var mapBoxView: MapBoxView? = null
+    private var inflater: LayoutInflater? = null
+    private var container: ViewGroup? = null
 
     companion object {
         fun newInstance(bundle: Bundle?) = NSDispatchDetailFragment().apply {
@@ -43,6 +58,8 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         inflater: LayoutInflater,
         container: ViewGroup?
     ): NsFragmentDispatchDetailBinding {
+        this.inflater = inflater
+        this.container = container
         mapBoxView = MapBoxView(requireContext())
         return NsFragmentDispatchDetailBinding.inflate(inflater, container, false)
     }
@@ -55,17 +72,37 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
 
     override fun loadFragment(bundle: Bundle?) {
         super.loadFragment(bundle)
+        arguments = bundle
+        clearData()
         initUI()
         viewCreated()
         setListener()
 
-        viewModel.getDispatchDetail(bundle?.getString(NSConstants.DISPATCH_DETAIL_KEY)) { dispatchData, fleetDataItem, vehicleData ->
-            viewModel.currentMapFleetData = fleetDataItem
-            mapBoxView?.initMapView(requireContext(), binding.mapFragmentEmployee, fleetDataItem)
-            setDispatchDetail(dispatchData)
-            setCustomerDetail()
-            setVehicleDetail(vehicleData)
+        viewModel.getDispatchDetail(bundle?.getString(NSConstants.DISPATCH_DETAIL_KEY)) { allModel ->
+            viewModel.currentMapFleetData = allModel.location?.fleetDataItem
+            mapBoxView?.clearMap()
+            mapBoxView?.initMapView(
+                requireContext(),
+                binding.mapFragmentEmployee,
+                viewModel.currentMapFleetData
+            )
+            mapBoxView?.goToDispatchMapPosition(viewModel.currentMapFleetData?.features)
+            setDriverDetail(viewModel.getDriverDetail(allModel.driverDetail?.data))
+            setVendorDetail(allModel.dispatchDetail?.data, allModel.vendorDetail)
+            setDispatchDetail(allModel.dispatchDetail?.data)
+            setCustomerDetail(allModel.dispatchDetail?.data)
+            setVehicleDetail(allModel.driverVehicleDetail?.data)
         }
+    }
+
+    private fun clearData() {
+        viewModel.currentMapFleetData = null
+        mapBoxView?.clearMap()
+        setDriverDetail(DocumentDataItem())
+        setVendorDetail(DispatchData(), VendorDetailResponse())
+        setDispatchDetail(DispatchData())
+        setCustomerDetail(DispatchData())
+        setVehicleDetail(VehicleData())
     }
 
     override fun observeViewModel() {
@@ -96,54 +133,72 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 tvUpdateStatus.text = update
                 tvUpdateDriver.text = update
                 tvTitleTrack.text = track
-                tvDriverId.text = "ID: #908787"
-                tvCustomerId.text = "ID: #908787"
-                tvVendorId.text = "ID: #908787"
                 binding.mapFragmentEmployee.removeAllViews()
 
+                val serviceId = arguments?.getString(NSConstants.VENDOR_SERVICE_ID_KEY)
+                viewModel.getServiceLogo(serviceId) {
+                    ivBrandIcon.glideNormal(it) { isSuccess ->
+                        ivBrandIcon.setVisibility(isSuccess)
+                        ivBrandPlaceIcon.setVisibility(!isSuccess)
+                    }
+                }
+
                 layoutDriver.apply {
+                    val padding = requireContext().resources.getDimension(R.dimen.icon_padding).toInt()
+                    ivIcon.setBackgroundResource(R.drawable.icon_bg)
+                    ivIcon.setGlideWithPlaceHolder(activity, "", R.drawable.ic_driver_handle)
+                    ivIcon.setPadding(padding, padding,padding,padding)
                     layoutName.tvItemTitle.text = name
                     layoutNumber.tvItemTitle.text = number
                     layoutEmail.tvItemTitle.text = emailAddress
                     rlAddress.gone()
+                    rlName.visible()
                     viewLine.visible()
                 }
 
                 layoutDriverSecond.apply {
                     cardImg.invisible()
+                    rlName.visible()
                     layoutName.tvItemTitle.text = licenseNumber
                     layoutNumber.tvItemTitle.text = age
+                    rlNumber.gone()
                     rlEmail.invisible()
                     rlAddress.gone()
                 }
 
                 layoutVehicle.apply {
+                    rlName.visible()
+                    rlNumber.visible()
                     layoutName.tvItemTitle.text = name
                     layoutNumber.tvItemTitle.text = model
-                    layoutEmail.tvItemTitle.text = registrationNo
+                    layoutEmail.tvItemTitle.text = loadCapacity
                     rlAddress.gone()
                     viewLine.visible()
                 }
 
                 layoutVehicleSecond.apply {
                     cardImg.invisible()
-                    layoutName.tvItemTitle.text = loadCapacity
-                    layoutNumber.tvItemTitle.text = manuYear
+                    rlName.visible()
+                    rlNumber.visible()
+                    layoutName.tvItemTitle.text = registrationNo
+                    layoutNumber.tvItemTitle.text = year
                     rlEmail.invisible()
                     rlAddress.gone()
                 }
 
                 layoutCustomer.apply {
+                    rlName.visible()
+                    rlNumber.visible()
+                    rlAddress.visible()
                     layoutName.tvItemTitle.text = name
                     layoutNumber.tvItemTitle.text = number
-                    layoutEmail.tvItemTitle.text = emailAddress
                     layoutAddress.tvItemTitle.text = address
                 }
 
                 layoutVendor.apply {
+                    rlName.visible()
+                    rlAddress.visible()
                     layoutName.tvItemTitle.text = name
-                    layoutNumber.tvItemTitle.text = number
-                    layoutEmail.tvItemTitle.text = emailAddress
                     layoutAddress.tvItemTitle.text = address
                 }
 
@@ -162,7 +217,6 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
      */
     private fun viewCreated() {
         viewModel.apply {
-
             isFragmentLoad = true
         }
     }
@@ -195,7 +249,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 }
                 layoutVehicleSecond.apply {
                     vehicleData?.apply {
-                        layoutName.tvDetail.text = vehicleData.loadCapacity
+                        layoutName.tvDetail.text = vehicleData.registrationNo
                         layoutNumber.tvDetail.text = manufacturingYear
                     }
                 }
@@ -203,25 +257,63 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         }
     }
 
-    private fun setCustomerDetail() {
+    private fun setCustomerDetail(dispatchData: DispatchData?) {
         binding.apply {
             viewModel.apply {
-                layoutCustomer.layoutName.tvDetail.text = dispatchSelectedData?.userMetadata?.userName
-                layoutCustomer.layoutNumber.tvDetail.text = dispatchSelectedData?.userMetadata?.userPhone
+                (dispatchSelectedData?.userMetadata?: UserMetaData()).apply {
+                    layoutCustomer.apply {
+                        layoutName.tvDetail.text = userName
+                        layoutNumber.tvDetail.text = userPhone
+                    }
+                }
+                layoutCustomer.layoutAddress.tvDetail.setTexts(dispatchData?.destination?.addressLine)
             }
         }
     }
 
-    private fun setDispatchDetail(dispatchData: DispatchData) {
+    private fun setDriverDetail(dispatchData: DocumentDataItem?) {
+        binding.apply {
+            viewModel.apply {
+                layoutDriver.apply {
+                    layoutName.tvDetail.text = dispatchData?.refId
+                }
+                layoutDriverSecond.layoutName.tvDetail.text = dispatchData?.documentNumber
+            }
+        }
+    }
+
+    private fun setDispatchDetail(dispatchData: DispatchData?) {
         binding.apply {
             viewModel.apply {
                 layoutVendor.apply {
-                    layoutVendor.layoutName.tvDetail.getMapValue(dispatchData.vendorName)
-                    tvAddress.setTexts(dispatchData.pickup?.addressLine)
-                    tvDestinationAddress.setTexts(dispatchData.destination?.addressLine)
-                    NSApplication.getInstance().getLocationManager().calculateDurationDistance(dispatchData.pickup?.lat,dispatchData.pickup?.lng, dispatchData.destination?.lat,dispatchData.destination?.lng) { time, distance ->
+                    layoutAddress.tvDetail.setTexts(dispatchData?.pickup?.addressLine)
+                    tvAddress.setTexts(dispatchData?.pickup?.addressLine)
+                    tvDestinationAddress.setTexts(dispatchData?.destination?.addressLine)
+                    NSApplication.getInstance().getLocationManager().calculateDurationDistance(dispatchData?.pickup?.lat,dispatchData?.pickup?.lng, dispatchData?.destination?.lat,dispatchData?.destination?.lng) { time, distance ->
                         tvSpeed.text = distance.toInt().toString()
                     }
+
+                    val statusAdapter = OrderStatusRecycleAdapter()
+                    rvOrderStatus.setupWithAdapter(statusAdapter)
+                    val statusList: MutableList<StatusItem> = arrayListOf()
+                    if (dispatchData?.status.isValidList()) {
+                        val updatedList = dispatchData?.status?.map { it.copy(isSelected = true) } as MutableList<StatusItem>
+                        updatedList.sortBy { it.refId }
+                        statusList.addAll(updatedList)
+                        statusAdapter.setData(updatedList)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setVendorDetail(dispatchData: DispatchData?, vendorDetail: VendorDetailResponse?) {
+        binding.apply {
+            viewModel.apply {
+                layoutVendor.apply {
+                    layoutName.tvDetail.getMapValue(vendorDetail?.name)
+                    layoutAddress.tvDetail.setTexts(dispatchData?.pickup?.addressLine)
+                    ivIcon.setGlideWithHolder(vendorDetail?.logo, vendorDetail?.logoScale, 200, corners = 10)
                 }
             }
         }

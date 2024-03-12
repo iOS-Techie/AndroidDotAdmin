@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.view.WindowManager
 import android.widget.ImageView
@@ -11,6 +12,7 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSApplication
+import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
 import com.nyotek.dot.admin.databinding.LayoutCreateLocalBinding
 import com.nyotek.dot.admin.databinding.LayoutRecycleViewBinding
@@ -31,6 +33,9 @@ import com.nyotek.dot.admin.ui.serviceManagement.NSFleetServiceRecycleAdapter
 import com.nyotek.dot.admin.ui.serviceManagement.fleetItemList
 import com.nyotek.dot.admin.widgets.NSCommonEditText
 import com.nyotek.dot.admin.widgets.NSCommonRecycleView
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import java.util.UUID
 
 
 /**
@@ -55,8 +60,40 @@ object NSUtilities {
         return errorMessage.trim()
     }
 
+    fun getDeviceId(): String {
+        return getBundleId() + "_"+ getUUIDDeviceId()
+    }
+
     fun getBundleId(): String {
         return NSApplication.getInstance().packageName
+    }
+
+    fun generateUUIDDeviceId() {
+        val sharedPreferences: SharedPreferences = NSApplication.getInstance().applicationContext.getSharedPreferences(NSConstants.DEVICE_ID_STORE,
+            Context.MODE_PRIVATE
+        )
+        val uniId = UUID.randomUUID().toString()
+        if (sharedPreferences.getString(NSConstants.DEVICE_ID_STORE_VALUE, "").isNullOrEmpty()) {
+            val myEdit = sharedPreferences.edit()
+            myEdit.putString(NSConstants.DEVICE_ID_STORE_VALUE, uniId)
+            myEdit.apply()
+        }
+    }
+
+    private fun getUUIDDeviceId(): String {
+        val sharedPreferences: SharedPreferences = NSApplication.getInstance().applicationContext.getSharedPreferences(
+            NSConstants.DEVICE_ID_STORE,
+            Context.MODE_PRIVATE
+        )
+        val uniId = UUID.randomUUID().toString()
+        return if (sharedPreferences.getString(NSConstants.DEVICE_ID_STORE_VALUE, "").isNullOrEmpty()) {
+            val myEdit = sharedPreferences.edit()
+            myEdit.putString(NSConstants.DEVICE_ID_STORE_VALUE, UUID.randomUUID().toString())
+            myEdit.apply()
+            sharedPreferences.getString(NSConstants.DEVICE_ID_STORE_VALUE, uniId)?:uniId
+        } else {
+            sharedPreferences.getString(NSConstants.DEVICE_ID_STORE_VALUE, uniId)?:uniId
+        }
     }
 
     fun callUser(activity: Activity, call: String) {
@@ -72,7 +109,7 @@ object NSUtilities {
     fun setLanguageText(
         edtText: NSCommonEditText,
         recycleView: NSCommonRecycleView,
-        title: HashMap<String, String>
+        title: HashMap<String, String>?
     ) {
         var selectedLanguage: String? = null
         recycleView.notifyAdapter()
@@ -86,7 +123,7 @@ object NSUtilities {
 
         edtText.addOnTextChangedListener(
             onTextChanged = { s, _, _, _ ->
-                if (selectedLanguage != null) {
+                if (title != null && selectedLanguage != null) {
                     title[selectedLanguage!!] = s.toString()
                 }
             }
@@ -336,6 +373,21 @@ object NSUtilities {
             }
         }
         return capitalizedWords.joinToString(" ")
+    }
+
+    suspend fun capitalizeFirstLetterN(input: String): String = coroutineScope {
+        // Start a coroutine to perform the operation asynchronously
+        async {
+            val words = input.split(" ")
+            val capitalizedWords = words.map { word ->
+                if (word.isNotEmpty()) {
+                    word.substring(0, 1).uppercase() + word.substring(1).lowercase()
+                } else {
+                    ""
+                }
+            }
+            capitalizedWords.joinToString(" ")
+        }.await() // Wait for the result of the coroutine
     }
 
     fun convertToArabic(value: String): String {

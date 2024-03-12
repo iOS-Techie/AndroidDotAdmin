@@ -55,20 +55,35 @@
                         android:textAlignment="viewStart"
                         android:letterSpacing="0.01"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/iv_brand_icon"
+                        app:layout_constraintEnd_toStartOf="@+id/rl_icon"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="Order Status" />
 
-                    <ImageView
-                        android:id="@+id/iv_brand_icon"
-                        android:layout_width="@dimen/_11sdp"
-                        android:layout_height="@dimen/_8sdp"
+                    <RelativeLayout
+                        android:id="@+id/rl_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/_1sdp"
-                        android:src="@drawable/ic_hubz"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/iv_brand_place_icon"
+                            android:layout_width="@dimen/_8sdp"
+                            android:layout_height="@dimen/_8sdp"
+                            android:src="@drawable/ic_place_holder_product"
+                            android:layout_centerInParent="true" />
+
+                        <ImageView
+                            android:id="@+id/iv_brand_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_6sdp"
+                            android:scaleType="fitCenter"
+                            android:layout_centerInParent="true" />
+
+                    </RelativeLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -83,8 +98,8 @@
                     android:id="@+id/rv_order_status"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:paddingTop="@dimen/_2sdp"
-                    android:paddingBottom="@dimen/_2sdp"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
                     android:clipToPadding="false"
                     android:orientation="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -138,12 +153,12 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-                        
+
                         <FrameLayout
                             android:id="@+id/map_fragment_employee"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
-                        
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="@dimen/_20sdp"
@@ -275,10 +290,10 @@
                                 android:textSize="@dimen/_4sdp"
                                 tools:text="Order Status" />
                         </LinearLayout>
-                        
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                    
-                    
+
+
                 </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -327,6 +342,7 @@
                         android:orientation="horizontal"
                         android:layout_marginEnd="@dimen/_5sdp"
                         android:gravity="center"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toStartOf="@id/tv_driver_id"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent">
@@ -367,6 +383,7 @@
                         android:textSize="@dimen/_3sdp"
                         tools:text="ID: #485862"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:fontFamily="@font/archivo_medium"
                         android:layout_marginEnd="@dimen/_2sdp"
                         android:paddingHorizontal="@dimen/_3sdp"
@@ -413,6 +430,7 @@
                     android:gravity="center"
                     android:textSize="@dimen/_4sdp"
                     tools:text="Update "
+                    android:visibility="gone"
                     android:fontFamily="@font/archivo_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -533,6 +551,7 @@
                         android:textSize="@dimen/_3sdp"
                         tools:text="ID: #485862"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:fontFamily="@font/archivo_medium"
                         android:layout_marginEnd="@dimen/_2sdp"
                         android:paddingHorizontal="@dimen/_3sdp"
@@ -551,7 +570,7 @@
                     app:layout_constraintTop_toBottomOf="@id/cl_sub_customer_detail"/>
 
                 <include android:id="@+id/layout_customer"
-                    layout="@layout/layout_common_full_dispatch_detail"
+                    layout="@layout/layout_common_customer_detail"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/_5sdp"
@@ -607,6 +626,7 @@
                         android:textSize="@dimen/_3sdp"
                         tools:text="ID: #485862"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:fontFamily="@font/archivo_medium"
                         android:layout_marginEnd="@dimen/_2sdp"
                         android:paddingHorizontal="@dimen/_3sdp"
@@ -625,7 +645,7 @@
                     app:layout_constraintTop_toBottomOf="@id/cl_sub_vendor_detail"/>
 
                 <include android:id="@+id/layout_vendor"
-                    layout="@layout/layout_common_full_dispatch_detail"
+                    layout="@layout/layout_common_vendor_detail"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginStart="@dimen/_5sdp"
@@ -642,6 +662,7 @@
                 android:layout_height="0.6dp"
                 android:background="@color/line_divider"
                 android:layout_marginTop="@dimen/_6sdp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_vendor_detail"/>
@@ -650,6 +671,7 @@
                 android:id="@+id/cl_rejected_drivers"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_60sdp"
+                android:visibility="gone"
                 android:background="@drawable/white_round_12"
                 android:layout_marginTop="@dimen/_6sdp"
                 android:layout_marginStart="@dimen/_6sdp"

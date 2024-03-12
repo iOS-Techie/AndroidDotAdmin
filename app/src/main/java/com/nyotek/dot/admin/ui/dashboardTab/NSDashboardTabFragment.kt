@@ -86,10 +86,12 @@ class NSDashboardTabFragment :
 
     private fun initMapView(fleetData: FleetDataItem?) {
         viewModel.tempFleetDataItem = fleetData
-        mapBoxView?.initMapView(
-            requireContext(), mapView!!,
-            fleetData, mapCallback = this
-        )
+        if (mapView != null) {
+            mapBoxView?.initMapView(
+                requireContext(), mapView!!,
+                fleetData, mapCallback = this
+            )
+        }
     }
 
     /**

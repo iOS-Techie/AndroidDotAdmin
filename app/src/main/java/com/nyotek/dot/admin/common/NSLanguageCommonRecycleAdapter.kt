@@ -14,7 +14,7 @@ import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 private var itemList: MutableList<LanguageSelectModel> = arrayListOf()
 class NSLanguageCommonRecycleAdapter(
     private val context: Context,
-    private val languageSelectCallback: ((String, Boolean) -> Unit)
+    private val languageSelectCallback: ((String, Boolean, MutableList<LanguageSelectModel>) -> Unit)
 ) : BaseViewBindingAdapter<LayoutLanguageTitleItemTextBinding, LanguageSelectModel>(
 
     bindingInflater = { inflater, parent, attachToParent ->
@@ -45,7 +45,7 @@ class NSLanguageCommonRecycleAdapter(
                     spinnerLanguageAdd.text = "+"
 
                     if (response.isSelected) {
-                        languageSelectCallback.invoke(response.locale?:"", false)
+                        languageSelectCallback.invoke(response.locale?:"", false, itemList)
                     }
 
                     fun removeSelection() {
@@ -68,7 +68,7 @@ class NSLanguageCommonRecycleAdapter(
                         tvLanguageTitle.setSafeOnClickListener {
                             removeSelection()
                             response.isSelected = true
-                            languageSelectCallback.invoke(response.locale?:"", true)
+                            languageSelectCallback.invoke(response.locale?:"", true, itemList)
                         }
                     }
                 }

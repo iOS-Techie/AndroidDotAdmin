@@ -1,6 +1,8 @@
 package com.nyotek.dot.admin.common
 
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -10,6 +12,7 @@ import java.util.*
  */
 object NSDateTimeHelper {
     private val TAG = NSDateTimeHelper::class.java.simpleName
+    private const val DATE_FORMAT_FROM_DISPATCH_API = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     private const val DATE_FORMAT_FROM_API = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     private const val DATE_FORMAT_ORDER_SHOW = "dd/MM/yyyy | hh:mm a"
     private const val DATE_FOR_SORTING = "yyyy-MM-dd'T'HH:mm:ss"
@@ -105,8 +108,18 @@ object NSDateTimeHelper {
      *
      * @param dateString The date string
      */
-    fun getCommonDateView(dateString: String?) =
-        getConvertedDateInDate(dateString, DATE_FORMAT_FROM_API)
+    fun getCommonDateView(dateString: String?): Date {
+        return try {
+            if ((dateString?.length?:0) <= 20) {
+                getConvertedDateInDate(dateString, DATE_FORMAT_FROM_DISPATCH_API)
+            } else {
+                getConvertedDateInDate(dateString, DATE_FORMAT_FROM_API)
+            }
+        } catch (e: Exception) {
+            getConvertedDateInDate(dateString, DATE_FORMAT_FROM_DISPATCH_API)
+        }
+    }
+
 
     /**
      * To get the current dateTime string
@@ -154,8 +167,28 @@ object NSDateTimeHelper {
      *
      * @param dateString The date string
      */
-    fun getDateForUser(dateString: String?) =
-        getConvertedDate(dateString, DATE_FORMAT_FROM_API_TRANSACTION, DATE_FORMAT_USER)
+    suspend fun getDateForUser(dateString: String?) =
+        getConvertedDateService(dateString, DATE_FORMAT_FROM_API_TRANSACTION, DATE_FORMAT_USER)
+
+    suspend fun getConvertedDateService(
+        dateString: String?, inputPattern: String, outputPattern: String
+    ): String = withContext(Dispatchers.Default) {
+        val calendar = Calendar.getInstance()
+        val format = SimpleDateFormat(inputPattern, Locale.ENGLISH)
+        format.timeZone = TimeZone.getTimeZone("UTC")
+        val date: Date?
+        try {
+            date = dateString?.let { format.parse(it) }
+            date?.let {
+                calendar.time = it
+            }
+        } catch (exception: ParseException) {
+            NSLog.e(TAG, "getConvertedDate : Caught Exception ", exception)
+        }
+        val newFormat = SimpleDateFormat(outputPattern, Locale.ENGLISH)
+        format.timeZone = TimeZone.getTimeZone("UTC")
+        return@withContext newFormat.format(calendar.time)
+    }
 
     fun formatDateToNowOrDateTime(inputDateString: String): String {
         val stringResource = StringResourceResponse()

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.franmontiel.localechanger.LocaleChanger
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
+import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.location.NSLocationManager
 import com.nyotek.dot.admin.repository.network.manager.NSApiManager
 import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
@@ -19,6 +20,7 @@ import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 import com.nyotek.dot.admin.repository.network.responses.NSGetThemeData
 import com.nyotek.dot.admin.repository.network.responses.ServiceCapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import com.nyotek.dot.admin.repository.network.responses.VendorDetailResponse
 import java.net.URL
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
@@ -43,12 +45,14 @@ class NSApplication : Application() {
     private var localMapLanguageList: HashMap<String, MutableList<LanguageSelectModel>> = hashMapOf()
     private var capabilityItemList: HashMap<String, ServiceCapabilitiesDataItem> = hashMapOf()
     private var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
+    private var vendorMap: HashMap<String, VendorDetailResponse> = hashMapOf()
 
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         initInstance()
         NSLanguageConfig.init(applicationContext)
+        NSUtilities.generateUUIDDeviceId()
     }
 
     override fun attachBaseContext(base: Context?) {
@@ -105,6 +109,14 @@ class NSApplication : Application() {
 
     fun setCapabilityList(capabilities: MutableList<CapabilitiesDataItem>) {
         capabilityList = capabilities
+    }
+
+    fun setVendorMap(vendorId: String, vendorData: VendorDetailResponse) {
+        vendorMap[vendorId] = vendorData
+    }
+
+    fun getVendorDetail(vendorId: String): VendorDetailResponse? {
+        return vendorMap[vendorId]
     }
 
     /**

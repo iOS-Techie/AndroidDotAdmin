@@ -28,7 +28,7 @@
         android:id="@+id/rl_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintBottom_toTopOf="@id/view_line"
         app:layout_constraintEnd_toStartOf="@id/rl_number"
         app:layout_constraintStart_toEndOf="@+id/card_img"
@@ -47,8 +47,8 @@
         android:id="@+id/rl_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@id/rl_email"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintEnd_toStartOf="@id/rl_address"
         app:layout_constraintStart_toEndOf="@id/rl_name"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/view_line">
@@ -62,28 +62,11 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_email"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@id/rl_address"
-        app:layout_constraintStart_toEndOf="@id/rl_number"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/view_line">
-
-        <include android:id="@+id/layout_email"
-            layout="@layout/layout_common_dispatch_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/rl_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@id/rl_email"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/rl_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/view_line">

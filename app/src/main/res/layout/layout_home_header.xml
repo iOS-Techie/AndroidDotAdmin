@@ -87,7 +87,7 @@
                 style="@style/LayoutWidthHeightZero"
                 android:background="@null"
                 android:importantForAutofill="no"
-                android:inputType="text"
+                android:inputType="none"
                 android:textAlignment="viewStart"
                 android:paddingStart="@dimen/_5sdp"
                 android:paddingEnd="@dimen/_2sdp"
@@ -112,42 +112,32 @@
 
         </com.nyotek.dot.admin.widgets.NSConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/cl_profile_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <RelativeLayout
-                android:id="@+id/rl_profile_img"
+            <ImageView
+                android:id="@+id/iv_profile"
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_1sdp" />
 
-                <ImageView
-                    android:id="@+id/iv_profile"
-                    android:layout_width="@dimen/_18sdp"
-                    android:layout_height="@dimen/_18sdp"
-                    android:layout_centerInParent="true"
-                    android:padding="@dimen/_1sdp" />
+            <View
+                android:id="@+id/view_user_enable"
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/green_round" />
 
-                <View
-                    android:id="@+id/view_user_enable"
-                    android:layout_width="@dimen/_6sdp"
-                    android:layout_height="@dimen/_6sdp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/green_round" />
-
-            </RelativeLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

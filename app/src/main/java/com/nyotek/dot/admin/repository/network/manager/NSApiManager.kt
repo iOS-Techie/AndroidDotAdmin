@@ -7,6 +7,8 @@ import com.nyotek.dot.admin.BuildConfig
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSUserManager
+import com.nyotek.dot.admin.common.utils.NSLanguageConfig
+import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLocalLanguage
 import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
 import com.nyotek.dot.admin.repository.network.requests.*
@@ -30,9 +32,11 @@ class NSApiManager {
         private const val KEY_ACCEPT = "Accept"
         private const val ACCEPT_VALUE = "*/*"
         private const val KEY_LOCALE = "X-Locale"
+        private const val KEY_SELECTED_LANGUAGE = "X-Selected-Lang"
         private const val KEY_SERVICE_ID = "X-SERVICE-ID"
         private const val KEY_APP_ID = "X-APP-ID"
         private const val KEY_TIME_ZONE = "x-client-tz"
+        private const val KEY_DEVICE_ID = "X-Device-Id"
         private const val KEY_BuildVersion = "X-BuildVersion"
         private const val MULTIPART_JSON = "multipart/form-data"
         private const val APPLICATION_JSON = "application/json"
@@ -178,7 +182,9 @@ class NSApiManager {
                 }
                 header(KEY_APP_ID, BuildConfig.THEME_APP_ID)
                 header(KEY_LOCALE, getLocalLanguage())
+                header(KEY_SELECTED_LANGUAGE, NSLanguageConfig.getSelectedLanguage())
                 header(KEY_TIME_ZONE, TimeZone.getDefault().id)
+                header(KEY_DEVICE_ID, NSUtilities.getDeviceId())
                 if (isAuthorizedClient) {
                     header(
                         AUTHORISATION_KEY, BEARER + NSUserManager.getAuthToken()
@@ -973,6 +979,46 @@ class NSApiManager {
             request(authorisedLocationClient.getLocationHistoryDispatch(dispatchId), callback)
         }
     }
+
+    /**
+     * To get vendor Detail data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getVendorDetail(vendorId: String, callback: NSRetrofitCallback<VendorDetailResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.getVendorInfo(vendorId), callback)
+        }
+    }
+
+    /**
+     * To call the document list data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getDocumentList(userId: String, callback: NSRetrofitCallback<NSDocumentListResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedFleetClient.getDriverDocumentInfo(userId), callback)
+        }
+    }
+
+    fun getDispatchDetail1(dispatchId: String, callback: NSRetrofitCallback<DispatchDetailResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3020Client.dispatchDetail1(dispatchId), callback)
+        }
+    }
+
+    fun getVendorDetail1(vendorId: String, callback: NSRetrofitCallback<VendorDetailResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.getVendorInfo1(vendorId), callback)
+        }
+    }
+
+    fun getDriverVehicleDetail1(id: String, callback: NSRetrofitCallback<NSDriverVehicleDetailResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedFleetClient.getDriverVehicleDetail1(id), callback)
+        }
+    }
 }
 
 /**
@@ -1112,7 +1158,7 @@ interface RTApiInterface {
     @POST("capability")
     suspend fun createCapability(@Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
-    @PUT("capability/{capability_id}/label")
+    @PATCH("capability/{capability_id}/label")
     suspend fun updateCapability(@Path("capability_id") id: String, @Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
     @GET("service/management/{service_id}")
@@ -1174,4 +1220,20 @@ interface RTApiInterface {
 
     @GET("location/history/ref/{dispatch_id}")
     suspend fun getLocationHistoryDispatch(@Path("dispatch_id") dispatchId: String): retrofit2.Response<FleetLocationResponse>
+
+    @GET("companies/vendor_info/{vendor_id}")
+    suspend fun getVendorInfo(@Path("vendor_id") id: String): retrofit2.Response<VendorDetailResponse>
+
+    @GET("document/list/{user_id}")
+    suspend fun getDriverDocumentInfo(@Path("user_id") id: String): retrofit2.Response<NSDocumentListResponse>
+
+
+    @GET("dispatch/{dispatch_id}")
+    fun dispatchDetail1(@Path("dispatch_id") dispatchId: String): retrofit2.Response<DispatchDetailResponse>
+
+    @GET("companies/vendor_info/{vendor_id}")
+    fun getVendorInfo1(@Path("vendor_id") id: String): retrofit2.Response<VendorDetailResponse>
+
+    @GET("vehicle/{vehicle_id}")
+    fun getDriverVehicleDetail1(@Path("vehicle_id") id: String): retrofit2.Response<NSDriverVehicleDetailResponse>
 }

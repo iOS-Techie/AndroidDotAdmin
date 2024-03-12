@@ -21,7 +21,10 @@ data class StatusItem(
 	val refType: String? = null,
 
 	@field:SerializedName("status")
-	val status: String? = null
+	val status: String? = null,
+
+	@field:SerializedName("is_selected")
+	var isSelected: Boolean? = false
 )
 
 data class DispatchData(
@@ -31,9 +34,6 @@ data class DispatchData(
 
 	@field:SerializedName("vendor_bid")
 	val vendorBid: String? = null,
-
-	@field:SerializedName("vendor_payload")
-	val vendorPayload: Any? = null,
 
 	@field:SerializedName("vendor_logo_url")
 	val vendorLogoUrl: String? = null,

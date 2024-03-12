@@ -270,5 +270,6 @@ class StringResourceResponse {
 	val seeAll: String = map["see_all"] ?: ""
 	val justNow: String = map["just_now"] ?: ""
 	val assigned: String = map["assigned"] ?: ""
+	val year: String = map["year"] ?: ""
 
 }

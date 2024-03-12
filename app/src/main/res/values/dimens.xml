@@ -1,1 +1,3 @@
-<resources></resources>
+<resources>
+    <dimen name="icon_padding">@dimen/_3sdp</dimen>
+</resources>

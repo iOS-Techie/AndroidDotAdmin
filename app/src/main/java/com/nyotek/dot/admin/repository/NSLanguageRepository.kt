@@ -17,24 +17,31 @@ import retrofit2.Response
  */
 object NSLanguageRepository: BaseRepository() {
 
-    fun localLanguages(serviceId: String, viewModelCallback: NSGenericViewModelCallback) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val languageRequest = NSLanguageRequest(serviceId)
-            apiManager.listLocalLanguages(
-                languageRequest,
-                object : NSRetrofitCallback<NSLocalLanguageResponse>(
-                    viewModelCallback, NSApiErrorHandler.ERROR_LOCAL_LANGUAGE
-                ) {
-                    override fun <T> onResponse(response: Response<T>) {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            viewModelCallback.onSuccess(response.body())
-                        }
-                    }
+    var localLanguages: NSLocalLanguageResponse? = null
 
-                    override fun onRefreshToken() {
-                        localLanguages(serviceId, viewModelCallback)
-                    }
-                })
+    fun localLanguages(serviceId: String, viewModelCallback: NSGenericViewModelCallback) {
+        if (localLanguages != null) {
+            viewModelCallback.onSuccess(localLanguages)
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                val languageRequest = NSLanguageRequest(serviceId)
+                apiManager.listLocalLanguages(
+                    languageRequest,
+                    object : NSRetrofitCallback<NSLocalLanguageResponse>(
+                        viewModelCallback, NSApiErrorHandler.ERROR_LOCAL_LANGUAGE
+                    ) {
+                        override fun <T> onResponse(response: Response<T>) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                localLanguages = response.body() as NSLocalLanguageResponse
+                                viewModelCallback.onSuccess(localLanguages)
+                            }
+                        }
+
+                        override fun onRefreshToken() {
+                            localLanguages(serviceId, viewModelCallback)
+                        }
+                    })
+            }
         }
     }
 
