@@ -146,7 +146,6 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                         isNestedScrollingEnabled = false
                     }
                     filterData(capabilities, filterList)
-                    viewModel.hideProgress()
                 }
             }
         }
@@ -171,6 +170,7 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
         capabilitiesRecycleAdapter?.apply {
             setData(capabilities)
         }
+        viewModel.hideProgress()
     }
 
     /**

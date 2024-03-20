@@ -14,7 +14,7 @@ class NSEmployeeUserSearchRecycleAdapter(callback: () -> Unit) : BaseViewBinding
         LayoutEmployeeSearchUserBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, _ ->
+    onBind = { binding, response, _, _, _ ->
         with(binding) {
             response.apply {
                 if (selectedId == null || response.id != selectedId ) {

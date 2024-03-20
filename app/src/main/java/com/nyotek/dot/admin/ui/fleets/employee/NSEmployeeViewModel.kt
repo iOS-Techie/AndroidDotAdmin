@@ -132,7 +132,8 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
                 if (isSuccess) {
                     if (data is NSEmployeeResponse) {
                         data.employeeList.sortByDescending { it.userId }
-                        val list = data.employeeList.filter { !it.isDeleted }
+                        val list = data.employeeList//.filter { !it.isDeleted }
+                        getFleetDriverLocations(list.map { it.userId?:"" })
                         isEmployeeListAvailable.postValue(list as MutableList<EmployeeDataItem>?)
                     }
                 }
@@ -141,6 +142,19 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
             isEmployeeListAvailable.postValue(arrayListOf())
             hideProgress()
         }
+    }
+
+    fun getFleetDriverLocations(driverList: List<String>) {
+        callCommonApi({ obj ->
+            NSFleetRepository.getFleetDriverLocations(driverList, obj)
+        }, { data, isSuccess ->
+            hideProgress()
+            if (isSuccess) {
+                if (data is FleetLocationResponse) {
+
+                }
+            }
+        })
     }
 
     /**

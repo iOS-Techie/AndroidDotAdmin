@@ -416,4 +416,34 @@ object NSFleetRepository: BaseRepository() {
             apiManager.getDriverLocation(driverId, callback)
         }
     }
+
+    /**
+     * To get fleet driver locations
+     *
+     * @param viewModelCallback The callback to communicate back to the view model
+     */
+    fun getFleetDriverLocations(
+        driverIds: List<String>,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val callback = object :
+                NSRetrofitCallback<FleetLocationResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_FLEET_DRIVER_LOCATION
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body()?:FleetLocationResponse())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    getFleetDriverLocations(driverIds, viewModelCallback)
+                }
+            }
+
+            apiManager.getFleetDriverLocation(NSFleetDriverRequest(driverIds), callback)
+        }
+    }
 }

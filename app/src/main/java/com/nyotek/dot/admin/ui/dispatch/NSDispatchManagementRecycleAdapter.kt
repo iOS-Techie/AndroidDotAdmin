@@ -25,15 +25,18 @@ class NSDispatchManagementRecycleAdapter(
         LayoutDispatchListBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource,_ ->
+    onBind = { binding, response, stringResource,_, _ ->
         binding.apply {
             response.apply {
                 ColorResources.setCardBackground(clDispatchDetailView, 8f, width = 1)
                 ColorResources.setBackground(viewLineDivider, ColorResources.getSecondaryDarkColor())
+                ColorResources.setBackground(viewLineHorizontalDivider, ColorResources.getSecondaryDarkColor())
 
                 val orderId = stringResource.orderId + ":"
                 tvOrderTitle.text = orderId
-                tvOrderId.text = rId
+                tvDispatchTitle.text = stringResource.dispatchId
+                tvOrderId.text = vendorSid
+                tvDispatchId.text = rId
                 val finalStatus = status.first().status
                 ColorResources.apply {
                     if (finalStatus.lowercase() == "delivered") {
@@ -53,7 +56,7 @@ class NSDispatchManagementRecycleAdapter(
                     tvDescription.text = userPhone
                 }
 
-                tvModelTitle.text = assignedDriverId
+                tvModelTitle.text = if (assignedDriverId.isNullOrEmpty()) stringResource.noDriverAssigned else assignedDriverId
                 tvModelDescription.text = ""
 
                 CoroutineScope(Dispatchers.IO).launch {

@@ -21,7 +21,7 @@ class NSLanguageCommonRecycleAdapter(
         LayoutLanguageTitleItemTextBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource, _ ->
+    onBind = { binding, response, stringResource, _, _ ->
         with(binding) {
             response.apply {
                 stringResource.apply {

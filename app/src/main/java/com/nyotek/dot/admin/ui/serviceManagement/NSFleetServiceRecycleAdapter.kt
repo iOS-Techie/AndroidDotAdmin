@@ -17,7 +17,7 @@ class NSFleetServiceRecycleAdapter(
         LayoutCapabilitiesVehicleBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, _ ->
+    onBind = { binding, response, _, _, _ ->
         with(binding) {
             response.apply {
                 ColorResources.setCardBackground(viewStatus, 100f, 0, if (response.data?.isActive == true) ColorResources.getGreenColor() else ColorResources.getGrayColor())

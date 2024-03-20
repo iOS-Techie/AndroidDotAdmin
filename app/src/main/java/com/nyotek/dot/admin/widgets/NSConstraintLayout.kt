@@ -42,7 +42,7 @@ class NSConstraintLayout : ConstraintLayout {
 
     fun init() {
         when (this.id) {
-            R.id.cl_driver_detail -> {
+            R.id.cl_driver_detail, R.id.cl_dispatch_detail -> {
                 ColorResources.setBackground(this)
             }
             R.id.cl_brand_logo -> {

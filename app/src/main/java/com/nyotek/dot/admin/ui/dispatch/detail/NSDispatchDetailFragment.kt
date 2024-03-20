@@ -11,6 +11,7 @@ import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSOnMapResetEvent
+import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glideNormal
@@ -92,6 +93,9 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
             setDispatchDetail(allModel.dispatchDetail?.data)
             setCustomerDetail(allModel.dispatchDetail?.data)
             setVehicleDetail(allModel.driverVehicleDetail?.data)
+            if(allModel.driverId?.isNotEmpty() == true) {
+                binding.clDriverAndVehicle.visible()
+            }
         }
     }
 
@@ -123,8 +127,9 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                     isSearch = false,
                     isBack = true
                 )
-
+                binding.clDriverAndVehicle.gone()
                 tvStatus.text = orderStatus
+                tvOrderDetailTitle.text = orderDetails
                 tvDriverDetailTitle.text = driverDetail
                 tvVehicleDetailTitle.text = vehicleDetails
                 tvCustomerDetailTitle.text = customerDetails
@@ -134,6 +139,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 tvUpdateDriver.text = update
                 tvTitleTrack.text = track
                 binding.mapFragmentEmployee.removeAllViews()
+              //  ColorResources.setBackground(binding.viewLine, ColorResources.getBorderColor())
 
                 val serviceId = arguments?.getString(NSConstants.VENDOR_SERVICE_ID_KEY)
                 viewModel.getServiceLogo(serviceId) {
@@ -141,6 +147,17 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                         ivBrandIcon.setVisibility(isSuccess)
                         ivBrandPlaceIcon.setVisibility(!isSuccess)
                     }
+                }
+
+                layoutOrder.apply {
+                    layoutName.tvItemTitle.text = shortDispatchId
+                    layoutNumber.tvItemTitle.text = dispatchId
+                    layoutEmail.tvItemTitle.text = shortOrderId
+                    rlAddress.gone()
+                    rlName.visible()
+                    rlNumber.visible()
+                    rlEmail.visible()
+                    viewLine.visible()
                 }
 
                 layoutDriver.apply {
@@ -182,7 +199,6 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                     rlNumber.visible()
                     layoutName.tvItemTitle.text = registrationNo
                     layoutNumber.tvItemTitle.text = year
-                    rlEmail.invisible()
                     rlAddress.gone()
                 }
 
@@ -285,6 +301,11 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
     private fun setDispatchDetail(dispatchData: DispatchData?) {
         binding.apply {
             viewModel.apply {
+                layoutOrder.apply {
+                    layoutName.tvDetail.text = dispatchData?.rId
+                    layoutNumber.tvDetail.text = dispatchData?.id
+                    layoutEmail.tvDetail.text = dispatchData?.vendorSid
+                }
                 layoutVendor.apply {
                     layoutAddress.tvDetail.setTexts(dispatchData?.pickup?.addressLine)
                     tvAddress.setTexts(dispatchData?.pickup?.addressLine)

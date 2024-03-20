@@ -16,7 +16,7 @@ class NSLanguageRecycleAdapter(
         LayoutLanguageItemBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, position ->
+    onBind = { binding, response, _, position, _ ->
         with(binding) {
             response.apply {
                 ColorResources.setCardBackground(clLanguage, 8f, 2, ColorResources.getBackgroundColor(), ColorResources.getBorderColor())

@@ -17,7 +17,7 @@ class NSSideNavigationRecycleAdapter(
         LayoutSideNavItemBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, position ->
+    onBind = { binding, response, _, position, _ ->
         with(binding) {
             response.apply {
                 tvNavSubTitle.text = title

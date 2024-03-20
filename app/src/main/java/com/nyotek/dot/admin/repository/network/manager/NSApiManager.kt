@@ -688,6 +688,17 @@ class NSApiManager {
     }
 
     /**
+     * To call the fleet driver locations data API
+     *
+     * @param callback  The callback for the result
+     */
+    suspend fun getFleetDriverLocation(request: NSFleetDriverRequest, callback: NSRetrofitCallback<FleetLocationResponse>) {
+        if (isNetwork(callback)) {
+            request(authorisedLocationClient.getFleetDriverLocation(request), callback)
+        }
+    }
+
+    /**
      * To call the disable employee service data API
      *
      * @param callback  The callback for the result
@@ -1140,6 +1151,9 @@ interface RTApiInterface {
     @GET("location")
     suspend fun getFleetLocation(@Query("fleet_id") fieldId: String): retrofit2.Response<FleetLocationResponse>
 
+    @POST("location/drivers")
+    suspend fun getFleetDriverLocation(@Body request: NSFleetDriverRequest): retrofit2.Response<FleetLocationResponse>
+
     @GET("location/driver/{driver_id}")
     suspend fun getDriverLocation(@Path("driver_id") driverId: String): retrofit2.Response<FleetLocationResponse>
 
@@ -1173,8 +1187,8 @@ interface RTApiInterface {
     @POST("/vehicle")
     suspend fun createVehicle(@Body request: NSVehicleRequest): retrofit2.Response<ResponseBody>
 
-    @GET("vehicle/list/admin")
-    suspend fun vehicleList(@Query("ref_id") id: String): retrofit2.Response<NSVehicleResponse>
+    @GET("vehicle/fleet/{fleet_id}")
+    suspend fun vehicleList(@Path("fleet_id") id: String): retrofit2.Response<NSVehicleResponse>
 
     @GET("driver/{driver_id}/fleet/{fleet_id}/vehicle")
     suspend fun getAssignVehicleByDriver(@Path("driver_id") id: String, @Path("fleet_id") fleetId: String): retrofit2.Response<NSAssignVehicleDriverResponse>
@@ -1226,7 +1240,6 @@ interface RTApiInterface {
 
     @GET("document/list/{user_id}")
     suspend fun getDriverDocumentInfo(@Path("user_id") id: String): retrofit2.Response<NSDocumentListResponse>
-
 
     @GET("dispatch/{dispatch_id}")
     fun dispatchDetail1(@Path("dispatch_id") dispatchId: String): retrofit2.Response<DispatchDetailResponse>

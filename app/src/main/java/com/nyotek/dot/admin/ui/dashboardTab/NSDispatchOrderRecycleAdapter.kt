@@ -18,7 +18,7 @@ class NSDispatchOrderRecycleAdapter(
         LayoutAssignedListBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _,_ ->
+    onBind = { binding, response, _,_, _ ->
         binding.apply {
             response.apply {
                 ColorResources.setCardBackground(clDispatchDetailView, 8f, width = 1)

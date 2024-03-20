@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/iv_status_timeline"
-            android:layout_width="@dimen/_6sdp"
-            android:layout_height="@dimen/_6sdp"
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="@dimen/_8sdp"
             android:scaleType="fitXY"
             android:background="@drawable/ic_order_status_un_selected"
             android:contentDescription="@string/description"
@@ -38,7 +38,7 @@
             android:id="@+id/view2"
             android:layout_width="@dimen/_1sdp"
             android:orientation="horizontal"
-            android:layout_height="@dimen/_5sdp"
+            android:layout_height="@dimen/_8sdp"
             android:layout_gravity="center_vertical"
             app:layout_constraintTop_toBottomOf="@id/iv_status_timeline"
             app:layout_constraintStart_toStartOf="@id/iv_status_timeline"
@@ -50,13 +50,29 @@
             tools:text="Order Placed"
             android:textSize="@dimen/_4sdp"
             android:textAlignment="viewStart"
-            android:fontFamily="@font/archivo_bold"
+            android:fontFamily="@font/archivo_semi_bold"
             android:paddingStart="@dimen/_4sdp"
             android:paddingEnd="@dimen/_2sdp"
             android:includeFontPadding="false"
             app:layout_constraintStart_toEndOf="@id/iv_status_timeline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/iv_status_timeline"
+            app:layout_constraintBottom_toTopOf="@id/tv_status_date"/>
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
+            android:id="@+id/tv_status_date"
+            style="@style/LayoutWidthHeightZeroWrap"
+            tools:text="Order Placed"
+            android:textSize="@dimen/_3sdp"
+            android:textAlignment="viewStart"
+            android:fontFamily="@font/archivo_medium"
+            android:paddingStart="@dimen/_4sdp"
+            android:paddingEnd="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:includeFontPadding="false"
+            app:layout_constraintStart_toEndOf="@id/iv_status_timeline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_status_title"
             app:layout_constraintBottom_toBottomOf="@id/iv_status_timeline"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

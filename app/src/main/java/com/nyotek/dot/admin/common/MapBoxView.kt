@@ -112,10 +112,10 @@ class MapBoxView(private val context: Context) {
         fleetDataItem?.apply {
             if (styleMap == null) {
                 if (features.isEmpty()) {
-                    moveCamera(Point.fromLngLat(longitude, latitude), 0.0, 0.0)
+                        moveCamera(Point.fromLngLat(longitude, latitude), 0.5, 0.0)
                 } else {
                     val model = features[0]
-                    goToMapPosition(model.properties?.fleetId ?: "", 0.0, 0.0)
+                    goToMapPosition(model.properties?.fleetId ?: "", 0.5, 0.0)
                 }
             }
         }
@@ -277,7 +277,9 @@ class MapBoxView(private val context: Context) {
             .featureCollection(featureCollection)
 
         withContext(Dispatchers.Main) {
-            styleMap?.addSource(builder.build())
+            if (styleMap?.getSource(NSConstants.SOURCE_ID) == null) {
+                styleMap?.addSource(builder.build())
+            }
         }
     }
 

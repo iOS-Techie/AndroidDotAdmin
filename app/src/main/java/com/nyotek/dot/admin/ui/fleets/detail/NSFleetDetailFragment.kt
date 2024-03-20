@@ -114,7 +114,7 @@ class NSFleetDetailFragment :
                     fleetDetail,
                     isBack = true
                 )
-                tvCreateFleetTitle.text = fleets
+                tvCreateFleetTitle.text = fleet
                 tvSave.text = save
                 tvCancel.text = cancel
                 brandLogoHelper.initView(activity, ivBrandLogo, tvSizeTitle)

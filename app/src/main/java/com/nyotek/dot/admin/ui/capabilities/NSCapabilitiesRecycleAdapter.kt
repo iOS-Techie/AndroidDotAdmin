@@ -17,7 +17,7 @@ class NSCapabilitiesRecycleAdapter(
         LayoutCapabilitiesBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource,_ ->
+    onBind = { binding, response, stringResource,_, _ ->
         binding.apply {
             response.apply {
                 tvModify.text = stringResource.modify

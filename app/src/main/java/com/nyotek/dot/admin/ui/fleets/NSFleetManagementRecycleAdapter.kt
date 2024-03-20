@@ -18,7 +18,7 @@ class NSFleetManagementRecycleAdapter(
         LayoutFleetItemBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource, _ ->
+    onBind = { binding, response, stringResource, _, _ ->
         with(binding) {
             response.apply {
                 tvViewMore.text = stringResource.view

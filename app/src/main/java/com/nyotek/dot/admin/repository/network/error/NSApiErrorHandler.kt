@@ -63,6 +63,7 @@ class NSApiErrorHandler {
         const val ERROR_EMPLOYEE_ADD = "error_employee_add_data"
         const val ERROR_EMPLOYEE_EDIT = "error_employee_edit_data"
         const val ERROR_FLEET_LOCATION = "error_fleet_locations"
+        const val ERROR_FLEET_DRIVER_LOCATION = "error_fleet_driver_locations"
         const val ERROR_CAPABILITIES_ENABLE_DISABLE = "error_vendor_enable_disable_data"
         const val ERROR_CAPABILITY_DELETE = "error_capability_delete_data"
         const val ERROR_CAPABILITY_SERVICE_UPDATE = "error_capability_service_update_data"

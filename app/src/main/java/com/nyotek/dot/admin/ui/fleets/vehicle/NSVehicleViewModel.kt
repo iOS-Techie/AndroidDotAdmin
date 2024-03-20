@@ -64,7 +64,7 @@ class NSVehicleViewModel(application: Application) : NSViewModel(application) {
                 hideProgress()
             }
             if (data is NSVehicleResponse) {
-                data.data.sortByDescending { it.id }
+                data.data.sortBy { it.id }
 
                 for (vehicle in data.data) {
                     vehicle.capabilityNameList = list.filter { vehicle.capabilities.contains(it.id) }

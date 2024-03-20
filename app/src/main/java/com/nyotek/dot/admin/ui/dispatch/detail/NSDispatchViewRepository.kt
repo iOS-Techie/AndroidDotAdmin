@@ -64,7 +64,7 @@ object NSDispatchViewRepository : BaseRepository() {
             val (dispatchResponse, driverResponse, vendorResponse, vehicleResponse) = getAllDetails(dispatchId, driverId, vendorId, vehicleId, viewModelCallback)
 
             // Process responses
-            viewModelCallback.onSuccess(NSDispatchDetailAllResponse(location, driverResponse, dispatchResponse, vendorResponse, vehicleResponse))
+            viewModelCallback.onSuccess(NSDispatchDetailAllResponse(location, driverResponse, dispatchResponse, vendorResponse, vehicleResponse, driverId))
         }
     }
 

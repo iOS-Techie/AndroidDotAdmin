@@ -12,7 +12,7 @@ class NSSettingsUserRecycleAdapter : BaseViewBindingAdapter<LayoutSettingsRegist
         LayoutSettingsRegisterBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource, _ ->
+    onBind = { binding, response, stringResource, _, _ ->
         with(binding) {
             response.apply {
                 layoutTitle.apply {

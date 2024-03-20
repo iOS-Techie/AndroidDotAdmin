@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.nyotek.dot.admin.widgets.NSConstraintLayout android:id="@+id/cl_dispatch_detail" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     tools:context=".ui.dispatch.detail.NSDispatchDetailFragment">
 
     <include android:id="@+id/layout_home_header"
@@ -26,13 +25,88 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_order_detail"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_30sdp"
+                android:background="@drawable/white_round_12"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_sub_order_detail"
+                    style="@style/LayoutWidthHeightZero"
+                    android:layout_height="@dimen/_11sdp"
+                    android:paddingHorizontal="@dimen/_2sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                        android:id="@+id/tv_order_detail_title"
+                        style="@style/LayoutWidthHeightZeroWrap"
+                        android:gravity="start"
+                        android:lines="1"
+                        android:paddingStart="@dimen/_3sdp"
+                        android:paddingEnd="@dimen/_4sdp"
+                        android:textAppearance="@style/CommonTextInter600"
+                        android:textSize="@dimen/_4sdp"
+                        android:textAlignment="viewStart"
+                        android:letterSpacing="0.01"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_order_id"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Order Details" />
+
+                    <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                        android:id="@+id/tv_order_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_3sdp"
+                        tools:text="ID: #485862"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:fontFamily="@font/archivo_medium"
+                        android:layout_marginEnd="@dimen/_2sdp"
+                        android:paddingHorizontal="@dimen/_3sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/divider_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.6dp"
+                    android:background="@color/line_divider"
+                    app:layout_constraintTop_toBottomOf="@id/cl_sub_order_detail"/>
+
+                <include android:id="@+id/layout_order"
+                    layout="@layout/layout_common_full_order_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    app:layout_constraintTop_toBottomOf="@id/divider_order"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_order_status"
                 android:layout_width="@dimen/_60sdp"
                 android:layout_height="@dimen/_75sdp"
                 android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:background="@drawable/white_round_12"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/cl_order_detail">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_sub_order_status"
@@ -136,8 +210,9 @@
                 android:layout_marginStart="@dimen/_6sdp"
                 android:layout_marginEnd="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_7sdp"
                 app:layout_constraintStart_toEndOf="@+id/cl_order_status"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/cl_order_detail">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
@@ -299,210 +374,219 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_driver_detail"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_46sdp"
-                app:layout_constraintWidth_percent="0.56"
-                android:background="@drawable/white_round_12"
-                android:layout_marginStart="@dimen/_6sdp"
+                android:id="@+id/cl_driver_and_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_7sdp"
+                android:layout_marginStart="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_order_status">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_sub_driver_detail"
-                    style="@style/LayoutWidthHeightZero"
-                    android:layout_height="@dimen/_11sdp"
-                    android:paddingHorizontal="@dimen/_2sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
-                        android:id="@+id/tv_driver_detail_title"
-                        style="@style/LayoutWidthHeightZeroWrap"
-                        android:gravity="start"
-                        android:lines="1"
-                        android:paddingStart="@dimen/_3sdp"
-                        android:paddingEnd="@dimen/_4sdp"
-                        android:textAppearance="@style/CommonTextInter600"
-                        android:textSize="@dimen/_4sdp"
-                        android:textAlignment="viewStart"
-                        android:letterSpacing="0.01"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/cl_track"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Driver Details" />
-
-                    <com.nyotek.dot.admin.widgets.NSConstraintLayout
-                        android:id="@+id/cl_track"
-                        android:layout_width="@dimen/_17sdp"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginEnd="@dimen/_5sdp"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toStartOf="@id/tv_driver_id"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent">
-
-                        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
-                            android:id="@+id/tv_title_track"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/_3sdp"
-                            tools:text="Track"
-                            android:gravity="center"
-                            android:fontFamily="@font/archivo_medium"
-                            android:paddingHorizontal="@dimen/_2sdp"
-                            app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/iv_track"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"/>
-
-                        <ImageView
-                            android:id="@+id/iv_track"
-                            android:layout_width="@dimen/_3sdp"
-                            android:layout_height="@dimen/_3sdp"
-                            android:src="@drawable/ic_track_ico"
-                            android:layout_marginEnd="@dimen/_2sdp"
-                            app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toEndOf="@id/tv_title_track"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"/>
-
-                    </com.nyotek.dot.admin.widgets.NSConstraintLayout>
-
-                    <com.nyotek.dot.admin.widgets.NSWhiteTextView
-                        android:id="@+id/tv_driver_id"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/_3sdp"
-                        tools:text="ID: #485862"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        android:fontFamily="@font/archivo_medium"
-                        android:layout_marginEnd="@dimen/_2sdp"
-                        android:paddingHorizontal="@dimen/_3sdp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <View
-                    android:id="@+id/divider_driver"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.6dp"
-                    android:background="@color/line_divider"
-                    app:layout_constraintTop_toBottomOf="@id/cl_sub_driver_detail"/>
-
-                <include android:id="@+id/layout_driver"
-                    layout="@layout/layout_common_full_dispatch_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    app:layout_constraintTop_toBottomOf="@id/divider_driver"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <include android:id="@+id/layout_driver_second"
-                    layout="@layout/layout_common_full_dispatch_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    app:layout_constraintTop_toBottomOf="@id/layout_driver"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <com.nyotek.dot.admin.widgets.NSWhiteTextView
-                    android:id="@+id/tv_update_driver"
-                    android:layout_width="wrap_content"
-                    android:minWidth="@dimen/_25sdp"
-                    android:paddingHorizontal="@dimen/_2sdp"
-                    android:layout_height="@dimen/_12sdp"
-                    android:layout_marginEnd="@dimen/_6sdp"
-                    android:gravity="center"
-                    android:textSize="@dimen/_4sdp"
-                    tools:text="Update "
-                    android:visibility="gone"
-                    android:fontFamily="@font/archivo_medium"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_driver" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_vehicle_detail"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_46sdp"
-                android:background="@drawable/white_round_12"
-                android:layout_marginStart="@dimen/_6sdp"
-                android:layout_marginTop="@dimen/_7sdp"
-                android:layout_marginEnd="@dimen/_6sdp"
-                app:layout_constraintStart_toEndOf="@id/cl_driver_detail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_order_status">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_sub_vehicle_detail"
-                    style="@style/LayoutWidthHeightZero"
-                    android:layout_height="@dimen/_11sdp"
-                    android:paddingHorizontal="@dimen/_2sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/cl_driver_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_46sdp"
+                    app:layout_constraintWidth_percent="0.56"
+                    android:background="@drawable/white_round_12"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
-                        android:id="@+id/tv_vehicle_detail_title"
-                        style="@style/LayoutWidthHeightZeroWrap"
-                        android:gravity="start"
-                        android:lines="1"
-                        android:paddingStart="@dimen/_3sdp"
-                        android:paddingEnd="@dimen/_4sdp"
-                        android:textAppearance="@style/CommonTextInter600"
-                        android:textSize="@dimen/_4sdp"
-                        android:textAlignment="viewStart"
-                        android:letterSpacing="0.01"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cl_sub_driver_detail"
+                        style="@style/LayoutWidthHeightZero"
+                        android:layout_height="@dimen/_11sdp"
+                        android:paddingHorizontal="@dimen/_2sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Vehicle Details" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                            android:id="@+id/tv_driver_detail_title"
+                            style="@style/LayoutWidthHeightZeroWrap"
+                            android:gravity="start"
+                            android:lines="1"
+                            android:paddingStart="@dimen/_3sdp"
+                            android:paddingEnd="@dimen/_4sdp"
+                            android:textAppearance="@style/CommonTextInter600"
+                            android:textSize="@dimen/_4sdp"
+                            android:textAlignment="viewStart"
+                            android:letterSpacing="0.01"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cl_track"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Driver Details" />
+
+                        <com.nyotek.dot.admin.widgets.NSConstraintLayout
+                            android:id="@+id/cl_track"
+                            android:layout_width="@dimen/_17sdp"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toStartOf="@id/tv_driver_id"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+
+                            <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                                android:id="@+id/tv_title_track"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/_3sdp"
+                                tools:text="Track"
+                                android:gravity="center"
+                                android:fontFamily="@font/archivo_medium"
+                                android:paddingHorizontal="@dimen/_2sdp"
+                                app:layout_constraintHorizontal_chainStyle="packed"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/iv_track"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                            <ImageView
+                                android:id="@+id/iv_track"
+                                android:layout_width="@dimen/_3sdp"
+                                android:layout_height="@dimen/_3sdp"
+                                android:src="@drawable/ic_track_ico"
+                                android:layout_marginEnd="@dimen/_2sdp"
+                                app:layout_constraintHorizontal_chainStyle="packed"
+                                app:layout_constraintStart_toEndOf="@id/tv_title_track"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </com.nyotek.dot.admin.widgets.NSConstraintLayout>
+
+                        <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                            android:id="@+id/tv_driver_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/_3sdp"
+                            tools:text="ID: #485862"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:fontFamily="@font/archivo_medium"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:paddingHorizontal="@dimen/_3sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/divider_driver"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.6dp"
+                        android:background="@color/line_divider"
+                        app:layout_constraintTop_toBottomOf="@id/cl_sub_driver_detail"/>
+
+                    <include android:id="@+id/layout_driver"
+                        layout="@layout/layout_common_full_dispatch_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        app:layout_constraintTop_toBottomOf="@id/divider_driver"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <include android:id="@+id/layout_driver_second"
+                        layout="@layout/layout_common_full_dispatch_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        app:layout_constraintTop_toBottomOf="@id/layout_driver"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                        android:id="@+id/tv_update_driver"
+                        android:layout_width="wrap_content"
+                        android:minWidth="@dimen/_25sdp"
+                        android:paddingHorizontal="@dimen/_2sdp"
+                        android:layout_height="@dimen/_12sdp"
+                        android:layout_marginEnd="@dimen/_6sdp"
+                        android:gravity="center"
+                        android:textSize="@dimen/_4sdp"
+                        tools:text="Update "
+                        android:visibility="gone"
+                        android:fontFamily="@font/archivo_medium"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/layout_driver" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:id="@+id/divider_vehicle"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.6dp"
-                    android:background="@color/line_divider"
-                    app:layout_constraintTop_toBottomOf="@id/cl_sub_vehicle_detail"/>
-
-                <include android:id="@+id/layout_vehicle"
-                    layout="@layout/layout_common_full_dispatch_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    app:layout_constraintTop_toBottomOf="@id/divider_vehicle"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <include android:id="@+id/layout_vehicle_second"
-                    layout="@layout/layout_common_full_dispatch_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    app:layout_constraintTop_toBottomOf="@id/layout_vehicle"
-                    app:layout_constraintStart_toStartOf="parent"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_vehicle_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_46sdp"
+                    android:background="@drawable/white_round_12"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    app:layout_constraintStart_toEndOf="@id/cl_driver_detail"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cl_sub_vehicle_detail"
+                        style="@style/LayoutWidthHeightZero"
+                        android:layout_height="@dimen/_11sdp"
+                        android:paddingHorizontal="@dimen/_2sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                            android:id="@+id/tv_vehicle_detail_title"
+                            style="@style/LayoutWidthHeightZeroWrap"
+                            android:gravity="start"
+                            android:lines="1"
+                            android:paddingStart="@dimen/_3sdp"
+                            android:paddingEnd="@dimen/_4sdp"
+                            android:textAppearance="@style/CommonTextInter600"
+                            android:textSize="@dimen/_4sdp"
+                            android:textAlignment="viewStart"
+                            android:letterSpacing="0.01"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Vehicle Details" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/divider_vehicle"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.6dp"
+                        android:background="@color/line_divider"
+                        app:layout_constraintTop_toBottomOf="@id/cl_sub_vehicle_detail"/>
+
+                    <include android:id="@+id/layout_vehicle"
+                        layout="@layout/layout_common_full_dispatch_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        app:layout_constraintTop_toBottomOf="@id/divider_vehicle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <include android:id="@+id/layout_vehicle_second"
+                        layout="@layout/layout_common_full_dispatch_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        app:layout_constraintTop_toBottomOf="@id/layout_vehicle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -516,7 +600,7 @@
                 android:layout_marginEnd="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_driver_detail">
+                app:layout_constraintTop_toBottomOf="@id/cl_driver_and_vehicle">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_sub_customer_detail"
@@ -659,10 +743,9 @@
             <View
                 android:id="@+id/view_line"
                 android:layout_width="match_parent"
-                android:layout_height="0.6dp"
+                android:layout_height="1dp"
                 android:background="@color/line_divider"
                 android:layout_marginTop="@dimen/_6sdp"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_vendor_detail"/>
@@ -741,4 +824,4 @@
 
     </androidx.core.widget.NestedScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.nyotek.dot.admin.widgets.NSConstraintLayout>

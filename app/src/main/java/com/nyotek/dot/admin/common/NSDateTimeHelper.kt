@@ -21,6 +21,7 @@ object NSDateTimeHelper {
     private const val DATE_FORMAT_SERVICE_HEADER = "dd/MM/yyyy"
     private const val DATE_FORMAT_FROM_API_TRANSACTION = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     private const val DATE_FORMAT_USER_DETAIL = "MMM dd, yyyy hh:mm:ss a"
+    private const val DATE_FORMAT_ORDER_STATUS = "dd MMM yyyy | hh:mm a"
 
     /**
      * To convert the input date string to expected output pattern
@@ -161,6 +162,9 @@ object NSDateTimeHelper {
      */
     fun getDateTimeForUserView(dateString: String?) =
         getConvertedDate(dateString, DATE_FORMAT_FROM_API_TRANSACTION, DATE_FORMAT_USER_DETAIL)
+
+    fun getDateForStatusView(dateString: String?) =
+        getConvertedDate(dateString, DATE_FORMAT_FROM_API_TRANSACTION, DATE_FORMAT_ORDER_STATUS)
 
     /**
      * To get the date string for view

@@ -36,3 +36,9 @@ data class NSEmployeeEditRequest (
 	@field:SerializedName("title_id")
 	val titleId: String? = null
 )
+
+data class NSFleetDriverRequest (
+
+	@field:SerializedName("driver_ids")
+	val driverIds: List<String>? = arrayListOf()
+)

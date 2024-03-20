@@ -50,7 +50,7 @@ class NSServiceManagementRecycleAdapter(
         LayoutServiceItemBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, stringResource, _ ->
+    onBind = { binding, response, stringResource, _, _ ->
         with(binding) {
             response.apply {
                 val capabilityItem = NSApplication.getInstance().getCapabilityItemList()[serviceId]

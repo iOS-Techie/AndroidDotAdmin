@@ -271,5 +271,9 @@ class StringResourceResponse {
 	val justNow: String = map["just_now"] ?: ""
 	val assigned: String = map["assigned"] ?: ""
 	val year: String = map["year"] ?: ""
+	val noDriverAssigned: String = map["no_driver_assigned"] ?: ""
+	val orderDetails: String = map["order_details"] ?: ""
+	val shortDispatchId: String = map["short_dispatch_id"] ?: ""
+	val shortOrderId: String = map["order_short_id"] ?: ""
 
 }

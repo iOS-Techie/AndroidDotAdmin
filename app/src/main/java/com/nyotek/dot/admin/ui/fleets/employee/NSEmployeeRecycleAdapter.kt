@@ -19,7 +19,7 @@ class NSEmployeeRecycleAdapter(
         LayoutEmployeeListBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, position ->
+    onBind = { binding, response, _, position, _ ->
         with(binding) {
             response.apply {
                 tvDescription.getMapValue(jobMap[response.titleId]?.name?: hashMapOf())

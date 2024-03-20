@@ -97,10 +97,6 @@ class NSCapabilitiesViewModel(application: Application) : NSViewModel(applicatio
     }
 
     override fun apiResponse(data: Any) {
-        when (data) {
-            is NSCapabilitiesResponse -> {
 
-            }
-        }
     }
 }

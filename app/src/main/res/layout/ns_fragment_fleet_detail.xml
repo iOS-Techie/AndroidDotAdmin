@@ -161,7 +161,6 @@
                         android:id="@+id/tv_edit_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/black_alpha_corner_round"
                         android:fontFamily="@font/archivo_medium"
                         android:textSize="@dimen/_4sdp"
                         android:padding="@dimen/_2sdp"

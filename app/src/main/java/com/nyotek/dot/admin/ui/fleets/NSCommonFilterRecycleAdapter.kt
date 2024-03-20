@@ -15,7 +15,7 @@ class NSCommonFilterRecycleAdapter(
         LayoutFilterVendorBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, _ ->
+    onBind = { binding, response, _, _, _ ->
         with(binding) {
             tvVendorTitle.text = response.title
             ColorResources.setCardBackground(tvVendorTitle, 100f, 0, if (response.isActive) ColorResources.getPrimaryColor() else ColorResources.getBorderColor())
