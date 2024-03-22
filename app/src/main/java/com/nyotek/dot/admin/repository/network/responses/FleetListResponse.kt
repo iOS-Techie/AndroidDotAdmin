@@ -45,7 +45,7 @@ data class FleetData(
 	var url: String? = null,
 
 	@field:SerializedName("tags")
-    var tags: List<String>? = arrayListOf(),
+    var tags: MutableList<String>? = arrayListOf(),
 
 	@field:SerializedName("vendor_id")
 	var vendorId: String? = null,

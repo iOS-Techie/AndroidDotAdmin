@@ -55,6 +55,8 @@ class NSConstants {
         const val MANUFACTURE = "manufacture"
         const val LOAD_CAPACITY = "load_capacity"
         const val NOTES = "notes"
+        const val ORDER_STATUS_NEW = "new"
+        const val ORDER_STATUS_CANCELLED = "cancelled"
         const val MANUFACTURE_YEAR = "manufacture_year"
         var isFragmentDispatchLoad: Boolean = false
 

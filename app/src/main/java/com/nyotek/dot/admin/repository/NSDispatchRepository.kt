@@ -5,6 +5,7 @@ import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
 import com.nyotek.dot.admin.repository.network.error.NSApiErrorHandler
 import com.nyotek.dot.admin.repository.network.requests.NSAssignVehicleRequest
 import com.nyotek.dot.admin.repository.network.requests.NSUpdateCapabilitiesRequest
+import com.nyotek.dot.admin.repository.network.requests.NSUpdateStatusRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleEnableDisableRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
@@ -92,11 +93,11 @@ object NSDispatchRepository : BaseRepository() {
      * @param viewModelCallback The callback to communicate back to the view model
      */
     fun updateDispatchOrderStatus(
-        id: String,
+        id: String, status: String,
         viewModelCallback: NSGenericViewModelCallback
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            apiManager.updateDispatchOrderStatus(id, object :
+            apiManager.updateDispatchOrderStatus(id, NSUpdateStatusRequest(status), object :
                 NSRetrofitCallback<NSBlankDataResponse>(
                     viewModelCallback,
                     NSApiErrorHandler.ERROR_DISPATCH_ORDER_STATUS
@@ -108,7 +109,7 @@ object NSDispatchRepository : BaseRepository() {
                 }
 
                 override fun onRefreshToken() {
-                    updateDispatchOrderStatus(id, viewModelCallback)
+                    updateDispatchOrderStatus(id, status, viewModelCallback)
                 }
             })
         }

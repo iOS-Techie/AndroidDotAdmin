@@ -40,7 +40,7 @@ class NSViewLine : View {
 
     private fun init() {
         when (id) {
-            R.id.view_divider_dashboard, R.id.view_divider_dashboard_vertical, R.id.view_line_text, R.id.view_line_text_divider, R.id.view_line_text_sub -> {
+            R.id.view_divider_dashboard, R.id.view_divider_dashboard_vertical, R.id.view_line_text, R.id.view_line_text_divider, R.id.view_line_text_sub, R.id.view_line_divider -> {
                 ColorResources.setBackground(this,getColorWithAlpha(ColorResources.getPrimaryColor(), 5f))
             }
             R.id.view_line_decoration -> {

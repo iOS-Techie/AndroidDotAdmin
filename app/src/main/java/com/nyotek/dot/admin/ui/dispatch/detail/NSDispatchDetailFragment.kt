@@ -11,6 +11,7 @@ import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSOnMapResetEvent
+import com.nyotek.dot.admin.common.NSOrderCancelEvent
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
@@ -28,12 +29,14 @@ import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDispatchDetailBinding
 import com.nyotek.dot.admin.repository.network.responses.DispatchData
+import com.nyotek.dot.admin.repository.network.responses.DispatchRequestItem
 import com.nyotek.dot.admin.repository.network.responses.DocumentDataItem
 import com.nyotek.dot.admin.repository.network.responses.StatusItem
 import com.nyotek.dot.admin.repository.network.responses.UserMetaData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
 import com.nyotek.dot.admin.repository.network.responses.VendorDetailResponse
 import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -89,10 +92,11 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
             )
             mapBoxView?.goToDispatchMapPosition(viewModel.currentMapFleetData?.features)
             setDriverDetail(viewModel.getDriverDetail(allModel.driverDetail?.data))
+            setVehicleDetail(allModel.driverVehicleDetail?.data)
+            setCustomerDetail(allModel.dispatchDetail?.data)
             setVendorDetail(allModel.dispatchDetail?.data, allModel.vendorDetail)
             setDispatchDetail(allModel.dispatchDetail?.data)
-            setCustomerDetail(allModel.dispatchDetail?.data)
-            setVehicleDetail(allModel.driverVehicleDetail?.data)
+            setDispatchRequestSent(allModel.dispatchRequest?.requestList?: arrayListOf())
             if(allModel.driverId?.isNotEmpty() == true) {
                 binding.clDriverAndVehicle.visible()
             }
@@ -107,6 +111,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         setDispatchDetail(DispatchData())
         setCustomerDetail(DispatchData())
         setVehicleDetail(VehicleData())
+        setDispatchRequestSent(arrayListOf())
     }
 
     override fun observeViewModel() {
@@ -129,12 +134,14 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 )
                 binding.clDriverAndVehicle.gone()
                 tvStatus.text = orderStatus
+                tvOrderCancel.text = cancelOrder
                 tvOrderDetailTitle.text = orderDetails
                 tvDriverDetailTitle.text = driverDetail
                 tvVehicleDetailTitle.text = vehicleDetails
                 tvCustomerDetailTitle.text = customerDetails
                 tvVendorDetailTitle.text = vendorDetails
                 tvRejectedDetailTitle.text = rejectedTripDriverList
+                tvDispatchRequestSent.text = dispatchRequestSent
                 tvUpdateStatus.text = update
                 tvUpdateDriver.text = update
                 tvTitleTrack.text = track
@@ -248,6 +255,13 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                         onBackPress()
                     }
                 }
+
+                tvOrderCancel.setSafeOnClickListener {
+                    updateOrderStatus(dispatchSelectedData?.dispatchId?:"", NSConstants.ORDER_STATUS_CANCELLED) {
+                        onBackPress()
+                        EventBus.getDefault().post(NSOrderCancelEvent())
+                    }
+                }
             }
         }
     }
@@ -318,6 +332,11 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                     rvOrderStatus.setupWithAdapter(statusAdapter)
                     val statusList: MutableList<StatusItem> = arrayListOf()
                     if (dispatchData?.status.isValidList()) {
+                        //Display Order Cancel When Status is New
+                        val isNew = dispatchData?.status?.first()?.status?.lowercase().equals(NSConstants.ORDER_STATUS_NEW)
+                        tvOrderCancel.setVisibility(isNew)
+
+
                         val updatedList = dispatchData?.status?.map { it.copy(isSelected = true) } as MutableList<StatusItem>
                         updatedList.sortBy { it.refId }
                         statusList.addAll(updatedList)
@@ -336,6 +355,17 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                     layoutAddress.tvDetail.setTexts(dispatchData?.pickup?.addressLine)
                     ivIcon.setGlideWithHolder(vendorDetail?.logo, vendorDetail?.logoScale, 200, corners = 10)
                 }
+            }
+        }
+    }
+
+    private fun setDispatchRequestSent(list: MutableList<DispatchRequestItem>) {
+        binding.apply {
+            viewModel.apply {
+                val adapter = NSDispatchRequestSentRecycleAdapter()
+                rvDispatchRequestList.setupWithAdapter(adapter)
+                adapter.setData(list)
+                clDispatchRequestSent.setVisibility(list.isValidList())
             }
         }
     }

@@ -20,6 +20,8 @@ import com.nyotek.dot.admin.common.NSServiceConfig
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.utils.NSAddressConfig
 import com.nyotek.dot.admin.common.utils.NSUtilities
+import com.nyotek.dot.admin.common.utils.getTagLists
+import com.nyotek.dot.admin.common.utils.getTags
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
 import com.nyotek.dot.admin.common.utils.setPager
@@ -301,8 +303,7 @@ class NSFleetDetailFragment :
 
             3 -> {
                 val tags = binding.layoutTags.edtValue.text.toString()
-                val list: List<String> = tags.split(" ")
-                viewModel.fleetModel?.tags = list
+                viewModel.fleetModel?.tags = tags.getTagLists()
                 viewModel.updateTags()
             }
         }
@@ -330,9 +331,8 @@ class NSFleetDetailFragment :
 
                     //Tags
                     layoutTags.edtValue.gravity = Gravity.START
-                    val tagsList = tags?.joinToString(" ")
                     layoutTags.edtValue.hint = stringResource.enterTag
-                    layoutTags.edtValue.setText(tagsList)
+                    layoutTags.edtValue.setText(tags.getTags())
 
                     NSUtilities.setLanguageText(layoutUrl.edtValue, viewModel.fleetModel, true)
                     layoutUrl.edtValue.setText(url)
@@ -359,21 +359,19 @@ class NSFleetDetailFragment :
                     viewModel.apply {
                         layoutAddress.edtValue.text = addressModel?.addr1 ?: ""
                         //getServiceList(true)
-                        mapViewModel.getFleetLocations(fleetModel.vendorId, false, isFromFleetDetail = true) { fleet ->
-                            setFleetLocationList(fleet)
-                        }
+                        setFleetLocationList()
                     }
                 }
             }
         }
     }
 
-    private fun setFragmentList(fleetData: FleetDataItem?) {
+    private fun setFragmentList() {
         viewModel.apply {
             stringResource.apply {
                 mFragmentList.clear()
                 mFragmentTitleList.clear()
-                mFragmentList.add(NSEmployeeFragment.newInstance(arguments, fleetData))
+                mFragmentList.add(NSEmployeeFragment.newInstance(arguments))
                 mFragmentList.add(NSVehicleFragment.newInstance(arguments))
                 mFragmentTitleList.add(employee)
                 mFragmentTitleList.add(vehicle)
@@ -401,10 +399,10 @@ class NSFleetDetailFragment :
      *
      * @param fleetData when data available it's true
      */
-    private fun setFleetLocationList(fleetData: FleetDataItem?) {
+    private fun setFleetLocationList() {
         if (!isFragmentAdded) {
             isFragmentAdded = true
-            setFragmentList(fleetData)
+            setFragmentList()
         }
     }
 

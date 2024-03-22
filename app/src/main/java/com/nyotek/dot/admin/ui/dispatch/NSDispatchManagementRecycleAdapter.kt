@@ -5,6 +5,8 @@ import android.widget.TextView
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
+import com.nyotek.dot.admin.common.utils.getMapValue
+import com.nyotek.dot.admin.common.utils.setGlideWithHolder
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setTexts
 import com.nyotek.dot.admin.databinding.LayoutDispatchListBinding
@@ -59,8 +61,13 @@ class NSDispatchManagementRecycleAdapter(
                 tvModelTitle.text = if (assignedDriverId.isNullOrEmpty()) stringResource.noDriverAssigned else assignedDriverId
                 tvModelDescription.text = ""
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    vendorCallback.invoke(vendorId?:"", ivHubzIcon, dispatchViewTitle)
+                if (isThirdParty == true) {
+                    dispatchViewTitle.getMapValue(vendorName)
+                    ivHubzIcon.setGlideWithHolder(vendorLogoUrl, "fit", 200)
+                } else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        vendorCallback.invoke(vendorId?:"", ivHubzIcon, dispatchViewTitle)
+                    }
                 }
 
                 tvStartingLocation.setTexts(pickup?.addressLine)

@@ -15,6 +15,8 @@ import com.google.android.gms.location.LocationResult
  */
 class NSLogoutEvent
 
+class NSOrderCancelEvent
+
 /**
  * Event that triggered when the permission check
  */

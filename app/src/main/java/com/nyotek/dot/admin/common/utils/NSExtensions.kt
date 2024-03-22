@@ -808,3 +808,36 @@ public data class Quadruple<out A, out B, out C, out D>(
      */
     public override fun toString(): String = "($first, $second, $third $fourth)"
 }
+
+public data class QuadrupleFive<out A, out B, out C, out D, out E>(
+    public val first: A,
+    public val second: B,
+    public val third: C,
+    public val fourth: D,
+    public val fifth: E
+) : Serializable {
+
+    /**
+     * Returns string representation of the [Triple] including its [first], [second], [third], [fourth] and [fifth] values.
+     */
+    public override fun toString(): String = "($first, $second, $third $fourth $fifth)"
+}
+
+fun MutableList<String>?.getTags(): String {
+    this?.remove(" ")
+    var tagsList = this?.joinToString(" ")?:""
+    if (!tagsList.endsWith(" ")) {
+        tagsList = "$tagsList "
+    }
+    return tagsList
+}
+
+fun String.getTagLists(): MutableList<String> {
+    if (this.isNotEmpty()) {
+        val list: MutableList<String> = this.split(" ").toMutableList()
+        list.remove(" ")
+        return list
+    } else {
+        return arrayListOf()
+    }
+}

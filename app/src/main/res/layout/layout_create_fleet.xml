@@ -317,8 +317,8 @@
             app:layout_constraintTop_toBottomOf="@id/layout_name"
             app:layout_constraintBottom_toTopOf="@id/view_line_horizontal_divider"/>
 
-        <include android:id="@+id/layout_url"
-            layout="@layout/layout_common_text"
+        <include android:id="@+id/layout_region"
+            layout="@layout/layout_common_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
@@ -327,6 +327,18 @@
             app:layout_constraintStart_toEndOf="@id/layout_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_slogan"
+            />
+
+        <include android:id="@+id/layout_url"
+            layout="@layout/layout_common_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            app:layout_constraintStart_toEndOf="@id/layout_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_region"
             />
 
         <com.nyotek.dot.admin.widgets.NSWhiteTextView

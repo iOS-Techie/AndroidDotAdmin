@@ -62,6 +62,9 @@ class NSWhiteTextView : AppCompatTextView {
             R.id.tv_update_status -> {
                 ColorResources.setBackgroundTint(this, ColorResources.getPrimaryColor())
             }
+            R.id.tv_order_cancel -> {
+                ColorResources.setBackgroundTint(this, ColorResources.getErrorColor())
+            }
         }
     }
 }

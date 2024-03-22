@@ -1,5 +1,6 @@
 package com.nyotek.dot.admin.ui.dispatch
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +16,15 @@ import com.nyotek.dot.admin.common.BrandLogoHelper
 import com.nyotek.dot.admin.common.DispatchSpinnerAdapter
 import com.nyotek.dot.admin.common.FilterHelper
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.NSOnMapResetEvent
+import com.nyotek.dot.admin.common.NSOrderCancelEvent
 import com.nyotek.dot.admin.common.NSServiceConfig
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.getTagLists
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.setGlideWithHolder
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -40,6 +44,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragmentDispatchBinding>(),
     NSFileUploadCallback {
@@ -338,8 +344,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
                         tvSave.setOnClickListener {
                             dialog.dismiss()
                             val tags = layoutTags.edtValue.text.toString()
-                            val list: List<String> = tags.split(" ")
-                            createCompanyRequest.tags = list
+                            createCompanyRequest.tags = tags.getTagLists()
 
                             val url = layoutUrl.edtValue.text.toString()
                             createCompanyRequest.url = url
@@ -381,5 +386,11 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
                 logoWidth = width
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun orderCancelEvent(event: NSOrderCancelEvent) {
+        Log.d("TAG", "orderCancelEvent: $event")
+        getDispatchListData(true, isSwipeRefresh = true, viewModel.selectedServiceId)
     }
 }

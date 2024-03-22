@@ -34,5 +34,8 @@ open class NSCreateCompanyRequest(
     var url: String? = null,
     @SerializedName("is_active")
     @Expose
-    var isActive: Boolean = false
+    var isActive: Boolean = false,
+    @SerializedName("iso2")
+    @Expose
+    var iso2: String? = null
 )

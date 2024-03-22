@@ -1,13 +1,17 @@
 package com.nyotek.dot.admin.ui.dispatch.detail
 
-import com.nyotek.dot.admin.common.utils.Quadruple
+import com.nyotek.dot.admin.common.utils.QuadrupleFive
 import com.nyotek.dot.admin.repository.BaseRepository
+import com.nyotek.dot.admin.repository.NSDispatchRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
 import com.nyotek.dot.admin.repository.network.error.NSApiErrorHandler
 import com.nyotek.dot.admin.repository.network.manager.NSApiManager
+import com.nyotek.dot.admin.repository.network.requests.NSUpdateStatusRequest
 import com.nyotek.dot.admin.repository.network.responses.DispatchDetailResponse
+import com.nyotek.dot.admin.repository.network.responses.DispatchRequestListResponse
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
+import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchDetailAllResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDocumentListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
@@ -26,7 +30,7 @@ import kotlin.coroutines.suspendCoroutine
 object NSDispatchViewRepository : BaseRepository() {
 
     fun getDispatchLocationHistory(
-        dispatchId: String, vendorId: String,
+        dispatchId: String, vendorId: String, isThirdParty: Boolean,
         viewModelCallback: NSGenericViewModelCallback
     ) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -42,29 +46,29 @@ object NSDispatchViewRepository : BaseRepository() {
                         if (features.isNotEmpty()) {
                             val location = features.first().properties
                             if (location != null) {
-                                getAllDetailsAndProcess(dispatchId, vendorId, location.vehicleId?:"", location.driverId?:"", fleetLocation, viewModelCallback)
+                                getAllDetailsAndProcess(dispatchId, vendorId, location.vehicleId?:"", location.driverId?:"", fleetLocation, isThirdParty, viewModelCallback)
                             } else {
-                                getAllDetailsAndProcess(dispatchId, vendorId, "", "", fleetLocation, viewModelCallback)
+                                getAllDetailsAndProcess(dispatchId, vendorId, "", "", fleetLocation, isThirdParty, viewModelCallback)
                             }
                         } else {
-                            getAllDetailsAndProcess(dispatchId, vendorId, "", "", fleetLocation, viewModelCallback)
+                            getAllDetailsAndProcess(dispatchId, vendorId, "", "", fleetLocation, isThirdParty, viewModelCallback)
                         }
                     }
                 }
 
                 override fun onRefreshToken() {
-                    getDispatchLocationHistory(dispatchId, vendorId, viewModelCallback)
+                    getDispatchLocationHistory(dispatchId, vendorId, isThirdParty, viewModelCallback)
                 }
             })
         }
     }
 
-    fun getAllDetailsAndProcess(dispatchId: String, vendorId: String, vehicleId: String, driverId: String, location: FleetLocationResponse, viewModelCallback: NSGenericViewModelCallback) {
+    private fun getAllDetailsAndProcess(dispatchId: String, vendorId: String, vehicleId: String, driverId: String, location: FleetLocationResponse, isThirdParty: Boolean, viewModelCallback: NSGenericViewModelCallback) {
         CoroutineScope(Dispatchers.Main).launch {
-            val (dispatchResponse, driverResponse, vendorResponse, vehicleResponse) = getAllDetails(dispatchId, driverId, vendorId, vehicleId, viewModelCallback)
+            val (dispatchResponse, driverResponse, vendorResponse, vehicleResponse, dispatchRequests) = getAllDetails(dispatchId, driverId, vendorId, vehicleId, isThirdParty, viewModelCallback)
 
             // Process responses
-            viewModelCallback.onSuccess(NSDispatchDetailAllResponse(location, driverResponse, dispatchResponse, vendorResponse, vehicleResponse, driverId))
+            viewModelCallback.onSuccess(NSDispatchDetailAllResponse(location, driverResponse, dispatchResponse, vendorResponse, vehicleResponse, dispatchRequests, driverId))
         }
     }
 
@@ -72,8 +76,8 @@ object NSDispatchViewRepository : BaseRepository() {
         dispatchId: String,
         driverId: String,
         vendorId: String,
-        vehicleId: String, viewModelCallback: NSGenericViewModelCallback
-    ): Quadruple<DispatchDetailResponse?, NSDocumentListResponse?, VendorDetailResponse?, NSDriverVehicleDetailResponse?> {
+        vehicleId: String, isThirdParty: Boolean, viewModelCallback: NSGenericViewModelCallback
+    ): QuadrupleFive<DispatchDetailResponse?, NSDocumentListResponse?, VendorDetailResponse?, NSDriverVehicleDetailResponse?, DispatchRequestListResponse?> {
         val dispatchResponseDeferred = CoroutineScope(Dispatchers.IO).async {
             apiManager.getDispatchDetailAsync(dispatchId, viewModelCallback)
         }
@@ -81,21 +85,26 @@ object NSDispatchViewRepository : BaseRepository() {
             apiManager.getDriverDocumentDetailAsync(driverId, viewModelCallback)
         }
         val vendorResponseDeferred = CoroutineScope(Dispatchers.IO).async {
-            apiManager.getVendorDetailAsync(vendorId, viewModelCallback)
+            apiManager.getVendorDetailAsync(vendorId, isThirdParty, viewModelCallback)
         }
         val vehicleResponseDeferred = CoroutineScope(Dispatchers.IO).async {
             apiManager.getDriverVehicleDetailAsync(vehicleId, viewModelCallback)
+        }
+
+        val dispatchRequestResponseDeferred = CoroutineScope(Dispatchers.IO).async {
+            apiManager.getDispatchRequestDetailAsync(dispatchId, viewModelCallback)
         }
 
         val dispatchResponse = dispatchResponseDeferred.await()
         val driverResponse = driverResponseDeferred.await()
         val vendorResponse = vendorResponseDeferred.await()
         val vehicleResponse = vehicleResponseDeferred.await()
+        val dispatchRequestResponse = dispatchRequestResponseDeferred.await()
 
-        return Quadruple(dispatchResponse, driverResponse, vendorResponse, vehicleResponse)
+        return QuadrupleFive(dispatchResponse, driverResponse, vendorResponse, vehicleResponse, dispatchRequestResponse)
     }
 
-    suspend fun NSApiManager.getDispatchDetailAsync(
+    private suspend fun NSApiManager.getDispatchDetailAsync(
         dispatchId: String,
         viewModelCallback: NSGenericViewModelCallback
     ): DispatchDetailResponse? {
@@ -133,13 +142,52 @@ object NSDispatchViewRepository : BaseRepository() {
         }
     }
 
-    suspend fun NSApiManager.getVendorDetailAsync(
-        vendorId: String,
+    private suspend fun NSApiManager.getDispatchRequestDetailAsync(
+        dispatchId: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ): DispatchRequestListResponse? {
+        return suspendCoroutine { continuation ->
+            CoroutineScope(Dispatchers.IO).launch {
+                if (dispatchId.isEmpty()) {
+                    continuation.resume(DispatchRequestListResponse())
+                } else {
+                    getDispatchRequestDetail(
+                        dispatchId,
+                        object : NSRetrofitCallback<DispatchRequestListResponse>(
+                            viewModelCallback,
+                            NSApiErrorHandler.ERROR_DISPATCH_REQUEST_DETAIL
+                        ) {
+
+                            override fun <T> onResponse(response: Response<T>) {
+                                if (response.body() is DispatchRequestListResponse) {
+                                    continuation.resume(response.body() as DispatchRequestListResponse)
+                                }
+                            }
+
+                            override fun <T> onErrorResponse(response: Response<T>) {
+                                super.onErrorResponse(response)
+                                continuation.resume(DispatchRequestListResponse())
+                            }
+
+                            override fun onRefreshToken() {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    getDispatchRequestDetailAsync(dispatchId, viewModelCallback)
+                                }
+                            }
+                        })
+                }
+            }
+        }
+    }
+
+    //When Dispatch List From Get isThirdParty false then Api call
+    private suspend fun NSApiManager.getVendorDetailAsync(
+        vendorId: String, isThirdParty: Boolean,
         viewModelCallback: NSGenericViewModelCallback
     ): VendorDetailResponse? {
         return suspendCoroutine { continuation ->
             CoroutineScope(Dispatchers.IO).launch {
-                if (vendorId.isEmpty()) {
+                if (vendorId.isEmpty() || isThirdParty) {
                     continuation.resume(VendorDetailResponse())
                 } else {
                     getVendorDetail(
@@ -162,7 +210,7 @@ object NSDispatchViewRepository : BaseRepository() {
 
                             override fun onRefreshToken() {
                                 CoroutineScope(Dispatchers.Main).launch {
-                                    getVendorDetailAsync(vendorId, viewModelCallback)
+                                    getVendorDetailAsync(vendorId, isThirdParty, viewModelCallback)
                                 }
                             }
                         })
@@ -171,7 +219,7 @@ object NSDispatchViewRepository : BaseRepository() {
         }
     }
 
-    suspend fun NSApiManager.getDriverVehicleDetailAsync(
+    private suspend fun NSApiManager.getDriverVehicleDetailAsync(
         vehicleId: String,
         viewModelCallback: NSGenericViewModelCallback
     ): NSDriverVehicleDetailResponse? {
@@ -209,7 +257,7 @@ object NSDispatchViewRepository : BaseRepository() {
         }
     }
 
-    suspend fun NSApiManager.getDriverDocumentDetailAsync(
+    private suspend fun NSApiManager.getDriverDocumentDetailAsync(
         driverId: String,
         viewModelCallback: NSGenericViewModelCallback
     ): NSDocumentListResponse? {
@@ -244,6 +292,36 @@ object NSDispatchViewRepository : BaseRepository() {
                         })
                 }
             }
+        }
+    }
+
+
+    /*------------------------------------------------------------------------------------------------------------------------------------------------------*/
+    //Order Cancel
+    /*------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+    fun updateDispatchOrderStatus(
+        dispatchId: String, status: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiManager.updateDispatchOrderStatus(dispatchId, NSUpdateStatusRequest(status), object :
+                NSRetrofitCallback<NSBlankDataResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_DISPATCH_ORDER_STATUS
+                ) {
+
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body()?:NSBlankDataResponse())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    updateDispatchOrderStatus(dispatchId, status, viewModelCallback)
+                }
+            })
         }
     }
 }

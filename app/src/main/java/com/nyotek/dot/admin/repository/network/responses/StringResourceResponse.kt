@@ -275,5 +275,11 @@ class StringResourceResponse {
 	val orderDetails: String = map["order_details"] ?: ""
 	val shortDispatchId: String = map["short_dispatch_id"] ?: ""
 	val shortOrderId: String = map["order_short_id"] ?: ""
-
+	val dispatchRequestSent: String = map["dispatch_request_sent"] ?: ""
+	val distanceKm: String = map["distance_km"] ?: ""
+	val notificationCreated: String = map["notification_created"] ?: ""
+	val notificationExpired: String = map["notification_expired"] ?: ""
+	val cancelOrder: String = map["cancel_order"] ?: ""
+	val selectRegion: String = map["select_region"] ?: ""
+	val regionCanNotBeEmpty: String = map["region_can_not_be_empty"] ?: ""
 }

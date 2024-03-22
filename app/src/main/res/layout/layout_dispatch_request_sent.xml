@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include android:id="@+id/layout_top"
+        layout="@layout/layout_common_full_order_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"/>
+
+    <include android:id="@+id/layout_bottom"
+        layout="@layout/layout_common_full_order_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_minus5sdp" />
+
+    <com.nyotek.dot.admin.widgets.NSViewLine
+        android:id="@+id/view_line_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_bottom"/>
+
+</LinearLayout>

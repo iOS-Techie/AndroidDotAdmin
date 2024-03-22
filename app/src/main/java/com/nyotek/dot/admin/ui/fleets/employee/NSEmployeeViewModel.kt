@@ -30,6 +30,7 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
     var jobTitleList: MutableList<JobListDataItem> = arrayListOf()
     var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
     var isEmployeeListAvailable = NSSingleLiveEvent<MutableList<EmployeeDataItem>>()
+    var isFleetDetailAvailable = NSSingleLiveEvent<FleetDataItem>()
     var strVendorDetail: String? = null
     var vendorModel: FleetData? = null
     var vendorId: String? = null
@@ -128,14 +129,19 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
             callCommonApi({ obj ->
                 NSEmployeeRepository.getEmployeeList(vendorId, obj)
             }, { data, isSuccess ->
-                hideProgress()
                 if (isSuccess) {
                     if (data is NSEmployeeResponse) {
                         data.employeeList.sortByDescending { it.userId }
                         val list = data.employeeList//.filter { !it.isDeleted }
-                        getFleetDriverLocations(list.map { it.userId?:"" })
                         isEmployeeListAvailable.postValue(list as MutableList<EmployeeDataItem>?)
+                        getFleetDriverLocations(list.map { it.userId?:"" })
+                    } else {
+                        isEmployeeListAvailable.postValue(arrayListOf())
+                        hideProgress()
                     }
+                } else {
+                    isEmployeeListAvailable.postValue(arrayListOf())
+                    hideProgress()
                 }
             })
         } else {
@@ -144,14 +150,14 @@ class NSEmployeeViewModel(application: Application) : NSViewModel(application) {
         }
     }
 
-    fun getFleetDriverLocations(driverList: List<String>) {
+    private fun getFleetDriverLocations(driverList: List<String>) {
         callCommonApi({ obj ->
             NSFleetRepository.getFleetDriverLocations(driverList, obj)
         }, { data, isSuccess ->
             hideProgress()
             if (isSuccess) {
                 if (data is FleetLocationResponse) {
-
+                    isFleetDetailAvailable.postValue(data.fleetDataItem?:FleetDataItem())
                 }
             }
         })

@@ -59,14 +59,11 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
     private var addEmployeeDialog: AlertDialog? = null
     private var empAdapter: NSEmployeeRecycleAdapter? = null
     private var mapBoxView: MapBoxView? = null
-    private var mapView: MapView? = null
-
 
     companion object {
         private var fleetData: FleetDataItem? = null
-        fun newInstance(bundle: Bundle?, list: FleetDataItem?) = NSEmployeeFragment().apply {
+        fun newInstance(bundle: Bundle?) = NSEmployeeFragment().apply {
             arguments = bundle
-            fleetData = list
         }
     }
 
@@ -81,7 +78,6 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
     override fun setupViews() {
         super.setupViews()
         isFragmentLoad = false
-        mapBoxView?.initMapView(requireContext(), binding.mapFragmentEmployee, fleetData)
         initUI()
         viewCreated()
         setListener()
@@ -115,6 +111,13 @@ class NSEmployeeFragment : BaseViewModelFragment<NSEmployeeViewModel, NsFragment
                 ) { searchList ->
                     searchUserList = searchList
                     userSearchAdapter?.setData(searchUserList)
+                }
+
+                isFleetDetailAvailable.observe(
+                    viewLifecycleOwner
+                ) { fleetDataItem ->
+                    fleetData = fleetDataItem
+                    mapBoxView?.initMapView(requireContext(), binding.mapFragmentEmployee, fleetData)
                 }
             }
         }

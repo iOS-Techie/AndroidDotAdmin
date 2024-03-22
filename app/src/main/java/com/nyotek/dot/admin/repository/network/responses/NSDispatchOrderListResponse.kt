@@ -101,7 +101,10 @@ data class NSDispatchOrderListData(
     val zoneSequence: String? = null,
     @SerializedName("distance")
     @Expose
-    val distance: Int = 0
+    val distance: Int = 0,
+    @SerializedName("is_third_party")
+    @Expose
+    val isThirdParty: Boolean? = false
 )
 
 data class FromToAddress(

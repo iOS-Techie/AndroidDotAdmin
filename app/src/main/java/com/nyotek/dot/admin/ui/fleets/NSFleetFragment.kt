@@ -16,15 +16,22 @@ import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.getLngValue
+import com.nyotek.dot.admin.common.utils.getTagLists
+import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.databinding.LayoutCreateFleetBinding
 import com.nyotek.dot.admin.databinding.NsFragmentFleetsBinding
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
+import com.nyotek.dot.admin.repository.network.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.FleetData
+import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
+import com.nyotek.dot.admin.repository.network.responses.RegionDataItem
+import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
+import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
 
 class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleetsBinding>(),
     NSFileUploadCallback {
@@ -96,6 +103,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
     private fun viewCreated() {
         viewModel.apply {
             getFleetFromApi(!isFragmentLoad)
+            viewModel.getRegionsList(false){}
             isFragmentLoad = true
         }
     }
@@ -230,6 +238,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                             tvFleetActive.text = inActive
                             tvSave.text = create
                             tvCancel.text = cancel
+                            layoutRegion.tvCommonTitle.text = selectRegion
                         }
 
                         brandLogoHelper.initView(activity, ivBrandLogo, tvSizeTitle)
@@ -266,6 +275,13 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                             slogan
                         )
 
+                        var selectedISO2: String = ""
+                        viewModel.getRegionsList(false) {
+                            setRegion(binding, it) { iso2 ->
+                                selectedISO2 = iso2
+                            }
+                        }
+
                         cbFill.isChecked = true
                         brandLogoHelper.logoFillFit(cbFill, clCheckFill, cbFit, clCheckFit, createCompanyRequest.logo)
 
@@ -282,8 +298,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                         tvSave.setOnClickListener {
                             dialog.dismiss()
                             val tags = layoutTags.edtValue.text.toString()
-                            val list: List<String> = tags.split(" ")
-                            createCompanyRequest.tags = list
+                            createCompanyRequest.tags = tags.getTagLists()
 
                             val url = layoutUrl.edtValue.text.toString()
                             createCompanyRequest.url = url
@@ -297,6 +312,9 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                             } else if (createCompanyRequest.logo?.isEmpty() == true) {
                                 showError(stringResource.logoCanNotEmpty)
                                 return@setOnClickListener
+                            } else if (selectedISO2.isEmpty()) {
+                                showError(stringResource.regionCanNotBeEmpty)
+                                return@setOnClickListener
                             } else {
 
                                 createCompanyRequest.serviceIds.add(NSConstants.SERVICE_ID)
@@ -304,12 +322,31 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                                 createCompanyRequest.isActive = isActiveFleet
                                 createCompanyRequest.name = name
                                 createCompanyRequest.slogan = slogan
+                                createCompanyRequest.iso2 = selectedISO2
 
                                 createFleet {
                                     setFleetData(it)
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setRegion(bind: LayoutCreateFleetBinding, list: MutableList<RegionDataItem>, callback: (String) -> Unit) {
+        binding.apply {
+            viewModel.apply {
+                var spinnerTitleId: String? = ""
+                val titleList = list.map { getLngValue(it.countryName) } as MutableList<String>
+                val idList = list.map { it.iso2!! } as MutableList<String>
+                val spinnerList = SpinnerData(idList, titleList)
+
+                bind.layoutRegion.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, spinnerTitleId, isHideFirstPosition = true, placeholderName = "") { selectedId ->
+                    if (spinnerTitleId != selectedId) {
+                        spinnerTitleId = selectedId
+                        callback.invoke(selectedId?:"")
                     }
                 }
             }

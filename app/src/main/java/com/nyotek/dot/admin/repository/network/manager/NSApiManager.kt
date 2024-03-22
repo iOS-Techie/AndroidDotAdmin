@@ -974,9 +974,9 @@ class NSApiManager {
      *
      * @param callback  The callback for the result
      */
-    suspend fun updateDispatchOrderStatus(orderId: String, callback: NSRetrofitCallback<NSBlankDataResponse>) {
+    suspend fun updateDispatchOrderStatus(orderId: String, nsUpdateStatusRequest: NSUpdateStatusRequest, callback: NSRetrofitCallback<NSBlankDataResponse>) {
         if (isNetwork(callback)) {
-            request(authorised3020Client.updateDispatchOrderStatus(orderId), callback)
+            request(authorised3020Client.updateDispatchOrderStatus(orderId, nsUpdateStatusRequest), callback)
         }
     }
 
@@ -1013,21 +1013,15 @@ class NSApiManager {
         }
     }
 
-    fun getDispatchDetail1(dispatchId: String, callback: NSRetrofitCallback<DispatchDetailResponse>) {
+    suspend fun getDispatchRequestDetail(dispatchId: String, callback: NSRetrofitCallback<DispatchRequestListResponse>) {
         if (isNetwork(callback)) {
-            request(authorised3020Client.dispatchDetail1(dispatchId), callback)
+            request(authorisedLocationClient.getDispatchRequestDetail(dispatchId), callback)
         }
     }
 
-    fun getVendorDetail1(vendorId: String, callback: NSRetrofitCallback<VendorDetailResponse>) {
+    suspend fun getRegions(callback: NSRetrofitCallback<RegionResponse>) {
         if (isNetwork(callback)) {
-            request(authorised3100Client.getVendorInfo1(vendorId), callback)
-        }
-    }
-
-    fun getDriverVehicleDetail1(id: String, callback: NSRetrofitCallback<NSDriverVehicleDetailResponse>) {
-        if (isNetwork(callback)) {
-            request(authorisedFleetClient.getDriverVehicleDetail1(id), callback)
+            request(authorised3100Client.getRegions(), callback)
         }
     }
 }
@@ -1229,8 +1223,8 @@ interface RTApiInterface {
     @GET("dispatch/{dispatch_id}")
     suspend fun dispatchDetail(@Path("dispatch_id") dispatchId: String): retrofit2.Response<DispatchDetailResponse>
 
-    @GET("dispatch/{order_id}/status")
-    suspend fun updateDispatchOrderStatus(@Path("order_id") orderId: String): retrofit2.Response<NSBlankDataResponse>
+    @POST("dispatch/{dispatch_id}/status")
+    suspend fun updateDispatchOrderStatus(@Path("dispatch_id") orderId: String, @Body nsUpdateStatusRequest: NSUpdateStatusRequest): retrofit2.Response<NSBlankDataResponse>
 
     @GET("location/history/ref/{dispatch_id}")
     suspend fun getLocationHistoryDispatch(@Path("dispatch_id") dispatchId: String): retrofit2.Response<FleetLocationResponse>
@@ -1241,12 +1235,9 @@ interface RTApiInterface {
     @GET("document/list/{user_id}")
     suspend fun getDriverDocumentInfo(@Path("user_id") id: String): retrofit2.Response<NSDocumentListResponse>
 
-    @GET("dispatch/{dispatch_id}")
-    fun dispatchDetail1(@Path("dispatch_id") dispatchId: String): retrofit2.Response<DispatchDetailResponse>
+    @GET("dispatch/request/{dispatch_id}")
+    suspend fun getDispatchRequestDetail(@Path("dispatch_id") id: String): retrofit2.Response<DispatchRequestListResponse>
 
-    @GET("companies/vendor_info/{vendor_id}")
-    fun getVendorInfo1(@Path("vendor_id") id: String): retrofit2.Response<VendorDetailResponse>
-
-    @GET("vehicle/{vehicle_id}")
-    fun getDriverVehicleDetail1(@Path("vehicle_id") id: String): retrofit2.Response<NSDriverVehicleDetailResponse>
+    @GET("companies/list_active_regions")
+    suspend fun getRegions(): retrofit2.Response<RegionResponse>
 }
