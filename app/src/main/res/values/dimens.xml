@@ -1,3 +1,4 @@
 <resources>
     <dimen name="icon_padding">@dimen/_3sdp</dimen>
+    <dimen name="spinner_padding">@dimen/_6sdp</dimen>
 </resources>

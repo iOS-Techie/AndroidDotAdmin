@@ -1,8 +1,7 @@
 package com.nyotek.dot.admin.ui.dispatch.detail
 
-import com.nyotek.dot.admin.common.utils.QuadrupleFive
+import com.nyotek.dot.admin.common.utils.QuadrupleSix
 import com.nyotek.dot.admin.repository.BaseRepository
-import com.nyotek.dot.admin.repository.NSDispatchRepository
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
 import com.nyotek.dot.admin.repository.network.error.NSApiErrorHandler
@@ -10,11 +9,13 @@ import com.nyotek.dot.admin.repository.network.manager.NSApiManager
 import com.nyotek.dot.admin.repository.network.requests.NSUpdateStatusRequest
 import com.nyotek.dot.admin.repository.network.responses.DispatchDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.DispatchRequestListResponse
+import com.nyotek.dot.admin.repository.network.responses.DriverListModel
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
 import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchDetailAllResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDocumentListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
+import com.nyotek.dot.admin.repository.network.responses.NSErrorResponse
 import com.nyotek.dot.admin.repository.network.responses.VendorDetailResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,7 @@ import kotlin.coroutines.suspendCoroutine
 object NSDispatchViewRepository : BaseRepository() {
 
     fun getDispatchLocationHistory(
-        dispatchId: String, vendorId: String, isThirdParty: Boolean,
+        dispatchId: String, vendorId: String, driverId: String, serviceId: String?, isThirdParty: Boolean,
         viewModelCallback: NSGenericViewModelCallback
     ) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -46,29 +47,30 @@ object NSDispatchViewRepository : BaseRepository() {
                         if (features.isNotEmpty()) {
                             val location = features.first().properties
                             if (location != null) {
-                                getAllDetailsAndProcess(dispatchId, vendorId, location.vehicleId?:"", location.driverId?:"", fleetLocation, isThirdParty, viewModelCallback)
+                                getAllDetailsAndProcess(dispatchId, vendorId, location.vehicleId?:"",
+                                    driverId.ifEmpty { location.driverId?:"" }, serviceId, fleetLocation, isThirdParty, viewModelCallback)
                             } else {
-                                getAllDetailsAndProcess(dispatchId, vendorId, "", "", fleetLocation, isThirdParty, viewModelCallback)
+                                getAllDetailsAndProcess(dispatchId, vendorId, "", driverId, serviceId, fleetLocation, isThirdParty, viewModelCallback)
                             }
                         } else {
-                            getAllDetailsAndProcess(dispatchId, vendorId, "", "", fleetLocation, isThirdParty, viewModelCallback)
+                            getAllDetailsAndProcess(dispatchId, vendorId, "", driverId, serviceId, fleetLocation, isThirdParty, viewModelCallback)
                         }
                     }
                 }
 
                 override fun onRefreshToken() {
-                    getDispatchLocationHistory(dispatchId, vendorId, isThirdParty, viewModelCallback)
+                    getDispatchLocationHistory(dispatchId, vendorId, driverId, serviceId, isThirdParty, viewModelCallback)
                 }
             })
         }
     }
 
-    private fun getAllDetailsAndProcess(dispatchId: String, vendorId: String, vehicleId: String, driverId: String, location: FleetLocationResponse, isThirdParty: Boolean, viewModelCallback: NSGenericViewModelCallback) {
+    private fun getAllDetailsAndProcess(dispatchId: String, vendorId: String, vehicleId: String, driverId: String, serviceId: String?, location: FleetLocationResponse, isThirdParty: Boolean, viewModelCallback: NSGenericViewModelCallback) {
         CoroutineScope(Dispatchers.Main).launch {
-            val (dispatchResponse, driverResponse, vendorResponse, vehicleResponse, dispatchRequests) = getAllDetails(dispatchId, driverId, vendorId, vehicleId, isThirdParty, viewModelCallback)
+            val (dispatchResponse, driverResponse, vendorResponse, vehicleResponse, dispatchRequests, driverList) = getAllDetails(dispatchId, driverId, vendorId, serviceId, vehicleId, isThirdParty, viewModelCallback)
 
             // Process responses
-            viewModelCallback.onSuccess(NSDispatchDetailAllResponse(location, driverResponse, dispatchResponse, vendorResponse, vehicleResponse, dispatchRequests, driverId))
+            viewModelCallback.onSuccess(NSDispatchDetailAllResponse(location, driverResponse, dispatchResponse, vendorResponse, vehicleResponse, dispatchRequests, driverList, driverId))
         }
     }
 
@@ -76,8 +78,9 @@ object NSDispatchViewRepository : BaseRepository() {
         dispatchId: String,
         driverId: String,
         vendorId: String,
+        serviceId: String?,
         vehicleId: String, isThirdParty: Boolean, viewModelCallback: NSGenericViewModelCallback
-    ): QuadrupleFive<DispatchDetailResponse?, NSDocumentListResponse?, VendorDetailResponse?, NSDriverVehicleDetailResponse?, DispatchRequestListResponse?> {
+    ): QuadrupleSix<DispatchDetailResponse?, NSDocumentListResponse?, VendorDetailResponse?, NSDriverVehicleDetailResponse?, DispatchRequestListResponse?, DriverListModel?> {
         val dispatchResponseDeferred = CoroutineScope(Dispatchers.IO).async {
             apiManager.getDispatchDetailAsync(dispatchId, viewModelCallback)
         }
@@ -95,13 +98,18 @@ object NSDispatchViewRepository : BaseRepository() {
             apiManager.getDispatchRequestDetailAsync(dispatchId, viewModelCallback)
         }
 
+        val driverListResponseDeferred = CoroutineScope(Dispatchers.IO).async {
+            apiManager.getDriverListAsync(serviceId, viewModelCallback)
+        }
+
         val dispatchResponse = dispatchResponseDeferred.await()
         val driverResponse = driverResponseDeferred.await()
         val vendorResponse = vendorResponseDeferred.await()
         val vehicleResponse = vehicleResponseDeferred.await()
         val dispatchRequestResponse = dispatchRequestResponseDeferred.await()
+        val driverListResponse = driverListResponseDeferred.await()
 
-        return QuadrupleFive(dispatchResponse, driverResponse, vendorResponse, vehicleResponse, dispatchRequestResponse)
+        return QuadrupleSix(dispatchResponse, driverResponse, vendorResponse, vehicleResponse, dispatchRequestResponse, driverListResponse)
     }
 
     private suspend fun NSApiManager.getDispatchDetailAsync(
@@ -257,6 +265,52 @@ object NSDispatchViewRepository : BaseRepository() {
         }
     }
 
+    private suspend fun NSApiManager.getDriverListAsync(
+        serviceId: String?,
+        viewModelCallback: NSGenericViewModelCallback
+    ): DriverListModel? {
+        return suspendCoroutine { continuation ->
+            CoroutineScope(Dispatchers.IO).launch {
+                if (serviceId.isNullOrEmpty()) {
+                    continuation.resume(DriverListModel())
+                } else {
+                    getDriverList(
+                        serviceId,
+                        object : NSRetrofitCallback<DriverListModel>(
+                            viewModelCallback,
+                            NSApiErrorHandler.ERROR_DRIVER_LIST_DISPATCH
+                        ) {
+
+                            override fun <T> onResponse(response: Response<T>) {
+                                if (response.body() is DriverListModel) {
+                                    continuation.resume(response.body() as DriverListModel)
+                                }
+                            }
+
+                            override fun <T> onErrorResponse(response: Response<T>) {
+                                super.onErrorResponse(response)
+                                continuation.resume(DriverListModel())
+                            }
+
+                            override fun onRefreshToken() {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    getDriverListAsync(serviceId, viewModelCallback)
+                                }
+                            }
+                        })
+                }
+            }
+        }
+    }
+
+    suspend fun getDriverDocument(driverId: String, viewModelCallback: NSGenericViewModelCallback) {
+        val driverResponseDeferred = CoroutineScope(Dispatchers.IO).async {
+            apiManager.getDriverDocumentDetailAsync(driverId, viewModelCallback)
+        }
+        val driverDocumentResponse = driverResponseDeferred.await()
+        viewModelCallback.onSuccess(driverDocumentResponse)
+    }
+
     private suspend fun NSApiManager.getDriverDocumentDetailAsync(
         driverId: String,
         viewModelCallback: NSGenericViewModelCallback
@@ -320,6 +374,31 @@ object NSDispatchViewRepository : BaseRepository() {
 
                 override fun onRefreshToken() {
                     updateDispatchOrderStatus(dispatchId, status, viewModelCallback)
+                }
+            })
+        }
+    }
+
+    fun assignDriver(
+        dispatchId: String, driverId: String,
+        viewModelCallback: NSGenericViewModelCallback
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val map: HashMap<String, String> = hashMapOf()
+            map["driver_id"] = driverId
+            apiManager.assignDriver(dispatchId, map, object :
+                NSRetrofitCallback<NSErrorResponse>(
+                    viewModelCallback,
+                    NSApiErrorHandler.ERROR_ASSIGN_DRIVER
+                ) {
+                override fun <T> onResponse(response: Response<T>) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        viewModelCallback.onSuccess(response.body()?:NSBlankDataResponse())
+                    }
+                }
+
+                override fun onRefreshToken() {
+                    assignDriver(dispatchId, driverId, viewModelCallback)
                 }
             })
         }

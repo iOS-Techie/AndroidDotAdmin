@@ -42,6 +42,12 @@ data class FleetDataItem(
 	val type: String? = null
 )
 
+data class DriverListModel(
+
+	@field:SerializedName("data")
+	val driverList: MutableList<Properties>? = arrayListOf()
+)
+
 data class Properties(
 
 	@field:SerializedName("ref_id")

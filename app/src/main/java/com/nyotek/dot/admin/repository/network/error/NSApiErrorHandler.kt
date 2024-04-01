@@ -89,6 +89,8 @@ class NSApiErrorHandler {
         const val ERROR_VENDOR_DETAIL = "error_vendor_detail"
         const val ERROR_DOCUMENT_LIST = "error_document_list"
         const val ERROR_GET_REGIONS = "error_get_regions"
+        const val ERROR_ASSIGN_DRIVER = "error_assign_driver_dispatch"
+        const val ERROR_DRIVER_LIST_DISPATCH = "error_driver_list_dispatch"
 
         /**
          * To get the error messages from API endpoints

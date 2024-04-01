@@ -282,4 +282,5 @@ class StringResourceResponse {
 	val cancelOrder: String = map["cancel_order"] ?: ""
 	val selectRegion: String = map["select_region"] ?: ""
 	val regionCanNotBeEmpty: String = map["region_can_not_be_empty"] ?: ""
+	val assign: String = map["assign"] ?: ""
 }

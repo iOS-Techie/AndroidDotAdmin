@@ -823,6 +823,21 @@ public data class QuadrupleFive<out A, out B, out C, out D, out E>(
     public override fun toString(): String = "($first, $second, $third $fourth $fifth)"
 }
 
+public data class QuadrupleSix<out A, out B, out C, out D, out E, out F>(
+    public val first: A,
+    public val second: B,
+    public val third: C,
+    public val fourth: D,
+    public val fifth: E,
+    public val sixth: F
+) : Serializable {
+
+    /**
+     * Returns string representation of the [Triple] including its [first], [second], [third], [fourth] and [fifth] values.
+     */
+    public override fun toString(): String = "($first, $second, $third $fourth $fifth)"
+}
+
 fun MutableList<String>?.getTags(): String {
     this?.remove(" ")
     var tagsList = this?.joinToString(" ")?:""

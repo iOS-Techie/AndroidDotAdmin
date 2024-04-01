@@ -16,6 +16,8 @@ data class NSDispatchDetailAllResponse(
 	val driverVehicleDetail: NSDriverVehicleDetailResponse? = null,
 	@field:SerializedName("dispatch_request")
 	val dispatchRequest: DispatchRequestListResponse? = null,
+	@field:SerializedName("driver_list")
+	val driverListModel: DriverListModel? = null,
 	@field:SerializedName("driver_id")
 	val driverId: String? = null
 )

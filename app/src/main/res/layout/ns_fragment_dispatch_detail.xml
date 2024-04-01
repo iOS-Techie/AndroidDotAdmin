@@ -472,6 +472,42 @@
                             android:fontFamily="@font/archivo_medium"
                             android:layout_marginEnd="@dimen/_2sdp"
                             android:paddingHorizontal="@dimen/_3sdp"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_assign_driver"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <Spinner
+                            android:id="@+id/spinner_assign_driver"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minWidth="@dimen/_50sdp"
+                            android:fontFamily="@font/archivo_regular"
+                            android:textSize="@dimen/_2sdp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:overlapAnchor="false"
+                            android:dropDownWidth="wrap_content"
+                            android:visibility="invisible"
+                            android:spinnerMode="dropdown"
+                            android:background="@drawable/common_btn"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            />
+
+                        <com.nyotek.dot.admin.widgets.NSWhiteTextView
+                            android:id="@+id/tv_assign_driver"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/_4sdp"
+                            tools:text="Cancel Order"
+                            android:gravity="center"
+                            android:background="@drawable/common_btn"
+                            android:paddingVertical="@dimen/_1sdp"
+                            android:visibility="gone"
+                            android:fontFamily="@font/archivo_medium"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:paddingHorizontal="@dimen/_5sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>

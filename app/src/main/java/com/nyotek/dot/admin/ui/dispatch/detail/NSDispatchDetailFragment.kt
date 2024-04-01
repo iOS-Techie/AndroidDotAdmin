@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.lifecycle.ViewModelProvider
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
+import com.nyotek.dot.admin.common.DriverSpinnerAdapter
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.NSOrderCancelEvent
 import com.nyotek.dot.admin.common.utils.ColorResources
-import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glideNormal
 import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
@@ -27,15 +28,16 @@ import com.nyotek.dot.admin.common.utils.setTexts
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.visible
+import com.nyotek.dot.admin.databinding.LayoutDriverSpinnerItemViewBinding
 import com.nyotek.dot.admin.databinding.NsFragmentDispatchDetailBinding
 import com.nyotek.dot.admin.repository.network.responses.DispatchData
 import com.nyotek.dot.admin.repository.network.responses.DispatchRequestItem
 import com.nyotek.dot.admin.repository.network.responses.DocumentDataItem
+import com.nyotek.dot.admin.repository.network.responses.Properties
 import com.nyotek.dot.admin.repository.network.responses.StatusItem
 import com.nyotek.dot.admin.repository.network.responses.UserMetaData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
 import com.nyotek.dot.admin.repository.network.responses.VendorDetailResponse
-import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -82,23 +84,32 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         viewCreated()
         setListener()
 
-        viewModel.getDispatchDetail(bundle?.getString(NSConstants.DISPATCH_DETAIL_KEY)) { allModel ->
-            viewModel.currentMapFleetData = allModel.location?.fleetDataItem
-            mapBoxView?.clearMap()
-            mapBoxView?.initMapView(
-                requireContext(),
-                binding.mapFragmentEmployee,
-                viewModel.currentMapFleetData
-            )
-            mapBoxView?.goToDispatchMapPosition(viewModel.currentMapFleetData?.features)
-            setDriverDetail(viewModel.getDriverDetail(allModel.driverDetail?.data))
-            setVehicleDetail(allModel.driverVehicleDetail?.data)
-            setCustomerDetail(allModel.dispatchDetail?.data)
-            setVendorDetail(allModel.dispatchDetail?.data, allModel.vendorDetail)
-            setDispatchDetail(allModel.dispatchDetail?.data)
-            setDispatchRequestSent(allModel.dispatchRequest?.requestList?: arrayListOf())
-            if(allModel.driverId?.isNotEmpty() == true) {
-                binding.clDriverAndVehicle.visible()
+        viewModel.selectedServiceId = arguments?.getString(NSConstants.VENDOR_SERVICE_ID_KEY)
+        viewModel.getDispatchFromList(arguments?.getString(NSConstants.DISPATCH_DETAIL_KEY))
+        callDispatchDetailApi()
+    }
+
+    private fun callDispatchDetailApi() {
+        viewModel.apply {
+            viewModel.getDispatchDetail { allModel ->
+                viewModel.currentMapFleetData = allModel.location?.fleetDataItem
+                mapBoxView?.clearMap()
+                mapBoxView?.initMapView(
+                    requireContext(),
+                    binding.mapFragmentEmployee,
+                    viewModel.currentMapFleetData
+                )
+                mapBoxView?.goToDispatchMapPosition(viewModel.currentMapFleetData?.features)
+                setDriverDetail(viewModel.getDriverDetail(allModel.driverDetail?.data))
+                setVehicleDetail(allModel.driverVehicleDetail?.data)
+                setCustomerDetail(allModel.dispatchDetail?.data)
+                setVendorDetail(allModel.dispatchDetail?.data, allModel.vendorDetail)
+                setDispatchDetail(allModel.driverId, allModel.dispatchDetail?.data, allModel.driverListModel?.driverList?: arrayListOf())
+                setDispatchRequestSent(allModel.dispatchRequest?.requestList?: arrayListOf())
+
+                /*if(allModel.driverId?.isNotEmpty() == true) {
+                   */ binding.clDriverAndVehicle.visible()/*
+            }*/
             }
         }
     }
@@ -108,7 +119,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         mapBoxView?.clearMap()
         setDriverDetail(DocumentDataItem())
         setVendorDetail(DispatchData(), VendorDetailResponse())
-        setDispatchDetail(DispatchData())
+        setDispatchDetail("", DispatchData(), arrayListOf())
         setCustomerDetail(DispatchData())
         setVehicleDetail(VehicleData())
         setDispatchRequestSent(arrayListOf())
@@ -142,14 +153,16 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 tvVendorDetailTitle.text = vendorDetails
                 tvRejectedDetailTitle.text = rejectedTripDriverList
                 tvDispatchRequestSent.text = dispatchRequestSent
+                val assignDriver = "$assign $driver"
+                tvAssignDriver.text = assignDriver
                 tvUpdateStatus.text = update
                 tvUpdateDriver.text = update
                 tvTitleTrack.text = track
                 binding.mapFragmentEmployee.removeAllViews()
+                ColorResources.setBackgroundTint(binding.spinnerAssignDriver, ColorResources.getPrimaryColor())
               //  ColorResources.setBackground(binding.viewLine, ColorResources.getBorderColor())
 
-                val serviceId = arguments?.getString(NSConstants.VENDOR_SERVICE_ID_KEY)
-                viewModel.getServiceLogo(serviceId) {
+                viewModel.getServiceLogo(viewModel.selectedServiceId) {
                     ivBrandIcon.glideNormal(it) { isSuccess ->
                         ivBrandIcon.setVisibility(isSuccess)
                         ivBrandPlaceIcon.setVisibility(!isSuccess)
@@ -312,7 +325,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
         }
     }
 
-    private fun setDispatchDetail(dispatchData: DispatchData?) {
+    private fun setDispatchDetail(driverId: String?, dispatchData: DispatchData?, list: MutableList<Properties>) {
         binding.apply {
             viewModel.apply {
                 layoutOrder.apply {
@@ -333,9 +346,18 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                     val statusList: MutableList<StatusItem> = arrayListOf()
                     if (dispatchData?.status.isValidList()) {
                         //Display Order Cancel When Status is New
-                        val isNew = dispatchData?.status?.first()?.status?.lowercase().equals(NSConstants.ORDER_STATUS_NEW)
+                        val currentStatus = dispatchData?.status?.first()?.status?.lowercase()
+                        val isCanceled = currentStatus.equals(NSConstants.ORDER_STATUS_CANCELLED)
+                        val isAssigned = currentStatus.equals(NSConstants.ORDER_STATUS_ASSIGNED)
+                        val isNew = currentStatus.equals(NSConstants.ORDER_STATUS_NEW) || isAssigned
                         tvOrderCancel.setVisibility(isNew)
 
+                        //When Status New or Assigned then Assigned Driver Button Visible
+
+                        tvAssignDriver.setVisibility((isNew) && driverId.isNullOrEmpty() && !isCanceled)
+                        if ((isNew) && driverId.isNullOrEmpty() && !isCanceled) {
+                            setDriverList(list)
+                        }
 
                         val updatedList = dispatchData?.status?.map { it.copy(isSelected = true) } as MutableList<StatusItem>
                         updatedList.sortBy { it.refId }
@@ -368,6 +390,55 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 clDispatchRequestSent.setVisibility(list.isValidList())
             }
         }
+    }
+
+    private fun setDriverList(list: MutableList<Properties>) {
+        binding.apply {
+            viewModel.apply {
+                var isSpinnerClick = false
+                tvAssignDriver.setSafeOnClickListener {
+                    isSpinnerClick = true
+                    spinnerAssignDriver.performClick()
+                }
+
+                val adapter = DriverSpinnerAdapter(requireContext(), list)
+                spinnerAssignDriver.adapter = adapter
+                spinnerAssignDriver.onItemSelectedListener = object :
+                    AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                        if (isSpinnerClick) {
+                            isSpinnerClick = false
+                            val driverId = list[position].driverId
+                            viewModel.assignDriver(dispatchSelectedData?.dispatchId?:"", driverId?:"") {
+                                tvAssignDriver.gone()
+                                dispatchSelectedData?.assignedDriverId = driverId
+                                callDispatchDetailApi()
+                            }
+                        }
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+                        isSpinnerClick = false
+                    }
+                }
+                setDropdownWidthBasedOnWidestItem(list)
+            }
+        }
+    }
+
+    private fun setDropdownWidthBasedOnWidestItem(list: MutableList<Properties>) {
+        var maxWidth = 0
+        // Calculate the width of the widest item's text in the dropdown list
+        for (item in list) {
+            val textView = LayoutDriverSpinnerItemViewBinding.inflate(layoutInflater).tvSpinnerTitle
+            textView.text = item.driverId
+            textView.measure(0, 0)
+            val textWidth = textView.measuredWidth + textView.paddingStart + textView.paddingEnd + textView.paddingTop + textView.paddingBottom
+            maxWidth = maxOf(maxWidth, textWidth)
+        }
+
+        // Set the width of the dropdown popup
+        binding.spinnerAssignDriver.dropDownWidth = maxWidth
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

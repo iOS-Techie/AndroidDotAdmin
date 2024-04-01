@@ -59,7 +59,7 @@ class NSWhiteTextView : AppCompatTextView {
                 ColorResources.setCardBackground(this, 100f, 0, ColorResources.getPrimaryColor())
             }
 
-            R.id.tv_update_status -> {
+            R.id.tv_update_status, R.id.tv_assign_driver -> {
                 ColorResources.setBackgroundTint(this, ColorResources.getPrimaryColor())
             }
             R.id.tv_order_cancel -> {

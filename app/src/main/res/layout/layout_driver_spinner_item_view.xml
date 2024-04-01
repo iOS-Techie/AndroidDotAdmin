@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.nyotek.dot.admin.widgets.NSViewLine
+        android:id="@+id/view_line_dispatch"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginVertical="@dimen/_4sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_bottom"/>
+
+    <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+        android:id="@+id/tv_spinner_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:fontFamily="@font/archivo_regular"
+        android:textSize="@dimen/_5sdp"
+        android:textAlignment="viewStart"
+        android:paddingHorizontal="@dimen/_6sdp"
+        android:paddingVertical="@dimen/_5sdp"
+        tools:text="Hubz"
+        android:lines="1"
+        android:includeFontPadding="false"
+        app:layout_constraintStart_toEndOf="@+id/view_line_dispatch"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/iv_spinner_ico"
+        app:layout_constraintBottom_toTopOf="@+id/view_bottom"
+        android:gravity="start|center_vertical"
+        />
+
+    <ImageView
+        android:id="@+id/iv_spinner_ico"
+        android:layout_width="@dimen/_9sdp"
+        android:layout_height="@dimen/_9sdp"
+        app:layout_constraintDimensionRatio="W,1:1"
+        android:src="@drawable/ic_spinner_drop_down_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_spinner_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_spinner_title"/>
+
+    <View
+        android:id="@+id/view_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="@color/line_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

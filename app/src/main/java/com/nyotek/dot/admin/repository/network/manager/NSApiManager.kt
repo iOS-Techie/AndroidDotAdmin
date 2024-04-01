@@ -21,6 +21,7 @@ import retrofit2.http.*
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 /**
  * The manager class through which we can access the web service.
@@ -166,11 +167,11 @@ class NSApiManager {
         @Throws(IOException::class)
         fun getRequest(request: Request, isAuthorizedClient: Boolean, isMultiPart: Boolean): Request =
             request.newBuilder().apply {
-                if (isMultiPart) {
+                /*if (isMultiPart) {
                     header(KEY_CONTENT_TYPE, MULTIPART_JSON)
                 } else {
                     header(KEY_CONTENT_TYPE, APPLICATION_JSON)
-                }
+                }*/
                 header(KEY_ACCEPT, ACCEPT_VALUE)
                 header(KEY_BuildVersion, BuildConfig.VERSION_CODE.toString())
                 if (!request.url.toUrl().path.contains("employees/list_job_titles")) {
@@ -1024,6 +1025,18 @@ class NSApiManager {
             request(authorised3100Client.getRegions(), callback)
         }
     }
+
+    suspend fun assignDriver(dispatchId: String, map: HashMap<String, String>, callback: NSRetrofitCallback<NSErrorResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.assignDriver(dispatchId, map), callback)
+        }
+    }
+
+    suspend fun getDriverList(serviceId: String, callback: NSRetrofitCallback<DriverListModel>) {
+        if (isNetwork(callback)) {
+            request(authorisedLocationClient.getDriverList(serviceId), callback)
+        }
+    }
 }
 
 /**
@@ -1240,4 +1253,10 @@ interface RTApiInterface {
 
     @GET("companies/list_active_regions")
     suspend fun getRegions(): retrofit2.Response<RegionResponse>
+
+    @POST("dispatch/assign/{dispatch_id}")
+    suspend fun assignDriver(@Path("dispatch_id") id: String, @Body request: HashMap<String, String>): retrofit2.Response<NSErrorResponse>
+
+    @GET("location/service/{service_id}")
+    suspend fun getDriverList(@Path("service_id") id: String): retrofit2.Response<DriverListModel>
 }

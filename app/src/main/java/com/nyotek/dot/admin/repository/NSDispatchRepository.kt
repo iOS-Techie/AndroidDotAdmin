@@ -1,29 +1,18 @@
 package com.nyotek.dot.admin.repository
 
+import com.mapbox.maps.extension.style.expressions.dsl.generated.has
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
 import com.nyotek.dot.admin.repository.network.error.NSApiErrorHandler
-import com.nyotek.dot.admin.repository.network.requests.NSAssignVehicleRequest
-import com.nyotek.dot.admin.repository.network.requests.NSUpdateCapabilitiesRequest
 import com.nyotek.dot.admin.repository.network.requests.NSUpdateStatusRequest
-import com.nyotek.dot.admin.repository.network.requests.NSVehicleEnableDisableRequest
-import com.nyotek.dot.admin.repository.network.requests.NSVehicleNotesRequest
-import com.nyotek.dot.admin.repository.network.requests.NSVehicleRequest
-import com.nyotek.dot.admin.repository.network.requests.NSVehicleUpdateImageRequest
 import com.nyotek.dot.admin.repository.network.responses.DispatchDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
-import com.nyotek.dot.admin.repository.network.responses.NSAssignVehicleDriverResponse
 import com.nyotek.dot.admin.repository.network.responses.NSBlankDataResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResponse
-import com.nyotek.dot.admin.repository.network.responses.NSDriverVehicleDetailResponse
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleAssignBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleBlankDataResponse
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleDetailResponse
-import com.nyotek.dot.admin.repository.network.responses.NSVehicleResponse
+import com.nyotek.dot.admin.repository.network.responses.NSErrorResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
 import retrofit2.Response
 
 /**
@@ -110,34 +99,6 @@ object NSDispatchRepository : BaseRepository() {
 
                 override fun onRefreshToken() {
                     updateDispatchOrderStatus(id, status, viewModelCallback)
-                }
-            })
-        }
-    }
-
-    /**
-     * To get dispatch location history from API
-     *
-     * @param viewModelCallback The callback to communicate back to the view model
-     */
-    fun getDispatchLocationHistory(
-        id: String,
-        viewModelCallback: NSGenericViewModelCallback
-    ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            apiManager.getLocationHistoryDispatch(id, object :
-                NSRetrofitCallback<FleetLocationResponse>(
-                    viewModelCallback,
-                    NSApiErrorHandler.ERROR_DISPATCH_LOCATION_HISTORY
-                ) {
-                override fun <T> onResponse(response: Response<T>) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        viewModelCallback.onSuccess(response.body())
-                    }
-                }
-
-                override fun onRefreshToken() {
-                    getDispatchLocationHistory(id, viewModelCallback)
                 }
             })
         }
