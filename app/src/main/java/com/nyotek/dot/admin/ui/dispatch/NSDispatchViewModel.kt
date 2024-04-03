@@ -31,9 +31,10 @@ class NSDispatchViewModel(application: Application) : NSViewModel(application) {
         callCommonApi({ obj ->
             NSDispatchListRepository.getDispatchList(isSwipeRefresh, serviceId, obj)
         }, { data, _ ->
-            hideProgress()
             if (data is AllDispatchListResponse) {
                 callback.invoke(data)
+            } else {
+                hideProgress()
             }
         })
     }

@@ -2,6 +2,7 @@ package com.nyotek.dot.admin.common.utils
 
 import android.content.Context
 import com.franmontiel.localechanger.LocaleChanger
+import com.nyotek.dot.admin.common.apiRefresh.NyoTokenRefresher
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSLanguage
 import java.util.Locale
@@ -80,6 +81,7 @@ object NSLanguageConfig {
     }
 
     fun logout() {
+        NyoTokenRefresher.forceStop()
         NSApplication.getInstance().getApiManager().cancelAllRequests()
         val pref = NSApplication.getInstance().getPrefs()
         val language = pref.languageData

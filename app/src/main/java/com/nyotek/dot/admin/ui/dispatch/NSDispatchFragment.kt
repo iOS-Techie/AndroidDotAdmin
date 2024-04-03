@@ -274,6 +274,7 @@ class NSDispatchFragment : BaseViewModelFragment<NSDispatchViewModel, NsFragment
             setServiceLogo(viewModel.selectedServiceLogo)
             setData(serviceItemList)
         }
+        viewModel.hideProgress()
     }
 
     private fun showFleetCreateDialog() {

@@ -1,7 +1,7 @@
 package com.nyotek.dot.admin.repository
 
 import android.util.Log
-import com.nyotek.dot.admin.common.NSApplication
+import com.nyotek.dot.admin.common.apiRefresh.NyoTokenRefresher
 import com.nyotek.dot.admin.common.NSUserManager
 import com.nyotek.dot.admin.repository.network.callbacks.NSGenericViewModelCallback
 import com.nyotek.dot.admin.repository.network.callbacks.NSRetrofitCallback
@@ -10,7 +10,6 @@ import com.nyotek.dot.admin.repository.network.requests.NSLoginRequest
 import com.nyotek.dot.admin.repository.network.requests.NSRefreshTokenRequest
 import com.nyotek.dot.admin.repository.network.responses.NSLogoutResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserDetailResponse
-import com.nyotek.dot.admin.repository.network.responses.NSUserListResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +44,7 @@ object NSUserRepository: BaseRepository() {
                             } else {
                                 NSUserManager.saveUserInPreference(response)
                                 NSUserManager.saveHeadersInPreference(response)
+                                NyoTokenRefresher.validate()
                                 viewModelCallback.onSuccess(response.body())
                             }
                         }
@@ -77,6 +77,7 @@ object NSUserRepository: BaseRepository() {
                         } else {
                             NSUserManager.saveUserInPreference(response)
                             NSUserManager.saveHeadersInPreference(response)
+                            NyoTokenRefresher.validate()
                             viewModelCallback.onSuccess(response.body())
                         }
                     }

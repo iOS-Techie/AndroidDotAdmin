@@ -24,14 +24,11 @@ import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.databinding.LayoutCreateFleetBinding
 import com.nyotek.dot.admin.databinding.NsFragmentFleetsBinding
 import com.nyotek.dot.admin.repository.network.requests.NSCreateCompanyRequest
-import com.nyotek.dot.admin.repository.network.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.repository.network.responses.FleetData
-import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 import com.nyotek.dot.admin.repository.network.responses.RegionDataItem
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.ui.fleets.detail.NSFleetDetailFragment
-import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
 
 class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleetsBinding>(),
     NSFileUploadCallback {
@@ -103,7 +100,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
     private fun viewCreated() {
         viewModel.apply {
             getFleetFromApi(!isFragmentLoad)
-            viewModel.getRegionsList(false){}
+            viewModel.getRegionsList {}
             isFragmentLoad = true
         }
     }
@@ -220,6 +217,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
         fleetRecycleAdapter?.apply {
             setData(serviceItemList)
         }
+        viewModel.hideProgress()
     }
 
     private fun showFleetCreateDialog() {
@@ -276,7 +274,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                         )
 
                         var selectedISO2: String = ""
-                        viewModel.getRegionsList(false) {
+                        viewModel.getRegionsList {
                             setRegion(binding, it) { iso2 ->
                                 selectedISO2 = iso2
                             }

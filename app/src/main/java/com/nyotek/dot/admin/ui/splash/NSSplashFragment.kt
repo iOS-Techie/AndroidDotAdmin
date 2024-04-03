@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.nyotek.dot.admin.common.apiRefresh.NyoTokenRefresher
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
@@ -37,6 +38,7 @@ class NSSplashFragment : BaseViewModelFragment<NSSplashViewModel, NsFragmentSpla
 
     override fun setupViews() {
         super.setupViews()
+        NyoTokenRefresher.refreshIfNeeded()
         viewCreated()
     }
 

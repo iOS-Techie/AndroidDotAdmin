@@ -24,7 +24,7 @@ class NSFleetViewModel(application: Application) : NSViewModel(application) {
         if (isShowProgress) showProgress()
         getFleetListApi { fleets ->
             getLocalLanguages(isSelect = true) {
-                hideProgress()
+                //hideProgress()
                 callback.invoke(fleets)
             }
         }
@@ -58,12 +58,12 @@ class NSFleetViewModel(application: Application) : NSViewModel(application) {
         })
     }
 
-    fun getRegionsList(isShowProgress: Boolean, callback: ((MutableList<RegionDataItem>) -> Unit)) {
-        if (isShowProgress) showProgress()
+    fun getRegionsList(callback: (MutableList<RegionDataItem>) -> Unit) {
+       // if (isShowProgress) showProgress()
         callCommonApi({ obj ->
             NSRegionRepository.getRegions(obj)
         }, { data, isSuccess ->
-            hideProgress()
+            //hideProgress()
             if (isSuccess && data is RegionResponse) {
                 callback.invoke(data.regions?: arrayListOf())
             }
