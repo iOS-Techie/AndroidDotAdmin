@@ -6,6 +6,7 @@ import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSAddressRepository
 import com.nyotek.dot.admin.repository.NSFleetRepository
 import com.nyotek.dot.admin.repository.NSVehicleRepository
+import com.nyotek.dot.admin.repository.NSVendorRepository
 import com.nyotek.dot.admin.repository.network.requests.NSCreateFleetAddressRequest
 import com.nyotek.dot.admin.repository.network.requests.NSEditAddressRequest
 import com.nyotek.dot.admin.repository.network.responses.AddressData
@@ -14,6 +15,7 @@ import com.nyotek.dot.admin.repository.network.responses.FleetLocationResponse
 import com.nyotek.dot.admin.repository.network.responses.NSCreateFleetAddressResponse
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListResponse
+import com.nyotek.dot.admin.repository.network.responses.VendorDetailResponse
 import okhttp3.ResponseBody
 
 class NSMapViewModel(application: Application) : NSViewModel(application) {
@@ -174,6 +176,22 @@ class NSMapViewModel(application: Application) : NSViewModel(application) {
                 callback.invoke(data.orderData)
             }
         })
+    }
+
+    fun getVendorInfo(vendorId: String, callback: ((VendorDetailResponse?) -> Unit)) {
+        if (vendorId.isNotEmpty()) {
+            callCommonApi({ obj ->
+                NSVendorRepository.getVendorDetail(vendorId, obj)
+            }, { data, _ ->
+                if (data is VendorDetailResponse) {
+                    callback.invoke(data)
+                } else {
+                    callback.invoke(null)
+                }
+            })
+        } else {
+            callback.invoke(null)
+        }
     }
 
     override fun apiResponse(data: Any) {

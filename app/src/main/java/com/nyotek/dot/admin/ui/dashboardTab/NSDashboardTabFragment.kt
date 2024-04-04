@@ -17,14 +17,19 @@ import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSRequestCodes
 import com.nyotek.dot.admin.common.callbacks.NSMapDriverClickCallback
+import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.setGlideWithHolder
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardTabBinding
 import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.NSDispatchOrderListData
 import com.nyotek.dot.admin.ui.fleets.map.NSMapViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -212,7 +217,14 @@ class NSDashboardTabFragment :
                 with(rvAssignedList) {
                     list.sortByDescending { NSDateTimeHelper.getDateValue(it.status[0].statusCapturedTime)}
                     if (capabilitiesRecycleAdapter == null) {
-                        capabilitiesRecycleAdapter = NSDispatchOrderRecycleAdapter(activity)
+                        capabilitiesRecycleAdapter = NSDispatchOrderRecycleAdapter { vendorId, vendorIcon, vendorName ->
+                            getVendorInfo(vendorId) {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    vendorIcon.setGlideWithHolder(it?.logo, it?.logoScale, 200)
+                                    vendorName.text = getLngValue(it?.name)
+                                }
+                            }
+                        }
 
                         setupWithAdapterAndCustomLayoutManager(
                             capabilitiesRecycleAdapter!!,
