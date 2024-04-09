@@ -116,6 +116,9 @@ class NSServiceManagementRecycleAdapter(
                                     capabilityItem.fleets.contains(fResponse.vendorId)
                                 )
                                 fleetResponse.add(fleetServiceResponse)
+                            } else {
+                                val fleetServiceResponse = FleetServiceResponse(fResponse, false)
+                                fleetResponse.add(fleetServiceResponse)
                             }
                         }
 

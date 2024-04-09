@@ -1,6 +1,7 @@
 package com.nyotek.dot.admin.ui.serviceManagement
 
 import android.app.Application
+import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSViewModel
 import com.nyotek.dot.admin.repository.NSCapabilitiesRepository
@@ -91,6 +92,7 @@ class NSServiceManagementViewModel(application: Application) : NSViewModel(appli
             if (!isSuccess) {
                 callback.invoke(ServiceCapabilitiesDataItem())
             } else if (data is NSServiceCapabilityResponse) {
+                NSApplication.getInstance().setCapabilityItemList(serviceId, data.data)
                 data.data?.let { callback.invoke(it) }
             }
         }, false)

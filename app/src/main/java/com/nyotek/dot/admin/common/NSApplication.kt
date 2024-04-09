@@ -43,7 +43,7 @@ class NSApplication : Application() {
     private var fleetLanguageList: MutableList<LanguageSelectModel> = arrayListOf()
     private var localLanguageList: MutableList<LanguageSelectModel> = arrayListOf()
     private var localMapLanguageList: HashMap<String, MutableList<LanguageSelectModel>> = hashMapOf()
-    private var capabilityItemList: HashMap<String, ServiceCapabilitiesDataItem> = hashMapOf()
+    private var capabilityItemList: HashMap<String, ServiceCapabilitiesDataItem?> = hashMapOf()
     private var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
     private var vendorMap: HashMap<String, VendorDetailResponse> = hashMapOf()
 
@@ -87,10 +87,10 @@ class NSApplication : Application() {
         return fleetLanguageList
     }
 
-    fun getCapabilityItemList(): HashMap<String, ServiceCapabilitiesDataItem> = capabilityItemList
+    fun getCapabilityItemList(): HashMap<String, ServiceCapabilitiesDataItem?> = capabilityItemList
 
-    fun setCapabilityItemList(filter: HashMap<String, ServiceCapabilitiesDataItem>) {
-        capabilityItemList = filter
+    fun setCapabilityItemList(serviceId: String, item: ServiceCapabilitiesDataItem?) {
+        capabilityItemList[serviceId] = item
     }
 
     /**
