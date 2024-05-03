@@ -182,4 +182,5 @@ dependencies {
     
     //for marshalling - googlemaps for get current location (error if not this)
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation("io.coil-kt:coil:2.6.0")
 }

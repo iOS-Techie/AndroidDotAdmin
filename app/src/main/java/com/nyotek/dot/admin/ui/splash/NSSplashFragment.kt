@@ -6,14 +6,18 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.apiRefresh.NyoTokenRefresher
 import com.nyotek.dot.admin.base.fragment.BaseViewModelFragment
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSUserManager
+import com.nyotek.dot.admin.common.callbacks.NSLocalJsonCallback
+import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentSplashBinding
+import com.nyotek.dot.admin.repository.network.responses.NSLanguageStringResponse
 import com.nyotek.dot.admin.ui.dashboard.NSDashboardActivity
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
 
@@ -56,15 +60,39 @@ class NSSplashFragment : BaseViewModelFragment<NSSplashViewModel, NsFragmentSpla
         }
     }
 
+    val obj: (Boolean, Boolean, Boolean) -> Unit = { isThemeAvailable, isLocalLng, isShowLanguageSelectDialog ->
+        if (isThemeAvailable) {
+            NSConstants.IS_LANGUAGE_UPDATE = true
+            checkLoginStatus()
+        } else if (isLocalLng) {
+            getLocalLng()
+        } else if (isShowLanguageSelectDialog) {
+            showDialogLanguageSelect(true)
+        }
+    }
+
     private fun viewCreated() {
         NSApplication.getInstance().setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
         baseObserveViewModel(viewModel)
         observeViewModel()
-        viewModel.getAppTheme {
+        viewModel.getAppThemeAndChangeLocaleFromSelection(false, obj)
+
+        /*viewModel.getAppTheme {
             if (it) {
                 NSConstants.IS_LANGUAGE_UPDATE = true
                 checkLoginStatus()
             }
+        }*/
+    }
+
+    private fun getLocalLng() {
+        viewModel.apply {
+            NSUtilities.getLocalJsonRowData(requireActivity(), R.raw.local_json, object :
+                NSLocalJsonCallback {
+                override fun onLocal(json: NSLanguageStringResponse) {
+                    setLanguageJsonData(json, obj)
+                }
+            })
         }
     }
 

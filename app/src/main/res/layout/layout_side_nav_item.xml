@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.nyotek.dot.admin.widgets.NSConstraintLayout android:id="@+id/cl_item" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/cl_item" android:layout_width="match_parent"
     android:layout_height="@dimen/_16sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.nyotek.dot.admin.widgets.NSViewLine
+        android:id="@+id/view_line_side"
+        android:layout_width="@dimen/_1sdp"
+        android:layout_height="@dimen/_8sdp"
+        android:background="@color/line_divider"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
         android:id="@+id/iv_icon_nav"
@@ -19,7 +29,6 @@
         style="@style/LayoutWidthHeightWrap"
         android:textAppearance="@style/CommonTextInter600"
         android:textSize="@dimen/_4ssp"
-        android:text="Vendor"
         android:layout_marginStart="@dimen/_4sdp"
         app:layout_constraintStart_toEndOf="@id/iv_icon_nav"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,6 +38,7 @@
         android:id="@+id/iv_side_arrow"
         android:layout_width="@dimen/_3sdp"
         android:layout_height="@dimen/_6sdp"
+        android:visibility="gone"
         android:background="@drawable/ic_side_nav_arrow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -50,4 +60,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-</com.nyotek.dot.admin.widgets.NSConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

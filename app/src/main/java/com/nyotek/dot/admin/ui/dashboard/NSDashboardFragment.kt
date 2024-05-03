@@ -12,7 +12,6 @@ import com.nyotek.dot.admin.common.callbacks.NSBackClickCallback
 import com.nyotek.dot.admin.common.utils.NSLanguageConfig
 import com.nyotek.dot.admin.common.utils.notifyAdapter
 import com.nyotek.dot.admin.common.utils.setPager
-import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.NsFragmentDashboardBinding
@@ -23,6 +22,7 @@ import com.nyotek.dot.admin.ui.dashboard.tabs.DashboardMainTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.DispatchTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.FleetTabFragment
 import com.nyotek.dot.admin.ui.dashboard.tabs.ServicesTabFragment
+import com.nyotek.dot.admin.ui.dashboard.tabs.SettingTabFragment
 import com.nyotek.dot.admin.ui.login.NSLoginActivity
 import com.nyotek.dot.admin.ui.settings.NSSettingViewModel
 import org.greenrobot.eventbus.EventBus
@@ -89,8 +89,15 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
         baseObserveViewModel(viewModel)
         baseObserveViewModel(settingModel)
         observeViewModel()
-        setNavigationAdapter()
-        setViewText()
+
+        val isEmpty = NSLanguageConfig.getSelectedLanguage().isEmpty()
+        if (isEmpty) {
+            showDialogLanguageSelect(true)
+        } else {
+            viewModel.getUserMainDetail()
+            setNavigationAdapter()
+            setViewText()
+        }
     }
 
     private fun setViewText() {
@@ -105,7 +112,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
     private fun setListener() {
         binding.apply {
             viewModel.apply {
-                clLogout.setSafeOnClickListener {
+                /*clLogout.setSafeOnClickListener {
                     stringResource.apply {
                         showLogoutDialog(
                             logout,
@@ -117,7 +124,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }
@@ -140,7 +147,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                 with(rvNavList) {
                     setNavigationItem()
                     navigationAdapter =
-                        NSSideNavigationRecycleAdapter(isLanguageSelected()) { navResponse, position ->
+                        NSSideNavigationRecycleAdapter(NSLanguageConfig.isLanguageRtl()) { navResponse, position ->
                             sideNavigationItemClick(navResponse, position)
                         }
                     setupWithAdapter(navigationAdapter!!)
@@ -195,6 +202,11 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                             fragment.setFragment()
                         }
 
+                        is SettingTabFragment -> {
+                            instance.setSelectedNavigationType(NSConstants.SETTING_TAB)
+                            fragment.setFragment()
+                        }
+
                         is DashboardMainTabFragment -> {
                             EventBus.getDefault().post(NSOnMapResetEvent(true))
                             instance.setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
@@ -213,10 +225,9 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
      *
      * @param userDetail
      */
-    private fun setUserDetail(userDetail: NSUserDetailResponse) {
+    private fun setUserDetail(userDetail: NSUserDetailResponse?) {
         binding.apply {
-            setDashboard()
-            tvUserTitle.text = userDetail.data?.username
+            tvUserTitle.text = userDetail?.data?.username
 
            /* clUserName.setOnClickListener {
                 switchActivity(
@@ -234,6 +245,7 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
             NSConstants.FLEETS_TAB -> setFragmentBack()
             NSConstants.SERVICE_TAB -> setFragmentBack()
             NSConstants.DISPATCH_TAB -> setFragmentBack()
+            NSConstants.SETTING_TAB -> setFragmentBack()
         }
     }
 
@@ -257,6 +269,10 @@ class NSDashboardFragment : BaseViewModelFragment<NSDashboardViewModel, NsFragme
                 }
 
                 is DispatchTabFragment -> {
+                    fragment.onBackClick(this@NSDashboardFragment)
+                }
+
+                is SettingTabFragment -> {
                     fragment.onBackClick(this@NSDashboardFragment)
                 }
             }

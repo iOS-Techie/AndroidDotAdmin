@@ -4,6 +4,7 @@ import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glide200
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.databinding.LayoutFleetItemBinding
@@ -25,7 +26,7 @@ class NSFleetManagementRecycleAdapter(
                 tvItemActive.status(isActive)
                 tvItemTitle.getMapValue(name)
                 ivVendor.glide200(R.drawable.ic_place_holder_img, url = response.logo, scale = logoScale)
-
+                switchFleet.rotation()
                 switchFleet.switchEnableDisable(isActive)
 
                 clViewMoreVendor.setOnClickListener {

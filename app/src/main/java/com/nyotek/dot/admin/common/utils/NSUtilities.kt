@@ -1,19 +1,26 @@
 package com.nyotek.dot.admin.common.utils
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.net.Uri
+import android.os.CountDownTimer
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.gson.Gson
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.NSDateTimeHelper
 import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
+import com.nyotek.dot.admin.common.callbacks.NSLocalJsonCallback
 import com.nyotek.dot.admin.databinding.LayoutCreateLocalBinding
 import com.nyotek.dot.admin.databinding.LayoutRecycleViewBinding
 import com.nyotek.dot.admin.databinding.LayoutRecycleViewFixBinding
@@ -24,6 +31,7 @@ import com.nyotek.dot.admin.repository.network.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.repository.network.responses.FleetData
 import com.nyotek.dot.admin.repository.network.responses.FleetServiceResponse
 import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
+import com.nyotek.dot.admin.repository.network.responses.NSLanguageStringResponse
 import com.nyotek.dot.admin.repository.network.responses.NSLocalLanguageResponse
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
@@ -35,6 +43,16 @@ import com.nyotek.dot.admin.widgets.NSCommonEditText
 import com.nyotek.dot.admin.widgets.NSCommonRecycleView
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.Reader
+import java.io.StringWriter
+import java.io.Writer
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 import java.util.UUID
 
 
@@ -397,5 +415,105 @@ object NSUtilities {
             .replace("٥".toRegex(), "5").replace("٦".toRegex(), "6")
             .replace("٧".toRegex(), "7").replace("٨".toRegex(), "8")
             .replace("٩".toRegex(), "9").replace("٠".toRegex(), "0")
+    }
+
+    private var isDatePicker: Boolean = false
+    private val countDownTimer = object : CountDownTimer(3000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+
+        }
+
+        override fun onFinish() {
+            isDatePicker = false
+        }
+    }
+
+    fun openDatePicker(
+        activity: Activity, selectedDate: String = "", callback: (String, String, String, String) -> Unit) {
+
+        val dateList = if (selectedDate.isNotEmpty())  selectedDate.split("-") else NSDateTimeHelper.getCurrentDate().split("-")
+
+        val dpd = DatePickerDialog(
+            activity,
+            R.style.DialogTheme,
+            { _, year, monthOfYear, dayOfMonth ->
+                val selectedCalendar = Calendar.getInstance()
+                selectedCalendar.set(year, monthOfYear, dayOfMonth)
+
+                val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+                dateFormatter.timeZone = TimeZone.getTimeZone("UTC")
+                val formattedDate = dateFormatter.format(selectedCalendar.time)
+
+                val dayMonth = getDateZero(dayOfMonth)
+                val monthYear = getDateZero(monthOfYear + 1)
+
+                callback(formattedDate, dayMonth, monthYear, year.toString())
+            },
+            dateList[0].toInt(),
+            dateList[1].toInt() - 1,
+            dateList[2].toInt()
+        )
+
+        dpd.datePicker.minDate = getMillisFromYearMonthDay(1900, Calendar.JANUARY, 1)
+        dpd.datePicker.maxDate = getMillisFromYearMonthDay(2100, Calendar.DECEMBER, 31)
+
+        try {
+            dpd.setOnShowListener {
+                if (Resources.getSystem() != null) {
+                    val headerView = dpd.findViewById<View>(
+                        Resources.getSystem().getIdentifier("date_picker_header", "id", "android")
+                    )
+                    headerView?.setBackgroundColor(ColorResources.getPrimaryColor())
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        if (!dpd.isShowing) {
+            if (!isDatePicker) {
+                isDatePicker = true
+                countDownTimer.start()
+                dpd.show()
+            }
+        }
+    }
+
+    private fun getMillisFromYearMonthDay(year: Int, month: Int, day: Int): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day)
+        return calendar.timeInMillis
+    }
+
+    fun getDateZero(value: Int?): String {
+        return if ((value ?: 0) < 10) {
+            if (value == 0) {
+                "01"
+            } else {
+                "0$value"
+            }
+        } else {
+            value.toString()
+        }
+    }
+
+    fun getLocalJsonRowData(activity: Activity, rowData: Int, callback: NSLocalJsonCallback) {
+        val jsonString: String = commonJsonResponse(activity, rowData)
+        callback.onLocal(Gson().fromJson(jsonString, NSLanguageStringResponse::class.java))
+    }
+
+    fun commonJsonResponse(activity: Activity, rawFile: Int): String {
+        val inputStream: InputStream = activity.resources.openRawResource(rawFile)
+        val writer: Writer = StringWriter()
+        val buffer = CharArray(1024)
+        inputStream.use { stream ->
+            val reader: Reader = BufferedReader(InputStreamReader(stream, "UTF-8"))
+            var n: Int
+            while (reader.read(buffer).also { n = it } != -1) {
+                writer.write(buffer, 0, n)
+            }
+        }
+
+        return writer.toString()
     }
 }

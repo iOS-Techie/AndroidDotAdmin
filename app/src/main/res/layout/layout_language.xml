@@ -44,6 +44,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_line"/>
 
+        <View
+            android:id="@+id/view_space"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_6sdp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/rv_language"
+            app:layout_constraintBottom_toTopOf="@id/tv_cancel_language_dialog"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <com.nyotek.dot.admin.widgets.NSPrimaryTextView
             android:id="@+id/tv_cancel_language_dialog"
             style="@style/LayoutWidthHeightZeroWrap"

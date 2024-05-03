@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/cl_info_window" xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/cl_info_window"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/_120sdp"
     android:layout_height="@dimen/_85sdp"
     android:minWidth="@dimen/_100sdp"
     android:paddingHorizontal="@dimen/_10sdp"
     android:paddingVertical="@dimen/_8sdp"
     android:background="@drawable/ic_map_dialog_bg"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <include android:id="@+id/layout_driver_id"
         layout="@layout/layout_comman_map_dialog"

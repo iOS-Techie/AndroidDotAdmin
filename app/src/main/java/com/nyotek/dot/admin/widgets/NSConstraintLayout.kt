@@ -42,6 +42,9 @@ class NSConstraintLayout : ConstraintLayout {
 
     fun init() {
         when (this.id) {
+            R.id.cl_profile_edit_ico -> {
+                ColorResources.setCardBackground(this, 100f, 2, ColorResources.getPrimaryColor(), ColorResources.getWhiteColor())
+            }
             R.id.cl_driver_detail, R.id.cl_dispatch_detail -> {
                 ColorResources.setBackground(this)
             }
@@ -57,10 +60,10 @@ class NSConstraintLayout : ConstraintLayout {
             R.id.cl_email, R.id.cl_password, R.id.cl_username -> {
                 ColorResources.setCardBgWhiteBackground(this, 8f, 2, ColorResources.getPrimaryColor())
             }
-            R.id.cl_header_top, R.id.cl_header_settings -> {
+            R.id.cl_header_top -> {
                 ColorResources.setConstraintBackground(this)
             }
-            R.id.cl_dashboard_bg, R.id.cl_settings_bg -> {
+            R.id.cl_dashboard_bg, R.id.cl_settings_bg, R.id.cl_user_detail_bg -> {
                 ColorResources.setBackground(this)
             }
             R.id.cl_side_nav -> {

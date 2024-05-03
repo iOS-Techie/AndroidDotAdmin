@@ -254,17 +254,20 @@ class NSCapabilitiesFragment : BaseViewModelFragment<NSCapabilitiesViewModel, Ns
                             }
 
                             tvSave.setOnClickListener {
-                                progress.visibility = View.VISIBLE
-                                createEditCapability(
-                                    capabilityName,
-                                    isCreate,
-                                    dataItem?.id ?: "") { list ->
-                                    progress.gone()
-                                    dialog.dismiss()
-                                    if (list.isValidList()) {
-                                        setAdapter(list)
-                                    } else {
-                                        viewModel.hideProgress()
+                                if (capabilityName.isNotEmpty()) {
+                                    progress.visibility = View.VISIBLE
+                                    createEditCapability(
+                                        capabilityName,
+                                        isCreate,
+                                        dataItem?.id ?: ""
+                                    ) { list ->
+                                        progress.gone()
+                                        dialog.dismiss()
+                                        if (list.isValidList()) {
+                                            setAdapter(list)
+                                        } else {
+                                            viewModel.hideProgress()
+                                        }
                                     }
                                 }
                             }

@@ -63,14 +63,6 @@
         tools:targetApi="m"
         tools:replace="android:allowBackup,android:label">
         <activity
-            android:name=".ui.settings.NSSettingActivity"
-            android:exported="false"
-            android:screenOrientation="sensorLandscape">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".ui.passwordReset.NSPasswordResetActivity"
             android:exported="false"
             android:screenOrientation="sensorLandscape" />

@@ -91,6 +91,13 @@ class NSApiErrorHandler {
         const val ERROR_GET_REGIONS = "error_get_regions"
         const val ERROR_ASSIGN_DRIVER = "error_assign_driver_dispatch"
         const val ERROR_DRIVER_LIST_DISPATCH = "error_driver_list_dispatch"
+        const val ERROR_SOCIAL_INFO = "error_social_info"
+        const val ERROR_CREATE_SOCIAL_INFO = "error_create_social_info"
+        const val ERROR_UPDATE_SOCIAL_PROFILE_IMAGE = "error_update_social_profile_image"
+        const val ERROR_UPDATE_FIRST_NAME = "error_update_social_first_name"
+        const val ERROR_UPDATE_LAST_NAME = "error_update_social_last_name"
+        const val ERROR_UPDATE_BIOGRAPHY = "error_update_biography"
+        const val ERROR_LOCAL_CHANGE_LANGUAGE = "error_local_change_language"
 
         /**
          * To get the error messages from API endpoints

@@ -1037,6 +1037,54 @@ class NSApiManager {
             request(authorisedLocationClient.getDriverList(serviceId), callback)
         }
     }
+
+    suspend fun getSocialInfo(callback: NSRetrofitCallback<NSSocialResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.getSocialInfo(), callback)
+        }
+    }
+
+    suspend fun createSocialInfo(request: CreateSocialRequest, callback: NSRetrofitCallback<NSSocialResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.createSocialInfo(request), callback)
+        }
+    }
+
+    suspend fun updateSocialProfileImage(request: HashMap<String, String>, callback: NSRetrofitCallback<NSErrorResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.updateSocialProfileImage(request), callback)
+        }
+    }
+
+    suspend fun updateFirstName(request: HashMap<String, String>, callback: NSRetrofitCallback<NSErrorResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.updateFirstName(request), callback)
+        }
+    }
+
+    suspend fun updateLastName(request: HashMap<String, String>, callback: NSRetrofitCallback<NSErrorResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.updateLastName(request), callback)
+        }
+    }
+
+    suspend fun updateDob(request: HashMap<String, Int>, callback: NSRetrofitCallback<NSErrorResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.updateDob(request), callback)
+        }
+    }
+
+    suspend fun updateBiography(request: HashMap<String, String>, callback: NSRetrofitCallback<NSErrorResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised3100Client.updateBiography(request), callback)
+        }
+    }
+
+    suspend fun setLocaleChange(languageRequest: NSLanguageLocaleRequest, callback: NSRetrofitCallback<NSErrorResponse>) {
+        if (isNetwork(callback)) {
+            request(authorised4554Client.setLocal(languageRequest), callback)
+        }
+    }
 }
 
 /**
@@ -1259,4 +1307,28 @@ interface RTApiInterface {
 
     @GET("location/service/{service_id}")
     suspend fun getDriverList(@Path("service_id") id: String): retrofit2.Response<DriverListModel>
+
+    @GET("social/me")
+    suspend fun getSocialInfo(): retrofit2.Response<NSSocialResponse>
+
+    @POST("social/me")
+    suspend fun createSocialInfo(@Body request: CreateSocialRequest): retrofit2.Response<NSSocialResponse>
+
+    @PATCH("social/me/profile_pic_url")
+    suspend fun updateSocialProfileImage(@Body request: HashMap<String, String>): retrofit2.Response<NSErrorResponse>
+
+    @PATCH("social/me/firstname")
+    suspend fun updateFirstName(@Body request: HashMap<String, String>): retrofit2.Response<NSErrorResponse>
+
+    @PATCH("social/me/lastname")
+    suspend fun updateLastName(@Body request: HashMap<String, String>): retrofit2.Response<NSErrorResponse>
+
+    @PATCH("social/me/dob")
+    suspend fun updateDob(@Body request: HashMap<String, Int>): retrofit2.Response<NSErrorResponse>
+
+    @PATCH("social/me/biography")
+    suspend fun updateBiography(@Body request: HashMap<String, String>): retrofit2.Response<NSErrorResponse>
+
+    @POST("user/me/locale")
+    suspend fun setLocal(@Body languageRequest: NSLanguageLocaleRequest): retrofit2.Response<NSErrorResponse>
 }

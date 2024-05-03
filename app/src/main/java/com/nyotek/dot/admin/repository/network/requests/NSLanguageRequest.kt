@@ -25,3 +25,9 @@ open class NSLanguageStringRequest (
 	@Expose
 	var lastModified: Any? = null
 )
+
+data class NSLanguageLocaleRequest(
+
+	@field:SerializedName("locale")
+	val locale: String? = null
+)

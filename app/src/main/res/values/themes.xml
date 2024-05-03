@@ -122,4 +122,8 @@
         <item name="maxHeight">@dimen/_18sdp</item>
         <item name="indicatorName">LineScaleIndicator</item>
     </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/primary</item>
+    </style>
 </resources>

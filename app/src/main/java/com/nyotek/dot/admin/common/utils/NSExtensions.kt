@@ -32,6 +32,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
+import coil.load
+import coil.size.Scale
+import coil.transform.CircleCropTransformation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -53,8 +56,10 @@ import com.nyotek.dot.admin.common.SafeClickListener
 import com.nyotek.dot.admin.common.SingleClickListener
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemBinding
 import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
+import com.nyotek.dot.admin.repository.network.responses.LanguageSelectModel
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -855,4 +860,79 @@ fun String.getTagLists(): MutableList<String> {
     } else {
         return arrayListOf()
     }
+}
+
+fun String.convertToInt(): Int {
+    return if (this.isNotEmpty()) {
+        this.toInt()
+    } else {
+        0
+    }
+}
+
+fun EditText.onTextChanged(delay: Long = 500L, callback: suspend (String) -> Unit): Job {
+    var job: Job? = null
+
+    val watcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // Not needed for this implementation
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            job?.cancel()
+            job = CoroutineScope(Dispatchers.Main).launch {
+                delay(delay)
+                s?.toString()?.let { text ->
+                    callback(text)
+                }
+            }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            // Not needed for this implementation
+        }
+    }
+
+    addTextChangedListener(watcher)
+
+    val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        // Handle exceptions if any during coroutine execution
+        throwable.printStackTrace()
+    }
+
+    return Job().apply {
+        invokeOnCompletion {
+            removeTextChangedListener(watcher)
+        }
+    }
+}
+
+fun ImageView.setCoilCircle(url: String?) {
+    load(url) {
+        scale(Scale.FILL).error(R.drawable.ic_place_holder_home)
+        transformations(CircleCropTransformation())
+    }
+}
+
+fun getCompareAndGetDeviceLanguage(language: MutableList<LanguageSelectModel>): LanguageSelectModel {
+    val countryCode = Locale.getDefault().country
+    val languageCode = Locale.getDefault().language
+    val locale = "$languageCode-$countryCode"
+    val model = language.find { it.locale == locale.lowercase() }
+    var code: LanguageSelectModel? = null
+
+    if (model == null) {
+        code = language.find { it.locale == languageCode.lowercase() }
+    }
+
+    return model
+        ?: if (code != null){
+            return code
+        } else {
+            return LanguageSelectModel(locale = "en-us", direction = "rtl")
+        }
+}
+
+fun ImageView.rotation() {
+    this.rotation = if (NSLanguageConfig.isLanguageRtl()) 180f else 0f
 }

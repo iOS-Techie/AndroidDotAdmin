@@ -139,7 +139,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
             stringResource.apply {
                 setLayoutHeader(
                     layoutHomeHeader,
-                    dispatchManagement,
+                    dispatchDetails,
                     isSearch = false,
                     isBack = true
                 )

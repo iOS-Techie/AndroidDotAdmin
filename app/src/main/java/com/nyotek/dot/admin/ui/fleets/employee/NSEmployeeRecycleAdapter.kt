@@ -3,6 +3,7 @@ package com.nyotek.dot.admin.ui.fleets.employee
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getMapValue
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.databinding.LayoutEmployeeListBinding
 import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
@@ -24,7 +25,7 @@ class NSEmployeeRecycleAdapter(
             response.apply {
                 tvDescription.getMapValue(jobMap[response.titleId]?.name?: hashMapOf())
                 tvEmployeeTitle.text = response.userId
-
+                switchService.rotation()
                 switchService.switchEnableDisable(isActive)
                 ColorResources.setBackground(clEmployeeItem, if (response.isEmployeeSelected) ColorResources.getBackgroundColor() else ColorResources.getWhiteColor())
 

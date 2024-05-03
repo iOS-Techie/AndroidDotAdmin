@@ -9,6 +9,7 @@ import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.status
@@ -72,7 +73,7 @@ class NSServiceManagementRecycleAdapter(
                 }
 
                 tvDescription.text = description
-
+                switchService.rotation()
                 switchService.setOnClickListener {
                     isActive = !isActive
                     switchService.switchEnableDisable(isActive)

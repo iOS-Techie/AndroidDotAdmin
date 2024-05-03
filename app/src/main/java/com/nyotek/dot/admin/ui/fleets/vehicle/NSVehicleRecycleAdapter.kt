@@ -6,6 +6,7 @@ import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -54,6 +55,7 @@ class NSVehicleRecycleAdapter(
                     }
                 }
 
+                switchService.rotation()
                 layoutVehicle.apply {
                     ivIcon.glideWithPlaceHolder(url = vehicleImg)
                     layoutName.tvDetail.text = manufacturer

@@ -4,7 +4,6 @@ import android.content.Context
 import com.franmontiel.localechanger.LocaleChanger
 import com.nyotek.dot.admin.common.apiRefresh.NyoTokenRefresher
 import com.nyotek.dot.admin.common.NSApplication
-import com.nyotek.dot.admin.common.NSLanguage
 import java.util.Locale
 
 
@@ -36,10 +35,10 @@ object NSLanguageConfig {
         for (language in languageList) {
             if (language.locale != null) {
                 if (language.locale!!.lowercase().contains(getLocalLanguage().lowercase()) && (pref.languageData != null && pref.languageData!!.isEmpty())) {
-                    setLanguagesPref(position, language.locale, language.direction.equals("rtl"))
+                    setLanguagesPref(language.locale, language.direction.equals("rtl"))
                     break
                 } else if (language.locale!!.lowercase().contains(getLocalLanguage().lowercase()) && pref.isLanguageSelected == false) {
-                    setLanguagesPref(position, language.locale, language.direction.equals("rtl"))
+                    setLanguagesPref(language.locale, language.direction.equals("rtl"))
                     break
                 }
                 position++
@@ -47,37 +46,23 @@ object NSLanguageConfig {
         }
     }
 
-    fun setLanguagesPref(position: Int, languageName: String?, isRtl: Boolean) {
+    fun setLanguagesPref(languageName: String?, isRtl: Boolean) {
         val pref = NSApplication.getInstance().getPrefs()
-        pref.languagePosition = position
         pref.languageData = languageName
         pref.isLanguageRTL = isRtl
         setLanguage()
     }
 
-    fun setLanguageRtl() {
+    fun setLocalLanguage(language: String, direction: String) {
         val pref = NSApplication.getInstance().getPrefs()
-        pref.isLanguageRTL = isLanguageSelected()
+        pref.isLanguageRTL = direction == "rtl"
+        LocaleChanger.setLocale(Locale(getLanguageCode(language), getLanguageRegion(language)))
     }
+
 
     private fun setLanguage() {
         val pref = NSApplication.getInstance().getPrefs()
         LocaleChanger.setLocale(Locale(getLanguageCode(pref.languageData!!), getLanguageRegion(pref.languageData!!)))
-    }
-
-    fun isLanguageSelected(): Boolean {
-        val pref = NSApplication.getInstance().getPrefs()
-        return when {
-            pref.languageData.isNullOrEmpty() -> {
-                false
-            }
-            pref.languageData!!.lowercase().contains(NSLanguage.AR.name.lowercase()) -> {
-                true
-            }
-            else -> {
-                false
-            }
-        }
     }
 
     fun logout() {
@@ -85,12 +70,10 @@ object NSLanguageConfig {
         NSApplication.getInstance().getApiManager().cancelAllRequests()
         val pref = NSApplication.getInstance().getPrefs()
         val language = pref.languageData
-        val position = pref.languagePosition
         val languageSelected = pref.isLanguageSelected
         val isDirection = pref.isLanguageRTL
         NSApplication.getInstance().getPrefs().clearPrefData()
         pref.languageData = language
-        pref.languagePosition = position
         pref.isLanguageSelected = languageSelected
         pref.isLanguageRTL = isDirection
     }
@@ -98,5 +81,10 @@ object NSLanguageConfig {
     fun getSelectedLanguage(): String {
         val pref = NSApplication.getInstance().getPrefs()
         return (pref.languageData?:"").lowercase()
+    }
+
+    fun isLanguageRtl(): Boolean {
+        val pref = NSApplication.getInstance().getPrefs()
+        return pref.isLanguageRTL
     }
 }

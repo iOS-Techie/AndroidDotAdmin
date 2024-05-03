@@ -171,6 +171,7 @@
                 android:paddingStart="@dimen/_4sdp"
                 android:paddingEnd="@dimen/_4sdp"
                 android:textSize="@dimen/_5sdp"
+                android:textAlignment="viewStart"
                 app:layout_constraintBottom_toTopOf="@id/tv_model_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_model_img"

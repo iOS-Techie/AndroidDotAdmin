@@ -2,6 +2,7 @@ package com.nyotek.dot.admin.ui.capabilities
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.utils.getMapValue
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.status
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
@@ -20,6 +21,7 @@ class NSCapabilitiesRecycleAdapter(
     onBind = { binding, response, stringResource,_, _ ->
         binding.apply {
             response.apply {
+                switchService.rotation()
                 tvModify.text = stringResource.modify
                 tvActiveTitle.status(isActive)
                 switchService.switchEnableDisable(isActive)

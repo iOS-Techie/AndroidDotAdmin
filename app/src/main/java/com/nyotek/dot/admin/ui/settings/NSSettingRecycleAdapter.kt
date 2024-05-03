@@ -6,8 +6,6 @@ import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.databinding.LayoutSettingItemBinding
 import com.nyotek.dot.admin.repository.network.responses.NSSettingListResponse
 
-private var itemSize = 0
-
 class NSSettingRecycleAdapter(
     private val isLanguageSelected: Boolean,
     private val settingItemSelectCallBack: ((String) -> Unit)
@@ -17,14 +15,14 @@ class NSSettingRecycleAdapter(
         LayoutSettingItemBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, position, _ ->
+    onBind = { binding, response, _, position, size ->
         with(binding) {
             response.apply {
                 tvProfileTitle.text = title
                 ivSettingIc.setImageResource(image)
 
-                if (position == itemSize - 1) {
-                    viewLine.gone()
+                if (position == size - 1) {
+                    viewLineDivider.gone()
                 }
 
                 ivNext.setImageResource(if (isLanguageSelected) R.drawable.arrow_left else R.drawable.arrow_right)
@@ -35,8 +33,4 @@ class NSSettingRecycleAdapter(
             }
         }
     }
-) {
-    fun setItemSize(size: Int) {
-        itemSize = size
-    }
-}
+)

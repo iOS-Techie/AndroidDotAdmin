@@ -24,6 +24,7 @@ object NSDateTimeHelper {
     private const val DATE_FORMAT_ORDER_STATUS = "dd MMM yyyy | hh:mm a"
     private const val DATE_FORMAT_DISPATCH_REQUEST = "dd/MM/yyyy"
     private const val DATE_FORMAT_DISPATCH_REQUEST_TIME = "hh:mm:ss a"
+    private const val DATE_FOR_NOTIFICATION = "yyyy-MM-dd"
 
     /**
      * To convert the input date string to expected output pattern
@@ -79,7 +80,7 @@ object NSDateTimeHelper {
      */
     fun getDateValue(
         dateString: String?): Date? {
-        val format = SimpleDateFormat(DATE_FOR_SORTING, Locale.getDefault())
+        val format = SimpleDateFormat(DATE_FOR_SORTING, Locale.ENGLISH)
         format.timeZone = TimeZone.getTimeZone("UTC")
         val date: Date? = try {
             dateString?.let { format.parse(it) }
@@ -128,13 +129,14 @@ object NSDateTimeHelper {
      * To get the current dateTime string
      *
      */
-    fun getCurrentDate(): Date {
-        return Date()
+    fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat(DATE_FOR_NOTIFICATION,  Locale.ENGLISH)
+        return sdf.format(Date())
     }
 
 
     fun getConvertedDate(date: Date): String {
-        val sdf = SimpleDateFormat(DATE_FORMAT_CURRENT_TIME, Locale.getDefault())
+        val sdf = SimpleDateFormat(DATE_FORMAT_CURRENT_TIME, Locale.ENGLISH)
         return sdf.format(date)
     }
 
@@ -205,7 +207,7 @@ object NSDateTimeHelper {
     fun formatDateToNowOrDateTime(inputDateString: String): String {
         if (inputDateString.isNotEmpty()) {
             val stringResource = StringResourceResponse()
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.ENGLISH)
             try {
                 val inputDate = inputFormat.parse(inputDateString)
                 val currentTime = System.currentTimeMillis()
@@ -216,13 +218,13 @@ object NSDateTimeHelper {
                     secondsDifference < 60 -> stringResource.justNow // Less than a minute ago
                     secondsDifference < 3600 -> "${secondsDifference / 60}m ago" // Less than an hour ago
                     secondsDifference < 86400 -> "${secondsDifference / 3600}h ago" // Less than a day ago
-                    else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(
+                    else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(
                         inputDate ?: Date()
                     ) // Default format for older dates
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                val inputNewFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                val inputNewFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
                 val inputNewDate = inputNewFormat.parse(inputDateString)
                 val currentTime = System.currentTimeMillis()
                 val dateDifference = currentTime - inputNewDate!!.time
@@ -232,7 +234,7 @@ object NSDateTimeHelper {
                     secondsDifference < 60 -> stringResource.justNow // Less than a minute ago
                     secondsDifference < 3600 -> "${secondsDifference / 60}m ago" // Less than an hour ago
                     secondsDifference < 86400 -> "${secondsDifference / 3600}h ago" // Less than a day ago
-                    else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(
+                    else -> SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH).format(
                         inputNewDate
                     ) // Default format for older dates
                 }

@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName
 data class NSUserDetailResponse(
     @SerializedName("data")
     @Expose
-    var data: NSMainDetailUser? = null
+    var data: NSDetailUser? = null
 )
 
-data class NSMainDetailUser(
+data class NSDetailUser(
     @SerializedName("id")
     @Expose
     var id: String? = null,
@@ -45,5 +45,11 @@ data class NSMainDetailUser(
     var mobile: String? = null,
     @SerializedName("mobile_verified")
     @Expose
-    var mobileVerified: Boolean = false
+    var mobileVerified: Boolean = false,
+    @SerializedName("locale")
+    @Expose
+    var locale: String? = null,
+    @SerializedName("social")
+    @Expose
+    var social: NSSocialDataResponse? = null
 )

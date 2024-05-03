@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.FrameLayout
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.crashlytics.internal.settings.Settings.FeatureFlagData
 import com.google.gson.Gson
 import com.mapbox.common.TileStore
 import com.mapbox.geojson.Feature
@@ -36,6 +35,7 @@ import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.nyotek.dot.admin.BuildConfig
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.callbacks.NSMapDriverClickCallback
+import com.nyotek.dot.admin.common.utils.NSLanguageConfig
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -101,6 +101,7 @@ class MapBoxView(private val context: Context) {
     fun initMapView(context: Context, view: MapView, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null) {
         fleetDataItem = fleetData
         callback = mapCallback
+        view.layoutDirection = View.LAYOUT_DIRECTION_LTR
         mapView = view
         map = view.getMapboxMap()
         viewAnnotationManager = view.viewAnnotationManager
@@ -342,7 +343,7 @@ class MapBoxView(private val context: Context) {
                     allowOverlap(false)
                 }
             )
-
+            viewAnnotation?.layoutDirection = if(NSLanguageConfig.isLanguageRtl()) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
             isDialogDisplay = true
             InfoWindowMultilineBinding.bind(viewAnnotation!!).apply {
                 val stringResource = StringResourceResponse()

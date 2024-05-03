@@ -55,6 +55,12 @@ open class NSFragment : Fragment() {
         }
     }
 
+    var settingFragmentChangeCallback: NSFragmentChangeCallback? = object : NSFragmentChangeCallback {
+        override fun setFragment(previousFragmentName: String, fragment: Fragment, isBackStack: Boolean,  bundle: Bundle) {
+            EventBus.getDefault().post(NSSettingCall(fragment, bundle))
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
@@ -297,20 +303,11 @@ open class NSFragment : Fragment() {
     }
 
     /**
-     * Is language selected
-     *
-     * @return is english language selected
-     */
-    fun isLanguageSelected(): Boolean {
-        return pref.isLanguageRTL
-    }
-
-    /**
      * Show dialog language select
      *
      */
     @SuppressLint("InflateParams")
-    fun showDialogLanguageSelect() {
+    fun showDialogLanguageSelect(isFromHome: Boolean = false) {
         try {
             val sheetView: View = activity.layoutInflater
                 .inflate(R.layout.layout_language, null)
@@ -328,12 +325,37 @@ open class NSFragment : Fragment() {
                 stringResource.apply {
                     tvLanguageTitle.text = selectLanguage
                     tvCancelLanguageDialog.text = cancel
+                    tvCancelLanguageDialog.setVisibility(!isFromHome)
+                    viewSpace.setVisibility(isFromHome)
                 }
-
+                selectLanguageBottomSheet?.setCancelable(!isFromHome)
                 rvLanguage.layoutManager = LinearLayoutManager(activity)
+                pref.languagePosition = languageList.indexOfFirst { it.locale == pref.languageData }
+                var selectedLanguage: Int
+
                 languageAdapter =
-                    NSLanguageRecycleAdapter(pref) {position ->
-                        notifyAdapter(languageAdapter!!)
+                    NSLanguageRecycleAdapter(pref, NSLanguageConfig.isLanguageRtl()) { position ->
+                        pref.languagePosition = position
+                        languageAdapter?.notifyItemRangeChanged(0, languageList.size)
+                        selectedLanguage = position
+
+                        if (languageList[selectedLanguage].locale != pref.languageData) {
+                            pref.isLanguageSelected = true
+                            NSConstants.isLanguageChange = true
+                            NSLanguageConfig.setLanguagesPref(
+                                (languageList[selectedLanguage].locale ?: "").lowercase(),
+                                languageList[selectedLanguage].direction.equals("rtl")
+                            )
+                            NSApplication.getInstance().setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
+                            switchActivity(
+                                NSSplashActivity::class.java,
+                                flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
+                            )
+                        }
+
+
+
+                        /*notifyAdapter(languageAdapter!!)
                         selectLanguageBottomSheet!!.dismiss()
                         pref.isLanguageSelected = true
 
@@ -346,7 +368,7 @@ open class NSFragment : Fragment() {
                         switchActivity(
                             NSSplashActivity::class.java,
                             flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
-                        )
+                        )*/
                     }
                 rvLanguage.adapter = languageAdapter
                 languageAdapter?.setData(languageList)
@@ -374,7 +396,7 @@ open class NSFragment : Fragment() {
     fun setLayoutHeader(bind: LayoutHomeHeaderBinding, headerTitle: String, headerButton: String = "", isSearch: Boolean = false, isProfile: Boolean = false, isBack: Boolean = false) {
         bind.apply {
             stringResource.apply {
-                ivBack.rotation = if (isLanguageSelected()) 180f else 0f
+                ivBack.rotation = if (NSLanguageConfig.isLanguageRtl()) 180f else 0f
                 ivProfile.setCircleImage(R.drawable.ic_profile_demo)
                 etSearch.hint = searchHere
                 tvHeaderTitle.text = headerTitle
@@ -392,7 +414,7 @@ open class NSFragment : Fragment() {
         bind.apply {
             stringResource.apply {
                 viewSpace.setVisibility(!isBack)
-                ivBack.rotation = if (isLanguageSelected()) 180f else 0f
+                ivBack.rotation = if (NSLanguageConfig.isLanguageRtl()) 180f else 0f
                 ivProfile.setCircleImage(R.drawable.ic_profile_demo)
                 clProfileDetail.setVisibility(isProfile)
                 clSearch.setVisibility(isSearch)

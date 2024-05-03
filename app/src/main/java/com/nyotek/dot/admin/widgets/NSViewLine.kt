@@ -41,13 +41,16 @@ class NSViewLine : View {
     private fun init() {
         when (id) {
             R.id.view_divider_dashboard, R.id.view_divider_dashboard_vertical, R.id.view_line_text, R.id.view_line_text_divider, R.id.view_line_text_sub, R.id.view_line_divider -> {
-                ColorResources.setBackground(this,getColorWithAlpha(ColorResources.getPrimaryColor(), 5f))
+                ColorResources.setBackground(this, ColorResources.getBorderColor())
             }
             R.id.view_line_decoration -> {
                 ColorResources.setBackground(this,getColorWithAlpha(ColorResources.getPrimaryColor(), 100f))
             }
             R.id.view_line_dispatch -> {
                 ColorResources.setCardBackground(this, 0f, 0, ColorResources.getBorderColor(), ColorResources.getBorderColor())
+            }
+            R.id.view_line_side -> {
+                ColorResources.setBackground(this, ColorResources.getPrimaryColor())
             }
             else -> {
                 ColorResources.setBackground(this, ColorResources.getBorderColor())

@@ -113,28 +113,4 @@ object NSUserRepository: BaseRepository() {
             })
         }
     }
-
-    /**
-     * To get user detail
-     *
-     * @param viewModelCallback The callback to communicate back to view model
-     */
-    fun getUserDetail(viewModelCallback: NSGenericViewModelCallback) {
-        CoroutineScope(Dispatchers.IO).launch {
-            apiManager.getUserDetailData(object : NSRetrofitCallback<NSUserDetailResponse>(
-                viewModelCallback, NSApiErrorHandler.ERROR_USER_DETAIL
-            ) {
-                override fun <T> onResponse(response: Response<T>) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        Log.d("UserDetailCall", "getUserMainDetail: 5")
-                        viewModelCallback.onSuccess(response.body()?:NSUserDetailResponse())
-                    }
-                }
-
-                override fun onRefreshToken() {
-                    getUserDetail(viewModelCallback)
-                }
-            })
-        }
-    }
 }

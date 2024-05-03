@@ -1,10 +1,13 @@
 package com.nyotek.dot.admin.common
 
+import com.nyotek.dot.admin.repository.network.responses.NSDetailUser
+import com.nyotek.dot.admin.repository.network.responses.NSUserDetailResponse
 import com.nyotek.dot.admin.repository.network.responses.NSUserResponse
 import retrofit2.Response
 
 object NSUserManager {
     private val prefs = NSApplication.getInstance().getPrefs()
+    private var userDetail: NSDetailUser? = null
 
     //Status of user logged in
     val isUserLoggedIn: Boolean get() = !getAuthToken().isNullOrBlank()
@@ -35,5 +38,13 @@ object NSUserManager {
     fun <T> saveUserInPreference(response: Response<T>) {
         val userResponse = response.body() as NSUserResponse
         prefs.userData = userResponse
+    }
+
+    fun setUserDetail(user: NSDetailUser?) {
+        userDetail = user
+    }
+
+    fun getUserDetail(): NSDetailUser? {
+        return userDetail
     }
 }

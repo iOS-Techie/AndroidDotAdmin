@@ -17,6 +17,7 @@ import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -135,7 +136,7 @@ class NSVehicleDetailFragment :
                     layoutNotes.edtValue.setText(vehicleDataItem?.additionalNote)
 
                     switchService.isActivated = vehicleDataItem?.isActive == true
-
+                    switchService.rotation()
                     //Get Capability List
                     getCapabilitiesList(
                         isShowError = false,

@@ -31,6 +31,7 @@ class NSConstants {
         const val DASHBOARD_TAB = "dashboard_tab"
         const val SERVICE_TAB = "service_tab"
         const val DISPATCH_TAB = "dispatch_tab"
+        const val SETTING_TAB = "setting_tab"
 
         //Keys
         const val USER_DETAIL_KEY = "user_detail_key"
@@ -59,6 +60,7 @@ class NSConstants {
         const val ORDER_STATUS_ASSIGNED = "assigned"
         const val ORDER_STATUS_CANCELLED = "cancelled"
         const val MANUFACTURE_YEAR = "manufacture_year"
+        var isLanguageChange = false
         var isFragmentDispatchLoad: Boolean = false
 
     }

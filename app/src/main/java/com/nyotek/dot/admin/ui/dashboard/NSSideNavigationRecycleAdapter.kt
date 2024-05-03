@@ -22,19 +22,19 @@ class NSSideNavigationRecycleAdapter(
             response.apply {
                 tvNavSubTitle.text = title
                 val isSelected = NSApplication.getInstance().getSelectedNavigationType() == type
-                val color = if (isSelected) ColorResources.getWhiteColor() else ColorResources.getPrimaryColor()
+                val color = if (isSelected) ColorResources.getPrimaryColor() else ColorResources.getSecondaryGrayColor()
 
                 ivIconNav.setImageResource(icon)
                 tvNavSubTitle.setTextColor(color)
                 viewLineNav.setVisibility(!isSelected)
-                ivIconNav.setColorFilter(if (isSelected) ColorResources.getWhiteColor() else ColorResources.getPrimaryColor())
-
-                if (isSelected) {
+                ivIconNav.setColorFilter(if (isSelected) ColorResources.getPrimaryColor() else ColorResources.getSecondaryGrayColor())
+                viewLineSide.setVisibility(isSelected)
+                /*if (isSelected) {
                     ColorResources.setBackground(clItem, ColorResources.getPrimaryColor())
                 } else {
                     ivIconNav.setColorFilter(ColorResources.getPrimaryColor())
                     clItem.setBackgroundResource(0)
-                }
+                }*/
 
                 ivSideArrow.setVisibility(isSelected)
                 ivSideArrow.rotation = if (isLanguageSelected) 180f else 0f

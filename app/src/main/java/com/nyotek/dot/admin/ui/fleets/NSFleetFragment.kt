@@ -17,6 +17,7 @@ import com.nyotek.dot.admin.common.utils.addOnTextChangedListener
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getTagLists
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setVisibility
 import com.nyotek.dot.admin.common.utils.setupWithAdapterAndCustomLayoutManager
@@ -239,6 +240,7 @@ class NSFleetFragment : BaseViewModelFragment<NSFleetViewModel, NsFragmentFleets
                             layoutRegion.tvCommonTitle.text = selectRegion
                         }
 
+                        switchService.rotation()
                         brandLogoHelper.initView(activity, ivBrandLogo, tvSizeTitle)
                         rlBrandLogo.setOnClickListener {
                             brandLogoHelper.openImagePicker(

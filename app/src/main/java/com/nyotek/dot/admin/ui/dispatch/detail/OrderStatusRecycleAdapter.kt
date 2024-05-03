@@ -22,7 +22,7 @@ class OrderStatusRecycleAdapter : BaseViewBindingAdapter<LayoutOrderStatusBindin
         binding.apply {
             response.apply {
                 ivStatusTimeline.setImage(if(response.isSelected == true) R.drawable.ic_order_status_selected else R.drawable.ic_order_status_un_selected)
-                tvStatusTitle.text = response.status?.capitalizeWord()
+                tvStatusTitle.text = response.status?.trim()?.capitalizeWord()
                 tvStatusDate.text = NSDateTimeHelper.getDateForStatusView(response.statusCapturedTime)
                 view2.setBackgroundResource(R.drawable.status_bg)
 

@@ -25,6 +25,7 @@ class NSPreferences(context: Context) {
         private const val KEY_SELECTED_ADDRESS_DETAIL = "key_selected_address_detail"
         private const val KEY_LANGUAGE_SELECTED = "key_language_selected"
         private const val KEY_LANGUAGE_SELECT_RTL = "key_language_data_direction"
+        private const val KEY_TEMP_LANGUAGE_POSITION = "key_temp_language_position"
     }
 
     /**
@@ -46,7 +47,7 @@ class NSPreferences(context: Context) {
      */
     var languagePosition: Int?
         get() {
-            return preference.getInt(KEY_LANGUAGE_POSITION, 0)
+            return preference.getInt(KEY_LANGUAGE_POSITION, -1)
         }
         set(language) {
             prefEdit.putInt(KEY_LANGUAGE_POSITION, language!!).apply()
@@ -69,6 +70,14 @@ class NSPreferences(context: Context) {
         }
         set(language) {
             prefEdit.putBoolean(KEY_LANGUAGE_SELECT_RTL, language).apply()
+        }
+
+    var languageTempPosition: Int?
+        get() {
+            return preference.getInt(KEY_TEMP_LANGUAGE_POSITION, -1)
+        }
+        set(language) {
+            prefEdit.putInt(KEY_TEMP_LANGUAGE_POSITION, language!!).apply()
         }
 
     /**

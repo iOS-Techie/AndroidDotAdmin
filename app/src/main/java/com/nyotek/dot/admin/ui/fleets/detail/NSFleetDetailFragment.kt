@@ -24,6 +24,7 @@ import com.nyotek.dot.admin.common.utils.getTagLists
 import com.nyotek.dot.admin.common.utils.getTags
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.setPager
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.status
@@ -120,6 +121,7 @@ class NSFleetDetailFragment :
                 tvSave.text = save
                 tvCancel.text = cancel
                 brandLogoHelper.initView(activity, ivBrandLogo, tvSizeTitle)
+                switchService.rotation()
             }
         }
     }

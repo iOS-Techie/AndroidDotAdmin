@@ -13,6 +13,7 @@ import com.nyotek.dot.admin.common.callbacks.NSEmployeeEditCallback
 import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.rotation
 import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
@@ -105,6 +106,7 @@ class NSDriverDetailFragment :
         binding.apply {
             viewModel.apply {
                 stringResource.apply {
+                    switchService.rotation()
                     layoutHomeHeader.tvHeaderTitle.text = driverDetail
                     tvVehicleTitle.text = driverDetail
                     tvVehicleActive.status(employeeDataItem?.isActive == true)
