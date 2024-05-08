@@ -115,6 +115,7 @@
                     android:layout_height="@dimen/_8sdp"
                     android:gravity="center"
                     android:lines="1"
+                    android:visibility="gone"
                     android:paddingStart="@dimen/_3sdp"
                     android:paddingEnd="@dimen/_4sdp"
                     android:background="@drawable/half_white_round_12"
