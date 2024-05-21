@@ -2,15 +2,12 @@ package com.nyotek.dot.admin.ui.fleets.vehicle
 
 import android.app.Activity
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.utils.glideCenter
-import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
+import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
 import com.nyotek.dot.admin.common.utils.rotation
-import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
+import com.nyotek.dot.admin.common.utils.setCoil
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
-import com.nyotek.dot.admin.common.utils.setVisibility
-import com.nyotek.dot.admin.common.utils.setVisibilityIn
 import com.nyotek.dot.admin.common.utils.switchEnableDisable
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutVehicleListItemBinding
@@ -57,7 +54,7 @@ class NSVehicleRecycleAdapter(
 
                 switchService.rotation()
                 layoutVehicle.apply {
-                    ivIcon.glideWithPlaceHolder(url = vehicleImg)
+                    ivIcon.setCoil(url = vehicleImg, NSConstants.FILL)
                     layoutName.tvDetail.text = manufacturer
                     layoutNumber.tvDetail.text = model
                     layoutEmail.tvDetail.text = registrationNo

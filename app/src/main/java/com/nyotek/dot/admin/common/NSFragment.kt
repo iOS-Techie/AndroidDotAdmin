@@ -13,8 +13,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nyotek.dot.admin.R
-import com.nyotek.dot.admin.common.callbacks.*
-import com.nyotek.dot.admin.common.utils.*
+import com.nyotek.dot.admin.common.callbacks.NSFragmentChangeCallback
+import com.nyotek.dot.admin.common.callbacks.NSProgressCallback
+import com.nyotek.dot.admin.common.callbacks.NSReplaceFragmentCallback
+import com.nyotek.dot.admin.common.utils.ColorResources
+import com.nyotek.dot.admin.common.utils.NSAlertUtils
+import com.nyotek.dot.admin.common.utils.NSLanguageConfig
+import com.nyotek.dot.admin.common.utils.NSUtilities
+import com.nyotek.dot.admin.common.utils.hideKeyboard
+import com.nyotek.dot.admin.common.utils.setCoilCircleImage
+import com.nyotek.dot.admin.common.utils.setVisibility
+import com.nyotek.dot.admin.common.utils.switchActivity
 import com.nyotek.dot.admin.databinding.LayoutContactUsBinding
 import com.nyotek.dot.admin.databinding.LayoutHomeHeaderBinding
 import com.nyotek.dot.admin.databinding.LayoutLanguageBinding
@@ -397,7 +406,7 @@ open class NSFragment : Fragment() {
         bind.apply {
             stringResource.apply {
                 ivBack.rotation = if (NSLanguageConfig.isLanguageRtl()) 180f else 0f
-                ivProfile.setCircleImage(R.drawable.ic_profile_demo)
+                ivProfile.setCoilCircleImage(R.drawable.ic_profile_demo)
                 etSearch.hint = searchHere
                 tvHeaderTitle.text = headerTitle
                 tvHeaderBtn.text = headerButton
@@ -415,7 +424,7 @@ open class NSFragment : Fragment() {
             stringResource.apply {
                 viewSpace.setVisibility(!isBack)
                 ivBack.rotation = if (NSLanguageConfig.isLanguageRtl()) 180f else 0f
-                ivProfile.setCircleImage(R.drawable.ic_profile_demo)
+                ivProfile.setCoilCircleImage(R.drawable.ic_profile_demo)
                 clProfileDetail.setVisibility(isProfile)
                 clSearch.setVisibility(isSearch)
                 tvHeaderDate.text = headerDate

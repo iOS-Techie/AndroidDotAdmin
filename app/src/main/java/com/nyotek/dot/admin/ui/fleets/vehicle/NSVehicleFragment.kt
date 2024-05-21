@@ -15,8 +15,8 @@ import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.callbacks.NSVehicleEditCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.buildAlertDialog
-import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
+import com.nyotek.dot.admin.common.utils.setCoilCenter
 import com.nyotek.dot.admin.common.utils.setupWithAdapter
 import com.nyotek.dot.admin.common.utils.visible
 import com.nyotek.dot.admin.databinding.LayoutCreateVehicleBinding
@@ -220,7 +220,7 @@ class NSVehicleFragment : BaseViewModelFragment<NSVehicleViewModel, NsFragmentVe
                                 layoutNotes.edtValue.setText(additionalNote)
                                 layoutModel.edtValue.setText(model)
                                 layoutLoadCapacity.edtValue.setText(loadCapacity)
-                                layoutLogo.ivBrandLogo.glideCenter(url = vehicleImg)
+                                layoutLogo.ivBrandLogo.setCoilCenter(url = vehicleImg)
                             }
                         }
 

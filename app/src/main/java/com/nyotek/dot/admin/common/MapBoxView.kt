@@ -86,7 +86,7 @@ class MapBoxView(private val context: Context) {
         frameLayout.removeAllViews()
         frameLayout.addView(view)
         mapView = view
-
+        view.layoutDirection = View.LAYOUT_DIRECTION_LTR
         mapView?.setOnTouchListener { view, _ ->
             view.parent.requestDisallowInterceptTouchEvent(true)
             false
@@ -176,6 +176,23 @@ class MapBoxView(private val context: Context) {
 
     fun clearMap() {
         mapView?.removeAllViews()
+        map = null
+        mapMarker = null
+        styleMap = null
+        fleetDataItem = null
+        viewAnnotationManager = null
+        viewAnnotation = null
+        map = null
+        latitude = 0.0
+        longitude = 0.0
+        styleMap = null
+        mapMarker = null
+        mapView = null
+        callback = null
+        isDialogDisplay = false
+    }
+
+    fun clearMapView() {
         map = null
         mapMarker = null
         styleMap = null

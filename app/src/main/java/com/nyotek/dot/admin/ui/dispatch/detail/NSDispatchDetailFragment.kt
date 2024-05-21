@@ -17,12 +17,11 @@ import com.nyotek.dot.admin.common.NSOrderCancelEvent
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.glideNormal
-import com.nyotek.dot.admin.common.utils.glideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.invisible
 import com.nyotek.dot.admin.common.utils.isValidList
+import com.nyotek.dot.admin.common.utils.setCoilWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setGlideWithHolder
-import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setTexts
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -183,7 +182,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
                 layoutDriver.apply {
                     val padding = requireContext().resources.getDimension(R.dimen.icon_padding).toInt()
                     ivIcon.setBackgroundResource(R.drawable.icon_bg)
-                    ivIcon.setGlideWithPlaceHolder(activity, "", R.drawable.ic_driver_handle)
+                    ivIcon.setCoilWithPlaceHolder(R.drawable.ic_driver_handle)
                     ivIcon.setPadding(padding, padding,padding,padding)
                     layoutName.tvItemTitle.text = name
                     layoutNumber.tvItemTitle.text = number
@@ -284,7 +283,7 @@ class NSDispatchDetailFragment : BaseViewModelFragment<NSDispatchDetailViewModel
             viewModel.apply {
                 layoutVehicle.apply {
                     vehicleData?.apply {
-                        ivIcon.glideWithPlaceHolder(url = vehicleImg)
+                        ivIcon.setCoilWithPlaceHolder(url = vehicleImg)
                         layoutName.tvDetail.text = vehicleData.manufacturer
                         layoutNumber.tvDetail.text = model
                         layoutEmail.tvDetail.text = registrationNo

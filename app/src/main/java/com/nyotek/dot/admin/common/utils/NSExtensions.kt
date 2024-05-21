@@ -35,6 +35,7 @@ import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
+import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -448,45 +449,51 @@ fun TextView.getConvertedDateForUserView(date: String?) {
     this.text = NSDateTimeHelper.getDateTimeForUserView(date)
 }
 
-fun ImageView.setCircleImage(resource: Int = 0, url: String? = null) {
-    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).circleCrop().into(this)
+fun ImageView.setCoilCircleImage(url: Int?) {
+    load(url) {
+        scale(Scale.FILL).error(R.drawable.ic_place_holder_home).placeholder(R.drawable.ic_place_holder_progress)
+        transformations(CircleCropTransformation())
+    }
 }
 
-fun ImageView.glide(resource: Int = 0, url: String? = null) {
-    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).into(this)
+fun ImageView.setCoilCircle(url: String?) {
+    load(url) {
+        scale(Scale.FILL).error(R.drawable.ic_place_holder_home).placeholder(R.drawable.ic_place_holder_progress)
+        transformations(CircleCropTransformation())
+    }
 }
 
-fun ImageView.glideWithPlaceHolder(resource: Int = R.drawable.ic_place_holder_product, url: String? = null) {
-    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).placeholder(resource).into(this)
+fun ImageView.setCoilWithPlaceHolder(url: String?) {
+    load(url) {
+        scale(Scale.FILL).error(R.drawable.ic_place_holder_product).placeholder(R.drawable.ic_place_holder_progress)
+    }
 }
 
-fun ImageView.setGlideWithOutPlace(url: String? = null) {
-    Glide.with(NSApplication.getInstance().applicationContext).load(url).into(this)
+fun ImageView.setCoilCenter(url: String?) {
+    load(url) {
+        scale(Scale.FILL).error(R.drawable.ic_place_holder_product).placeholder(R.drawable.ic_place_holder_progress)
+    }
 }
 
-fun ImageView.glideCenter(resource: Int = 0, url: String? = null) {
-    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).apply(
-        RequestOptions().transform(
-            CenterCrop()
-        )).into(this)
+fun ImageView.setCoilWithPlaceHolder(url: Int?) {
+    load(url) {
+        scale(Scale.FILL).error(R.drawable.ic_place_holder_product).placeholder(R.drawable.ic_place_holder_progress)
+    }
 }
 
-fun ImageView.setGlideWithPlaceHolder(
-    activity: Activity,
-    url: String?,
-    resource: Int = R.drawable.ic_place_holder_product
-) {
-    Glide.with(activity.applicationContext).load(if (url.isNullOrBlank()) resource else url).placeholder(resource).error(resource).circleCrop().into(this)
-}
-
-fun ImageView.glide200(resource: Int = 0, url: String? = null, scale: String?) {
-    Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).apply(
-        RequestOptions().transform(
-            if (scale.equals(NSConstants.FILL)) CenterCrop() else FitCenter(),
-            RoundedCorners(20)
-        )
-    ).placeholder(R.drawable.ic_place_holder_img)
-        .error(R.drawable.ic_place_holder_img).into(this)
+fun ImageView.setCoil(url: String?, exScale: String?, placeHolder: Int = R.drawable.ic_place_holder_img, corners: Float = 5f) {
+    if (placeHolder > 0) {
+        load(url) {
+            scale(if (exScale == NSConstants.FILL) Scale.FILL else Scale.FIT).
+            placeholder(R.drawable.ic_place_holder_progress).error(placeHolder)
+            transformations(RoundedCornersTransformation(corners, corners, corners, corners))
+        }
+    } else {
+        load(url) {
+            scale(if (exScale == NSConstants.FILL) Scale.FILL else Scale.FIT).placeholder(R.drawable.ic_place_holder_progress)
+            transformations(RoundedCornersTransformation(corners, corners, corners, corners))
+        }
+    }
 }
 
 fun getLngValue(hashMap: Map<String, String>?): String {
@@ -801,33 +808,6 @@ fun ImageView.glideNormal(url: String? = null, callback: (Boolean) -> Unit) {
         .into(this)
 }
 
-public data class Quadruple<out A, out B, out C, out D>(
-    public val first: A,
-    public val second: B,
-    public val third: C,
-    public val fourth: D
-) : Serializable {
-
-    /**
-     * Returns string representation of the [Triple] including its [first], [second], [third] and [fourth] values.
-     */
-    public override fun toString(): String = "($first, $second, $third $fourth)"
-}
-
-public data class QuadrupleFive<out A, out B, out C, out D, out E>(
-    public val first: A,
-    public val second: B,
-    public val third: C,
-    public val fourth: D,
-    public val fifth: E
-) : Serializable {
-
-    /**
-     * Returns string representation of the [Triple] including its [first], [second], [third], [fourth] and [fifth] values.
-     */
-    public override fun toString(): String = "($first, $second, $third $fourth $fifth)"
-}
-
 public data class QuadrupleSix<out A, out B, out C, out D, out E, out F>(
     public val first: A,
     public val second: B,
@@ -837,9 +817,6 @@ public data class QuadrupleSix<out A, out B, out C, out D, out E, out F>(
     public val sixth: F
 ) : Serializable {
 
-    /**
-     * Returns string representation of the [Triple] including its [first], [second], [third], [fourth] and [fifth] values.
-     */
     public override fun toString(): String = "($first, $second, $third $fourth $fifth)"
 }
 
@@ -907,16 +884,9 @@ fun EditText.onTextChanged(delay: Long = 500L, callback: suspend (String) -> Uni
     }
 }
 
-fun ImageView.setCoilCircle(url: String?) {
-    load(url) {
-        scale(Scale.FILL).error(R.drawable.ic_place_holder_home)
-        transformations(CircleCropTransformation())
-    }
-}
-
 fun getCompareAndGetDeviceLanguage(language: MutableList<LanguageSelectModel>): LanguageSelectModel {
-    val countryCode = Locale.getDefault().country
     val languageCode = Locale.getDefault().language
+    val countryCode = if(languageCode.equals("ar") && Locale.getDefault().country.isEmpty()) "sa" else Locale.getDefault().country
     val locale = "$languageCode-$countryCode"
     val model = language.find { it.locale == locale.lowercase() }
     var code: LanguageSelectModel? = null
@@ -929,7 +899,7 @@ fun getCompareAndGetDeviceLanguage(language: MutableList<LanguageSelectModel>): 
         ?: if (code != null){
             return code
         } else {
-            return LanguageSelectModel(locale = "en-us", direction = "rtl")
+            return LanguageSelectModel(locale = "en-us", direction = "ltr")
         }
 }
 

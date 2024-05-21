@@ -9,15 +9,16 @@ import com.nyotek.dot.admin.common.BrandLogoHelper
 import com.nyotek.dot.admin.common.MapBoxView
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.OnTextUpdateHelper
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.callbacks.NSVehicleEditCallback
 import com.nyotek.dot.admin.common.utils.NSUtilities
 import com.nyotek.dot.admin.common.utils.getLngValue
-import com.nyotek.dot.admin.common.utils.glideCenter
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.isValidList
 import com.nyotek.dot.admin.common.utils.rotation
+import com.nyotek.dot.admin.common.utils.setCoilCenter
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -32,6 +33,7 @@ import com.nyotek.dot.admin.repository.network.responses.FleetDataItem
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDetailData
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeViewModel
+import com.nyotek.dot.admin.ui.fleets.employee.detail.NSDriverDetailFragment
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -101,7 +103,10 @@ class NSVehicleDetailFragment :
 
     fun resetFragment() {
         viewModel.apply {
+            mapBoxView?.clearMap()
+            binding.mapFragmentVehicle.removeAllViews()
             vehicleDataItem = null
+            employeeViewModel.employeeDataItem = null
             initCreateVendor(false)
         }
     }
@@ -121,7 +126,7 @@ class NSVehicleDetailFragment :
                     layoutCapability.tvCommonTitle.text = capability
                     layoutNotes.tvCommonTitle.text = additionalNote
                     spinner.tvCommonTitle.text = updateDriver
-                    layoutLogo.ivBrandLogo.glideCenter(url = vehicleDataItem?.vehicleImg)
+                    layoutLogo.ivBrandLogo.setCoilCenter(url = vehicleDataItem?.vehicleImg)
                     clVehicleItem.gone()
                     layoutManufacturer.edtValue.setText(vehicleDataItem?.manufacturer)
                     layoutManufacturer.edtValue.isEnabled = false
@@ -135,7 +140,7 @@ class NSVehicleDetailFragment :
                     layoutLoadCapacity.edtValue.isEnabled = false
                     layoutNotes.edtValue.setText(vehicleDataItem?.additionalNote)
 
-                    switchService.isActivated = vehicleDataItem?.isActive == true
+                    switchService.switchEnableDisable(vehicleDataItem?.isActive == true)
                     switchService.rotation()
                     //Get Capability List
                     getCapabilitiesList(
@@ -205,6 +210,7 @@ class NSVehicleDetailFragment :
         binding.apply {
             viewModel.apply {
                 vehicleDataItem?.apply {
+                    switchService.switchEnableDisable(isActive)
                     switchService.setOnClickListener {
                         isActive = !isActive
                         tvVehicleActive.status(isActive)
@@ -292,6 +298,7 @@ class NSVehicleDetailFragment :
 
             if (viewModel.driverId?.isNotEmpty() == true && idList.isValidList() && spinnerPosition >= 0) {
                 employeeViewModel.getDriverLocation(viewModel.driverId) {
+                    mapBoxView?.clearMapView()
                     mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, it)
                 }
             } else {
@@ -345,6 +352,21 @@ class NSVehicleDetailFragment :
             vehicleDataItem?.vehicleImg = url
             vehicleDataItem?.let { it1 -> vehCallback?.onVehicle(it1) }
             updateVehicleImage(url)
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMapReset(event: NSOnMapResetEvent) {
+        if (employeeViewModel.isMapReset) {
+            employeeViewModel.isMapReset = false
+            binding.mapFragmentVehicle.removeAllViews()
+            mapBoxView?.clearMap()
+            mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, employeeViewModel.driverDetailFleetData)
+        }
+        if (event.isReset) {
+            employeeViewModel.isMapReset = event.isReset
+            binding.mapFragmentVehicle.removeAllViews()
+            mapBoxView?.clearMap()
         }
     }
 }

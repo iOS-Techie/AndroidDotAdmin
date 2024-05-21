@@ -80,7 +80,7 @@ class NSSplashViewModel(application: Application) : NSViewModel(application) {
         getUserDetail(splashResponse, callback)
     }
 
-    fun getUserDetail(splashResponse: SplashResponseModel?, callback: ((Boolean, Boolean, Boolean) -> Unit)) {
+    private fun getUserDetail(splashResponse: SplashResponseModel?, callback: ((Boolean, Boolean, Boolean) -> Unit)) {
 
         fun checkLanguage(data: NSDetailUser?) {
             NSUserManager.setUserDetail(data)
@@ -90,6 +90,20 @@ class NSSplashViewModel(application: Application) : NSViewModel(application) {
                 val lang = getCompareAndGetDeviceLanguage(splashResponse?.localResponse?.data?: arrayListOf())
                 NSLanguageConfig.setLocalLanguage(lang.locale!!.lowercase(), lang.direction!!.lowercase())
                 getLocalStrings(NSConstants.SERVICE_ID, lang.locale!!, callback)
+            }  else if (data?.locale?.isNotEmpty() == true) {
+
+                val languageSelectedModel = splashResponse?.localResponse?.data?.find { it.locale == data.locale }
+                if (languageSelectedModel != null) {
+                    NSLanguageConfig.setLanguagesPref(
+                        data.locale?.lowercase(),
+                        languageSelectedModel.direction.equals("rtl")
+                    )
+                    getLocalStrings(NSConstants.SERVICE_ID, data.locale!!.lowercase(), callback)
+                } else {
+                    hideProgress()
+                    callback.invoke(false, false, true)
+                }
+
             } else if(!data?.locale.equals(selectedLanguage) && selectedLanguage.isNotEmpty() && data?.locale != null){
                 //When Language change from another device on same account
                 val languageSelectedModel = splashResponse?.localResponse?.data?.find { it.locale == data.locale }

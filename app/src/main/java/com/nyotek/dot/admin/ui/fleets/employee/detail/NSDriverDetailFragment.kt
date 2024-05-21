@@ -14,7 +14,7 @@ import com.nyotek.dot.admin.common.utils.getLngValue
 import com.nyotek.dot.admin.common.utils.getMapValue
 import com.nyotek.dot.admin.common.utils.gone
 import com.nyotek.dot.admin.common.utils.rotation
-import com.nyotek.dot.admin.common.utils.setGlideWithPlaceHolder
+import com.nyotek.dot.admin.common.utils.setCoilWithPlaceHolder
 import com.nyotek.dot.admin.common.utils.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
 import com.nyotek.dot.admin.common.utils.setVisibility
@@ -28,7 +28,6 @@ import com.nyotek.dot.admin.repository.network.responses.JobListDataItem
 import com.nyotek.dot.admin.repository.network.responses.SpinnerData
 import com.nyotek.dot.admin.repository.network.responses.VehicleData
 import com.nyotek.dot.admin.repository.network.responses.VehicleDataItem
-import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeFragment
 import com.nyotek.dot.admin.ui.fleets.employee.NSEmployeeViewModel
 import com.nyotek.dot.admin.ui.fleets.vehicle.NSVehicleViewModel
 import org.greenrobot.eventbus.Subscribe
@@ -188,7 +187,7 @@ class NSDriverDetailFragment :
                 clDriverItem.setVisibility(isVisible)
 
                 vehicleData?.apply {
-                    icDriverImg.setGlideWithPlaceHolder(activity, url = vehicleImg)
+                    icDriverImg.setCoilWithPlaceHolder(url = vehicleImg)
                     tvUserTitle.text = manufacturer?:""
                     tvStatus.text = model?:""
                     updateVehicle(vehicleData)
