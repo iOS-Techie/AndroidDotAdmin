@@ -209,8 +209,48 @@ class DispatchDetailViewModel @Inject constructor(
                     }
                 }
 
-                dispatchListObserve.postValue(model)
+                if (vehicleId.isNotEmpty()) {
+                    dispatchListObserve.postValue(model)
+                    hideProgress()
+                } else {
+                    getVehicleDetail(model.driverListModel?.driverList?.first()?.vehicleId?:"", model)
+                }
+            } else {
+                hideProgress()
             }
+        }
+    }
+
+    private fun getVehicleDetail(vehicleId: String, model: NSDispatchDetailAllResponse) = viewModelScope.launch {
+        getVehicleApi(vehicleId, model)
+    }
+
+    private suspend fun getVehicleApi(vehicleId: String, model: NSDispatchDetailAllResponse) {
+        if (vehicleId.isNotEmpty()) {
+            performApiCalls(
+                {
+                    if (vehicleId.isNotEmpty()) {
+                        repository.remote.getDriverVehicleDetail(vehicleId)
+                    } else {
+                        null
+                    }
+                }) { responses, isSuccess ->
+
+                if (isSuccess) {
+                    for (data in responses) {
+                        when (data) {
+                            is NSDriverVehicleDetailResponse? -> {
+                                model.driverVehicleDetail = data
+                            }
+                        }
+                    }
+
+                    dispatchListObserve.postValue(model)
+                }
+                hideProgress()
+            }
+        } else {
+            dispatchListObserve.postValue(model)
             hideProgress()
         }
     }
@@ -235,14 +275,15 @@ class DispatchDetailViewModel @Inject constructor(
         }
     }
 
-    fun assignDriver(dispatchId: String, driverId: String) = viewModelScope.launch {
-        assignDriverApi(dispatchId, driverId)
+    fun assignDriver(dispatchId: String, driverId: String, vendorId: String) = viewModelScope.launch {
+        assignDriverApi(dispatchId, driverId, vendorId)
     }
 
-    private suspend fun assignDriverApi(orderId: String, driverId: String) {
+    private suspend fun assignDriverApi(orderId: String, driverId: String, vendorId: String) {
         showProgress()
         val map: HashMap<String, String> = hashMapOf()
         map["driver_id"] = driverId
+        map["fleet_id"] = vendorId
         performApiCalls(
             { repository.remote.assignDriver(orderId, map) }
         ) { _, isSuccess ->

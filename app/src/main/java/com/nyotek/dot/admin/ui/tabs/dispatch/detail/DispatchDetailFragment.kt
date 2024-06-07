@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.nyotek.dot.admin.common.extension.glideNormal
 import com.nyotek.dot.admin.common.extension.gone
 import com.nyotek.dot.admin.common.extension.invisible
 import com.nyotek.dot.admin.common.extension.isValidList
+import com.nyotek.dot.admin.common.extension.setCoilCenter
 import com.nyotek.dot.admin.common.extension.setGlideWithHolder
 import com.nyotek.dot.admin.common.extension.setNormalCoil
 import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
@@ -170,7 +172,8 @@ class DispatchDetailFragment : BaseFragment<NsFragmentDispatchDetailBinding>() {
             viewModel.apply {
                 layoutVehicle.apply {
                     vehicleData?.apply {
-                        ivIcon.setNormalCoil(url = vehicleImg)
+                        ivIcon.scaleType = ImageView.ScaleType.CENTER_CROP
+                        ivIcon.setCoilCenter(url = vehicleImg)
                         layoutName.tvDetail.text = vehicleData.manufacturer
                         layoutNumber.tvDetail.text = model
                         layoutEmail.tvDetail.text = registrationNo
@@ -301,7 +304,7 @@ class DispatchDetailFragment : BaseFragment<NsFragmentDispatchDetailBinding>() {
                         if (isSpinnerClick) {
                             isSpinnerClick = false
                             val driverId = list[position].driverId
-                            viewModel.assignDriver(dispatchSelectedData?.dispatchId?:"", driverId?:"")
+                            viewModel.assignDriver(dispatchSelectedData?.dispatchId?:"", driverId?:"", dispatchSelectedData?.vendorId?:"")
                         }
                     }
 
