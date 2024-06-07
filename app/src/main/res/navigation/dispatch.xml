@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dispatch"
+    app:startDestination="@id/dispatchFragment">
+
+    <fragment
+        android:id="@+id/dispatchFragment"
+        android:name="com.nyotek.dot.admin.ui.tabs.dispatch.DispatchFragment"
+        android:label="DispatchFragment">
+        <action
+            android:id="@+id/action_dispatchFragment_to_dispatchDetailFragment"
+            app:destination="@id/dispatchDetailFragment"
+            app:popUpTo="@id/dispatchDetailFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/dispatchDetailFragment"
+        android:name="com.nyotek.dot.admin.ui.tabs.dispatch.detail.DispatchDetailFragment"
+        android:label="DispatchDetailFragment">
+
+    </fragment>
+</navigation>

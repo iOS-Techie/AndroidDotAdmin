@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/LayoutWidthHeightMatchMatch"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.serviceManagement.NSServiceManagementFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include android:id="@+id/layout_home_header"
         layout="@layout/layout_home_header"/>

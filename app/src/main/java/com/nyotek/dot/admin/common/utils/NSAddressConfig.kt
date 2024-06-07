@@ -2,14 +2,10 @@ package com.nyotek.dot.admin.common.utils
 
 import android.view.View
 import androidx.fragment.app.FragmentActivity
-import com.nyotek.dot.admin.repository.network.responses.AddressData
-import com.nyotek.dot.admin.ui.fleets.map.LocationPickerDialog
-import com.nyotek.dot.admin.ui.fleets.map.NSMapViewModel
+import com.nyotek.dot.admin.models.responses.AddressData
+import com.nyotek.dot.admin.ui.tabs.fleets.map.LocationPickerDialog
+import com.nyotek.dot.admin.ui.tabs.fleets.map.NSMapViewModel
 
-
-/**
- * The language class that handles tasks that are common throughout the application languages
- */
 object NSAddressConfig {
 
     fun showAddressDialog(activity: FragmentActivity, mapViewModel: NSMapViewModel,

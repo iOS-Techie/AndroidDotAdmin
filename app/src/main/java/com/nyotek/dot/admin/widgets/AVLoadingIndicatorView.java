@@ -77,7 +77,7 @@ public class AVLoadingIndicatorView extends View {
 
     public AVLoadingIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs,defStyleAttr,R.style.AVLoadingIndicatorView);
+        init(context, attrs,defStyleAttr, R.style.AVLoadingIndicatorView);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

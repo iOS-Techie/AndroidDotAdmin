@@ -4,11 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import com.nyotek.dot.admin.R
-import com.nyotek.dot.admin.common.NSApplication
+import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.utils.ColorResources
-import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSPrimaryTextView : AppCompatTextView {
+
+    @Inject
+    lateinit var colorResources: ColorResources
 
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
@@ -31,16 +36,16 @@ class NSPrimaryTextView : AppCompatTextView {
     }
 
     private fun init() {
-        setTextColor(ColorResources.getPrimaryColor())
+        setTextColor(colorResources.getPrimaryColor())
         when (id) {
-            R.id.tv_cancel_service, R.id.tv_cancel_app, R.id.tv_cancel -> {
-                ColorResources.setBlankBackground(this, 5f, 1, ColorResources.getPrimaryColor())
+             R.id.tv_cancel_service, R.id.tv_cancel_app, R.id.tv_cancel -> {
+                colorResources.setBlankBackground(this, 5f, 1, colorResources.getPrimaryColor())
             }
             R.id.tv_modify -> {
-                ColorResources.setBlankBackground(this, 5f, 1, ColorResources.getPrimaryColor())
+                colorResources.setBlankBackground(this, 5f, 1, colorResources.getPrimaryColor())
             }
             R.id.tv_select_all_title -> {
-                text = StringResourceResponse().selectAll
+                text = NSUtilities.getStringResource().selectAll
             }
         }
     }

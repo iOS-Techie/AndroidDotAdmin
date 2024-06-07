@@ -19,14 +19,14 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.drjacky.imagepicker.ImagePicker
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
-import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
-import com.nyotek.dot.admin.common.utils.visible
-import com.nyotek.dot.admin.ui.common.NSFileUploadViewModel
+import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
+import com.nyotek.dot.admin.common.extension.visible
+import com.nyotek.dot.admin.ui.common.UserUploadViewModel
 
 class BrandLogoHelper(fragment: Fragment, private val callback: NSFileUploadCallback) {
 
-    val fileViewModel: NSFileUploadViewModel by lazy {
-        ViewModelProvider(fragment)[NSFileUploadViewModel::class.java]
+    val fileViewModel: UserUploadViewModel by lazy {
+        ViewModelProvider(fragment)[UserUploadViewModel::class.java]
     }
     private var activity: Activity? = null
     private var brandLogoDataResult: ActivityResultLauncher<Intent>? = null

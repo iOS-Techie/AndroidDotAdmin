@@ -4,10 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.nyotek.dot.admin.R
+import com.nyotek.dot.admin.common.extension.getColorWithAlpha
 import com.nyotek.dot.admin.common.utils.ColorResources
-import com.nyotek.dot.admin.common.utils.getColorWithAlpha
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSViewLine : View {
+
+    @Inject
+    lateinit var colorResources: ColorResources
 
     constructor(context: Context?) : super(context) {
         if (!isInEditMode) {
@@ -41,19 +47,19 @@ class NSViewLine : View {
     private fun init() {
         when (id) {
             R.id.view_divider_dashboard, R.id.view_divider_dashboard_vertical, R.id.view_line_text, R.id.view_line_text_divider, R.id.view_line_text_sub, R.id.view_line_divider -> {
-                ColorResources.setBackground(this, ColorResources.getBorderColor())
+                colorResources.setBackground(this,getColorWithAlpha(colorResources.getPrimaryColor(), 5f))
             }
             R.id.view_line_decoration -> {
-                ColorResources.setBackground(this,getColorWithAlpha(ColorResources.getPrimaryColor(), 100f))
+                colorResources.setBackground(this,getColorWithAlpha(colorResources.getPrimaryColor(), 100f))
             }
             R.id.view_line_dispatch -> {
-                ColorResources.setCardBackground(this, 0f, 0, ColorResources.getBorderColor(), ColorResources.getBorderColor())
+                colorResources.setCardBackground(this, 0f, 0, colorResources.getBorderColor(), colorResources.getBorderColor())
             }
             R.id.view_line_side -> {
-                ColorResources.setBackground(this, ColorResources.getPrimaryColor())
+                colorResources.setBackground(this, colorResources.getPrimaryColor())
             }
             else -> {
-                ColorResources.setBackground(this, ColorResources.getBorderColor())
+                colorResources.setBackground(this, colorResources.getBorderColor())
             }
         }
     }

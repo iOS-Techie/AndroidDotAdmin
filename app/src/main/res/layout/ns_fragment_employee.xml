@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fleets.employee.NSEmployeeFragment">
+    android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cl_employee_list"
@@ -30,7 +29,7 @@
                 android:paddingEnd="0dp"
                 android:textAlignment="viewStart"
                 android:textAppearance="@style/CommonTextSemiBold"
-                android:textSize="@dimen/_6ssp"
+                android:textSize="@dimen/_6sdp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_add_employee"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

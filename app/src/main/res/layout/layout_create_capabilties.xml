@@ -64,7 +64,6 @@
             app:layout_constraintTop_toTopOf="@id/tv_capability_title"
             app:layout_constraintBottom_toBottomOf="@id/tv_capability_title"/>
 
-
         <View
             android:id="@+id/view_line_divider"
             android:layout_width="0dp"

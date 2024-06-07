@@ -4,8 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import com.nyotek.dot.admin.common.utils.ColorResources
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSBlackTextView : AppCompatTextView {
+
+    @Inject
+    lateinit var colorResources: ColorResources
+
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
             init()
@@ -27,7 +34,7 @@ class NSBlackTextView : AppCompatTextView {
     }
 
     private fun init() {
-        setTextColor(ColorResources.getBlackColor())
-        setHintTextColor(ColorResources.getTabSecondaryColor())
+        setTextColor(colorResources.getBlackColor())
+        setHintTextColor(colorResources.getTabSecondaryColor())
     }
 }

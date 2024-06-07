@@ -14,18 +14,17 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSRequestCodes.REQUEST_LOCATION_CODE
-import com.nyotek.dot.admin.common.utils.buildAlertDialog
-import com.nyotek.dot.admin.common.utils.setSafeOnClickListener
-import com.nyotek.dot.admin.common.utils.visible
+import com.nyotek.dot.admin.common.extension.buildAlertDialog
+import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
+import com.nyotek.dot.admin.common.extension.visible
+import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.databinding.LayoutCustomAlertDialogBinding
-import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
-/**
- * Created by Admin on 25-01-2022.
- */
-class NSPermissionHelper(context: Context) {
-    private val nsContext = context
+@Singleton
+class NSPermissionHelper @Inject constructor(@ApplicationContext private val context: Context, private val colorResources: ColorResources) {
     private var gpsEnabled = false
     private var networkEnabled = false
 
@@ -110,7 +109,7 @@ class NSPermissionHelper(context: Context) {
     }
 
     private fun openLocationPermission(activity: Activity) {
-        val stringResource = StringResourceResponse()
+        val stringResource = colorResources.getStringResource()
         buildAlertDialog(
             activity,
             LayoutCustomAlertDialogBinding::inflate
@@ -161,8 +160,8 @@ class NSPermissionHelper(context: Context) {
 
     @Suppress("unused")
     fun isGpsEnable(activity: Activity) {
-        val stringResource = StringResourceResponse()
-        val lm = nsContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val stringResource = colorResources.getStringResource()
+        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         try {
             gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -190,7 +189,7 @@ class NSPermissionHelper(context: Context) {
                     tvSubTitle.text = activity.resources.getString(R.string.open_location_settings)
                     tvOk.setSafeOnClickListener {
                         dialog.dismiss()
-                        nsContext.startActivity(
+                        context.startActivity(
                             Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                         )
                     }
@@ -211,7 +210,7 @@ class NSPermissionHelper(context: Context) {
     }
 
     private fun showAlertLocation(context: Context, title: String, message: String) {
-        val stringResource = StringResourceResponse()
+        val stringResource = colorResources.getStringResource()
         buildAlertDialog(
             context,
             LayoutCustomAlertDialogBinding::inflate

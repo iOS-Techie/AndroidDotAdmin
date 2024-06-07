@@ -1,6 +1,6 @@
 package com.nyotek.dot.admin.common.callbacks
 
-import com.nyotek.dot.admin.repository.network.responses.NSLanguageStringResponse
+import com.nyotek.dot.admin.models.responses.NSLanguageStringResponse
 
 
 /**

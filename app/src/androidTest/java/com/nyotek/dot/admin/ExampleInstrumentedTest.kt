@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.nyotek.hubz.admin", appContext.packageName)
+        assertEquals("com.nyotek.dot.admin", appContext.packageName)
     }
 }

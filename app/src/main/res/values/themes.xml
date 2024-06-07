@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Nyo" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <style name="Theme.DoTAdmin" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -53,21 +54,21 @@
     </style>
 
     <style name="LoginHeadingFontsWrap" parent="LayoutWidthHeightWrap">
-        <item name="android:textSize">@dimen/_16ssp</item>
+        <item name="android:textSize">@dimen/_16sdp</item>
     </style>
 
     <style name="LoginSubFontsWrap" parent="LayoutWidthHeightWrap">
-        <item name="android:textSize">@dimen/_8ssp</item>
+        <item name="android:textSize">@dimen/_8sdp</item>
         <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="LoginFontsZeroWrap" parent="LayoutWidthHeightZeroWrap">
-        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="android:textSize">@dimen/_10sdp</item>
         <item name="android:gravity">start|center</item>
     </style>
 
     <style name="LoginSubFontsZeroWrap" parent="LayoutWidthHeightZeroWrap">
-        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
         <item name="android:includeFontPadding">false</item>
     </style>
 

@@ -5,8 +5,14 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.utils.ColorResources
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSCommonEditText : AppCompatEditText {
+
+    @Inject
+    lateinit var colorResources: ColorResources
 
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
@@ -31,10 +37,10 @@ class NSCommonEditText : AppCompatEditText {
     private fun init() {
         when (id) {
             R.id.et_service_description -> {
-                ColorResources.setCardBackground(this, 10f, 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
+                colorResources.setCardBackground(this, 10f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
             }
         }
-        setTextColor(ColorResources.getPrimaryColor())
-        setHintTextColor(ColorResources.getTabSecondaryColor())
+        setTextColor(colorResources.getPrimaryColor())
+        setHintTextColor(colorResources.getTabSecondaryColor())
     }
 }

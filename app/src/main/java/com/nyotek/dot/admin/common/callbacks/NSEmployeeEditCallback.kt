@@ -1,6 +1,7 @@
 package com.nyotek.dot.admin.common.callbacks
 
-import com.nyotek.dot.admin.repository.network.responses.EmployeeDataItem
+import com.nyotek.dot.admin.models.responses.EmployeeDataItem
+
 
 interface NSEmployeeEditCallback {
 

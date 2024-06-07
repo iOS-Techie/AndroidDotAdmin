@@ -63,7 +63,7 @@
                 android:paddingEnd="@dimen/_5sdp"
                 android:textAlignment="viewStart"
                 android:textAppearance="@style/CommonTextRegular"
-                android:textSize="@dimen/_4ssp"
+                android:textSize="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.nyotek.dot.admin.R
-import com.nyotek.dot.admin.common.utils.gone
-import com.nyotek.dot.admin.common.utils.visible
+import com.nyotek.dot.admin.common.extension.gone
+import com.nyotek.dot.admin.common.extension.visible
 import com.nyotek.dot.admin.databinding.LayoutDispatchSpinnerItemBinding
-import com.nyotek.dot.admin.databinding.LayoutSpinnerItemDropDownBinding
-import com.nyotek.dot.admin.repository.network.responses.NSGetServiceListData
+import com.nyotek.dot.admin.models.responses.NSGetServiceListData
+import javax.inject.Inject
 
-class DispatchSpinnerAdapter(private val context: Context, private val items: MutableList<NSGetServiceListData>) : BaseAdapter() {
+class DispatchSpinnerAdapter @Inject constructor(private val context: Context, private val items: MutableList<NSGetServiceListData>) : BaseAdapter() {
 
     override fun getCount(): Int {
         return items.size

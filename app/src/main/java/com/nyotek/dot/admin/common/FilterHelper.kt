@@ -2,15 +2,21 @@ package com.nyotek.dot.admin.common
 
 import android.app.Activity
 import androidx.recyclerview.widget.RecyclerView
-import com.nyotek.dot.admin.common.utils.isValidList
-import com.nyotek.dot.admin.common.utils.linearHorizontal
-import com.nyotek.dot.admin.common.utils.notifyAdapter
-import com.nyotek.dot.admin.common.utils.setVisibility
-import com.nyotek.dot.admin.repository.network.responses.ActiveInActiveFilter
-import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
-import com.nyotek.dot.admin.ui.fleets.NSCommonFilterRecycleAdapter
+import com.nyotek.dot.admin.common.extension.isValidList
+import com.nyotek.dot.admin.common.extension.linearHorizontal
+import com.nyotek.dot.admin.common.extension.notifyAdapter
+import com.nyotek.dot.admin.common.extension.setVisibility
+import com.nyotek.dot.admin.common.utils.ColorResources
+import com.nyotek.dot.admin.models.responses.ActiveInActiveFilter
+import com.nyotek.dot.admin.ui.common.NSCommonFilterRecycleAdapter
 
-class FilterHelper(private val activity: Activity, private val recycleView: RecyclerView, filterList: MutableList<ActiveInActiveFilter>, private val callback: ((ActiveInActiveFilter, MutableList<ActiveInActiveFilter>) -> Unit)) {
+class FilterHelper (
+    private val activity: Activity,
+    private val recycleView: RecyclerView,
+    private val filterList: MutableList<ActiveInActiveFilter>,
+    val colorResources: ColorResources,
+    private val callback: ((ActiveInActiveFilter, MutableList<ActiveInActiveFilter>) -> Unit)
+) {
 
     private var serviceFilterRecycleAdapter: NSCommonFilterRecycleAdapter? = null
     init {
@@ -19,7 +25,7 @@ class FilterHelper(private val activity: Activity, private val recycleView: Recy
     }
 
     companion object {
-        private val stringResource = StringResourceResponse()
+        private val stringResource = NSUtilities.getStringResource()
         fun getCommonFilterLists(): MutableList<ActiveInActiveFilter> {
             val filterList: MutableList<ActiveInActiveFilter> = arrayListOf()
             filterList.add(ActiveInActiveFilter(stringResource.all, NSConstants.ALL, true))
@@ -46,7 +52,7 @@ class FilterHelper(private val activity: Activity, private val recycleView: Recy
         if (filterList.isValidList()) {
             recycleView.apply {
                 linearHorizontal(activity)
-                serviceFilterRecycleAdapter = NSCommonFilterRecycleAdapter { model, list ->
+                serviceFilterRecycleAdapter = NSCommonFilterRecycleAdapter(colorResources) { model, list ->
                     callback.invoke(model, list)
                     notifyAdapter(serviceFilterRecycleAdapter!!)
                 }

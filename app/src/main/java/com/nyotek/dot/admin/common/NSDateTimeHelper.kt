@@ -1,6 +1,6 @@
 package com.nyotek.dot.admin.common
 
-import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import com.nyotek.dot.admin.common.utils.ColorResources
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.ParseException
@@ -204,9 +204,9 @@ object NSDateTimeHelper {
         return@withContext newFormat.format(calendar.time)
     }
 
-    fun formatDateToNowOrDateTime(inputDateString: String): String {
+    fun formatDateToNowOrDateTime(inputDateString: String, colorResources: ColorResources): String {
         if (inputDateString.isNotEmpty()) {
-            val stringResource = StringResourceResponse()
+            val stringResource = colorResources.getStringResource()
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.ENGLISH)
             try {
                 val inputDate = inputFormat.parse(inputDateString)

@@ -4,8 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import com.nyotek.dot.admin.common.utils.ColorResources
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSPrimaryLightTextView : AppCompatTextView {
+
+    @Inject
+    lateinit var colorResources: ColorResources
 
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
@@ -28,6 +34,6 @@ class NSPrimaryLightTextView : AppCompatTextView {
     }
 
     private fun init() {
-        setTextColor(ColorResources.getPrimaryLightColor())
+        setTextColor(colorResources.getPrimaryLightColor())
     }
 }

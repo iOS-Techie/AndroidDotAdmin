@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fleets.vehicle.NSVehicleFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_vehicle_list"
@@ -25,7 +24,7 @@
             android:textAlignment="viewStart"
             android:paddingVertical="@dimen/_7sdp"
             android:textAppearance="@style/CommonTextSemiBold"
-            android:textSize="@dimen/_6ssp"
+            android:textSize="@dimen/_6sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Branch list" />

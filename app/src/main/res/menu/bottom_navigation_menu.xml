@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/drawer_menu_top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/dashboard"
+            android:title="Dashboard"
+            android:checked="true"/>
+        <item
+            android:id="@+id/capabilities"
+            android:title="Capabilities" />
+        <item
+            android:id="@+id/services"
+            android:title="Services"
+            />
+        <item
+            android:id="@+id/fleets"
+            android:title="Fleets"
+            />
+        <item
+            android:id="@+id/dispatch"
+            android:title="Dispatch"
+            />
+
+        <item
+            android:id="@+id/settings"
+            android:title="Settings"
+            />
+    </group>
+
+</menu>

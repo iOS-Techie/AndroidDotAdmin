@@ -4,8 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputLayout
 import com.nyotek.dot.admin.common.utils.ColorResources
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSTextInputLayout : TextInputLayout {
+
+    @Inject
+    lateinit var colorResources: ColorResources
+
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
             init()
@@ -27,6 +34,6 @@ class NSTextInputLayout : TextInputLayout {
     }
 
     private fun init() {
-        this.hintTextColor = ColorResources.getHintColorStateGray()
+        this.hintTextColor = colorResources.getHintColorStateGray()
     }
 }

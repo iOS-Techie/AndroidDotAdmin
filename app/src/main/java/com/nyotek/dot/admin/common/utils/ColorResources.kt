@@ -5,10 +5,21 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.cardview.widget.CardView
-import com.nyotek.dot.admin.common.NSApplication
+import com.nyotek.dot.admin.common.NSThemeHelper
+import com.nyotek.dot.admin.models.responses.StringResourceResponse
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object ColorResources {
-    var resourceData = NSApplication.getInstance().getThemeModel()
+@Singleton
+class ColorResources @Inject constructor(val themeHelper: NSThemeHelper) {
+
+    fun getStringResource(): StringResourceResponse {
+        val resource = StringResourceResponse()
+        resource.setMapValue(themeHelper.getStringModel())
+        return resource//stringResource.value
+    }
+
+    var resourceData = themeHelper.getThemeModel()
     val states = arrayOf(
         intArrayOf(android.R.attr.state_enabled)
     )
@@ -106,6 +117,14 @@ object ColorResources {
 
     fun getColor(color: String?): Int {
         return Color.parseColor(if (color != null && color.isNotEmpty()) color else "#FFFFFF")
+    }
+
+    fun getWhitePrimary(isSelected: Boolean): Int {
+        return if (isSelected) getWhiteColor() else getPrimaryColor()
+    }
+
+    fun getPrimaryGray(isSelected: Boolean): Int {
+        return if (isSelected) getPrimaryColor() else getSecondaryGrayColor()
     }
 
     fun setGreenTint(view: View) {

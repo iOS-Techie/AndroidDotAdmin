@@ -5,12 +5,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import com.nyotek.dot.admin.common.utils.ColorResources
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * View that extends EditText and handled the common functionality across modules
  */
+@AndroidEntryPoint
 class NSEditTextData : AppCompatEditText, TextWatcher {
 
+    @Inject
+    lateinit var colorResources: ColorResources
     private var selectedText = ""
 
     constructor(context: Context) : super(context)

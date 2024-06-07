@@ -26,7 +26,15 @@ import androidx.core.content.res.ResourcesCompat;
 import com.nyotek.dot.admin.R;
 import com.nyotek.dot.admin.common.utils.ColorResources;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class TagEditText extends androidx.appcompat.widget.AppCompatEditText {
+
+    @Inject
+    ColorResources colorResources;
 
     TextWatcher textWatcher;
 
@@ -120,7 +128,7 @@ public class TagEditText extends androidx.appcompat.widget.AppCompatEditText {
 
         LinearLayout l = new LinearLayout(getContext());
         l.setOrientation(LinearLayout.HORIZONTAL);
-        ColorResources.INSTANCE.setCardBackground(l, 5f, 0, ColorResources.INSTANCE.getBackgroundColor(), ColorResources.INSTANCE.getBackgroundColor());
+        colorResources.setCardBackground(l, 5f, 0, colorResources.getBackgroundColor(), colorResources.getBackgroundColor());
 
         //l.setBackgroundResource(R.drawable.white_round_12_gray_border);
 
@@ -134,7 +142,7 @@ public class TagEditText extends androidx.appcompat.widget.AppCompatEditText {
         tv.setSingleLine(true);
         tv.setLines(1);
         tv.setIncludeFontPadding(false);
-        tv.setTextColor(ColorResources.INSTANCE.getPrimaryColor());
+        tv.setTextColor(colorResources.getPrimaryColor());
 
         ImageView im = new ImageView(getContext());
         l.addView(im);
@@ -148,7 +156,7 @@ public class TagEditText extends androidx.appcompat.widget.AppCompatEditText {
     }
 
     public Object convertViewToDrawable(View view) {
-        int spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         view.measure(spec, spec);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
 

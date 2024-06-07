@@ -2,22 +2,20 @@ package com.nyotek.dot.admin.base
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.nyotek.dot.admin.common.NSApplication
-import com.nyotek.dot.admin.common.utils.notifyAdapter
-import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
+import com.nyotek.dot.admin.common.NSUtilities
+import com.nyotek.dot.admin.models.responses.StringResourceResponse
+import javax.inject.Inject
 
-open class BaseViewBindingAdapter<T : ViewBinding, D>(
+open class BaseViewBindingAdapter<T : ViewBinding, D> @Inject constructor(
     private val bindingInflater: (LayoutInflater, ViewGroup, Boolean) -> T,
     private val onBind: (T, D, StringResourceResponse, Int, Int) -> Unit
 ) : RecyclerView.Adapter<BaseViewBindingAdapter<T, D>.ViewHolder>() {
-    var stringResource = StringResourceResponse()
     private var data: MutableList<D> = arrayListOf()
 
     fun getString(): StringResourceResponse {
-        return stringResource
+        return NSUtilities.getStringResource()
     }
 
     fun getData(): MutableList<D> {
@@ -34,12 +32,8 @@ open class BaseViewBindingAdapter<T : ViewBinding, D>(
     }
 
     fun setData(newData: List<D>) {
-//        val diffCallback = ViewBindingDiffCallback(data, newData)
-//        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        data = arrayListOf()
-        data.addAll(newData.toMutableList())
-        notifyAdapter(this)
-        //diffResult.dispatchUpdatesTo(this)
+        data = newData.toMutableList()
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -50,27 +44,10 @@ open class BaseViewBindingAdapter<T : ViewBinding, D>(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        onBind(holder.binding, item, stringResource, position, data.size)
+        onBind(holder.binding, item, getString(), position, data.size)
     }
 
     override fun getItemCount(): Int = data.size
 
     inner class ViewHolder(val binding: T) : RecyclerView.ViewHolder(binding.root)
-}
-
-private class ViewBindingDiffCallback<T>(
-    private val oldList: List<T>,
-    private val newList: List<T>
-) : DiffUtil.Callback() {
-
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
-    }
 }

@@ -132,7 +132,7 @@
                     android:id="@+id/tv_view_more"
                     style="@style/LayoutWidthHeightWrap"
                     android:textAppearance="@style/CommonTextRegular"
-                    android:textSize="@dimen/_4ssp"
+                    android:textSize="@dimen/_4sdp"
                     android:gravity="center_vertical|end"
                     android:lines="1"
                     android:paddingHorizontal="@dimen/_2sdp"

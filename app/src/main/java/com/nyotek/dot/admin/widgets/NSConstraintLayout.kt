@@ -4,10 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.nyotek.dot.admin.R
+import com.nyotek.dot.admin.common.extension.getRadius
 import com.nyotek.dot.admin.common.utils.ColorResources
-import com.nyotek.dot.admin.common.utils.getRadius
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSConstraintLayout : ConstraintLayout {
+
+    @Inject
+    lateinit var colorResources: ColorResources
 
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
@@ -42,59 +48,56 @@ class NSConstraintLayout : ConstraintLayout {
 
     fun init() {
         when (this.id) {
-            R.id.cl_profile_edit_ico -> {
-                ColorResources.setCardBackground(this, 100f, 2, ColorResources.getPrimaryColor(), ColorResources.getWhiteColor())
-            }
             R.id.cl_driver_detail, R.id.cl_dispatch_detail -> {
-                ColorResources.setBackground(this)
+                colorResources.setBackground(this)
             }
             R.id.cl_brand_logo -> {
-                ColorResources.setCardBackground(this, 10f, 2, ColorResources.getBackgroundColor(), ColorResources.getBorderColor())
+                colorResources.setCardBackground(this, 10f, 2, colorResources.getBackgroundColor(), colorResources.getBorderColor())
             }
             R.id.cl_left_with_bg -> {
-                ColorResources.setBackground(this, ColorResources.getPrimaryColor())
+                colorResources.setBackground(this, colorResources.getPrimaryColor())
             }
             R.id.cl_login_bg, R.id.cl_item, R.id.cl_sign_up_bg -> {
-                ColorResources.setBackground(this, ColorResources.getPrimaryColor())
+                colorResources.setBackground(this, colorResources.getPrimaryColor())
             }
             R.id.cl_email, R.id.cl_password, R.id.cl_username -> {
-                ColorResources.setCardBgWhiteBackground(this, 8f, 2, ColorResources.getPrimaryColor())
+                colorResources.setCardBgWhiteBackground(this, 8f, 2, colorResources.getPrimaryColor())
             }
             R.id.cl_header_top -> {
-                ColorResources.setConstraintBackground(this)
+                colorResources.setConstraintBackground(this)
             }
-            R.id.cl_dashboard_bg, R.id.cl_settings_bg, R.id.cl_user_detail_bg -> {
-                ColorResources.setBackground(this)
+            R.id.cl_dashboard_bg, R.id.cl_settings_bg -> {
+                colorResources.setBackground(this)
             }
             R.id.cl_side_nav -> {
-                ColorResources.setBackground(this, ColorResources.getSecondaryColor())
+                colorResources.setBackground(this, colorResources.getSecondaryColor())
             }
             R.id.cl_view_more_vendor -> {
-                ColorResources.setBackgroundTint(this, ColorResources.getPrimaryColor())
+                colorResources.setBackgroundTint(this, colorResources.getPrimaryColor())
             }
             R.id.cl_search -> {
-                ColorResources.setCardBackground(this, 8f, 1, ColorResources.getBackgroundColor(), ColorResources.getBorderColor())
+                colorResources.setCardBackground(this, 8f, 1, colorResources.getBackgroundColor(), colorResources.getBorderColor())
             }
             R.id.cl_address -> {
-                ColorResources.setCardBackground(this, 6f, 1, ColorResources.getSecondaryColor(), ColorResources.getSecondaryDarkColor())
+                colorResources.setCardBackground(this, 6f, 1, colorResources.getSecondaryColor(), colorResources.getSecondaryDarkColor())
             }
             R.id.cl_border_bg, R.id.cl_user_list, R.id.cl_dispatch_view -> {
-                ColorResources.setCardBackground(this, 10f, 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
+                colorResources.setCardBackground(this, 10f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
             }
             R.id.cl_dispatch_border_bg -> {
-                ColorResources.setCardBackground(this, 8f, 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
+                colorResources.setCardBackground(this, 8f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
             }
             R.id.cl_theme_spinner, R.id.cl_role_spinner -> {
-                ColorResources.setCardBackground(this, 10f, 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
+                colorResources.setCardBackground(this, 10f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
             }
             R.id.cl_vehicle_detail_bottom -> {
-                ColorResources.setCardBackground(this, getRadius(6f), 0, ColorResources.getBackgroundColor(), ColorResources.getBackgroundColor())
+                colorResources.setCardBackground(this, getRadius(6f), 0, colorResources.getBackgroundColor(), colorResources.getBackgroundColor())
             }
             R.id.cl_vehicle_detail_sub_bottom -> {
-                ColorResources.setCardBackground(this, getRadius(6f), 0, ColorResources.getWhiteColor(), ColorResources.getWhiteColor())
+                colorResources.setCardBackground(this, getRadius(6f), 0, colorResources.getWhiteColor(), colorResources.getWhiteColor())
             }
             R.id.cl_track -> {
-                ColorResources.setCardBackground(this, getRadius(100f), 1, ColorResources.getWhiteColor(), ColorResources.getPrimaryColor())
+                colorResources.setCardBackground(this, getRadius(100f), 1, colorResources.getWhiteColor(), colorResources.getPrimaryColor())
             }
         }
     }

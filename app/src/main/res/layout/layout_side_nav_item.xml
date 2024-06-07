@@ -28,7 +28,7 @@
         android:id="@+id/tv_nav_sub_title"
         style="@style/LayoutWidthHeightWrap"
         android:textAppearance="@style/CommonTextInter600"
-        android:textSize="@dimen/_4ssp"
+        android:textSize="@dimen/_4sdp"
         android:layout_marginStart="@dimen/_4sdp"
         app:layout_constraintStart_toEndOf="@id/iv_icon_nav"
         app:layout_constraintTop_toTopOf="parent"

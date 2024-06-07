@@ -41,7 +41,7 @@
             android:gravity="center_vertical|start"
             android:textAlignment="viewStart"
             android:textAppearance="@style/CommonTextMedium"
-            android:textSize="@dimen/_5ssp"
+            android:textSize="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/view_space"
             app:layout_constraintTop_toTopOf="parent"

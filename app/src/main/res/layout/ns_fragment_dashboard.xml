@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.dashboard.NSDashboardFragment">
+    android:layout_height="match_parent">
 
     <com.nyotek.dot.admin.widgets.NSConstraintLayout
         android:id="@+id/cl_dashboard_bg"
@@ -46,7 +45,7 @@
                     android:id="@+id/tv_nav_sub_title"
                     style="@style/LayoutWidthHeightWrap"
                     android:textAppearance="@style/CommonTextRegular"
-                    android:textSize="@dimen/_5ssp"
+                    android:textSize="@dimen/_5sdp"
                     android:text="@string/app_admin_name"
                     android:fontFamily="@font/inter_600"
                     android:layout_marginStart="@dimen/_4sdp"
@@ -111,7 +110,7 @@
                     android:layout_width="@dimen/_6sdp"
                     android:layout_height="@dimen/_6sdp"
                     android:contentDescription="@string/description"
-                    android:src="@drawable/ic_user"
+                    android:src="@drawable/ic_log_out_side"
                     android:layout_marginStart="@dimen/_10sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_chainStyle="packed"
@@ -123,8 +122,7 @@
                     style="@style/LayoutWidthHeightZeroWrap"
                     android:layout_marginStart="@dimen/_4sdp"
                     android:textAppearance="@style/CommonTextInter500"
-                    android:textSize="@dimen/_4ssp"
-                    android:textAlignment="viewStart"
+                    android:textSize="@dimen/_4sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/iv_icon_nav"

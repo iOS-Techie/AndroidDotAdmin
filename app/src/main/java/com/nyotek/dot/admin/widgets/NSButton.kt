@@ -4,8 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import com.nyotek.dot.admin.common.utils.ColorResources
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NSButton : AppCompatButton {
+
+    @Inject
+    lateinit var colorResources: ColorResources
 
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
@@ -28,7 +34,7 @@ class NSButton : AppCompatButton {
     }
 
     private fun init() {
-        setTextColor(ColorResources.getWhiteColor())
-        ColorResources.setCardBackground(this, 16f, 0, ColorResources.getPrimaryColor())
+        setTextColor(colorResources.getWhiteColor())
+        colorResources.setCardBackground(this, 16f, 0, colorResources.getPrimaryColor())
     }
 }

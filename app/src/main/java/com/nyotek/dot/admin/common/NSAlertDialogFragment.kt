@@ -12,10 +12,8 @@ import androidx.fragment.app.DialogFragment
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.NSConstants.Companion.SESSION_EXPIRED
 import com.nyotek.dot.admin.common.NSConstants.Companion.SESSION_EXPIRED_ERROR
-import com.nyotek.dot.admin.common.utils.visible
+import com.nyotek.dot.admin.common.extension.visible
 import com.nyotek.dot.admin.databinding.LayoutCustomAlertDialogBinding
-import com.nyotek.dot.admin.repository.network.responses.StringResourceResponse
-import org.greenrobot.eventbus.EventBus
 
 /**
  * Dialog fragment responsible for showing the alert
@@ -29,9 +27,9 @@ class NSAlertDialogFragment : DialogFragment() {
         private const val BUNDLE_KEY_POSITIVE_BUTTON_TEXT = "positiveButtonText"
         private const val BUNDLE_KEY_NEGATIVE_BUTTON_TEXT = "negativeButtonText"
         private const val BUNDLE_KEY_IS_CANCEL_NEEDED = "isCancelNeeded"
-        private const val BUNDLE_KEY_ALERT_KEY = "alertKey"
-        var stringResource = StringResourceResponse()
-        private var callback: ((Boolean) -> Unit)? = null
+        var stringResource = NSUtilities.getStringResource()
+        private lateinit var callback: ((Boolean) -> Unit)
+        private lateinit var sessionCallback: ((Boolean) -> Unit)
         //private var callback: NSDialogClickCallback? = null
 
         fun newInstance(
@@ -40,17 +38,17 @@ class NSAlertDialogFragment : DialogFragment() {
             isCancelNeeded: Boolean,
             negativeButtonText: String?,
             positiveButtonText: String?,
-            alertKey: String?,
-            dialogCallback: ((Boolean) -> Unit)?
+            dialogCallback: ((Boolean) -> Unit),
+            sessionCall: ((Boolean) -> Unit)
         ) = NSAlertDialogFragment().apply {
             callback = dialogCallback
+            sessionCallback = sessionCall
             arguments = bundleOf(
                 BUNDLE_KEY_TITLE to title,
                 BUNDLE_KEY_MESSAGE to message,
                 BUNDLE_KEY_IS_CANCEL_NEEDED to isCancelNeeded,
                 BUNDLE_KEY_NEGATIVE_BUTTON_TEXT to negativeButtonText,
-                BUNDLE_KEY_POSITIVE_BUTTON_TEXT to positiveButtonText,
-                BUNDLE_KEY_ALERT_KEY to alertKey
+                BUNDLE_KEY_POSITIVE_BUTTON_TEXT to positiveButtonText
             )
         }
     }
@@ -106,9 +104,10 @@ class NSAlertDialogFragment : DialogFragment() {
             bind.tvOk.setOnClickListener {
                 dialog.dismiss()
                 if (message.equals(SESSION_EXPIRED)) {
-                    EventBus.getDefault().post(NSLogoutEvent())
+                    sessionCallback.invoke(true)
+                    //EventBus.getDefault().post(NSLogoutEvent())
                 } else {
-                    callback?.invoke(false)
+                    callback.invoke(false)
                 }
             }
 
@@ -125,7 +124,7 @@ class NSAlertDialogFragment : DialogFragment() {
                 bind.tvCancel.text = negativeButtonText
                 bind.tvCancel.setOnClickListener {
                     dialog.dismiss()
-                    callback?.invoke(true)
+                    callback.invoke(true)
                 }
             }
             isCancelable = false

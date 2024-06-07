@@ -33,7 +33,7 @@
             android:id="@+id/tv_detail"
             style="@style/LayoutWidthHeightZeroWrap"
             android:textAppearance="@style/CommonTextRegular"
-            android:textSize="@dimen/_4ssp"
+            android:textSize="@dimen/_4sdp"
             android:gravity="start"
             android:textAlignment="viewStart"
             android:lines="1"

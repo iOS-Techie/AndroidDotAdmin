@@ -5,10 +5,17 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.nyotek.dot.admin.R
+import com.nyotek.dot.admin.common.extension.getRadius
 import com.nyotek.dot.admin.common.utils.ColorResources
-import com.nyotek.dot.admin.common.utils.getRadius
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ImageIconView : AppCompatImageView {
+
+    @Inject
+    lateinit var colorResources: ColorResources
+
     constructor(context: Context) : super(context) {
         if (!isInEditMode) {
             setImageIcon(context)
@@ -33,24 +40,24 @@ class ImageIconView : AppCompatImageView {
         if (id != R.id.iv_brand_icon) {
             when (id) {
                 R.id.iv_clear_data -> {
-                    setColorFilter(ColorResources.getGrayColor())
+                    setColorFilter(colorResources.getGrayColor())
                 }
                 R.id.iv_delete -> {
-                    setColorFilter(ColorResources.getErrorColor())
+                    setColorFilter(colorResources.getErrorColor())
                 }
                 R.id.iv_edit_brand_logo -> {
-                    ColorResources.setCardBackground(this, getRadius(5f), 0, ColorResources.getPrimaryColor())
-                    setColorFilter(ColorResources.getWhiteColor())
+                    colorResources.setCardBackground(this, getRadius(5f), 0, colorResources.getPrimaryColor())
+                    setColorFilter(colorResources.getWhiteColor())
                 }
                 R.id.ic_driver_detail_user -> {
-                    ColorResources.setCardBackground(this, getRadius(5f), 1, ColorResources.getWhiteColor(), ColorResources.getBorderColor())
+                    colorResources.setCardBackground(this, getRadius(5f), 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
 
                 }
                 R.id.iv_driver_img, R.id.iv_model_img -> {
-                    ColorResources.setCardBackground(this, getRadius(100f), 0, ColorResources.getBackgroundColor(), ColorResources.getBackgroundColor())
+                    colorResources.setCardBackground(this, getRadius(100f), 0, colorResources.getBackgroundColor(), colorResources.getBackgroundColor())
                 }
                 else -> {
-                    setColorFilter(ColorResources.getPrimaryColor())
+                    setColorFilter(colorResources.getPrimaryColor())
                 }
             }
         } else {

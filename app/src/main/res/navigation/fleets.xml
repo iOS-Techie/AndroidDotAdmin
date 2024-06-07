@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fleets"
+    app:startDestination="@id/fleetsFragment">
+
+    <fragment
+        android:id="@+id/fleetsFragment"
+        android:name="com.nyotek.dot.admin.ui.tabs.fleets.FleetsFragment"
+        android:label="FleetsFragment" >
+        <action
+            android:id="@+id/action_fleetsFragment_to_fleetsDetailFragment"
+            app:destination="@id/fleetsDetailFragment"
+            app:popUpTo="@id/fleetsDetailFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fleetsDetailFragment"
+        android:name="com.nyotek.dot.admin.ui.tabs.fleets.detail.FleetsDetailFragment"
+        android:label="FleetsDetailFragment">
+
+        <action
+            android:id="@+id/action_fleetsDetailFragment_to_driverDetailFragment"
+            app:destination="@id/driverDetailFragment"
+            app:popUpTo="@id/driverDetailFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_fleetsDetailFragment_to_vehicleDetailFragment"
+            app:destination="@id/vehicleDetailFragment"
+            app:popUpTo="@id/vehicleDetailFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/driverDetailFragment"
+        android:name="com.nyotek.dot.admin.ui.tabs.fleets.employee.detail.NSDriverDetailFragment"
+        android:label="DriverDetailFragment">
+    </fragment>
+
+    <fragment
+        android:id="@+id/vehicleDetailFragment"
+        android:name="com.nyotek.dot.admin.ui.tabs.fleets.vehicle.detail.NSVehicleDetailFragment"
+        android:label="VehicleDetailFragment">
+    </fragment>
+
+    <fragment
+        android:id="@+id/employeeFragment"
+        android:name="com.nyotek.dot.admin.ui.tabs.fleets.employee.NSEmployeeFragment"
+        android:label="EmployeeFragment">
+    </fragment>
+
+</navigation>

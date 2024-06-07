@@ -8,27 +8,33 @@ import android.location.Location
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import com.google.android.gms.location.*
-import com.nyotek.dot.admin.common.*
-import com.nyotek.dot.admin.common.utils.NSUtilities
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationAvailability
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.nyotek.dot.admin.common.NSAddress
+import com.nyotek.dot.admin.common.NSLocationChangedEvent
+import com.nyotek.dot.admin.common.NSLocationSettingsEvent
+import com.nyotek.dot.admin.common.NSLocationType
+import com.nyotek.dot.admin.common.NSUtilities
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.greenrobot.eventbus.EventBus
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-/**
- * The class to handle the location details
- */
-class NSLocationManager(context: Context) {
-    private val nsContext = context
+class NSLocationManager @Inject constructor(@ApplicationContext private val nsContext: Context) {
     private var isAllTimeCall: Boolean = false
     private var isAddressSingleCall: Boolean = false
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
-        LocationServices.getFusedLocationProviderClient(context)
+        LocationServices.getFusedLocationProviderClient(nsContext)
     }
     private val locationRequest: LocationRequest by lazy {
         getLocationRequestObject()
@@ -45,7 +51,7 @@ class NSLocationManager(context: Context) {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 locationResult.lastLocation.let { location ->
-                     processLocation(location)
+                    processLocation(location)
                     location?.longitude?.let {
                         getGeoCodeLocation(
                             location.latitude,
@@ -55,7 +61,7 @@ class NSLocationManager(context: Context) {
             }
         }
     }
-    private var needToRequestLocation = true  //Need to request the location updates when user becomes to foreground from background
+    private var needToRequestLocation = true
     private var handler: Handler? = Looper.getMainLooper()?.let { Handler(it) }
     private var currentLocation: Location? = null
 
@@ -66,27 +72,15 @@ class NSLocationManager(context: Context) {
         private const val THRESHOLD_ACCURACY = 100.0f
     }
 
-    /**
-     * To get the location request object which contains the time to update when in foreground
-     *
-     * @return The location request object containing the required time
-     */
-    @Suppress("DEPRECATION")
     private fun getLocationRequestObject(): LocationRequest {
         return LocationRequest.create().apply {
             interval = UPDATE_INTERVAL_IN_MILLISECONDS
             fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
-            @Suppress("DEPRECATION")
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             maxWaitTime = 100
         }
     }
 
-    /**
-     * To request the location updates
-     *
-     * @param looper The message loop for thread
-     */
     @SuppressLint("MissingPermission")
     fun requestLocation(looper: Looper?, isSingle: Boolean) {
         isAddressSingleCall = isSingle
@@ -99,18 +93,10 @@ class NSLocationManager(context: Context) {
         )
     }
 
-    /**
-     * To remove the location callbacks
-     */
     fun removeLocation() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-    /**
-     * To process the last location received
-     *
-     * @param location The last location
-     */
     private fun processLocation(location: Location?) {
         handler?.removeCallbacksAndMessages(null)
         if (currentLocation == null || needToRequestLocation) {
@@ -125,18 +111,10 @@ class NSLocationManager(context: Context) {
         }
     }
 
-    /**
-     * To check the newly received location is better location or not
-     *
-     * @param location            The newly received location
-     * @param currentBestLocation The existing / finally received best location
-     * @return Status of the newly received location
-     */
     private fun isBetterLocation(location: Location, currentBestLocation: Location?): Boolean {
         if (currentBestLocation == null) {
             return true
         }
-        // Check whether the new location fix is newer or older
         val timeDelta = location.elapsedRealtimeNanos - currentBestLocation.elapsedRealtimeNanos
         val isSignificantlyNewer: Boolean = timeDelta > THIRTY_SECONDS_IN_NANO
         val isNewer = timeDelta > 0
@@ -151,12 +129,6 @@ class NSLocationManager(context: Context) {
         return location.accuracy <= THRESHOLD_ACCURACY
     }
 
-    /**
-     * To post the newly received location
-     *
-     * @param location The new location
-     * @param type     The location type
-     */
     private fun postLocation(location: Location?, type: Int) {
         EventBus.getDefault().post(NSLocationChangedEvent(location, type))
     }
@@ -168,13 +140,11 @@ class NSLocationManager(context: Context) {
         )
         val addresses: List<Address>
         try {
-            @Suppress("DEPRECATION")
             addresses = gcd.getFromLocation(
                 latitude,
                 longitude, 1
             )?: arrayListOf()
             if (addresses.isNotEmpty()) {
-                NSApplication.getInstance().increaseGeoCodeLocationCount()
                 if (isAddressSingleCall) {
                     isAddressSingleCall = false
                     isAllTimeCall = false
