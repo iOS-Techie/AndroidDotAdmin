@@ -9,7 +9,7 @@ class HeaderKey {
         const val KEY_SELECTED_LANGUAGE = "X-Selected-Lang"
         const val KEY_SERVICE_ID = "X-SERVICE-ID"
         const val KEY_APP_ID = "X-APP-ID"
-        const val KEY_TIME_ZONE = "x-client-tz"
+        const val KEY_TIME_ZONE = "X-Client-Tz"
         const val KEY_DEVICE_ID = "X-Device-Id"
         const val KEY_BuildVersion = "X-BuildVersion"
         const val MULTIPART_JSON = "multipart/form-data"

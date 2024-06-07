@@ -1,6 +1,7 @@
 package com.nyotek.dot.admin.ui.tabs.fleets.vehicle
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -13,6 +14,7 @@ import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
+import com.nyotek.dot.admin.common.extension.formatText
 import com.nyotek.dot.admin.common.extension.gone
 import com.nyotek.dot.admin.common.extension.setCoilCircle
 import com.nyotek.dot.admin.common.extension.setupWithAdapter
@@ -208,6 +210,16 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
                             layoutNotes.tvCommonTitle.text = additionalNote
                             tvCreate.text = if (isCreate) create else update
                             tvCancel.text = cancel
+
+                            layoutRegistrationNo.edtValue.formatText()
+                            layoutRegistrationNo.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+                            layoutNotes.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                            layoutModel.edtValue.formatText(true)
+                            layoutModel.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                            layoutManufacturer.edtValue.formatText(true)
+                            layoutManufacturer.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                            layoutManufacturerYear.edtValue.inputType = InputType.TYPE_CLASS_NUMBER
+                            layoutLoadCapacity.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                         }
 
                         if (!isCreate) {

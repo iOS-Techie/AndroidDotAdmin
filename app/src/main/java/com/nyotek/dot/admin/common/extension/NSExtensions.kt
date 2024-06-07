@@ -1093,3 +1093,35 @@ fun ImageView.glideNormal(url: String? = null, callback: (Boolean) -> Unit) {
         })
         .into(this)
 }
+
+fun EditText.formatText(isFirstLetterCapital: Boolean = false) {
+    val textWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            val text = s.toString()
+            val formattedText = if (!isFirstLetterCapital) {
+                text.uppercase()
+            } else {
+                if (text.isNotEmpty()) {
+                    text[0].uppercase() + text.substring(1)
+                } else {
+                    text
+                }
+            }
+
+            if (text != formattedText) {
+                setText(formattedText)
+                setSelection(formattedText.length) // Place cursor at the end
+            }
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // Not needed for this implementation
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            // Not needed for this implementation
+        }
+    }
+
+    addTextChangedListener(textWatcher)
+}

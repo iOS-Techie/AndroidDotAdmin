@@ -12,6 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
@@ -67,6 +68,10 @@ object NetworkModule {
             sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
             hostnameVerifier { hostname, session -> true }
         }.readTimeout(HeaderKey.TIMEOUT, TimeUnit.SECONDS).connectTimeout(HeaderKey.TIMEOUT, TimeUnit.SECONDS)
+
+        if (BuildConfig.DEBUG) {
+            httpClient.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        }
 
         httpClient.addInterceptor { chain ->
             val request = chain.request().newBuilder().apply {

@@ -193,6 +193,12 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
         isDialogDisplay = false
     }
 
+    fun updateMapData(context: Context, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS,) {
+        fleetDataItem = fleetData
+        initAddMarker(context, mapStyle)
+        initStyleMap()
+    }
+
     private fun initAddMarker(context: Context, mapStyle: String) {
         if (styleMap == null) {
             map?.loadStyleUri(mapStyle) { style ->

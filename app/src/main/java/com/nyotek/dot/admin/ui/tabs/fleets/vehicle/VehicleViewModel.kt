@@ -56,7 +56,7 @@ class VehicleViewModel @Inject constructor(
                 getVehicleList(false, id, capabilitiesList, false, callback)
             } else {
                 hideProgress()
-                capCallback.invoke(arrayListOf())
+                capCallback.invoke(capabilitiesList)
             }
         })
     }

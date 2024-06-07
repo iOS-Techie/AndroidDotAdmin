@@ -144,7 +144,7 @@ class NSEmployeeViewModel @Inject constructor(
         }
     }
 
-    fun getEmployeeList(vendorId: String?) = viewModelScope.launch {
+    private fun getEmployeeList(vendorId: String?) = viewModelScope.launch {
         getEmployeeListApi(vendorId)
     }
 
@@ -175,7 +175,7 @@ class NSEmployeeViewModel @Inject constructor(
         }
     }
 
-    fun getFleetDriverLocations(driverList: List<String>) = viewModelScope.launch {
+    private fun getFleetDriverLocations(driverList: List<String>) = viewModelScope.launch {
         getFleetDriverLocationsApi(driverList)
     }
 

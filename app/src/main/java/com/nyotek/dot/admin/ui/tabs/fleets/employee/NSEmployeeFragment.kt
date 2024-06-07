@@ -1,6 +1,5 @@
 package com.nyotek.dot.admin.ui.tabs.fleets.employee
 
-import android.R
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -11,14 +10,10 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.nyotek.dot.admin.base.BaseFragment
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
-import com.nyotek.dot.admin.common.NSOnCheckDetailScreen
-import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSPermissionHelper
 import com.nyotek.dot.admin.common.NSRequestCodes
@@ -27,7 +22,6 @@ import com.nyotek.dot.admin.common.extension.addOnTextChangedListener
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
 import com.nyotek.dot.admin.common.extension.getLngValue
 import com.nyotek.dot.admin.common.extension.invisible
-import com.nyotek.dot.admin.common.extension.navigateSafeNew
 import com.nyotek.dot.admin.common.extension.notifyAdapter
 import com.nyotek.dot.admin.common.extension.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.extension.setVisibility
@@ -41,7 +35,6 @@ import com.nyotek.dot.admin.models.responses.EmployeeDataItem
 import com.nyotek.dot.admin.models.responses.FleetDataItem
 import com.nyotek.dot.admin.models.responses.SpinnerData
 import com.nyotek.dot.admin.ui.common.NSUserViewModel
-import com.nyotek.dot.admin.ui.tabs.fleets.vehicle.VehicleHelper
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -53,6 +46,7 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
 
     private val viewModel by viewModels<NSEmployeeViewModel>()
     private lateinit var themeUI: EmployeeUI
+    private var isEmployeeMapLoad: Boolean = false
 
     private val userManagementViewModel: NSUserViewModel by lazy {
         ViewModelProvider(this)[NSUserViewModel::class.java]
@@ -135,7 +129,19 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                     viewLifecycleOwner
                 ) { fleetDataItem ->
                     fleetData = fleetDataItem
-                    mapBoxView?.initMapView(requireContext(), binding.mapFragmentEmployee, fleetData)
+                    if (!isEmployeeMapLoad) {
+                        isEmployeeMapLoad = true
+                        mapBoxView?.initMapView(
+                            requireContext(),
+                            binding.mapFragmentEmployee,
+                            fleetData
+                        )
+                    } else {
+                        mapBoxView?.updateMapData(
+                            requireContext(),
+                            fleetData
+                        )
+                    }
                 }
             }
         }
@@ -263,25 +269,6 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
             )
             binding.mapFragmentEmployee.invisible()
             callback?.invoke(bundle)
-            //findNavController().navigateSafeNew(EmployeeFragmentDirections.actionFleetDetailToDriverDetail(bundle))
-
-
-            /*fleetManagementFragmentChangeCallback?.setFragment(
-                this@NSEmployeeFragment.javaClass.simpleName,
-                NSDriverDetailFragment.newInstance(bundle, object : NSEmployeeEditCallback {
-                    override fun onEmployee(empDataItem: EmployeeDataItem) {
-                        empAdapter?.updateSingleData(empDataItem, position)
-                    }
-                }) {
-                    mapBoxView?.clearMap()
-                    mapBoxView?.initMapView(
-                        requireContext(),
-                        binding.mapFragmentEmployee,
-                        fleetData
-                    )
-                },
-                true, bundle
-            )*/
         }
     }
 
@@ -418,17 +405,6 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                 return
             }
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun checkDetailScreen(@Suppress("UNUSED_PARAMETER") event: NSOnCheckDetailScreen) {
-        viewModel.isDetailScreenOpen = false
-        mapBoxView?.clearMap()
-        mapBoxView?.initMapView(
-            requireContext(),
-            binding.mapFragmentEmployee,
-            fleetData
-        )
     }
 
     override fun onStart() {

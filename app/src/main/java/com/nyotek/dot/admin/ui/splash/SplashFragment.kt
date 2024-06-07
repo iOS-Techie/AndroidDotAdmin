@@ -17,6 +17,7 @@ import com.nyotek.dot.admin.databinding.FragmentSplashBinding
 import com.nyotek.dot.admin.models.responses.NSLanguageStringResponse
 import com.nyotek.dot.admin.ui.login.LoginActivity
 import com.nyotek.dot.admin.ui.main.MainActivity
+import com.nyotek.dot.admin.ui.main.selectedDrawerId
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -55,6 +56,8 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     override fun setupViews() {
         super.setupViews()
+        //This is for Dashboard default tab selection when language change
+        selectedDrawerId = R.id.dashboard
         viewModel.getAppThemeAndChangeLocaleFromSelection(requireContext(), obj)
     }
 
