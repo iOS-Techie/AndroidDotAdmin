@@ -298,8 +298,8 @@ class RemoteDataSource @Inject constructor(
     //Location Services
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 
-    suspend fun getFleetLocation(fieldId: String): Response<FleetLocationResponse> {
-        return baseLocationUrl.getFleetLocation(fieldId)
+    suspend fun getFleetLocation(): Response<FleetLocationResponse> {
+        return baseLocationUrl.getFleetLocation()
     }
 
     suspend fun getFleetDriverLocation(request: NSFleetDriverRequest): Response<FleetLocationResponse> {

@@ -254,8 +254,8 @@ interface NSApiInterface {
     //Location Services
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 
-    @GET("location")
-    suspend fun getFleetLocation(@Query("fleet_id") fieldId: String): retrofit2.Response<FleetLocationResponse>
+    @GET("locations/geojson")
+    suspend fun getFleetLocation(): retrofit2.Response<FleetLocationResponse>
 
     @POST("location/drivers")
     suspend fun getFleetDriverLocation(@Body request: NSFleetDriverRequest): retrofit2.Response<FleetLocationResponse>

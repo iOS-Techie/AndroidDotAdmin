@@ -157,15 +157,15 @@ class NSMapViewModel @Inject constructor(
         return address
     }
 
-    fun getFleetLocations(vendorId: String?, isShowProgress: Boolean, isFromFleetDetail: Boolean = false) = viewModelScope.launch {
-        getFleetLocationsApi(vendorId, isShowProgress, isFromFleetDetail)
+    fun getFleetLocations(isShowProgress: Boolean, isFromFleetDetail: Boolean = false) = viewModelScope.launch {
+        getFleetLocationsApi(isShowProgress, isFromFleetDetail)
     }
 
-    private suspend fun getFleetLocationsApi(vendorId: String?, isShowProgress: Boolean, isFromFleetDetail: Boolean = false) {
+    private suspend fun getFleetLocationsApi(isShowProgress: Boolean, isFromFleetDetail: Boolean = false) {
         if (isShowProgress) showProgress()
 
         performApiCalls(
-            { repository.remote.getFleetLocation(vendorId!!)}
+            { repository.remote.getFleetLocation()}
         ) { response, isSuccess ->
             if (isSuccess) {
                 val res = response[0] as FleetLocationResponse?

@@ -43,6 +43,7 @@ class DashboardFragment : BaseFragment<NsFragmentDashboardTabBinding>(), NSMapDr
     private var mapBoxView: MapBoxView? = null
     private var mapView: MapView? = null
     private var dispatchRecycleAdapter: NSDispatchOrderRecycleAdapter? = null
+    private var isApiCalled: Boolean = false
 
     private val viewModel by viewModels<NSMapViewModel>()
 
@@ -112,7 +113,7 @@ class DashboardFragment : BaseFragment<NsFragmentDashboardTabBinding>(), NSMapDr
     private fun loadFleetMap() {
         viewModel.apply {
             getCurrentLocation()
-            viewModel.getFleetLocations("", true, isFromFleetDetail = false)
+            viewModel.getFleetLocations(true, isFromFleetDetail = false)
         }
     }
 
@@ -176,7 +177,13 @@ class DashboardFragment : BaseFragment<NsFragmentDashboardTabBinding>(), NSMapDr
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun getCurrentLocation(event: NSAddress) {
-        viewModel.getFleetLocations("", false, isFromFleetDetail = false)
+        if (!isApiCalled) {
+            isApiCalled = true
+            viewModel.getFleetLocations(false, isFromFleetDetail = false)
+        } else {
+            isApiCalled = false
+        }
+        
         if (event.addresses.isValidList()) {
             val address = event.addresses[0].getAddressLine(0).toString()
             if (address.isNotEmpty()) {
