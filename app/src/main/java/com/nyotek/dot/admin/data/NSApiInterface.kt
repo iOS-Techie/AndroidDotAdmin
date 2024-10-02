@@ -273,22 +273,22 @@ interface NSApiInterface {
     // Fleets Services
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 
-    @GET("/capability/list")
+    @GET("fleets/capability/list")
     suspend fun getCapabilities(): retrofit2.Response<NSCapabilitiesResponse>
 
-    @PATCH("capability/disable")
+    @PATCH("fleets/capability/disable")
     suspend fun disableCapabilities(@Body request: NSCapabilitiesRequest): retrofit2.Response<NSFleetBlankDataResponse>
 
-    @PATCH("capability/enable")
+    @PATCH("fleets/capability/enable")
     suspend fun enableCapabilities(@Body request: NSCapabilitiesRequest): retrofit2.Response<NSFleetBlankDataResponse>
 
-    @DELETE("capability/{capability_id}")
+    @DELETE("fleets/capability/{capability_id}")
     suspend fun capabilityDelete(@Path("capability_id") id: String): retrofit2.Response<NSCapabilitiesBlankDataResponse>
 
-    @POST("capability")
+    @POST("fleets/capability")
     suspend fun createCapability(@Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
-    @PATCH("capability/{capability_id}/label")
+    @PATCH("fleets/capability/{capability_id}/label")
     suspend fun updateCapability(@Path("capability_id") id: String, @Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
     @PATCH("service/management/capability")
