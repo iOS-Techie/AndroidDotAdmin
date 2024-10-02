@@ -1,26 +1,17 @@
 package com.nyotek.dot.admin.ui.splash
 
+import android.app.Activity
 import android.app.Application
-import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.nyotek.dot.admin.BuildConfig
-import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseViewModel
 import com.nyotek.dot.admin.common.NSDataStorePreferences
 import com.nyotek.dot.admin.common.NSLanguageConfig
 import com.nyotek.dot.admin.common.NSThemeHelper
-import com.nyotek.dot.admin.common.extension.getCompareAndGetDeviceLanguage
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.data.Repository
-import com.nyotek.dot.admin.models.requests.NSAppThemeRequest
-import com.nyotek.dot.admin.models.requests.NSLanguageLocaleRequest
-import com.nyotek.dot.admin.models.requests.NSLanguageRequest
-import com.nyotek.dot.admin.models.requests.NSLanguageStringRequest
-import com.nyotek.dot.admin.models.responses.NSGetThemeData
-import com.nyotek.dot.admin.models.responses.NSGetThemeModel
-import com.nyotek.dot.admin.models.responses.NSLanguageStringResponse
-import com.nyotek.dot.admin.models.responses.NSLocalLanguageResponse
+import com.nyotek.dot.admin.helper.ColorHelper
+import com.nyotek.dot.admin.models.responses.BootStrapData
+import com.nyotek.dot.admin.models.responses.BootStrapModel
 import com.nyotek.dot.admin.models.responses.NSMainDetailUser
 import com.nyotek.dot.admin.models.responses.NSUserDetailResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,14 +23,89 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val repository: Repository,
     val dataStoreRepository: NSDataStorePreferences,
-    private val themeHelper: NSThemeHelper,
+    val themeHelper: NSThemeHelper,
     val languageConfig: NSLanguageConfig,
     application: Application
 ) : BaseViewModel(repository, dataStoreRepository, ColorResources(themeHelper), application) {
-
-    var allDataLoaded: MutableLiveData<Boolean> = MutableLiveData()
-
-    fun getAppThemeAndChangeLocaleFromSelection(context: Context, callback: ((Boolean, Boolean, Boolean) -> Unit)) = viewModelScope.launch {
+    
+    private var bootStrapData: BootStrapData? = null
+    
+    fun getBootStrap(activity: Activity, callback: ((Boolean, Boolean) -> Unit)) = viewModelScope.launch {
+        getBootStrapApi(activity, callback)
+    }
+    
+    private suspend fun getBootStrapApi(activity: Activity, callback: ((Boolean, Boolean) -> Unit)) {
+        performApiCalls(
+            { repository.remote.getBootStrap() }
+        ) { responses, isSuccess ->
+            if (isSuccess) {
+                val model = responses[0] as BootStrapModel
+                bootStrapData = model.data
+                themeHelper.setBootStrapData(bootStrapData)
+                setThemeDetail(activity, bootStrapData, callback)
+            } else {
+                callback.invoke(false, false)
+            }
+        }
+    }
+    
+    private fun setThemeDetail(activity: Activity, bootStrapData: BootStrapData?, callback: ((Boolean, Boolean) -> Unit)) {
+        if (bootStrapData != null) {
+            bootStrapData.apply {
+                if (themeModel?.primary != null) {
+                    themeModel.apply {
+                        themeHelper.THEME_ID = themeId ?: ""
+                        themeHelper.SERVICE_ID = serviceId ?: ""
+                        themeHelper.setThemeModel(themeModel)
+                    }
+                } else {
+                    val themeDetail = ColorHelper.getThemeData()
+                    themeHelper.setThemeModel(themeDetail)
+                    themeHelper.THEME_ID = themeDetail.themeId?:""
+                    themeHelper.SERVICE_ID = themeDetail.serviceId?:""
+                }
+                //Store Local Languages list
+                themeHelper.setLocalLanguageList(bootStrapData.locales?: arrayListOf())
+                getUserMainDetail(activity, callback)
+            }
+        } else {
+            hideProgress()
+            showError(colorResources.getStringResource().somethingWentWrong)
+            callback.invoke(false, false)
+        }
+    }
+    
+    private fun getUserMainDetail(activity: Activity, callback: (Boolean, Boolean) -> Unit) = viewModelScope.launch {
+        getUserMainDetailApi(activity, callback)
+    }
+    
+    private suspend fun getUserMainDetailApi(activity: Activity, callback: (Boolean, Boolean) -> Unit) {
+        performApiCalls(
+            { repository.remote.userDetail() }
+        ) {response, isSuccess ->
+            if (isSuccess) {
+                val data = response[0] as NSUserDetailResponse?
+                if (data != null) {
+                    colorResources.themeHelper.setUserDetail(data.data)
+                    setLanguageData(activity, data.data, callback)
+                }
+            } else {
+                callback.invoke(false, false)
+            }
+        }
+    }
+    
+    private fun setLanguageData(activity: Activity, userDetail: NSMainDetailUser?, callback: (Boolean, Boolean) -> Unit) {
+        languageConfig.checkLocalLanguageSelected(activity, false, userDetail, bootStrapData) {
+            if (it) {
+                callback.invoke(false, true)
+            } else {
+                callback.invoke(true, false)
+            }
+        }
+    }
+    
+    /*fun getAppThemeAndChangeLocaleFromSelection(context: Context, callback: ((Boolean, Boolean, Boolean) -> Unit)) = viewModelScope.launch {
         getAppThemeAndChangeLocaleFromSelectionApi(context, callback)
     }
 
@@ -58,9 +124,9 @@ class SplashViewModel @Inject constructor(
         } else {
             getAppThemeStart(context, callback)
         }
-    }
+    }*/
 
-    fun getAppThemeStart(context: Context, callback: ((Boolean, Boolean, Boolean) -> Unit)) = viewModelScope.launch {
+    /*fun getAppThemeStart(context: Context, callback: ((Boolean, Boolean, Boolean) -> Unit)) = viewModelScope.launch {
         getAppTheme(context, callback)
     }
 
@@ -180,25 +246,7 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    private fun getUserMainDetail(callback: (NSUserDetailResponse?) -> Unit) = viewModelScope.launch {
-        getUserMainDetailApi(callback)
-    }
-
-    private suspend fun getUserMainDetailApi(callback: (NSUserDetailResponse?) -> Unit) {
-        performApiCalls(
-            { repository.remote.userDetail() }
-        ) {response, isSuccess ->
-            if (isSuccess) {
-                val data = response[0] as NSUserDetailResponse?
-                if (data != null) {
-                    colorResources.themeHelper.setUserDetail(data.data)
-                }
-                callback.invoke(data)
-            } else {
-                callback.invoke(NSUserDetailResponse())
-            }
-        }
-    }
+    
 
     private fun getLanguageStringData(response: NSGetThemeData?, selectedLanguage: String = languageConfig.getSelectedLanguage(), callback: ((Boolean, Boolean, Boolean) -> Unit)) = viewModelScope.launch {
         getLanguageStringDataApi(response, selectedLanguage, callback)
@@ -231,5 +279,5 @@ class SplashViewModel @Inject constructor(
         } else {
             callback.invoke(false, true, false)
         }
-    }
+    }*/
 }

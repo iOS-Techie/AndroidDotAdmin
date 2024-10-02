@@ -10,11 +10,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSDataStorePreferences
+import com.nyotek.dot.admin.common.NSLanguageConfig
 import com.nyotek.dot.admin.common.NSThemeHelper
+import com.nyotek.dot.admin.common.apiRefresh.NyoTokenRefresher
 import com.nyotek.dot.admin.common.extension.isValidList
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.common.utils.ConnectionChecker
 import com.nyotek.dot.admin.data.Repository
+import com.nyotek.dot.admin.models.requests.NSLanguageLocaleRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageRequest
 import com.nyotek.dot.admin.models.requests.NSRefreshTokenRequest
 import com.nyotek.dot.admin.models.responses.ActiveInActiveFilter
@@ -154,6 +157,7 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
                                     userData = userResponse
                                     authToken = accessToken
                                     dataStorePreference.refreshToken = refreshToken
+                                    NyoTokenRefresher.validate(this@BaseViewModel)
                                     performApiCalls(
                                         apiCalls = apiCalls,
                                         onSuccess = onSuccess
@@ -471,6 +475,51 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
                 callback.invoke(regionResponse?.regions ?: arrayListOf())
             } else {
                 callback.invoke(arrayListOf())
+            }
+        }
+    }
+    
+    fun localChange(languageConfig: NSLanguageConfig) = viewModelScope.launch {
+        localChangeForApi(languageConfig)
+    }
+    
+    private suspend fun localChangeForApi(languageConfig: NSLanguageConfig) {
+        performApiCalls(
+            { repository.remote.setLocal(NSLanguageLocaleRequest(languageConfig.getSelectedLanguage())) }
+        ) { _, _ -> }
+    }
+    
+    fun refreshToken() = viewModelScope.launch {
+        refreshTokenApi()
+    }
+    
+    private suspend fun refreshTokenApi() {
+        val refreshToken = dataStorePreference.refreshToken
+        if (refreshToken?.isNotEmpty() == true) {
+            performApiCalls(
+                { repository.remote.refreshToken(NSRefreshTokenRequest(refreshToken)) }
+            ) { responses, isSuccess ->
+                if (isSuccess) {
+                    val userResponse: NSUserResponse? = responses[0] as NSUserResponse?
+                    userResponse?.data?.apply {
+                        if (refreshToken.isEmpty()) {
+                            _sessionTimeOut.value = true
+                        } else {
+                            viewModelScope.launch {
+                                dataStorePreference.apply {
+                                    userData = userResponse
+                                    authToken = accessToken
+                                    dataStorePreference.refreshToken = refreshToken
+                                }
+                                NyoTokenRefresher.validate(this@BaseViewModel)
+                            }
+                        }
+                    } ?: run {
+                        _sessionTimeOut.value = true
+                    }
+                } else {
+                    _sessionTimeOut.value = true
+                }
             }
         }
     }

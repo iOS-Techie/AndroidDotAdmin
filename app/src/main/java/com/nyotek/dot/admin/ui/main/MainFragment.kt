@@ -80,7 +80,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
     private fun setupBottomNavigationBar() {
         val isEmpty = viewModel.languageConfig.getSelectedLanguage().isEmpty()
         if (isEmpty) {
-            showDialogLanguageSelect(true, viewModel.colorResources, viewModel.languageConfig)
+            showDialogLanguageSelect(false, viewModel.colorResources, viewModel.languageConfig, viewModel.themeHelper){}
         } else {
             viewModel.getUserMainDetail()
             viewModel.setNavigationItem()

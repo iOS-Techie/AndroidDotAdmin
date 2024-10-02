@@ -12,6 +12,7 @@ import android.view.WindowManager
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseViewModel
 import com.nyotek.dot.admin.common.callbacks.NSLanguageSelectedCallback
@@ -46,6 +47,7 @@ import java.io.InputStreamReader
 import java.io.Reader
 import java.io.StringWriter
 import java.io.Writer
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -333,6 +335,12 @@ object NSUtilities {
     fun getLocalJsonRowData(activity: Activity, rowData: Int, callback: NSLocalJsonCallback) {
         val jsonString: String = commonJsonResponse(activity, rowData)
         callback.onLocal(Gson().fromJson(jsonString, NSLanguageStringResponse::class.java))
+    }
+    
+    fun getLocalJsonRowDataNew(activity: Activity, rowData: Int, callback: (HashMap<String, HashMap<String, String>>) -> Unit) {
+        val jsonString: String = commonJsonResponse(activity, rowData)
+        val type: Type = object : TypeToken<HashMap<String, HashMap<String, String>>>() {}.type
+        callback.invoke(Gson().fromJson(jsonString, type))
     }
 
     private fun commonJsonResponse(activity: Activity, rawFile: Int): String {

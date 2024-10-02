@@ -1,0 +1,3754 @@
+{
+  "data": [
+    {
+      "key": "card_type_not_mada",
+      "last_modified": "2023-06-23T08:32:51.773322Z",
+      "locale": "en-us",
+      "value": "This card is not of type MADA"
+    },
+    {
+      "key": "app_name",
+      "last_modified": "2023-06-23T09:11:41.932964Z",
+      "locale": "en-us",
+      "value": "DoT"
+    },
+    {
+      "key": "ordered_at",
+      "last_modified": "2023-10-09T06:12:28.118511Z",
+      "locale": "en-us",
+      "value": "Ordered At"
+    },
+    {
+      "key": "customer_contact",
+      "last_modified": "2023-10-09T06:13:32.188452Z",
+      "locale": "en-us",
+      "value": "Customer Contact"
+    },
+    {
+      "key": "employees",
+      "last_modified": "2023-06-22T10:00:35.066303Z",
+      "locale": "en-us",
+      "value": "Employees"
+    },
+    {
+      "key": "add_employee",
+      "last_modified": "2023-06-22T10:00:35.066303Z",
+      "locale": "en-us",
+      "value": "Add Employee"
+    },
+    {
+      "key": "please_select_employee_role",
+      "last_modified": "2023-06-22T10:00:35.066303Z",
+      "locale": "en-us",
+      "value": "Please select Employee Role"
+    },
+    {
+      "key": "sec",
+      "last_modified": "2023-10-11T05:49:28.767763Z",
+      "locale": "en-us",
+      "value": "Sec"
+    },
+    {
+      "key": "select_fleet",
+      "last_modified": "2023-06-30T06:49:55.411863Z",
+      "locale": "en-us",
+      "value": "Select Fleet"
+    },
+    {
+      "key": "unknown",
+      "last_modified": "2023-10-11T08:47:42.188432Z",
+      "locale": "en-us",
+      "value": "Unknown"
+    },
+    {
+      "key": "jobs",
+      "last_modified": "2023-10-17T10:18:47.784518Z",
+      "locale": "en-us",
+      "value": "Jobs"
+    },
+    {
+      "key": "history",
+      "last_modified": "2023-10-17T10:18:47.784518Z",
+      "locale": "en-us",
+      "value": "History"
+    },
+    {
+      "key": "employee_role",
+      "last_modified": "2023-06-22T10:00:35.066303Z",
+      "locale": "en-us",
+      "value": "Employee Role"
+    },
+    {
+      "key": "edit_employee",
+      "last_modified": "2023-06-22T10:00:35.066303Z",
+      "locale": "en-us",
+      "value": "Edit Employee"
+    },
+    {
+      "key": "online",
+      "last_modified": "2023-10-17T10:18:47.784518Z",
+      "locale": "en-us",
+      "value": "Online"
+    },
+    {
+      "key": "offline",
+      "last_modified": "2023-10-17T10:18:47.784518Z",
+      "locale": "en-us",
+      "value": "Offline"
+    },
+    {
+      "key": "capabilities",
+      "last_modified": "2023-10-17T10:18:47.784518Z",
+      "locale": "en-us",
+      "value": "Capabilities"
+    },
+    {
+      "key": "clear_all",
+      "last_modified": "2023-10-17T10:18:47.784518Z",
+      "locale": "en-us",
+      "value": "Clear All"
+    },
+    {
+      "key": "product_manager",
+      "last_modified": "2023-10-17T13:39:46.910871Z",
+      "locale": "en-us",
+      "value": "Product Manager"
+    },
+    {
+      "key": "send_invite",
+      "last_modified": "2023-06-08T12:54:38.099754Z",
+      "locale": "en-us",
+      "value": "Send Invite"
+    },
+    {
+      "key": "select_employee_role",
+      "last_modified": "2023-06-22T10:00:35.066303Z",
+      "locale": "en-us",
+      "value": "Select Employee Role"
+    },
+    {
+      "key": "details",
+      "last_modified": "2023-10-18T10:21:00.03649Z",
+      "locale": "en-us",
+      "value": "Details"
+    },
+    {
+      "key": "complete_active_dispatch",
+      "last_modified": "2024-03-01T07:25:45.171405Z",
+      "locale": "en-us",
+      "value": "Please complete your active dispatch"
+    },
+    {
+      "key": "new",
+      "last_modified": "2024-02-29T09:44:12.47374Z",
+      "locale": "en-us",
+      "value": "New"
+    },
+    {
+      "key": "ready_for_pickup",
+      "last_modified": "2024-02-29T09:45:20.832813Z",
+      "locale": "en-us",
+      "value": "Ready for pickup"
+    },
+    {
+      "key": "no_document_created",
+      "last_modified": "2024-03-01T10:58:05.917074Z",
+      "locale": "en-us",
+      "value": "No document created. Please create a document by hitting +"
+    },
+    {
+      "key": "waiting_for_dispatches",
+      "last_modified": "2024-03-01T10:23:05.966297Z",
+      "locale": "en-us",
+      "value": "Waiting for dispatches..."
+    },
+    {
+      "key": "currently_offline",
+      "last_modified": "2024-03-01T10:23:44.022111Z",
+      "locale": "en-us",
+      "value": "Currently offline"
+    },
+    {
+      "key": "address_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Address cannot be empty"
+    },
+    {
+      "key": "city_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "City cannot be empty"
+    },
+    {
+      "key": "state_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "State cannot be empty"
+    },
+    {
+      "key": "country_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Country cannot be empty"
+    },
+    {
+      "key": "postcode_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Postcode cannot be empty"
+    },
+    {
+      "key": "slogan_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Slogan cannot be empty"
+    },
+    {
+      "key": "order_id",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Order ID"
+    },
+    {
+      "key": "logo_can_not_empty",
+      "last_modified": "2023-07-17T11:52:46.169085Z",
+      "locale": "en-us",
+      "value": "Logo can not be empty"
+    },
+    {
+      "key": "app_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "App cannot be empty"
+    },
+    {
+      "key": "theme_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Theme cannot be empty"
+    },
+    {
+      "key": "platform_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Platform cannot be empty"
+    },
+    {
+      "key": "json_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "JSON cannot be empty"
+    },
+    {
+      "key": "added_successfully",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Added Successfully"
+    },
+    {
+      "key": "key_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Key cannot be empty"
+    },
+    {
+      "key": "value_can_not_empty",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Value cannot be empty"
+    },
+    {
+      "key": "your_device_dont_have_logged",
+      "last_modified": "2023-05-08T13:39:33.011329Z",
+      "locale": "en-us",
+      "value": "Your device doesn\u0027t have logged mail. please log in and try again!"
+    },
+    {
+      "key": "drag_files_here",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Drag files here"
+    },
+    {
+      "key": "or",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "or"
+    },
+    {
+      "key": "attach_your_delivery_proof",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Attach your deliver proof"
+    },
+    {
+      "key": "welcome_to",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Welcome to"
+    },
+    {
+      "key": "mobile_number",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Mobile Number"
+    },
+    {
+      "key": "delivery_proof",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Delivery proof"
+    },
+    {
+      "key": "history_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "History"
+    },
+    {
+      "key": "kg",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "kg"
+    },
+    {
+      "key": "url",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "URL"
+    },
+    {
+      "key": "enter_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Enter Address"
+    },
+    {
+      "key": "close",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Close"
+    },
+    {
+      "key": "slogan",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Slogan"
+    },
+    {
+      "key": "search_group",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Search Group"
+    },
+    {
+      "key": "transactions_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Transactions"
+    },
+    {
+      "key": "all_products",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "All Products"
+    },
+    {
+      "key": "minimum_quantity_can_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Minimum Quantity can not be empty"
+    },
+    {
+      "key": "primary",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Primary"
+    },
+    {
+      "key": "pay",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "PAY"
+    },
+    {
+      "key": "loading_please_wait",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Loading, please wait…"
+    },
+    {
+      "key": "delete_member_message",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure to delete member?"
+    },
+    {
+      "key": "delete_wallpaper_message",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure want to delete wallpaper?"
+    },
+    {
+      "key": "select_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select Address"
+    },
+    {
+      "key": "login_as_guest",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Login as Guest"
+    },
+    {
+      "key": "last_name_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Last name can\u0027t be empty."
+    },
+    {
+      "key": "deduct",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Deduct"
+    },
+    {
+      "key": "card_holder_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card holder name"
+    },
+    {
+      "key": "subtotal",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Subtotal"
+    },
+    {
+      "key": "clear",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Clear"
+    },
+    {
+      "key": "add_deduct",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add/Deduct"
+    },
+    {
+      "key": "edit",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit"
+    },
+    {
+      "key": "please_enter_description",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please Enter Description"
+    },
+    {
+      "key": "do_you_want_to_delete",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Do you want to Delete?"
+    },
+    {
+      "key": "forgot_password",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Forgot Password?"
+    },
+    {
+      "key": "vat",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "VAT%"
+    },
+    {
+      "key": "trip_history_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Trip History"
+    },
+    {
+      "key": "order_fulfilment_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Orders Fulfillment"
+    },
+    {
+      "key": "billing_detail",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "BILLING DETAILS"
+    },
+    {
+      "key": "you_don_t_have_camera",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "You don\u0027t have camera"
+    },
+    {
+      "key": "item",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Item"
+    },
+    {
+      "key": "extra_charge",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Extra charges may apply"
+    },
+    {
+      "key": "add_new_card",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add New Card"
+    },
+    {
+      "key": "invalid_password_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please enter valid Password, enter at least 8 character!"
+    },
+    {
+      "key": "create_product",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create Product"
+    },
+    {
+      "key": "brand_logo",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Brand Logo"
+    },
+    {
+      "key": "select_app",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select App"
+    },
+    {
+      "key": "add_products",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add Products"
+    },
+    {
+      "key": "send_money",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Send Money"
+    },
+    {
+      "key": "are_you_sure_to_delete",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure to delete?"
+    },
+    {
+      "key": "something_went_wrong",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Internal Server Error, Please Try Again Later"
+    },
+    {
+      "key": "field_cannot_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Field cannot be empty"
+    },
+    {
+      "key": "first_name_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "First name can\u0027t be empty."
+    },
+    {
+      "key": "not_yet_registered",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Not yet registered?"
+    },
+    {
+      "key": "create_theme",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create Theme"
+    },
+    {
+      "key": "call",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Call"
+    },
+    {
+      "key": "back",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Back"
+    },
+    {
+      "key": "see_all",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "See All"
+    },
+    {
+      "key": "seconds",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "seconds"
+    },
+    {
+      "key": "enter_your_credentials",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Enter your Credentials"
+    },
+    {
+      "key": "invalid_email_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please enter valid Email Address!"
+    },
+    {
+      "key": "checkout_info_is_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Checkout info is empty or doesn\u0027t contain resource path."
+    },
+    {
+      "key": "create_branch",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create Branch"
+    },
+    {
+      "key": "mark_as_default",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Mark as default"
+    },
+    {
+      "key": "or_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "OR"
+    },
+    {
+      "key": "country_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Country can\u0027t be empty."
+    },
+    {
+      "key": "driver",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Driver"
+    },
+    {
+      "key": "enter_tag",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Enter tag…"
+    },
+    {
+      "key": "user_canceled",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "User canceled"
+    },
+    {
+      "key": "change",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Change"
+    },
+    {
+      "key": "driver_detail",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Driver Details"
+    },
+    {
+      "key": "select_platform",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select Platform"
+    },
+    {
+      "key": "statistics_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Statistics"
+    },
+    {
+      "key": "done",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Done"
+    },
+    {
+      "key": "nick_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Nick Name"
+    },
+    {
+      "key": "wallet_id_not_found",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Wallet ID not found"
+    },
+    {
+      "key": "card_number_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card number is invalid."
+    },
+    {
+      "key": "success_dispatch",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Dispatch proof added successfully"
+    },
+    {
+      "key": "order_delivered_details",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Order Delivered Details"
+    },
+    {
+      "key": "day",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Day"
+    },
+    {
+      "key": "no_dispatch",
+      "last_modified": "2024-03-01T11:46:35.667157Z",
+      "locale": "en-us",
+      "value": "No dispatch"
+    },
+    {
+      "key": "search_user",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Search User"
+    },
+    {
+      "key": "add_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add Address"
+    },
+    {
+      "key": "orders",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Orders"
+    },
+    {
+      "key": "select_store",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select Store"
+    },
+    {
+      "key": "change_password",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Change Password"
+    },
+    {
+      "key": "vendor_detail",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Orders"
+    },
+    {
+      "key": "cancel_order",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Cancel Order"
+    },
+    {
+      "key": "user_fund_transfer",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "User/Fund transfer"
+    },
+    {
+      "key": "notification_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Notifications"
+    },
+    {
+      "key": "status",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Status"
+    },
+    {
+      "key": "already_added_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please choose another location as this location has already been added"
+    },
+    {
+      "key": "wallpaper",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Wallpaper"
+    },
+    {
+      "key": "save",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Save"
+    },
+    {
+      "key": "accepted",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Accepted"
+    },
+    {
+      "key": "in_active",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Inactive"
+    },
+    {
+      "key": "update_item_detail",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Update Item Details"
+    },
+    {
+      "key": "lat_short",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Lat"
+    },
+    {
+      "key": "address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Address"
+    },
+    {
+      "key": "delivered",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Delivered"
+    },
+    {
+      "key": "newly_added",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Newly Added"
+    },
+    {
+      "key": "branch",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Branch"
+    },
+    {
+      "key": "card",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card"
+    },
+    {
+      "key": "username",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Username"
+    },
+    {
+      "key": "enter_address_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please enter address name!"
+    },
+    {
+      "key": "payment_options",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Payment Options"
+    },
+    {
+      "key": "theme_created_successfully",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Theme Created Successfully"
+    },
+    {
+      "key": "service_management",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Service management"
+    },
+    {
+      "key": "city_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "City can\u0027t be empty."
+    },
+    {
+      "key": "wallet_pay",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Pay using wallet"
+    },
+    {
+      "key": "available_balance",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Available Balance"
+    },
+    {
+      "key": "category_list",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Category List"
+    },
+    {
+      "key": "order_success",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Your order has been successfully placed"
+    },
+    {
+      "key": "select_all",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select All"
+    },
+    {
+      "key": "error_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Error color"
+    },
+    {
+      "key": "disable",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Disable"
+    },
+    {
+      "key": "selected_user",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Selected"
+    },
+    {
+      "key": "order_status",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Order Status"
+    },
+    {
+      "key": "search_here",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Search here…"
+    },
+    {
+      "key": "data_failed",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Something went wrong! please try again later!"
+    },
+    {
+      "key": "transaction_is_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Transaction is invalid."
+    },
+    {
+      "key": "color_picker",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Color Picker"
+    },
+    {
+      "key": "your_deliver_proof",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Attach proof of delivery here"
+    },
+    {
+      "key": "no_network_available",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "No Network Available"
+    },
+    {
+      "key": "g",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "g"
+    },
+    {
+      "key": "place_order",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Place Order"
+    },
+    {
+      "key": "no_file_selected",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "No file Selected"
+    },
+    {
+      "key": "german",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "German"
+    },
+    {
+      "key": "modify",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Modify"
+    },
+    {
+      "key": "edit_catalog_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit Catalog Name"
+    },
+    {
+      "key": "group_updated",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Group Updated Successfully"
+    },
+    {
+      "key": "user_added_success",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "User Added Successfully"
+    },
+    {
+      "key": "order_detail",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Order Details"
+    },
+    {
+      "key": "checkout_request_is_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Checkout request is invalid."
+    },
+    {
+      "key": "cvv",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "CVV"
+    },
+    {
+      "key": "vendor_details",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Vendor Details"
+    },
+    {
+      "key": "dispatch_id_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Dispatch Id"
+    },
+    {
+      "key": "street_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Street name"
+    },
+    {
+      "key": "please_select_user",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please Select User!"
+    },
+    {
+      "key": "add_new_category",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add New Category"
+    },
+    {
+      "key": "redirect_url_is_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Redirect URL is invalid."
+    },
+    {
+      "key": "credit",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Credit"
+    },
+    {
+      "key": "description",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Description"
+    },
+    {
+      "key": "postal_code",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Postal Code"
+    },
+    {
+      "key": "industry_type",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Industry Type"
+    },
+    {
+      "key": "get_directions",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Get Directions"
+    },
+    {
+      "key": "today_order",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Today\u0027s Orders"
+    },
+    {
+      "key": "total_vat",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "VAT"
+    },
+    {
+      "key": "total",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Total"
+    },
+    {
+      "key": "success",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Success"
+    },
+    {
+      "key": "apple_pay",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Apple Pay"
+    },
+    {
+      "key": "user_details",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "User details"
+    },
+    {
+      "key": "country_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Country"
+    },
+    {
+      "key": "select_address_title1",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select"
+    },
+    {
+      "key": "delivery_charges",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Delivery Charges"
+    },
+    {
+      "key": "create_catalog",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create catalog"
+    },
+    {
+      "key": "theme_applied_successfully",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Theme Applied Successfully"
+    },
+    {
+      "key": "medium",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Medium"
+    },
+    {
+      "key": "add_image",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add Image"
+    },
+    {
+      "key": "imported_successfully",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Imported Successfully"
+    },
+    {
+      "key": "enter_correct_amount",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please Enter Valid Amount"
+    },
+    {
+      "key": "card_management",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card Management"
+    },
+    {
+      "key": "grams",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Grams"
+    },
+    {
+      "key": "cancel",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Cancel"
+    },
+    {
+      "key": "customer",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Customer"
+    },
+    {
+      "key": "otp_send_successfully",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Otp has been sent successfully"
+    },
+    {
+      "key": "yesterday",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Yesterday"
+    },
+    {
+      "key": "minimum_quantity",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Minimum quantity*"
+    },
+    {
+      "key": "tags",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Tags"
+    },
+    {
+      "key": "select_language",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select Language"
+    },
+    {
+      "key": "print",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Print"
+    },
+    {
+      "key": "view_cart",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "VIEW CART"
+    },
+    {
+      "key": "reset",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Reset"
+    },
+    {
+      "key": "cvv_cvc",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "CVV/CVC"
+    },
+    {
+      "key": "updated_successfully",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Updated successfully"
+    },
+    {
+      "key": "french",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "French"
+    },
+    {
+      "key": "edit_category_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit Category Name"
+    },
+    {
+      "key": "logo",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Logo"
+    },
+    {
+      "key": "add_card",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add Card"
+    },
+    {
+      "key": "only_valid_for",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Only valid for"
+    },
+    {
+      "key": "select",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select"
+    },
+    {
+      "key": "piece",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Piece"
+    },
+    {
+      "key": "created_date",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Created Date"
+    },
+    {
+      "key": "submit_code",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Submit Code"
+    },
+    {
+      "key": "delete_group",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure you want to delete group ?"
+    },
+    {
+      "key": "register_driver",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Register Driver"
+    },
+    {
+      "key": "km",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "km"
+    },
+    {
+      "key": "today",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Today"
+    },
+    {
+      "key": "clear_cache_message",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure to clear the cache of the app?"
+    },
+    {
+      "key": "rating_plus",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "+ Rating"
+    },
+    {
+      "key": "city_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "City"
+    },
+    {
+      "key": "create_category",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create category"
+    },
+    {
+      "key": "no_image_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "No Image"
+    },
+    {
+      "key": "cart_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Cart"
+    },
+    {
+      "key": "not_refresh_token",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Refresh token not found!"
+    },
+    {
+      "key": "delete_wallpaper",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Delete Wallpaper"
+    },
+    {
+      "key": "add_user",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add User"
+    },
+    {
+      "key": "clear_cache",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Clear Cache"
+    },
+    {
+      "key": "money_transactions_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Money Transfer"
+    },
+    {
+      "key": "copy",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Copy"
+    },
+    {
+      "key": "view_all_category",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "View all category"
+    },
+    {
+      "key": "hubz",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Hubz"
+    },
+    {
+      "key": "order_date",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "OrderDate"
+    },
+    {
+      "key": "add_product",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add Product"
+    },
+    {
+      "key": "box",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Box"
+    },
+    {
+      "key": "sign_up",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Sign Up"
+    },
+    {
+      "key": "apply_theme",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Apply Theme"
+    },
+    {
+      "key": "card_brand_is_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card brand is invalid."
+    },
+    {
+      "key": "email",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Email"
+    },
+    {
+      "key": "enable",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Enable"
+    },
+    {
+      "key": "hide_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Hide Title"
+    },
+    {
+      "key": "sar",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "SAR"
+    },
+    {
+      "key": "select_address_title2",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Your Address"
+    },
+    {
+      "key": "contact_us",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Contact Us"
+    },
+    {
+      "key": "user_management",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "User management"
+    },
+    {
+      "key": "base_price_can_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Base price can not be empty"
+    },
+    {
+      "key": "payment_successful",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Payment Successful"
+    },
+    {
+      "key": "week",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Week"
+    },
+    {
+      "key": "print_qr_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Print QR Code"
+    },
+    {
+      "key": "home",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Home"
+    },
+    {
+      "key": "short_order_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Sort Order"
+    },
+    {
+      "key": "dispatch_id_not_found",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Dispatch ID not found!"
+    },
+    {
+      "key": "serialization_error_msg",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Serialization error while parsing object to swiftyJson object"
+    },
+    {
+      "key": "enter_code",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Enter Code"
+    },
+    {
+      "key": "please_add_Items",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please add Your items!"
+    },
+    {
+      "key": "fit",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Fit"
+    },
+    {
+      "key": "debit",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Debit"
+    },
+    {
+      "key": "yamin",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Yamin"
+    },
+    {
+      "key": "delete",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Delete"
+    },
+    {
+      "key": "min",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "min"
+    },
+    {
+      "key": "networkUnreachable_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Something temporarily wrong with your network connection. please make sure you are connected to the internet and then try again."
+    },
+    {
+      "key": "fill",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Fill"
+    },
+    {
+      "key": "preview",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Preview"
+    },
+    {
+      "key": "create_service",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create Service"
+    },
+    {
+      "key": "please_add_user",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please Add User"
+    },
+    {
+      "key": "language",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Language"
+    },
+    {
+      "key": "street_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Street can\u0027t be empty."
+    },
+    {
+      "key": "secondary_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Secondary color"
+    },
+    {
+      "key": "hybrid_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Hybrid"
+    },
+    {
+      "key": "browse",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Browse"
+    },
+    {
+      "key": "base_price",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Base price*"
+    },
+    {
+      "key": "groups_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Groups"
+    },
+    {
+      "key": "all_products_in_stock",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "All Products in Stock"
+    },
+    {
+      "key": "update_stock",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Update Stock"
+    },
+    {
+      "key": "error_phone_number_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please enter valid Phone number!"
+    },
+    {
+      "key": "password",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Password"
+    },
+    {
+      "key": "no",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "No"
+    },
+    {
+      "key": "branch_list",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Branch List"
+    },
+    {
+      "key": "app_created_successfully",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "App Created Succssfully"
+    },
+    {
+      "key": "import",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Import"
+    },
+    {
+      "key": "vat_can_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Vat can not be empty"
+    },
+    {
+      "key": "theme_edited_successfully",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Theme Edited Successfully"
+    },
+    {
+      "key": "create_app",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create App"
+    },
+    {
+      "key": "rating",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Rating"
+    },
+    {
+      "key": "fulfillment_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Fulfillment"
+    },
+    {
+      "key": "ready_for_pick_up",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Ready for pickup"
+    },
+    {
+      "key": "edit_vendor",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit Vendor"
+    },
+    {
+      "key": "logout",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Logout"
+    },
+    {
+      "key": "mada",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "MADA"
+    },
+    {
+      "key": "catalog_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Catalog Name"
+    },
+    {
+      "key": "place_api_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Google Place:"
+    },
+    {
+      "key": "group_name_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Group Name"
+    },
+    {
+      "key": "order_login_alert_message",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please login to complete this order"
+    },
+    {
+      "key": "failed_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Failed!!"
+    },
+    {
+      "key": "primary_light_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Primary light color"
+    },
+    {
+      "key": "orders_details",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Order Details"
+    },
+    {
+      "key": "phone_number",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Phone Number"
+    },
+    {
+      "key": "make_this_my_default_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Make this my default address"
+    },
+    {
+      "key": "select_theme",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select Theme"
+    },
+    {
+      "key": "products_in_stock",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "All Product in Stock"
+    },
+    {
+      "key": "visa_master_card",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "VISA \u0026 Master"
+    },
+    {
+      "key": "you_have_account",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "You have an account?"
+    },
+    {
+      "key": "driver_management",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Driver management"
+    },
+    {
+      "key": "create_group",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create Group"
+    },
+    {
+      "key": "state",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "State"
+    },
+    {
+      "key": "theme",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Theme"
+    },
+    {
+      "key": "value",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Value"
+    },
+    {
+      "key": "camera",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Camera"
+    },
+    {
+      "key": "postcode_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Postcode can\u0027t be empty."
+    },
+    {
+      "key": "product_view",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Product View"
+    },
+    {
+      "key": "icon_size_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "200X200px"
+    },
+    {
+      "key": "reverse_geo_code_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Reverse GeoCode:"
+    },
+    {
+      "key": "group_created",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Group created Successfully"
+    },
+    {
+      "key": "state_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "State can\u0027t be empty."
+    },
+    {
+      "key": "payment",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Payment"
+    },
+    {
+      "key": "listing_price",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Listing price"
+    },
+    {
+      "key": "today_order_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Get today\u0027s order"
+    },
+    {
+      "key": "small",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Small"
+    },
+    {
+      "key": "vendor",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Vendor"
+    },
+    {
+      "key": "user",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "User"
+    },
+    {
+      "key": "national_id_number",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "National ID Number"
+    },
+    {
+      "key": "delivery_time",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Delivery Time"
+    },
+    {
+      "key": "vendor_management",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Vendor management"
+    },
+    {
+      "key": "resend",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Resend"
+    },
+    {
+      "key": "network_error",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "No Network Available"
+    },
+    {
+      "key": "show_details",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Show Details"
+    },
+    {
+      "key": "large",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Large"
+    },
+    {
+      "key": "photos",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Photos"
+    },
+    {
+      "key": "please_select_card",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please select card"
+    },
+    {
+      "key": "ascending",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Ascending"
+    },
+    {
+      "key": "please_enter_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please Enter Name"
+    },
+    {
+      "key": "notification_setting_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Notification Settings"
+    },
+    {
+      "key": "member",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "members"
+    },
+    {
+      "key": "create",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create"
+    },
+    {
+      "key": "tab_secondary_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Tab secondary color"
+    },
+    {
+      "key": "in_stock",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "In Stock"
+    },
+    {
+      "key": "yes",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Yes"
+    },
+    {
+      "key": "submit",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Submit"
+    },
+    {
+      "key": "add_new_catalog",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Add New Catalog"
+    },
+    {
+      "key": "arabic_l",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Arabic"
+    },
+    {
+      "key": "english_l",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "English"
+    },
+    {
+      "key": "success_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Success color"
+    },
+    {
+      "key": "expiry_date_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Expiry date is invalid."
+    },
+    {
+      "key": "expiry_date",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Expiry date"
+    },
+    {
+      "key": "standard_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Standard"
+    },
+    {
+      "key": "ok",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "OK"
+    },
+    {
+      "key": "descending",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Descending"
+    },
+    {
+      "key": "duration",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Duration"
+    },
+    {
+      "key": "no_selected_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please Select Address!"
+    },
+    {
+      "key": "log_in",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Log in"
+    },
+    {
+      "key": "product",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Product"
+    },
+    {
+      "key": "no_item",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "No Item"
+    },
+    {
+      "key": "unit_of_measurement",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Unit of Measurement*"
+    },
+    {
+      "key": "maximum_quantity",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Maximum quantity"
+    },
+    {
+      "key": "logout_message",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure you want to logout?"
+    },
+    {
+      "key": "card_delete_msg",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure you want to delete card ?"
+    },
+    {
+      "key": "cvv_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "CVV is invalid."
+    },
+    {
+      "key": "card_number",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card Number"
+    },
+    {
+      "key": "secondary_dark_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Secondary dark color"
+    },
+    {
+      "key": "first_name",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "First Name"
+    },
+    {
+      "key": "show_notifications",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Show Notifications"
+    },
+    {
+      "key": "mobile",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Mobile"
+    },
+    {
+      "key": "card_holder_invalid",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card holder is invalid."
+    },
+    {
+      "key": "latitude_longitude",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Latitude, Longitude"
+    },
+    {
+      "key": "balance",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Balance"
+    },
+    {
+      "key": "status_updated",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Status Updated Successfully"
+    },
+    {
+      "key": "update_status_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Update status"
+    },
+    {
+      "key": "category",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Category"
+    },
+    {
+      "key": "vat_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "VAT"
+    },
+    {
+      "key": "select_user",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Select User"
+    },
+    {
+      "key": "name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Name"
+    },
+    {
+      "key": "last_name",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Last Name"
+    },
+    {
+      "key": "sent_money_success_to",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "You sent money successfully to"
+    },
+    {
+      "key": "group",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Group"
+    },
+    {
+      "key": "items",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Items"
+    },
+    {
+      "key": "warning",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Warning"
+    },
+    {
+      "key": "please_checkout_your_items",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please checkout your items!"
+    },
+    {
+      "key": "active",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Active"
+    },
+    {
+      "key": "create_vendor",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create Vendor"
+    },
+    {
+      "key": "apply",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Apply"
+    },
+    {
+      "key": "category_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Category Name"
+    },
+    {
+      "key": "next",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Next"
+    },
+    {
+      "key": "category_segment_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Category Segment Color"
+    },
+    {
+      "key": "setting_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Settings"
+    },
+    {
+      "key": "copy_success",
+      "last_modified": "2023-05-08T13:39:08.317617Z",
+      "locale": "en-us",
+      "value": "Text Copied successfully"
+    },
+    {
+      "key": "wallet",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Wallet"
+    },
+    {
+      "key": "search",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Search"
+    },
+    {
+      "key": "are_you_sure",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Are you sure?"
+    },
+    {
+      "key": "view_more",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "View More"
+    },
+    {
+      "key": "profile",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Profile"
+    },
+    {
+      "key": "new_",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "New"
+    },
+    {
+      "key": "catalog",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Catalog"
+    },
+    {
+      "key": "employee",
+      "last_modified": "2023-06-22T10:00:35.066303Z",
+      "locale": "en-us",
+      "value": "Employee"
+    },
+    {
+      "key": "no_address_found",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Not Available"
+    },
+    {
+      "key": "background_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Background color"
+    },
+    {
+      "key": "name_can_not_be_empty",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Name can not be empty"
+    },
+    {
+      "key": "out_of_stock",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Out Of Stock"
+    },
+    {
+      "key": "themes",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Themes"
+    },
+    {
+      "key": "setting",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Setting"
+    },
+    {
+      "key": "edit_branch",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit Branch"
+    },
+    {
+      "key": "long_short",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Long"
+    },
+    {
+      "key": "edit_driver",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit Driver"
+    },
+    {
+      "key": "card_name",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Card Number"
+    },
+    {
+      "key": "email_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Email Address"
+    },
+    {
+      "key": "month",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Month"
+    },
+    {
+      "key": "view",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "View"
+    },
+    {
+      "key": "satellite_title",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Satellite"
+    },
+    {
+      "key": "update_theme",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Update Theme"
+    },
+    {
+      "key": "apps",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Apps"
+    },
+    {
+      "key": "login",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Login"
+    },
+    {
+      "key": "primary_color",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Primary color"
+    },
+    {
+      "key": "post_code",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Postcode"
+    },
+    {
+      "key": "amount",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Amount"
+    },
+    {
+      "key": "add_group",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Create Group"
+    },
+    {
+      "key": "qa_qc",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "QA/QC"
+    },
+    {
+      "key": "edit_theme",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit Theme"
+    },
+    {
+      "key": "remove_this_item",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Remove this Item"
+    },
+    {
+      "key": "edit_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Edit Address"
+    },
+    {
+      "key": "selected_item",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Selected Item"
+    },
+    {
+      "key": "order_failed",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Your order has been failed"
+    },
+    {
+      "key": "background_images",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Background Images"
+    },
+    {
+      "key": "stop",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Stop"
+    },
+    {
+      "key": "build_version",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Build"
+    },
+    {
+      "key": "inclusive",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Inclusive"
+    },
+    {
+      "key": "document_list",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Document list"
+    },
+    {
+      "key": "add_document",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Add document"
+    },
+    {
+      "key": "document_type",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Document Type"
+    },
+    {
+      "key": "document_number",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Document Number"
+    },
+    {
+      "key": "add",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Add"
+    },
+    {
+      "key": "background_title",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Background wallpaper"
+    },
+    {
+      "key": "we_have_sent_otp",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "We have sent a 6 digit verification code to\nyour mobile number"
+    },
+    {
+      "key": "no_driver_assigned",
+      "last_modified": "2024-02-29T13:12:05.84942Z",
+      "locale": "en-us",
+      "value": "No driver assigned"
+    },
+    {
+      "key": "id",
+      "last_modified": "2024-03-06T09:29:25.769683Z",
+      "locale": "en-us",
+      "value": "ID"
+    },
+    {
+      "key": "no_notification",
+      "last_modified": "2024-03-01T11:56:26.16072Z",
+      "locale": "en-us",
+      "value": "No notifications"
+    },
+    {
+      "key": "no_location",
+      "last_modified": "2024-03-01T11:57:32.414425Z",
+      "locale": "en-us",
+      "value": "No location"
+    },
+    {
+      "key": "select_service",
+      "last_modified": "2023-05-23T04:59:02.011081Z",
+      "locale": "en-us",
+      "value": "Select Service"
+    },
+    {
+      "key": "service_cannot_be_empty",
+      "last_modified": "2023-05-23T04:59:02.011081Z",
+      "locale": "en-us",
+      "value": "Service can not be empty."
+    },
+    {
+      "key": "no_any_vehicle",
+      "last_modified": "2024-03-01T13:50:25.896605Z",
+      "locale": "en-us",
+      "value": "No vehicle. Please create a vehicle by hitting +"
+    },
+    {
+      "key": "not_available",
+      "last_modified": "2024-03-05T13:51:58.581599Z",
+      "locale": "en-us",
+      "value": "Not available"
+    },
+    {
+      "key": "year",
+      "last_modified": "2024-03-06T09:29:25.769683Z",
+      "locale": "en-us",
+      "value": "Year"
+    },
+    {
+      "key": "picked_up",
+      "last_modified": "2024-03-12T07:15:38.83536Z",
+      "locale": "en-us",
+      "value": "Picked Up"
+    },
+    {
+      "key": "json",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Json"
+    },
+    {
+      "key": "order",
+      "last_modified": "2024-03-12T10:04:00.249832Z",
+      "locale": "en-us",
+      "value": "Order"
+    },
+    {
+      "key": "update_order",
+      "last_modified": "2024-03-12T11:35:42.537175Z",
+      "locale": "en-us",
+      "value": "Update Order"
+    },
+    {
+      "key": "please_select_address",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Please Select Address"
+    },
+    {
+      "key": "total_price",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Total Price"
+    },
+    {
+      "key": "block",
+      "last_modified": "2023-04-17T10:40:16.390731Z",
+      "locale": "en-us",
+      "value": "Block"
+    },
+    {
+      "key": "no_fleet_found",
+      "last_modified": "2024-02-28T06:43:40.513629Z",
+      "locale": "en-us",
+      "value": "Sorry, you do not belong to any fleets. Please contact technical support."
+    },
+    {
+      "key": "services",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Services"
+    },
+    {
+      "key": "fleets",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Fleets"
+    },
+    {
+      "key": "dashboard",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Dashboard"
+    },
+    {
+      "key": "fleet_management",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Fleet Management"
+    },
+    {
+      "key": "create_fleet",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Create Fleet"
+    },
+    {
+      "key": "fleet_detail",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Fleet Detail"
+    },
+    {
+      "key": "fleet",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Fleet"
+    },
+    {
+      "key": "create_capabilities",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Create Capabilities"
+    },
+    {
+      "key": "update_capability",
+      "last_modified": "2023-07-04T12:51:55.443788Z",
+      "locale": "en-us",
+      "value": "Update Capability"
+    },
+    {
+      "key": "welcome_back",
+      "last_modified": "2023-07-04T12:59:37.399856Z",
+      "locale": "en-us",
+      "value": "Welcome back!"
+    },
+    {
+      "key": "lets_build_something",
+      "last_modified": "2023-07-04T12:59:37.399856Z",
+      "locale": "en-us",
+      "value": "Let\u0027s build something great"
+    },
+    {
+      "key": "email_phone_number",
+      "last_modified": "2023-07-04T12:59:37.399856Z",
+      "locale": "en-us",
+      "value": "E-mail or phone number"
+    },
+    {
+      "key": "type_your_email_phone",
+      "last_modified": "2023-07-04T12:59:37.399856Z",
+      "locale": "en-us",
+      "value": "Type your e-mail or phone number"
+    },
+    {
+      "key": "type_your_password",
+      "last_modified": "2023-07-04T12:59:37.399856Z",
+      "locale": "en-us",
+      "value": "Type your password"
+    },
+    {
+      "key": "must_be_8_char",
+      "last_modified": "2023-07-04T12:59:37.399856Z",
+      "locale": "en-us",
+      "value": "Must be 8 characters at least"
+    },
+    {
+      "key": "update",
+      "last_modified": "2023-07-04T13:54:45.822422Z",
+      "locale": "en-us",
+      "value": "Update"
+    },
+    {
+      "key": "attach_delivery_proof",
+      "last_modified": "2024-03-13T13:04:34.602679Z",
+      "locale": "en-us",
+      "value": "Do you want to attach delivery proof?"
+    },
+    {
+      "key": "password_reset",
+      "last_modified": "2023-07-05T13:09:39.475238Z",
+      "locale": "en-us",
+      "value": "Password Reset"
+    },
+    {
+      "key": "enter_your_email_we_send_reset",
+      "last_modified": "2023-07-05T13:09:39.475238Z",
+      "locale": "en-us",
+      "value": "Enter your email and we will send you a reset link"
+    },
+    {
+      "key": "send_me_the_link",
+      "last_modified": "2023-07-05T13:09:39.475238Z",
+      "locale": "en-us",
+      "value": "Send me the link"
+    },
+    {
+      "key": "dispatch_details",
+      "last_modified": "2023-09-18T12:52:26.734894Z",
+      "locale": "en-us",
+      "value": "Dispatch Details"
+    },
+    {
+      "key": "dispatch",
+      "last_modified": "2023-09-18T12:52:26.734894Z",
+      "locale": "en-us",
+      "value": "Dispatch"
+    },
+    {
+      "key": "dispatch_management",
+      "last_modified": "2023-09-18T12:52:26.734894Z",
+      "locale": "en-us",
+      "value": "Dispatch Management"
+    },
+    {
+      "key": "modify_services",
+      "last_modified": "2023-07-05T13:15:43.56626Z",
+      "locale": "en-us",
+      "value": "Modify Services"
+    },
+    {
+      "key": "assign",
+      "last_modified": "2023-07-05T13:15:43.56626Z",
+      "locale": "en-us",
+      "value": "Assign"
+    },
+    {
+      "key": "all",
+      "last_modified": "2023-07-05T13:15:43.56626Z",
+      "locale": "en-us",
+      "value": "All"
+    },
+    {
+      "key": "number",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "Number"
+    },
+    {
+      "key": "license_number",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "License Number"
+    },
+    {
+      "key": "age",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "Age"
+    },
+    {
+      "key": "track",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "Track"
+    },
+    {
+      "key": "registration_no",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "Registration no"
+    },
+    {
+      "key": "manu_year",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "Manu.. Year"
+    },
+    {
+      "key": "driver_name",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "Driver Name"
+    },
+    {
+      "key": "date",
+      "last_modified": "2023-10-04T06:31:30.609211Z",
+      "locale": "en-us",
+      "value": "Date"
+    },
+    {
+      "key": "order_details",
+      "last_modified": "2024-03-14T11:22:36.948813Z",
+      "locale": "en-us",
+      "value": "Order Details"
+    },
+    {
+      "key": "short_dispatch_id",
+      "last_modified": "2024-03-14T11:24:51.796554Z",
+      "locale": "en-us",
+      "value": "Short Dispatch ID"
+    },
+    {
+      "key": "order_short_id",
+      "last_modified": "2024-03-14T11:26:10.886159Z",
+      "locale": "en-us",
+      "value": "Short Order ID"
+    },
+    {
+      "key": "distance_km",
+      "last_modified": "2024-03-19T15:06:31.627953Z",
+      "locale": "en-us",
+      "value": "Distance (Km)"
+    },
+    {
+      "key": "notification_created",
+      "last_modified": "2024-03-19T15:07:21.919125Z",
+      "locale": "en-us",
+      "value": "Notification Created"
+    },
+    {
+      "key": "notification_expired",
+      "last_modified": "2024-03-19T15:07:58.5855Z",
+      "locale": "en-us",
+      "value": "Notification Expired"
+    },
+    {
+      "key": "dispatch_request_sent",
+      "last_modified": "2024-03-19T15:08:48.013991Z",
+      "locale": "en-us",
+      "value": "Dispatch Request Sent"
+    },
+    {
+      "key": "no_dispatch_requests",
+      "last_modified": "2024-03-19T15:19:17.821072Z",
+      "locale": "en-us",
+      "value": "No dispatch requests"
+    },
+    {
+      "key": "location_history",
+      "last_modified": "2023-09-20T11:19:02.660286Z",
+      "locale": "en-us",
+      "value": "Location History"
+    },
+    {
+      "key": "rejected_trip_driver_list",
+      "last_modified": "2023-10-04T06:48:00.761072Z",
+      "locale": "en-us",
+      "value": "Rejected trip driver list"
+    },
+    {
+      "key": "vehicle",
+      "last_modified": "2023-07-06T12:17:30.470623Z",
+      "locale": "en-us",
+      "value": "Vehicle"
+    },
+    {
+      "key": "customer_name",
+      "last_modified": "2024-03-21T08:17:50.931217Z",
+      "locale": "en-us",
+      "value": "Customer Name"
+    },
+    {
+      "key": "order_price",
+      "last_modified": "2024-03-21T08:18:53.323897Z",
+      "locale": "en-us",
+      "value": "Order Price"
+    },
+    {
+      "key": "allow_location_permission",
+      "last_modified": "2023-07-07T12:02:16.106028Z",
+      "locale": "en-us",
+      "value": "Please allow location permission"
+    },
+    {
+      "key": "location_details",
+      "last_modified": "2023-09-21T12:17:12.60253Z",
+      "locale": "en-us",
+      "value": "Location Details"
+    },
+    {
+      "key": "create_vehicle",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Create Vehicle"
+    },
+    {
+      "key": "vehicle_registration_no",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Vehicle registration no"
+    },
+    {
+      "key": "enter_your_vehicle_registration_no",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Enter your vehicle registration no"
+    },
+    {
+      "key": "manufacturer",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Manufacturer"
+    },
+    {
+      "key": "select_manufacturer",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Select manufacturer"
+    },
+    {
+      "key": "model",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Model"
+    },
+    {
+      "key": "select_model",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Select model"
+    },
+    {
+      "key": "manufacturer_year",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Manufacturer year"
+    },
+    {
+      "key": "select_manufacturer_year",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Select manufacturer year"
+    },
+    {
+      "key": "load_capacity",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Load capacity"
+    },
+    {
+      "key": "select_load_capacity",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Select load capacity"
+    },
+    {
+      "key": "additional_note",
+      "last_modified": "2023-07-07T13:58:43.270446Z",
+      "locale": "en-us",
+      "value": "Additional note"
+    },
+    {
+      "key": "please_select_document_type",
+      "last_modified": "2023-09-22T10:07:16.840805Z",
+      "locale": "en-us",
+      "value": "Please Select Document Type"
+    },
+    {
+      "key": "bio",
+      "last_modified": "2024-04-01T05:22:56.660557Z",
+      "locale": "en-us",
+      "value": "Bio"
+    },
+    {
+      "key": "birthdate",
+      "last_modified": "2024-04-01T05:22:56.660557Z",
+      "locale": "en-us",
+      "value": "Birthdate"
+    },
+    {
+      "key": "enter_firstname",
+      "last_modified": "2024-04-01T05:22:56.660557Z",
+      "locale": "en-us",
+      "value": "Enter firstname"
+    },
+    {
+      "key": "enter_lastname",
+      "last_modified": "2024-04-01T05:22:56.660557Z",
+      "locale": "en-us",
+      "value": "Enter lastname"
+    },
+    {
+      "key": "select_dob",
+      "last_modified": "2024-04-01T05:22:56.660557Z",
+      "locale": "en-us",
+      "value": "Please select birth date"
+    },
+    {
+      "key": "select_capability",
+      "last_modified": "2023-07-12T13:37:34.398696Z",
+      "locale": "en-us",
+      "value": "Select capability"
+    },
+    {
+      "key": "capability",
+      "last_modified": "2023-07-12T13:37:34.398696Z",
+      "locale": "en-us",
+      "value": "Capability"
+    },
+    {
+      "key": "update_vehicle",
+      "last_modified": "2023-07-12T13:37:34.398696Z",
+      "locale": "en-us",
+      "value": "Update Vehicle"
+    },
+    {
+      "key": "driver_details",
+      "last_modified": "2023-07-12T13:37:34.398696Z",
+      "locale": "en-us",
+      "value": "Driver Details"
+    },
+    {
+      "key": "select_vehicle",
+      "last_modified": "2023-07-12T13:37:34.398696Z",
+      "locale": "en-us",
+      "value": "Select vehicle"
+    },
+    {
+      "key": "model_can_not_empty",
+      "last_modified": "2023-07-17T11:52:46.169085Z",
+      "locale": "en-us",
+      "value": "Model can not be empty"
+    },
+    {
+      "key": "manufacturer_can_not_empty",
+      "last_modified": "2023-07-17T11:52:46.169085Z",
+      "locale": "en-us",
+      "value": "Manufacturer can not be empty"
+    },
+    {
+      "key": "registration_number_can_not_empty",
+      "last_modified": "2023-07-17T11:52:46.169085Z",
+      "locale": "en-us",
+      "value": "Registration number can not be empty"
+    },
+    {
+      "key": "manufacturer_year_can_not_empty",
+      "last_modified": "2023-07-17T11:52:46.169085Z",
+      "locale": "en-us",
+      "value": "Manufacturer year can not be empty"
+    },
+    {
+      "key": "load_capacity_can_not_empty",
+      "last_modified": "2023-07-17T11:52:46.169085Z",
+      "locale": "en-us",
+      "value": "Load capacity can not be empty"
+    },
+    {
+      "key": "please_select_capability",
+      "last_modified": "2023-07-17T11:52:46.169085Z",
+      "locale": "en-us",
+      "value": "Please select capability"
+    },
+    {
+      "key": "vehicle_details",
+      "last_modified": "2023-07-18T08:35:49.479975Z",
+      "locale": "en-us",
+      "value": "Vehicle Details"
+    },
+    {
+      "key": "update_driver",
+      "last_modified": "2023-07-18T08:35:49.479975Z",
+      "locale": "en-us",
+      "value": "Update Driver"
+    },
+    {
+      "key": "select_driver",
+      "last_modified": "2023-07-18T08:35:49.479975Z",
+      "locale": "en-us",
+      "value": "Select Driver"
+    },
+    {
+      "key": "no_vehicle_assign_placeholder",
+      "last_modified": "2024-04-01T11:11:11.243022Z",
+      "locale": "en-us",
+      "value": "No vehicle assigned!\nPlease click here to create a Vehicle"
+    },
+    {
+      "key": "vehicle_detail",
+      "last_modified": "2023-08-03T10:32:18.012947Z",
+      "locale": "en-us",
+      "value": "Vehicle Detail"
+    },
+    {
+      "key": "vehicle_management",
+      "last_modified": "2023-10-27T11:16:11.391666Z",
+      "locale": "en-us",
+      "value": "Vehicle Management"
+    },
+    {
+      "key": "use_this_vehicle",
+      "last_modified": "2023-08-04T08:31:24.7431Z",
+      "locale": "en-us",
+      "value": "Use this vehicle"
+    },
+    {
+      "key": "assigned",
+      "last_modified": "2023-08-04T08:31:24.7431Z",
+      "locale": "en-us",
+      "value": "Assigned"
+    },
+    {
+      "key": "time_stamp",
+      "last_modified": "2024-02-07T10:25:42.220435Z",
+      "locale": "en-us",
+      "value": "Time Stamp"
+    },
+    {
+      "key": "edit_vehicle",
+      "last_modified": "2023-08-04T13:34:04.178608Z",
+      "locale": "en-us",
+      "value": "Edit vehicle"
+    },
+    {
+      "key": "document_management",
+      "last_modified": "2023-08-10T12:04:06.421813Z",
+      "locale": "en-us",
+      "value": "Document Management"
+    },
+    {
+      "key": "tap_here_to_upload_document",
+      "last_modified": "2023-08-10T12:04:06.421813Z",
+      "locale": "en-us",
+      "value": "Tap here and upload your document"
+    },
+    {
+      "key": "upload",
+      "last_modified": "2023-08-10T12:04:06.421813Z",
+      "locale": "en-us",
+      "value": "Upload"
+    },
+    {
+      "key": "please_select_image",
+      "last_modified": "2023-08-11T06:22:30.94748Z",
+      "locale": "en-us",
+      "value": "Please capture or select document image"
+    },
+    {
+      "key": "please_enter_document_number",
+      "last_modified": "2023-08-11T06:22:30.94748Z",
+      "locale": "en-us",
+      "value": "Please enter document number"
+    },
+    {
+      "key": "take_photo",
+      "last_modified": "2023-08-11T10:57:23.336388Z",
+      "locale": "en-us",
+      "value": "Take Photo"
+    },
+    {
+      "key": "choose_from_gallery",
+      "last_modified": "2023-08-11T10:57:23.336388Z",
+      "locale": "en-us",
+      "value": "Choose from Gallery"
+    },
+    {
+      "key": "document_number_can_not_empty",
+      "last_modified": "2023-08-14T13:21:03.723444Z",
+      "locale": "en-us",
+      "value": "Document Number cannot be empty"
+    },
+    {
+      "key": "select_document_type",
+      "last_modified": "2023-08-14T13:21:03.723444Z",
+      "locale": "en-us",
+      "value": "Select Document Type"
+    },
+    {
+      "key": "select_image",
+      "last_modified": "2023-08-14T13:21:03.723444Z",
+      "locale": "en-us",
+      "value": "Select Image"
+    },
+    {
+      "key": "document_detail",
+      "last_modified": "2023-08-16T10:41:01.523735Z",
+      "locale": "en-us",
+      "value": "Document Detail"
+    },
+    {
+      "key": "decline",
+      "last_modified": "2023-08-31T10:33:29.400528Z",
+      "locale": "en-us",
+      "value": "Decline"
+    },
+    {
+      "key": "accept",
+      "last_modified": "2023-08-31T10:33:29.400528Z",
+      "locale": "en-us",
+      "value": "Accept"
+    },
+    {
+      "key": "customer_details",
+      "last_modified": "2023-08-31T12:25:35.913832Z",
+      "locale": "en-us",
+      "value": "Customer details"
+    },
+    {
+      "key": "delivery_in",
+      "last_modified": "2023-08-31T12:28:08.9429Z",
+      "locale": "en-us",
+      "value": "Delivery in"
+    },
+    {
+      "key": "new_dispatch",
+      "last_modified": "2023-09-01T13:14:45.235781Z",
+      "locale": "en-us",
+      "value": "New Dispatch"
+    },
+    {
+      "key": "days",
+      "last_modified": "2023-09-01T13:37:32.768745Z",
+      "locale": "en-us",
+      "value": "days"
+    },
+    {
+      "key": "hours",
+      "last_modified": "2023-09-01T13:37:32.768745Z",
+      "locale": "en-us",
+      "value": "hours"
+    },
+    {
+      "key": "minutes",
+      "last_modified": "2023-09-01T13:37:32.768745Z",
+      "locale": "en-us",
+      "value": "minutes"
+    },
+    {
+      "key": "no_any_vehicle_assigned",
+      "last_modified": "2024-02-28T07:11:05.147499Z",
+      "locale": "en-us",
+      "value": "No vehicle assigned. Please create a vehicle by hitting +"
+    },
+    {
+      "key": "cancelled",
+      "last_modified": "2024-02-08T05:17:55.931813Z",
+      "locale": "en-us",
+      "value": "Cancelled"
+    },
+    {
+      "key": "vehicle_deleted_successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Vehicle deleted successfully"
+    },
+    {
+      "key": "role_assigned_successfully ",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Role assigned successfully"
+    },
+    {
+      "key": "url_cannot_be_empty",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "URL cannot be empty "
+    },
+    {
+      "key": "en-uster_url",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "en-uster URL"
+    },
+    {
+      "key": "region_can_not_be_empty",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Region can not be empty"
+    },
+    {
+      "key": "select_region",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Select Region"
+    },
+    {
+      "key": "en-uster_slogan",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "en-uster slogan"
+    },
+    {
+      "key": "name_cannot_be_empty",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Name cannot be empty"
+    },
+    {
+      "key": "en-uster_name",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "en-uster name"
+    },
+    {
+      "key": "employee_deleted_successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Employee deleted successfully"
+    },
+    {
+      "key": "select_file",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Select file"
+    },
+    {
+      "key": "fleet_updated_successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Fleet details updated successfully"
+    },
+    {
+      "key": "address_2",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Address 2"
+    },
+    {
+      "key": "address_1",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Address 1"
+    },
+    {
+      "key": "pin_the_mar-saker",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Please pin the mar-saker to your location"
+    },
+    {
+      "key": "capability_assigned_successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Capability assigned successfully"
+    },
+    {
+      "key": "lable_cannot_be_empty",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Lable cannot be empty"
+    },
+    {
+      "key": "en-uster_label",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "en-uster label"
+    },
+    {
+      "key": "label",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Label"
+    },
+    {
+      "key": "capability_updated_successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Capability updated successfully"
+    },
+    {
+      "key": "capability_created_successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Capability created successfully"
+    },
+    {
+      "key": "slogan_cannot_be_empty",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Slogan cannot be empty"
+    },
+    {
+      "key": "fleet_created_Successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Fleet created Successfully"
+    },
+    {
+      "key": "service_managemen-ust",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Service Managemen-ust"
+    },
+    {
+      "key": "email_or_phone_required",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Email or phone number is required"
+    },
+    {
+      "key": "password_cannot_be_empty",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Password cannot be empty"
+    },
+    {
+      "key": "email_cannot_be_empty",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Email cannot be empty"
+    },
+    {
+      "key": "logged_in_successfully",
+      "last_modified": "2024-02-08T05:30:31.45905Z",
+      "locale": "en-us",
+      "value": "Logged in successfully"
+    },
+    {
+      "key": "label_cannot_be_empty",
+      "last_modified": "2024-02-08T06:45:20.258901Z",
+      "locale": "en-us",
+      "value": "Label cannot be empty"
+    },
+    {
+      "key": "enter_label",
+      "last_modified": "2024-02-08T07:04:35.711894Z",
+      "locale": "en-us",
+      "value": "Enter label"
+    },
+    {
+      "key": "enter_name",
+      "last_modified": "2024-02-08T07:06:38.268139Z",
+      "locale": "en-us",
+      "value": "Enter name"
+    },
+    {
+      "key": "enter_slogan",
+      "last_modified": "2024-02-08T07:09:25.966785Z",
+      "locale": "en-us",
+      "value": "Enter slogan"
+    },
+    {
+      "key": "enter_url",
+      "last_modified": "2024-02-08T07:12:22.857908Z",
+      "locale": "en-us",
+      "value": "Enter URL"
+    },
+    {
+      "key": "location",
+      "last_modified": "2023-09-11T13:18:53.010554Z",
+      "locale": "en-us",
+      "value": "Location"
+    },
+    {
+      "key": "driver_status",
+      "last_modified": "2023-09-11T13:18:53.010554Z",
+      "locale": "en-us",
+      "value": "Driver Status"
+    },
+    {
+      "key": "dispatch_id",
+      "last_modified": "2023-10-27T11:09:52.27968Z",
+      "locale": "en-us",
+      "value": "Dispatch ID"
+    },
+    {
+      "key": "active_dispatches",
+      "last_modified": "2023-09-11T13:18:53.010554Z",
+      "locale": "en-us",
+      "value": "Active Dispatches"
+    },
+    {
+      "key": "time",
+      "last_modified": "2023-09-11T13:18:53.010554Z",
+      "locale": "en-us",
+      "value": "Time"
+    },
+    {
+      "key": "pin_the_marker",
+      "last_modified": "2024-02-08T10:04:25.572889Z",
+      "locale": "en-us",
+      "value": "Please pin the marker to your location"
+    },
+    {
+      "key": "enter_city",
+      "last_modified": "2024-02-08T10:11:07.231131Z",
+      "locale": "en-us",
+      "value": "Enter city"
+    },
+    {
+      "key": "enter_state",
+      "last_modified": "2024-02-08T10:11:07.231131Z",
+      "locale": "en-us",
+      "value": "Enter state"
+    },
+    {
+      "key": "enter_country",
+      "last_modified": "2024-02-08T10:11:07.231131Z",
+      "locale": "en-us",
+      "value": "Enter country"
+    },
+    {
+      "key": "just_now",
+      "last_modified": "2023-09-12T04:13:04.321998Z",
+      "locale": "en-us",
+      "value": "Just Now"
+    },
+    {
+      "key": "vehicle_created_successfully",
+      "last_modified": "2024-02-08T11:54:59.805772Z",
+      "locale": "en-us",
+      "value": "Vehicle created successfully"
+    },
+    {
+      "key": "employee_created_successfully",
+      "last_modified": "2024-02-08T11:56:46.928325Z",
+      "locale": "en-us",
+      "value": "Employee created successfully"
+    },
+    {
+      "key": "driver_id",
+      "last_modified": "2024-02-08T12:02:29.119879Z",
+      "locale": "en-us",
+      "value": "Driver Id"
+    },
+    {
+      "key": "fleet_name",
+      "last_modified": "2024-02-08T12:03:26.782827Z",
+      "locale": "en-us",
+      "value": "Fleet Name"
+    },
+    {
+      "key": "dispatch_count",
+      "last_modified": "2024-02-08T12:05:32.723484Z",
+      "locale": "en-us",
+      "value": "Dispatch count"
+    },
+    {
+      "key": "coordinates",
+      "last_modified": "2024-02-08T12:06:25.365473Z",
+      "locale": "en-us",
+      "value": "Coordinates"
+    },
+    {
+      "key": "driver_assigned_successfully",
+      "last_modified": "2024-02-08T12:09:53.772195Z",
+      "locale": "en-us",
+      "value": "Driver assigned successfully"
+    },
+    {
+      "key": "file_uploaded_successfully",
+      "last_modified": "2024-02-08T12:12:09.776513Z",
+      "locale": "en-us",
+      "value": "File uploaded successfully"
+    },
+    {
+      "key": "driver_removed_successfully",
+      "last_modified": "2024-02-08T12:14:11.603486Z",
+      "locale": "en-us",
+      "value": "Driver removed successfully"
+    },
+    {
+      "key": "testing_tool",
+      "last_modified": "2024-02-08T12:34:43.426571Z",
+      "locale": "en-us",
+      "value": "Testing tool"
+    },
+    {
+      "key": "insufficient_wallet_balance",
+      "last_modified": "2023-06-21T11:25:42.878103Z",
+      "locale": "en-us",
+      "value": "Insufficient wallet balance"
+    },
+    {
+      "key": "employee_list",
+      "last_modified": "2023-06-07T10:31:57.265151Z",
+      "locale": "en-us",
+      "value": "Employee list"
+    },
+    {
+      "key": "invite_employee",
+      "last_modified": "2023-06-07T10:31:57.265151Z",
+      "locale": "en-us",
+      "value": "Invite Employee"
+    }
+  ]
+}

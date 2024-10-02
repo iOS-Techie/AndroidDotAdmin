@@ -15,7 +15,7 @@ data class NSUserResponse(
 data class NSDataUser(
     @SerializedName("expiresIn")
     @Expose
-    var expiresIn: Double? = null,
+    var expiresIn: Long? = null,
     @SerializedName("accessToken")
     @Expose
     var accessToken: String? = null,

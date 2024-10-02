@@ -7,6 +7,7 @@ import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseViewModel
 import com.nyotek.dot.admin.common.NSLanguageConfig
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
+import com.nyotek.dot.admin.common.NSThemeHelper
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.data.Repository
 import com.nyotek.dot.admin.models.responses.NSNavigationResponse
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repository: Repository,
     val languageConfig: NSLanguageConfig,
+    val themeHelper: NSThemeHelper,
     colorResources: ColorResources,
     application: Application
 ) : BaseViewModel(repository, languageConfig.dataStorePreference, colorResources, application) {

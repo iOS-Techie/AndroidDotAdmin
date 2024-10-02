@@ -41,7 +41,7 @@ class ColorResources @Inject constructor(val themeHelper: NSThemeHelper) {
     }
 
     fun getBackgroundImages(): List<String> {
-        return resourceData.backgroundImages
+        return resourceData.backgroundImages?: arrayListOf()
     }
 
     fun setMainBackgroundColor(view: View) {
@@ -76,10 +76,6 @@ class ColorResources @Inject constructor(val themeHelper: NSThemeHelper) {
 
     fun getGrayColor(): Int {
         return getColor(resourceData.gray)
-    }
-
-    fun getLightGrayColor(): Int {
-        return getColor(resourceData.lightGray)
     }
 
     fun getSecondaryDarkColor(): Int {

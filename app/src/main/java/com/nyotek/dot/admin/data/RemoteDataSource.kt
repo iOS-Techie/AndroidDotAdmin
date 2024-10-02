@@ -40,6 +40,7 @@ import com.nyotek.dot.admin.models.requests.NSVehicleEnableDisableRequest
 import com.nyotek.dot.admin.models.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.models.requests.NSVehicleRequest
 import com.nyotek.dot.admin.models.requests.NSVehicleUpdateImageRequest
+import com.nyotek.dot.admin.models.responses.BootStrapModel
 import com.nyotek.dot.admin.models.responses.DispatchDetailResponse
 import com.nyotek.dot.admin.models.responses.DispatchRequestListResponse
 import com.nyotek.dot.admin.models.responses.DriverListModel
@@ -84,9 +85,6 @@ import com.nyotek.dot.admin.models.responses.VendorDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.PATCH
-import retrofit2.http.POST
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -100,10 +98,6 @@ class RemoteDataSource @Inject constructor(
         return baseMainUrl.userDetail()
     }
 
-    suspend fun getLanguageString(languageStringRequest: NSLanguageStringRequest): Response<NSLanguageStringResponse> {
-        return baseMainUrl.getLanguageString(languageStringRequest)
-    }
-
     suspend fun loginWithEmailPassword(nsLoginRequest: NSLoginRequest): Response<NSUserResponse> {
         return baseMainUrl.loginWithEmailPassword(nsLoginRequest)
     }
@@ -115,9 +109,9 @@ class RemoteDataSource @Inject constructor(
     suspend fun refreshToken(tokenRequest: NSRefreshTokenRequest): Response<NSUserResponse> {
         return baseMainUrl.refreshToken(tokenRequest)
     }
-
-    suspend fun getAppTheme(nsAppThemeRequest: NSAppThemeRequest): Response<NSGetThemeModel> {
-        return baseMainUrl.getAppTheme(nsAppThemeRequest)
+    
+    suspend fun getBootStrap(): Response<BootStrapModel> {
+        return baseMainUrl.getBootStrap()
     }
 
     suspend fun getServiceList(): Response<NSGetServiceListResponse> {

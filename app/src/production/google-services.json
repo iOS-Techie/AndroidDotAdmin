@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:379412389638:android:4af60b6fe35bf41f080887",
         "android_client_info": {
-          "package_name": "com.nyotek.dot.prod.driver"
+          "package_name": "com.nyotek.dot.prod.admin"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "379412389638-msmmjc81l6gnppas8irqgv2t5cemq3e6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.nyotek.dot.prod.driver",
+            "package_name": "com.nyotek.dot.prod.admin",
             "certificate_hash": "493b11888e248af4d688db4a96347ba921c64b0e"
           }
         },

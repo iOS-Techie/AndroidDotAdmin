@@ -16,7 +16,7 @@ object DeviceDetailUtils {
     }
 
     fun generateUUIDDeviceId() {
-        /*val sharedPreferences: SharedPreferences = NSApplication.getInstance().applicationContext.getSharedPreferences(NSConstants.DEVICE_ID_STORE,
+        val sharedPreferences: SharedPreferences = NSApplication.getInstance().applicationContext.getSharedPreferences(NSConstants.DEVICE_ID_STORE,
             Context.MODE_PRIVATE
         )
         val uniId = UUID.randomUUID().toString()
@@ -24,11 +24,11 @@ object DeviceDetailUtils {
             val myEdit = sharedPreferences.edit()
             myEdit.putString(NSConstants.DEVICE_ID_STORE_VALUE, uniId)
             myEdit.apply()
-        }*/
+        }
     }
 
     private fun getUUIDDeviceId(): String {
-       /* val sharedPreferences: SharedPreferences = NSApplication.getInstance().applicationContext.getSharedPreferences(
+        val sharedPreferences: SharedPreferences = NSApplication.getInstance().applicationContext.getSharedPreferences(
             NSConstants.DEVICE_ID_STORE,
             Context.MODE_PRIVATE
         )
@@ -40,7 +40,6 @@ object DeviceDetailUtils {
             sharedPreferences.getString(NSConstants.DEVICE_ID_STORE_VALUE, uniId)?:uniId
         } else {
             sharedPreferences.getString(NSConstants.DEVICE_ID_STORE_VALUE, uniId)?:uniId
-        }*/
-        return ""
+        }
     }
 }

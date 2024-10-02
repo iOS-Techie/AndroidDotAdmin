@@ -113,7 +113,7 @@ class NSSettingFragment : BaseFragment<NsFragmentSettingsBinding>() {
                     openUserDetail()
                 }
                 selectLanguage -> {
-                    showDialogLanguageSelect(colorResources = viewModel.colorResources, languageConfig = viewModel.languageConfig)
+                    showDialogLanguageSelect(colorResources = viewModel.colorResources, languageConfig = viewModel.languageConfig, themeHelper = viewModel.themeHelper) {}
                 }
 
                 contactUs -> {

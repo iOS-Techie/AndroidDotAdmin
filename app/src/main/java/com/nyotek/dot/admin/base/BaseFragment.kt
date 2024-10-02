@@ -22,7 +22,6 @@ import com.nyotek.dot.admin.common.NSThemeHelper
 import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.callbacks.NSProgressCallback
 import com.nyotek.dot.admin.common.callbacks.NSReplaceFragmentCallback
-import com.nyotek.dot.admin.common.extension.setCircleImage
 import com.nyotek.dot.admin.common.extension.setCoilCircleImage
 import com.nyotek.dot.admin.common.extension.setVisibility
 import com.nyotek.dot.admin.common.extension.switchActivity
@@ -32,7 +31,6 @@ import com.nyotek.dot.admin.databinding.LayoutHomeHeaderBinding
 import com.nyotek.dot.admin.databinding.LayoutLanguageBinding
 import com.nyotek.dot.admin.models.responses.StringResourceResponse
 import com.nyotek.dot.admin.ui.login.LoginActivity
-import com.nyotek.dot.admin.ui.splash.SplashActivity
 import com.nyotek.dot.admin.ui.tabs.settings.NSLanguageRecycleAdapter
 import javax.inject.Inject
 
@@ -51,6 +49,7 @@ abstract class BaseFragment<VB : ViewBinding>  : Fragment(), (Boolean) -> Unit {
     private var callEmailBottomSheet: BottomSheetDialog? = null
     private var languageAdapter: NSLanguageRecycleAdapter? = null
     private var replaceFragmentCallback: NSReplaceFragmentCallback? = null
+    private var mainViewModel: BaseViewModel? = null
 
     // Rename this property to avoid collision
     val stringResource: StringResourceResponse
@@ -133,6 +132,7 @@ abstract class BaseFragment<VB : ViewBinding>  : Fragment(), (Boolean) -> Unit {
     }
 
     protected fun observeBaseViewModel(viewModel: BaseViewModel) {
+        mainViewModel = viewModel
         viewModel.apply {
             viewModel.error.observe(viewLifecycleOwner) { error ->
                 showErrorDialog(error?.error){}
@@ -225,7 +225,7 @@ abstract class BaseFragment<VB : ViewBinding>  : Fragment(), (Boolean) -> Unit {
         )
     }
 
-    fun showDialogLanguageSelect(isFromHome: Boolean = false, colorResources: ColorResources, languageConfig: NSLanguageConfig) {
+    fun showDialogLanguageSelect(isFromHome: Boolean = false, colorResources: ColorResources, languageConfig: NSLanguageConfig, themeHelper: NSThemeHelper, callback: () -> Unit) {
         try {
             val sheetView: View = activity.layoutInflater
                 .inflate(R.layout.layout_language, null)
@@ -260,15 +260,21 @@ abstract class BaseFragment<VB : ViewBinding>  : Fragment(), (Boolean) -> Unit {
                             selectLanguageBottomSheet?.dismiss()
                             pref.isLanguageSelected = true
                             NSThemeHelper.isLanguageChange = true
+                            
+                            val language = (languageList[selectedLanguage].locale ?: "").lowercase()
+                            val isRtl = languageList[selectedLanguage].direction.equals("rtl")
+                            
                             languageConfig.setLanguagesPref(
-                                (languageList[selectedLanguage].locale ?: "").lowercase(),
-                                languageList[selectedLanguage].direction.equals("rtl")
+                                language,
+                                isRtl
                             )
-                            //NSApplication.getInstance().setSelectedNavigationType(NSConstants.DASHBOARD_TAB)
-                            switchActivity(
-                                SplashActivity::class.java,
-                                flags = intArrayOf(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
-                            )
+                            languageConfig.createLanguageMap(activity, themeHelper.getBootStrapData()?.strings, language){}
+                            mainViewModel?.localChange(languageConfig)
+                            if (!isFromHome) {
+                                restartActivity(activity)
+                            } else {
+                                callback.invoke()
+                            }
                         }
                     }
                 rvLanguage.adapter = languageAdapter
@@ -283,6 +289,12 @@ abstract class BaseFragment<VB : ViewBinding>  : Fragment(), (Boolean) -> Unit {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+    
+    private fun restartActivity(activity: Activity) {
+        val intent = activity.intent
+        activity.finish()
+        activity.startActivity(intent)
     }
 
     fun showDialogCallEmailAction(callValue: String, emailValue: String, colorResources: ColorResources) {

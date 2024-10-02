@@ -40,6 +40,7 @@ import com.nyotek.dot.admin.models.requests.NSVehicleEnableDisableRequest
 import com.nyotek.dot.admin.models.requests.NSVehicleNotesRequest
 import com.nyotek.dot.admin.models.requests.NSVehicleRequest
 import com.nyotek.dot.admin.models.requests.NSVehicleUpdateImageRequest
+import com.nyotek.dot.admin.models.responses.BootStrapModel
 import com.nyotek.dot.admin.models.responses.DispatchDetailResponse
 import com.nyotek.dot.admin.models.responses.DispatchRequestListResponse
 import com.nyotek.dot.admin.models.responses.DriverListModel
@@ -100,9 +101,6 @@ interface NSApiInterface {
     @GET("user/me")
     suspend fun userDetail(): retrofit2.Response<NSUserDetailResponse>
 
-    @POST("bmu/get-strings")
-    suspend fun getLanguageString(@Body languageStringRequest: NSLanguageStringRequest): retrofit2.Response<NSLanguageStringResponse>
-
     @POST("login")
     suspend fun loginWithEmailPassword(@Body nsLoginRequest: NSLoginRequest): retrofit2.Response<NSUserResponse>
 
@@ -111,10 +109,9 @@ interface NSApiInterface {
 
     @POST("refresh_token")
     suspend fun refreshToken(@Body tokenRequest: NSRefreshTokenRequest): retrofit2.Response<NSUserResponse>
-
-    /*BMU*/
-    @POST("bmu/getapptheme")
-    suspend fun getAppTheme(@Body nsAppThemeRequest: NSAppThemeRequest): retrofit2.Response<NSGetThemeModel>
+    
+    @GET("bmu/bootstrapp")
+    suspend fun getBootStrap(): retrofit2.Response<BootStrapModel>
 
     @GET("bmu/admin/list-services")
     suspend fun getServiceList(): retrofit2.Response<NSGetServiceListResponse>

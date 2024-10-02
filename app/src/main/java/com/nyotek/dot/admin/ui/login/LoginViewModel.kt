@@ -1,9 +1,12 @@
 package com.nyotek.dot.admin.ui.login
 
+import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.nyotek.dot.admin.base.BaseViewModel
 import com.nyotek.dot.admin.common.NSLanguageConfig
+import com.nyotek.dot.admin.common.NSThemeHelper
+import com.nyotek.dot.admin.common.apiRefresh.NyoTokenRefresher
 import com.nyotek.dot.admin.common.extension.getCompareAndGetDeviceLanguage
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.data.Repository
@@ -23,6 +26,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val repository: Repository,
     val languageConfig: NSLanguageConfig,
+    val themeHelper: NSThemeHelper,
     colorResources: ColorResources,
     application: Application
 ) : BaseViewModel(repository, languageConfig.dataStorePreference, colorResources, application) {
@@ -48,7 +52,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    suspend fun login(email: String, password: String, callback: (Boolean, Boolean, Boolean) -> Unit) {
+    suspend fun login(activity: Activity, email: String, password: String, callback: (Boolean, Boolean) -> Unit) {
         showProgress()
         checkAllFieldsValid(email, password) { strEmail, strPassword, isSuccessValidation ->
             if (isSuccessValidation) {
@@ -62,7 +66,8 @@ class LoginViewModel @Inject constructor(
                             authToken = userResponse?.data?.accessToken
                             refreshToken = userResponse?.data?.refreshToken
                         }
-                        getUserDetail(colorResources.themeHelper.getThemeModel(), callback)
+                        NyoTokenRefresher.validate(this)
+                        getUserMainDetail(activity, callback)
                     } else {
                         hideProgress()
                     }
@@ -72,74 +77,12 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
-
-    private fun getUserDetail(response: NSGetThemeData?, callback: (Boolean, Boolean, Boolean) -> Unit) {
-
-        fun checkLanguage(data: NSMainDetailUser?) {
-            val localResponse = colorResources.themeHelper.getLocalLanguageLists()
-            colorResources.themeHelper.setUserDetail(data)
-            val selectedLanguage = languageConfig.getSelectedLanguage()
-            if (data?.locale.isNullOrEmpty() && selectedLanguage.isEmpty()) {
-                //When First Time App Start
-                val lang = getCompareAndGetDeviceLanguage(localResponse)
-                languageConfig.setLocalLanguage(lang.locale!!.lowercase(), lang.direction!!.lowercase())
-                getLanguageStringData(response, lang.locale!!, callback)
-            } else if (data?.locale?.isNotEmpty() == true) {
-
-                val languageSelectedModel = localResponse.find { it.locale == data.locale }
-                if (languageSelectedModel != null) {
-                    languageConfig.setLanguagesPref(
-                        data.locale?.lowercase(),
-                        languageSelectedModel.direction.equals("rtl")
-                    )
-                    getLanguageStringData(response, data.locale!!.lowercase(), callback)
-                } else {
-                    hideProgress()
-                    callback.invoke(false, false, true)
-                }
-
-            } else if(!data?.locale.equals(selectedLanguage) && selectedLanguage.isNotEmpty() && data?.locale != null){
-                //When Language change from another device on same account
-                val languageSelectedModel = localResponse.find { it.locale == data.locale }
-                if (languageSelectedModel != null) {
-                    languageConfig.setLanguagesPref(data.locale?.lowercase(), languageSelectedModel.direction.equals("rtl"))
-                    getLanguageStringData(response, data.locale!!.lowercase(), callback)
-                } else {
-                    hideProgress()
-                    callback.invoke(false, false, true)
-                }
-            } else if (selectedLanguage.isEmpty()){
-                //When Local is Not empty but not selected any language
-                hideProgress()
-                callback.invoke(false, false, true)
-            } else {
-                getLanguageStringData(response, selectedLanguage, callback)
-            }
-        }
-
-        if (languageConfig.dataStorePreference.isUserLoggedIn) {
-            getUserMainDetail { data ->
-                if (data is NSUserDetailResponse) {
-                    val isDataAvailable = data.data != null
-                    if (isDataAvailable) {
-                        checkLanguage(data.data)
-                    } else {
-                        hideProgress()
-                    }
-                } else {
-                    hideProgress()
-                }
-            }
-        } else {
-            checkLanguage(NSMainDetailUser())
-        }
+    
+    private fun getUserMainDetail(activity: Activity, callback: (Boolean, Boolean) -> Unit) = viewModelScope.launch {
+        getUserMainDetailApi(activity, callback)
     }
-
-    private fun getUserMainDetail(callback: (NSUserDetailResponse?) -> Unit) = viewModelScope.launch {
-        getUserMainDetailApi(callback)
-    }
-
-    private suspend fun getUserMainDetailApi(callback: (NSUserDetailResponse?) -> Unit) {
+    
+    private suspend fun getUserMainDetailApi(activity: Activity, callback: (Boolean, Boolean) -> Unit) {
         performApiCalls(
             { repository.remote.userDetail() }
         ) {response, isSuccess ->
@@ -147,44 +90,21 @@ class LoginViewModel @Inject constructor(
                 val data = response[0] as NSUserDetailResponse?
                 if (data != null) {
                     colorResources.themeHelper.setUserDetail(data.data)
+                    setLanguageData(activity, data.data, callback)
                 }
-                callback.invoke(data)
             } else {
-                callback.invoke(NSUserDetailResponse())
+                callback.invoke(false, false)
             }
         }
     }
-
-    private fun getLanguageStringData(response: NSGetThemeData?, selectedLanguage: String = languageConfig.getSelectedLanguage(), callback: ((Boolean, Boolean, Boolean) -> Unit)) = viewModelScope.launch {
-        getLanguageStringDataApi(response, selectedLanguage, callback)
-    }
-
-    private suspend fun getLanguageStringDataApi(response: NSGetThemeData?, selectedLanguage: String = languageConfig.getSelectedLanguage(), callback: ((Boolean, Boolean, Boolean) -> Unit)) {
-        performApiCalls(
-            {repository.remote.getLanguageString(NSLanguageStringRequest(response?.serviceId, selectedLanguage)) }
-        ) { responses, isSuccess ->
-            if (isSuccess) {
-                val languageStr = responses[0] as NSLanguageStringResponse?
-                setLanguageJsonData(languageStr, callback)
+    
+    private fun setLanguageData(activity: Activity, userDetail: NSMainDetailUser?, callback: (Boolean, Boolean) -> Unit) {
+        languageConfig.checkLocalLanguageSelected(activity, true, userDetail, themeHelper.getBootStrapData()) {
+            if (it) {
+                callback.invoke(false, true)
             } else {
-                callback.invoke(false, true, false)
+                callback.invoke(true, false)
             }
-        }
-    }
-
-    fun setLanguageJsonData(data: NSLanguageStringResponse?, callback: ((Boolean, Boolean, Boolean) -> Unit)) {
-        val map: HashMap<String, String> = hashMapOf()
-        for (languageStr in data?.data?: arrayListOf()) {
-            if (languageStr.key?.isNotEmpty() == true) {
-                map[languageStr.key] = languageStr.value ?: ""
-            }
-        }
-
-        if (map.isNotEmpty()) {
-            colorResources.themeHelper.setStringModel(map)
-            callback.invoke(languageConfig.dataStorePreference.authToken?.isNotEmpty() == true, false, false)
-        } else {
-            callback.invoke(false, true, false)
         }
     }
 }

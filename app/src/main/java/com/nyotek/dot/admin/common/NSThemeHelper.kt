@@ -1,6 +1,8 @@
 package com.nyotek.dot.admin.common
 
 import com.nyotek.dot.admin.common.extension.isValidList
+import com.nyotek.dot.admin.helper.StoreHelper
+import com.nyotek.dot.admin.models.responses.BootStrapData
 import com.nyotek.dot.admin.models.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.models.responses.JobListDataItem
 import com.nyotek.dot.admin.models.responses.LanguageSelectModel
@@ -27,7 +29,8 @@ object NSThemeHelper{
     private var vendorDetailResponse: HashMap<String, VendorDetailResponse?> = hashMapOf()
     private var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
     private var userDetail: NSMainDetailUser? = null
-
+    private var bootStrapData: BootStrapData? = null
+    
     fun getThemeModel(): NSGetThemeData {
         if (!::themeModel.isInitialized) {
             return NSGetThemeData()
@@ -53,6 +56,14 @@ object NSThemeHelper{
 
     fun getLocalLanguageLists(): MutableList<LanguageSelectModel> {
         return localLanguageList
+    }
+    
+    fun setBootStrapData(bootStrapData: BootStrapData?) {
+        this.bootStrapData = bootStrapData
+    }
+    
+    fun getBootStrapData(): BootStrapData? {
+        return bootStrapData
     }
 
     fun setFleetLanguageList(localLanguage: MutableList<LanguageSelectModel>, isSelect: Boolean) {
