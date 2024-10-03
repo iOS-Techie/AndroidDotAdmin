@@ -73,14 +73,29 @@ class ServiceViewModel @Inject constructor(
         ) {_, _ ->}
     }
 
-    fun serviceFleetUpdate(serviceId: String, fleets: List<String>) = viewModelScope.launch {
-        serviceFleetUpdateApi(serviceId, fleets)
+    fun serviceFleetAddOrDelete(serviceId: String, fleetId: String, isAdd: Boolean) = viewModelScope.launch {
+        serviceFleetAddOrDeleteApi(serviceId, fleetId, isAdd)
     }
 
-    private suspend fun serviceFleetUpdateApi(serviceId: String, fleets: List<String>) {
+    private suspend fun serviceFleetAddOrDeleteApi(
+        serviceId: String,
+        fleetId: String,
+        isAdd: Boolean
+    ) {
         showProgress()
         performApiCalls(
-            { repository.remote.updateServiceFleets(NSServiceFleetUpdateRequest(serviceId, fleets)) }
+            {
+                if (isAdd) {
+                    repository.remote.assignedServiceFleets(
+                        NSServiceFleetUpdateRequest(
+                            serviceId,
+                            fleetId
+                        )
+                    )
+                } else {
+                    repository.remote.deleteAssignedServiceFleets(serviceId, fleetId)
+                }
+            }
         ) { _, _ ->
             hideProgress()
         }

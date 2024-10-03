@@ -2,6 +2,8 @@ package com.nyotek.dot.admin.ui.tabs.services
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.NSDateTimeHelper
+import com.nyotek.dot.admin.common.extension.gone
+import com.nyotek.dot.admin.common.extension.setCoil
 import com.nyotek.dot.admin.common.extension.status
 import com.nyotek.dot.admin.common.extension.switchEnableDisable
 import com.nyotek.dot.admin.databinding.LayoutServiceItemBinding
@@ -19,7 +21,7 @@ class NSServiceManagementRecycleAdapter @Inject constructor(
     private val allCapabilitiesList: MutableList<CapabilitiesDataItem>?,
     private val fleetDataList: MutableList<FleetData>?,
     private val selectedCapabilityCallback: (String, String) -> Unit,
-    private val selectedFleetCallback: (String, List<String>) -> Unit,
+    private val selectedFleetCallback: (String, List<String>, String, Boolean) -> Unit,
     private val switchCallback: (String, Boolean) -> Unit
 ) : BaseViewBindingAdapter<LayoutServiceItemBinding, NSGetServiceListData>(
 
@@ -30,15 +32,20 @@ class NSServiceManagementRecycleAdapter @Inject constructor(
     onBind = { binding, response, _, _, _ ->
         with(binding) {
             response.apply {
+                //Hide Select All CheckBox
+                layoutFleets.clSelectAll.gone()
+                layoutFleets.viewLineTextDivider.gone()
+                
                 themeUI.setServiceAdapterUI(binding, isActive)
                 themeUI.fetchServiceCapabilities(binding, serviceId, allCapabilitiesList, {
                     selectedCapabilityCallback.invoke(response.serviceId!!, it)
                 }) {
-                    themeUI.setFleets(binding, it, fleetDataList) { list ->
-                        selectedFleetCallback.invoke(response.serviceId?:"", list)
+                    themeUI.setFleets(binding, it, fleetDataList) { list, fleetId, isAdd ->
+                        selectedFleetCallback.invoke(response.serviceId?:"", list, fleetId, isAdd)
                     }
                 }
 
+                ivBrandIcon.setCoil(url = response.logoUrl)
                 tvItemTitle.text = response.name
                 tvDescription.text = description
 

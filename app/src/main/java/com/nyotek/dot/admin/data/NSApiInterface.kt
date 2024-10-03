@@ -3,7 +3,6 @@ package com.nyotek.dot.admin.data
 import com.nyotek.dot.admin.models.requests.CreateSocialRequest
 import com.nyotek.dot.admin.models.requests.NSAddEmployeeRequest
 import com.nyotek.dot.admin.models.requests.NSAddressRequest
-import com.nyotek.dot.admin.models.requests.NSAppThemeRequest
 import com.nyotek.dot.admin.models.requests.NSAssignVehicleRequest
 import com.nyotek.dot.admin.models.requests.NSCapabilitiesRequest
 import com.nyotek.dot.admin.models.requests.NSCreateCapabilityRequest
@@ -25,7 +24,6 @@ import com.nyotek.dot.admin.models.requests.NSFleetUpdateTagsRequest
 import com.nyotek.dot.admin.models.requests.NSFleetUrlUpdateRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageLocaleRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageRequest
-import com.nyotek.dot.admin.models.requests.NSLanguageStringRequest
 import com.nyotek.dot.admin.models.requests.NSLoginRequest
 import com.nyotek.dot.admin.models.requests.NSRefreshTokenRequest
 import com.nyotek.dot.admin.models.requests.NSSearchMobileRequest
@@ -64,8 +62,6 @@ import com.nyotek.dot.admin.models.responses.NSEmployeeResponse
 import com.nyotek.dot.admin.models.responses.NSErrorResponse
 import com.nyotek.dot.admin.models.responses.NSFleetBlankDataResponse
 import com.nyotek.dot.admin.models.responses.NSGetServiceListResponse
-import com.nyotek.dot.admin.models.responses.NSGetThemeModel
-import com.nyotek.dot.admin.models.responses.NSLanguageStringResponse
 import com.nyotek.dot.admin.models.responses.NSListJobTitleResponse
 import com.nyotek.dot.admin.models.responses.NSLocalLanguageResponse
 import com.nyotek.dot.admin.models.responses.NSLogoutResponse
@@ -291,14 +287,17 @@ interface NSApiInterface {
     @PATCH("fleets/capability/{capability_id}/label")
     suspend fun updateCapability(@Path("capability_id") id: String, @Body request: NSCreateCapabilityRequest): retrofit2.Response<ResponseBody>
 
-    @PATCH("service/management/capability")
+    @PATCH("fleets/servicemanagement/capability")
     suspend fun updateServiceCapability(@Body request: NSServiceCapabilitiesRequest): retrofit2.Response<NSCapabilitiesBlankDataResponse>
 
-    @GET("service/management/{service_id}")
+    @GET("fleets/servicemanagement/{service_id}")
     suspend fun getServiceCapability(@Path("service_id") id: String): retrofit2.Response<NSServiceCapabilityResponse>
 
-    @PATCH("service/management/fleets")
-    suspend fun updateServiceFleets(@Body request: NSServiceFleetUpdateRequest): retrofit2.Response<NSFleetBlankDataResponse>
+    @POST("fleets/servicemanagement/fleet")
+    suspend fun asignedServiceFleets(@Body request: NSServiceFleetUpdateRequest): retrofit2.Response<ResponseBody>
+    
+    @DELETE("fleets/servicemanagement/{service_id}/f/{fleet_id}")
+    suspend fun deleteAssignedServiceFleets(@Path("service_id") serviceId: String, @Path("fleet_id") fleetId: String): retrofit2.Response<ResponseBody>
 
     @POST("/vehicle")
     suspend fun createVehicle(@Body request: NSVehicleRequest): retrofit2.Response<ResponseBody>

@@ -3,7 +3,6 @@ package com.nyotek.dot.admin.data
 import com.nyotek.dot.admin.models.requests.CreateSocialRequest
 import com.nyotek.dot.admin.models.requests.NSAddEmployeeRequest
 import com.nyotek.dot.admin.models.requests.NSAddressRequest
-import com.nyotek.dot.admin.models.requests.NSAppThemeRequest
 import com.nyotek.dot.admin.models.requests.NSAssignVehicleRequest
 import com.nyotek.dot.admin.models.requests.NSCapabilitiesRequest
 import com.nyotek.dot.admin.models.requests.NSCreateCapabilityRequest
@@ -25,7 +24,6 @@ import com.nyotek.dot.admin.models.requests.NSFleetUpdateTagsRequest
 import com.nyotek.dot.admin.models.requests.NSFleetUrlUpdateRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageLocaleRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageRequest
-import com.nyotek.dot.admin.models.requests.NSLanguageStringRequest
 import com.nyotek.dot.admin.models.requests.NSLoginRequest
 import com.nyotek.dot.admin.models.requests.NSRefreshTokenRequest
 import com.nyotek.dot.admin.models.requests.NSSearchMobileRequest
@@ -64,8 +62,6 @@ import com.nyotek.dot.admin.models.responses.NSEmployeeResponse
 import com.nyotek.dot.admin.models.responses.NSErrorResponse
 import com.nyotek.dot.admin.models.responses.NSFleetBlankDataResponse
 import com.nyotek.dot.admin.models.responses.NSGetServiceListResponse
-import com.nyotek.dot.admin.models.responses.NSGetThemeModel
-import com.nyotek.dot.admin.models.responses.NSLanguageStringResponse
 import com.nyotek.dot.admin.models.responses.NSListJobTitleResponse
 import com.nyotek.dot.admin.models.responses.NSLocalLanguageResponse
 import com.nyotek.dot.admin.models.responses.NSLogoutResponse
@@ -85,6 +81,7 @@ import com.nyotek.dot.admin.models.responses.VendorDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.Path
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -266,7 +263,7 @@ class RemoteDataSource @Inject constructor(
         return baseMainUrl.getSocialInfo()
     }
 
-    suspend fun createSocialInfo(request: CreateSocialRequest): retrofit2.Response<NSSocialResponse> {
+    suspend fun createSocialInfo(request: CreateSocialRequest): Response<NSSocialResponse> {
         return baseMainUrl.createSocialInfo(request)
     }
 
@@ -358,8 +355,12 @@ class RemoteDataSource @Inject constructor(
         return baseFleetUrl.getServiceCapability(id)
     }
 
-    suspend fun updateServiceFleets(request: NSServiceFleetUpdateRequest): Response<NSFleetBlankDataResponse> {
-        return baseFleetUrl.updateServiceFleets(request)
+    suspend fun assignedServiceFleets(request: NSServiceFleetUpdateRequest): Response<ResponseBody> {
+        return baseFleetUrl.asignedServiceFleets(request)
+    }
+    
+    suspend fun deleteAssignedServiceFleets(serviceId: String, fleetId: String): Response<ResponseBody> {
+        return baseFleetUrl.deleteAssignedServiceFleets(serviceId, fleetId)
     }
 
     suspend fun createVehicle(request: NSVehicleRequest): Response<ResponseBody> {

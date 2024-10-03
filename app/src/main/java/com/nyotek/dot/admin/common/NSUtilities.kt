@@ -158,7 +158,7 @@ object NSUtilities {
         layoutFleets: LayoutRecycleViewFixBinding,
         fleetItemList: MutableList<FleetData>?,
         fleetList: MutableList<FleetServiceResponse>,
-        callback: ((MutableList<String>) -> Unit)
+        callback: ((MutableList<String>, String, Boolean) -> Unit)
     ) {
         val selectedFleets: MutableList<String> = arrayListOf()
         selectedFleets.addAll(fleetList.filter { it.isSelected }.map { it.data?.vendorId!! } as MutableList<String>)
@@ -169,7 +169,7 @@ object NSUtilities {
             } else {
                 model.vendorId?.let { selectedFleets.add(it) }
             }
-            callback.invoke(selectedFleets)
+            callback.invoke(selectedFleets, model.vendorId?:"", !isSelected)
         }
         layoutFleets.rvCommonView.adapter = fleetAdapter
         fleetAdapter.setData(fleetList)
@@ -183,12 +183,12 @@ object NSUtilities {
                     cbCheck.isChecked = false
                     list = arrayListOf()
                     finalList.addAll(fleetList.map { it.copy(isSelected = false) })
-                    callback.invoke(list)
+                    callback.invoke(list, "", false)
                 } else {
                     cbCheck.isChecked = true
                     list = fleetItemList?.map { it.vendorId!! } as MutableList<String>
                     finalList.addAll(fleetList.map { it.copy(isSelected = true) })
-                    callback.invoke(list)
+                    callback.invoke(list, "", true)
                 }
                 fleetAdapter.setData(finalList)
             }
