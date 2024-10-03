@@ -20,7 +20,6 @@ import com.nyotek.dot.admin.common.extension.invisible
 import com.nyotek.dot.admin.common.extension.isValidList
 import com.nyotek.dot.admin.common.extension.setCoilCenter
 import com.nyotek.dot.admin.common.extension.setGlideWithHolder
-import com.nyotek.dot.admin.common.extension.setNormalCoil
 import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
 import com.nyotek.dot.admin.common.extension.setTexts
 import com.nyotek.dot.admin.common.extension.setVisibility

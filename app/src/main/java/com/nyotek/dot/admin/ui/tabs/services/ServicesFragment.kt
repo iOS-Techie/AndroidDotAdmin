@@ -110,27 +110,29 @@ class ServicesFragment : BaseFragment<NsFragmentServiceManagementBinding>() {
                     }
                 )
 
-                rvServiceList.apply {
-                    serviceRecycleAdapter =
-                        NSServiceManagementRecycleAdapter(
-                            themeUI,
-                            serviceMainModel.capabilities,
-                            serviceMainModel.fleetDataList,
-                            { serviceId, capabilityId ->
-                                serviceCapabilityUpdate(serviceId, capabilityId)
-                            },
-                            { serviceId, fleets ->
-                                serviceFleetUpdate(serviceId, fleets)
-                            }) { serviceId, isEnable ->
-                            //Service Enable Disable
-                            serviceEnableDisable(isEnable, serviceId)
-                        }
-                    setupWithAdapterAndCustomLayoutManager(
-                        serviceRecycleAdapter!!,
-                        GridLayoutManager(activity, 3)
-                    )
-                    adapter = serviceRecycleAdapter
-                    isNestedScrollingEnabled = true
+                if (serviceRecycleAdapter == null) {
+                    rvServiceList.apply {
+                        serviceRecycleAdapter =
+                            NSServiceManagementRecycleAdapter(
+                                themeUI,
+                                serviceMainModel.capabilities,
+                                serviceMainModel.fleetDataList,
+                                { serviceId, capabilityId ->
+                                    serviceCapabilityUpdate(serviceId, capabilityId)
+                                },
+                                { serviceId, _, fleetId, isAdd ->
+                                    serviceFleetAddOrDelete(serviceId, fleetId, isAdd)
+                                }) { serviceId, isEnable ->
+                                //Service Enable Disable
+                                serviceEnableDisable(isEnable, serviceId)
+                            }
+                        setupWithAdapterAndCustomLayoutManager(
+                            serviceRecycleAdapter!!,
+                            GridLayoutManager(activity, 3)
+                        )
+                        adapter = serviceRecycleAdapter
+                        isNestedScrollingEnabled = true
+                    }
                 }
 
                 filterData(serviceMainModel, filterList)

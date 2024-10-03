@@ -68,7 +68,7 @@
         <com.nyotek.dot.admin.common.NestedInnerRecyclerView
             android:id="@+id/rv_common_view"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_height="@dimen/_50sdp"
             android:background="@null"
             android:paddingBottom="@dimen/_5sdp"
             android:clipToPadding="false"
@@ -76,6 +76,7 @@
             android:orientation="vertical"
             tools:listitem="@layout/layout_service_item"
             app:spanCount="2"
+            android:focusableInTouchMode="true"
             android:paddingHorizontal="@dimen/_6sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

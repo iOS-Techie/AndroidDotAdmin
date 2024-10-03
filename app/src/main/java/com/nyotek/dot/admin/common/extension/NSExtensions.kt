@@ -38,10 +38,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
-import coil.load
-import coil.size.Scale
-import coil.transform.CircleCropTransformation
-import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -57,7 +53,6 @@ import com.nyotek.dot.admin.common.DelayedClickListener
 import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSLog
-import com.nyotek.dot.admin.common.NSThemeHelper
 import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.SafeClickListener
@@ -473,12 +468,7 @@ fun ImageView.setCircleImage(resource: Int = 0, url: String? = null) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).circleCrop().into(this)
 }
 
-fun ImageView.setCoilCircleImage(url: Int?) {
-    load(url) {
-        scale(Scale.FILL).error(R.drawable.ic_place_holder_home).placeholder(R.drawable.ic_place_holder_progress)
-        transformations(CircleCropTransformation())
-    }
-}
+
 
 fun ImageView.glide(resource: Int = 0, url: String? = null) {
     Glide.with(NSApplication.getInstance().applicationContext).load(url?:resource).into(this)
@@ -936,13 +926,6 @@ fun Spinner.setPlaceholderAdapter(
     }
 }
 
-fun ImageView.setCoil(url: String?, exScale: String?, corners: Float = 4f) {
-    load(url) {
-        scale(if(exScale == NSConstants.FILL) Scale.FILL else Scale.FIT).placeholder(R.drawable.ic_place_holder_progress).error(R.drawable.ic_place_holder_img)
-        transformations(RoundedCornersTransformation(corners, corners, corners,corners))
-    }
-}
-
 fun ImageView.setGlideWithHolder(url: String?, scale: String? = NSConstants.FILL, widthHeight: Int, corners: Int = 30, placeHolder: Int = R.drawable.ic_place_holder_product) {
     val transform = if (scale == NSConstants.FILL) CenterCrop() else FitCenter()
     Glide.with(this.context).load(url).placeholder(R.drawable.ic_place_holder_progress).error(placeHolder).apply(
@@ -957,40 +940,6 @@ fun ImageView.setGlideWithHolder(url: String?, scale: String? = NSConstants.FILL
             ).override(widthHeight, widthHeight)
         }
     ).into(this)
-}
-
-fun ImageView.setCoil(resource: Int = R.drawable.ic_place_holder_product, url: String? = null) {
-    load(url) {
-        placeholder(R.drawable.ic_place_holder_progress)
-        error(resource)
-    }
-}
-
-fun ImageView.setCoilCenter(url: String?) {
-    load(url) {
-        scale(Scale.FILL).error(R.drawable.ic_place_holder_product).placeholder(R.drawable.ic_place_holder_progress)
-    }
-}
-
-fun ImageView.setNormalCoil(url: String?) {
-    load(url) {
-        placeholder(R.drawable.ic_place_holder_progress)
-        error(R.drawable.ic_place_holder_img)
-    }
-}
-
-fun ImageView.setCoilCircle(url: String?) {
-    load(url) {
-        scale(Scale.FILL).placeholder(R.drawable.ic_place_holder_progress).error(R.drawable.ic_place_holder_img)
-        transformations(CircleCropTransformation())
-    }
-}
-
-fun ImageView.setCoilCircle(url: Int) {
-    load(url) {
-        scale(Scale.FILL).placeholder(R.drawable.ic_place_holder_progress).error(R.drawable.ic_place_holder_img)
-        transformations(CircleCropTransformation())
-    }
 }
 
 fun ImageView.rotation(isRtl: Boolean) {

@@ -80,18 +80,22 @@ class SplashViewModel @Inject constructor(
     }
     
     private suspend fun getUserMainDetailApi(activity: Activity, callback: (Boolean, Boolean) -> Unit) {
-        performApiCalls(
-            { repository.remote.userDetail() }
-        ) {response, isSuccess ->
-            if (isSuccess) {
-                val data = response[0] as NSUserDetailResponse?
-                if (data != null) {
-                    colorResources.themeHelper.setUserDetail(data.data)
-                    setLanguageData(activity, data.data, callback)
+        if (dataStoreRepository.isUserLoggedIn) {
+            performApiCalls(
+                { repository.remote.userDetail() }
+            ) {response, isSuccess ->
+                if (isSuccess) {
+                    val data = response[0] as NSUserDetailResponse?
+                    if (data != null) {
+                        colorResources.themeHelper.setUserDetail(data.data)
+                        setLanguageData(activity, data.data, callback)
+                    }
+                } else {
+                    callback.invoke(false, false)
                 }
-            } else {
-                callback.invoke(false, false)
             }
+        } else {
+            setLanguageData(activity, NSMainDetailUser(), callback)
         }
     }
     

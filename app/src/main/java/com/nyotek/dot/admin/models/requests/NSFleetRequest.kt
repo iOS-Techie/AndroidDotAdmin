@@ -82,6 +82,6 @@ data class NSServiceFleetUpdateRequest(
 	@field:SerializedName("service_id")
 	val serviceId: String? = null,
 
-	@field:SerializedName("fleets")
-	val fleets: List<String> = arrayListOf()
+	@field:SerializedName("fleet_id")
+	val fleetId: String? = null
 )

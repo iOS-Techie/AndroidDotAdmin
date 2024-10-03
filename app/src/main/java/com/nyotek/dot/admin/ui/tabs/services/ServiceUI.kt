@@ -3,6 +3,7 @@ package com.nyotek.dot.admin.ui.tabs.services
 import android.app.Activity
 import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.extension.getLngValue
+import com.nyotek.dot.admin.common.extension.gone
 import com.nyotek.dot.admin.common.extension.isValidList
 import com.nyotek.dot.admin.common.extension.rotation
 import com.nyotek.dot.admin.common.extension.setPlaceholderAdapter
@@ -47,7 +48,7 @@ class ServiceUI @Inject constructor(private val activity: Activity, private val 
             colorResources.apply {
                 getStringResource().apply {
                     layoutFleets.tvCommonTitle.text = fleet
-                    layoutFleets.clSelectAll.setVisibility(true)
+                    //layoutFleets.clSelectAll.setVisibility(true)
                     switchService.switchEnableDisable(isActive)
                     tvItemActive.status(isActive)
                     tvViewMore.text = update
@@ -98,22 +99,9 @@ class ServiceUI @Inject constructor(private val activity: Activity, private val 
     /*---------------------------------------------------------------------------------------------------------------------------*/
 
     //Set Fleets
-    fun setFleets(bind: LayoutServiceItemBinding, item: ServiceCapabilitiesDataItem?, fleetItemList: MutableList<FleetData>?, callback: (MutableList<String>) -> Unit) {
+    fun setFleets(bind: LayoutServiceItemBinding, item: ServiceCapabilitiesDataItem?, fleetItemList: MutableList<FleetData>?, callback: (MutableList<String>, String, Boolean) -> Unit) {
         bind.apply {
             CoroutineScope(Dispatchers.IO).launch {
-                val listDeferred = async {
-                    val filteredList = fleetItemList?.mapNotNull { it.vendorId }?.toMutableList()
-                        ?: mutableListOf()
-
-                    // Sorting the list
-                    if (item?.fleets.isValidList()) {
-                        item?.fleets?.sortBy { it }
-                        filteredList.sortBy { it }
-                    }
-
-                    filteredList
-                }
-
                 val fleetResponseDeferred = async {
                     val fleetResponseList = mutableListOf<FleetServiceResponse>()
 
@@ -130,20 +118,19 @@ class ServiceUI @Inject constructor(private val activity: Activity, private val 
 
                     fleetResponseList
                 }
-
-                val list = listDeferred.await()
+                
                 val fleetResponse = fleetResponseDeferred.await()
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    layoutFleets.cbCheck.isChecked = item?.fleets == list
-
+                    //layoutFleets.cbCheck.isChecked = item?.fleets == list
+                    
                     NSUtilities.setFleet(
                         activity, colorResources,
                         layoutFleets, fleetItemList,
                         fleetResponse
-                    ) {
-                        item?.fleets = it
-                        callback.invoke(it)
+                    ) { itemList, fleetId, isAdd ->
+                        item?.fleets = itemList
+                        callback.invoke(itemList, fleetId, isAdd)
                     }
                 }
             }
