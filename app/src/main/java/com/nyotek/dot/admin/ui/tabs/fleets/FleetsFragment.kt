@@ -101,16 +101,22 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
     }
 
     private fun setFleetManagementAdapter() {
-        with(binding) {
-            with(viewModel) {
-                with(rvFleetsList) {
-                    fleetRecycleAdapter = NSFleetManagementRecycleAdapter(languageConfig, { model ->
-                        openFleetDetail(model)
-                    }, {serviceId, isEnable ->
-                        fleetEnableDisable(serviceId, isEnable)
-                    })
-
-                    setupWithAdapterAndCustomLayoutManager(fleetRecycleAdapter!!, GridLayoutManager(activity, 5))
+        binding.apply {
+            viewModel.apply {
+                if (fleetRecycleAdapter == null) {
+                    rvFleetsList.apply {
+                        fleetRecycleAdapter =
+                            NSFleetManagementRecycleAdapter(languageConfig, { model ->
+                                openFleetDetail(model)
+                            }, { serviceId, isEnable ->
+                                fleetEnableDisable(serviceId, isEnable)
+                            })
+                        
+                        setupWithAdapterAndCustomLayoutManager(
+                            fleetRecycleAdapter!!,
+                            GridLayoutManager(activity, 5)
+                        )
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ import com.nyotek.dot.admin.models.requests.NSEditAddressRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeListRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeRequest
+import com.nyotek.dot.admin.models.requests.NSFleetAddRemoveTagsRequest
 import com.nyotek.dot.admin.models.requests.NSFleetDriverRequest
 import com.nyotek.dot.admin.models.requests.NSFleetLogoScaleRequest
 import com.nyotek.dot.admin.models.requests.NSFleetLogoUpdateRequest
@@ -81,7 +82,6 @@ import com.nyotek.dot.admin.models.responses.VendorDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Path
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -185,6 +185,14 @@ class RemoteDataSource @Inject constructor(
 
     suspend fun updateFleetTags(vendorTagUpdateRequest: NSFleetUpdateTagsRequest): Response<NSFleetBlankDataResponse> {
         return baseMainUrl.updateFleetTags(vendorTagUpdateRequest)
+    }
+    
+    suspend fun addFleetTags(vendorTagUpdateRequest: NSFleetAddRemoveTagsRequest): Response<NSFleetBlankDataResponse> {
+        return baseMainUrl.addFleetTags(vendorTagUpdateRequest)
+    }
+    
+    suspend fun removeFleetTags(vendorTagUpdateRequest: NSFleetAddRemoveTagsRequest): Response<NSFleetBlankDataResponse> {
+        return baseMainUrl.removeFleetTags(vendorTagUpdateRequest)
     }
 
     suspend fun getFleetDetails(vendorRequest: NSFleetRequest): Response<FleetSingleResponse> {

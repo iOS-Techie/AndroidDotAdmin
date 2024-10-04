@@ -13,6 +13,7 @@ import com.nyotek.dot.admin.models.requests.NSEditAddressRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeListRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeRequest
+import com.nyotek.dot.admin.models.requests.NSFleetAddRemoveTagsRequest
 import com.nyotek.dot.admin.models.requests.NSFleetDriverRequest
 import com.nyotek.dot.admin.models.requests.NSFleetLogoScaleRequest
 import com.nyotek.dot.admin.models.requests.NSFleetLogoUpdateRequest
@@ -191,6 +192,12 @@ interface NSApiInterface {
 
     @PATCH("companies/admin/update_vendor_tags")
     suspend fun updateFleetTags(@Body vendorTagUpdateRequest: NSFleetUpdateTagsRequest): retrofit2.Response<NSFleetBlankDataResponse>
+    
+    @PATCH("companies/admin/add_vendor_tag")
+    suspend fun addFleetTags(@Body vendorTagUpdateRequest: NSFleetAddRemoveTagsRequest): retrofit2.Response<NSFleetBlankDataResponse>
+    
+    @PATCH("companies/admin/remove_vendor_tag")
+    suspend fun removeFleetTags(@Body vendorTagUpdateRequest: NSFleetAddRemoveTagsRequest): retrofit2.Response<NSFleetBlankDataResponse>
 
     @POST("companies/admin/vendor_details")
     suspend fun getFleetDetails(@Body vendorRequest: NSFleetRequest): retrofit2.Response<FleetSingleResponse>
@@ -250,16 +257,16 @@ interface NSApiInterface {
     //Location Services
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 
-    @GET("location")
+    @GET("location/geojson")
     suspend fun getFleetLocation(@Query("fleet_id") fieldId: String): retrofit2.Response<FleetLocationResponse>
 
-    @POST("location/drivers")
+    @POST("locations/geojson/drivers")
     suspend fun getFleetDriverLocation(@Body request: NSFleetDriverRequest): retrofit2.Response<FleetLocationResponse>
 
-    @GET("location/driver/{driver_id}")
+    @GET("location/geojson/driver/{driver_id}")
     suspend fun getDriverLocation(@Path("driver_id") driverId: String): retrofit2.Response<FleetLocationResponse>
 
-    @GET("location/history/ref/{dispatch_id}")
+    @GET("location/history/geojson/ref/{dispatch_id}")
     suspend fun getLocationHistoryDispatch(@Path("dispatch_id") dispatchId: String): retrofit2.Response<FleetLocationResponse>
 
     @GET("dispatch/request/{dispatch_id}")
@@ -338,6 +345,6 @@ interface NSApiInterface {
     @GET("document/list/{user_id}")
     suspend fun getDriverDocumentInfo(@Path("user_id") id: String): retrofit2.Response<NSDocumentListResponse>
 
-    @GET("location/service/{service_id}")
+    @GET("locations/service/{service_id}")
     suspend fun getDriverList(@Path("service_id") id: String): retrofit2.Response<DriverListModel>
 }
