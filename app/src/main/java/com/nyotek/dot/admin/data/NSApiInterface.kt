@@ -91,7 +91,6 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface NSApiInterface {
 
@@ -256,9 +255,9 @@ interface NSApiInterface {
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/
     //Location Services
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/
-
-    @GET("location/geojson")
-    suspend fun getFleetLocation(@Query("fleet_id") fieldId: String): retrofit2.Response<FleetLocationResponse>
+    
+    @GET("locations/geojson")
+    suspend fun getFleetLocation(): retrofit2.Response<FleetLocationResponse>
 
     @POST("locations/geojson/drivers")
     suspend fun getFleetDriverLocation(@Body request: NSFleetDriverRequest): retrofit2.Response<FleetLocationResponse>
