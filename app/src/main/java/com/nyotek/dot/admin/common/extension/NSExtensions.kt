@@ -18,6 +18,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -604,7 +605,7 @@ fun ImageView.switchEnableDisable(isEnable: Boolean) {
 fun TextView.status(isActive: Boolean) {
     val stringResource = NSUtilities.getStringResource()
     stringResource.apply {
-        this@status.text = if (isActive) active else inActive
+        this@status.text = /*if (isActive)*/ active /*else inActive*/
     }
 }
 
@@ -724,6 +725,18 @@ fun ViewPager2.setPager(
             callback?.invoke(position)
         }
     })
+}
+
+fun EditText.editTextFocusNext(secondEditText: EditText) {
+    this.setOnEditorActionListener { _, actionId, _ ->
+        if (actionId == EditorInfo.IME_ACTION_NEXT) {
+            // Move focus to the next EditText
+            secondEditText.requestFocus()
+            true
+        } else {
+            false
+        }
+    }
 }
 
 //fun Spinner.setPlaceholderAdapter(

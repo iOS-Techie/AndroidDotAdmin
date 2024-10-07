@@ -99,6 +99,9 @@ class NSConstraintLayout : ConstraintLayout {
             R.id.cl_track -> {
                 colorResources.setCardBackground(this, getRadius(100f), 1, colorResources.getWhiteColor(), colorResources.getPrimaryColor())
             }
+            R.id.cl_top_create_fleet -> {
+                colorResources.setCardBackground(this, 0f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
+            }
         }
     }
 }

@@ -51,13 +51,13 @@ data class FleetData(
 	var vendorId: String? = null,
 
 	@field:SerializedName("name")
-	val name: HashMap<String, String> = hashMapOf(),
+	var name: HashMap<String, String> = hashMapOf(),
 
 	@field:SerializedName("logo")
     var logo: String? = null,
 
 	@field:SerializedName("service_ids")
-	val serviceIds: MutableList<String> = arrayListOf(),
+	var serviceIds: MutableList<String> = arrayListOf(),
 
 	@field:SerializedName("logo_height")
 	val logoHeight: Int = 0,
@@ -72,7 +72,7 @@ data class FleetData(
 	val scheduleId: String? = null,
 
 	@field:SerializedName("slogan")
-	val slogan: HashMap<String, String> = hashMapOf(),
+	var slogan: HashMap<String, String> = hashMapOf(),
 
 	@field:SerializedName("status")
 	val status: String? = null,

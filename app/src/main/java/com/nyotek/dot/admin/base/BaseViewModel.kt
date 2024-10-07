@@ -60,7 +60,7 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
     var capabilitiesList: MutableLiveData<MutableList<CapabilitiesDataItem>> = MutableLiveData()
 
     suspend fun performApiCalls(
-        vararg apiCalls: suspend () -> Response<*>?,
+        vararg apiCalls: suspend () -> Response<*>?, isShowError: Boolean = true,
         onSuccess: (List<Any?>, Boolean) -> Unit
     ) {
         if (ConnectionChecker.isConnectionAvailable(application.applicationContext)) {
@@ -83,10 +83,10 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
                     if (successfulResponses.isValidList() || failedResponse == null) {
                         onSuccess(successfulResponses, true)
                         if (failedResponse != null) {
-                            getApiErrorMessage(onSuccess, failedResponse, { isTokenRefresh ->
+                            getApiErrorMessage(onSuccess, isShowError, failedResponse, { isTokenRefresh ->
                                 if (isTokenRefresh) {
                                     viewModelScope.launch {
-                                        tokenRefreshCall(apiCalls = apiCalls, onSuccess = onSuccess)
+                                        tokenRefreshCall(apiCalls = apiCalls, onSuccess = onSuccess, isShowError = isShowError)
                                     }
                                 }
                             }) { isSessionTimeOut ->
@@ -100,7 +100,7 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
                         }
                     } else {
                         // Handle failed responses
-                        getApiErrorMessage(onSuccess, failedResponse, { isTokenRefresh ->
+                        getApiErrorMessage(onSuccess, isShowError, failedResponse, { isTokenRefresh ->
                             if (isTokenRefresh) {
                                 viewModelScope.launch {
                                     tokenRefreshCall(apiCalls = apiCalls, onSuccess = onSuccess)
@@ -118,8 +118,10 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
 
                 } catch (e: Exception) {
                     _loading.value = false
-                    val failedResponses = ErrorModel(e.hashCode(), e.localizedMessage)
-                    _error.value = failedResponses
+                    if (isShowError) {
+                        val failedResponses = ErrorModel(e.hashCode(), e.localizedMessage)
+                        _error.value = failedResponses
+                    }
                     _refresh.value = false
                     onSuccess(arrayListOf(), false)
                 }
@@ -133,7 +135,7 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
     }
 
     private suspend fun tokenRefreshCall(
-        vararg apiCalls: suspend () -> Response<*>?,
+        vararg apiCalls: suspend () -> Response<*>?, isShowError: Boolean = true,
         onSuccess: (List<Any?>, Boolean) -> Unit
     ) {
         val refreshToken = dataStorePreference.refreshToken
@@ -182,7 +184,7 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
         }
     }
 
-    private fun getApiErrorMessage(onSuccess: (List<Any?>, Boolean) -> Unit,
+    private fun getApiErrorMessage(onSuccess: (List<Any?>, Boolean) -> Unit, isShowError: Boolean = true,
         rawErrorResponse: Response<*>,
         tokenRefreshCallback: (Boolean) -> Unit,
         sessionCallback: (Boolean) -> Unit
@@ -258,7 +260,9 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
             Handler(Looper.getMainLooper()).post {
                 val failedResponses = ErrorModel(rawErrorResponse.code(), errorMessageList[0])
                 onSuccess(arrayListOf(), false)
-                _error.value = failedResponses
+                if (isShowError) {
+                    _error.value = failedResponses
+                }
                 _loading.value = false
                 _refresh.value = false
             }
@@ -450,6 +454,7 @@ abstract class BaseViewModel(private val repository: Repository, private val dat
         ) { responses, isSuccess ->
             if (isSuccess) {
                 val localLanguage = responses[0] as NSLocalLanguageResponse?
+                localLanguage?.data?.reverse()
                 colorResources.themeHelper.setFleetLanguageList(
                     localLanguage?.data ?: arrayListOf(), true
                 )

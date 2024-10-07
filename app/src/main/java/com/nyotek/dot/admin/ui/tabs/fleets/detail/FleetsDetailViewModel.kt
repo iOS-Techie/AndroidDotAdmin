@@ -38,6 +38,7 @@ class FleetsDetailViewModel @Inject constructor(
 ) : BaseViewModel(repository, languageConfig.dataStorePreference, colorResources, application) {
 
     var fleetModel: FleetData? = null
+    var oldFleetModel: FleetData? = null
 
     var urlToUpload: String = ""
     var fleetLogoUpdateRequest: NSFleetLogoUpdateRequest = NSFleetLogoUpdateRequest()
@@ -46,7 +47,6 @@ class FleetsDetailViewModel @Inject constructor(
     private var isSlogan = false
     private var isUrl = false
     private var isTags = false
-    var updatePosition = 0
     var isProgressVisible = false
 
     var isAllDataUpdateAvailable = NSSingleLiveEvent<Boolean>()
@@ -58,9 +58,13 @@ class FleetsDetailViewModel @Inject constructor(
     fun getFleetDetail(fleetDetail: String?) {
         if (!fleetDetail.isNullOrEmpty()) {
             fleetModel = Gson().fromJson(fleetDetail, FleetData::class.java)
+            oldFleetModel = fleetModel?.copy()
             fleetLogoUpdateRequest.vendorId = fleetModel?.vendorId
             if (!fleetModel?.vendorId.isNullOrEmpty()) {
-                getFleetDetailData(fleetModel?.vendorId)
+                showProgress()
+                getBaseServiceList(false) {
+                    getFleetDetailData(fleetModel?.vendorId)
+                }
             }
         }
     }
@@ -151,17 +155,20 @@ class FleetsDetailViewModel @Inject constructor(
     }
 
     private suspend fun updateNameApi() {
-        if (fleetModel?.name?.isNotEmpty() == true) {
+        if (fleetModel?.name?.isNotEmpty() == true && oldFleetModel?.name?.equals(fleetModel?.name) == false) {
             fleetModel?.vendorId?.let {
                 performApiCalls({ repository.remote.updateFleetName(NSFleetNameUpdateRequest(it, fleetModel?.name?: hashMapOf()))}
                 ) { response, isSuccess ->
                     if (isSuccess) {
+                        oldFleetModel?.name = fleetModel?.name!!
                         getApiResponse(response[0] as NSFleetBlankDataResponse?)
                     } else {
                         hideProgress()
                     }
                 }
             }
+        } else {
+            hideProgress()
         }
     }
 
@@ -170,17 +177,20 @@ class FleetsDetailViewModel @Inject constructor(
     }
 
     private suspend fun updateSloganApi() {
-        if (fleetModel?.slogan?.isNotEmpty() == true) {
+        if (fleetModel?.slogan?.isNotEmpty() == true && oldFleetModel?.slogan?.equals(fleetModel?.slogan) == false) {
             fleetModel?.vendorId?.let {
                 performApiCalls({ repository.remote.updateFleetSlogan(NSFleetSloganUpdateRequest(it, fleetModel?.slogan?: hashMapOf()))}
                 ) { response, isSuccess ->
                     if (isSuccess) {
+                        oldFleetModel?.slogan = fleetModel?.slogan!!
                         getApiResponse(response[0] as NSFleetBlankDataResponse?)
                     } else {
                         hideProgress()
                     }
                 }
             }
+        } else {
+            hideProgress()
         }
     }
 
@@ -189,13 +199,18 @@ class FleetsDetailViewModel @Inject constructor(
     }
 
     private suspend fun updateUrlApi() {
-        fleetModel?.vendorId?.let {
-            performApiCalls({ repository.remote.updateFleetUrl(NSFleetUrlUpdateRequest(it, fleetModel?.url))}
-            ) { response, isSuccess ->
-                if (isSuccess) {
-                    getApiResponse(response[0] as NSFleetBlankDataResponse?)
-                } else {
-                    hideProgress()
+        if (oldFleetModel?.url?.equals(fleetModel?.url) == false) {
+            fleetModel?.vendorId?.let {
+                performApiCalls({
+                    repository.remote.updateFleetUrl(NSFleetUrlUpdateRequest(it, fleetModel?.url))
+                }
+                ) { response, isSuccess ->
+                    if (isSuccess) {
+                        oldFleetModel?.url = fleetModel?.url!!
+                        getApiResponse(response[0] as NSFleetBlankDataResponse?)
+                    } else {
+                        hideProgress()
+                    }
                 }
             }
         }
@@ -206,33 +221,48 @@ class FleetsDetailViewModel @Inject constructor(
     }
 
     private suspend fun updateTagsApi() {
-        fleetModel?.vendorId?.let {
-            performApiCalls({ repository.remote.updateFleetTags(NSFleetUpdateTagsRequest(it, fleetModel?.tags?: arrayListOf()))}
-            ) { response, isSuccess ->
-                if (isSuccess) {
-                    getApiResponse(response[0] as NSFleetBlankDataResponse?)
-                } else {
-                    hideProgress()
+        if (oldFleetModel?.tags?.equals(fleetModel?.tags) == false) {
+            fleetModel?.vendorId?.let {
+                performApiCalls({
+                    repository.remote.updateFleetTags(NSFleetUpdateTagsRequest(it, fleetModel?.tags ?: arrayListOf()))
+                }
+                ) { response, isSuccess ->
+                    if (isSuccess) {
+                        oldFleetModel?.tags = fleetModel?.tags
+                        getApiResponse(response[0] as NSFleetBlankDataResponse?)
+                    } else {
+                        hideProgress()
+                    }
                 }
             }
         }
     }
 
     fun updateServiceIds() = viewModelScope.launch {
+        isProgressVisible = true
         updateServiceIdsApi()
     }
 
     private suspend fun updateServiceIdsApi() {
-        fleetModel?.vendorId?.let {
-            showProgress()
-            performApiCalls({ repository.remote.updateFleetServiceIds(NSFleetServiceIdsUpdateRequest(it, fleetModel?.serviceIds?: arrayListOf()))}
-            ) { response, isSuccess ->
-                if (isSuccess) {
-                    getApiResponse(response[0] as NSFleetBlankDataResponse?)
-                } else {
-                    hideProgress()
+        if (oldFleetModel?.serviceIds?.equals(fleetModel?.serviceIds) == false) {
+            fleetModel?.vendorId?.let {
+                showProgress()
+                performApiCalls({
+                    repository.remote.updateFleetServiceIds(
+                        NSFleetServiceIdsUpdateRequest(it, fleetModel?.serviceIds ?: arrayListOf())
+                    )
+                }
+                ) { response, isSuccess ->
+                    if (isSuccess) {
+                        oldFleetModel?.serviceIds = fleetModel?.serviceIds?: arrayListOf()
+                        getApiResponse(response[0] as NSFleetBlankDataResponse?)
+                    } else {
+                        hideProgress()
+                    }
                 }
             }
+        } else {
+            getApiResponse(null)
         }
     }
 
@@ -269,12 +299,8 @@ class FleetsDetailViewModel @Inject constructor(
     private suspend fun updateFleetLogoScaleApi(logoScale: String) {
         showProgress()
         performApiCalls({ repository.remote.updateFleetScale(NSFleetLogoScaleRequest(fleetModel?.vendorId, logoScale))}
-        ) { response, isSuccess ->
-            if (isSuccess) {
-                getApiResponse(response[0] as NSFleetBlankDataResponse?)
-            } else {
-                hideProgress()
-            }
+        ) { _, _ ->
+            hideProgress()
         }
     }
 
@@ -293,7 +319,24 @@ class FleetsDetailViewModel @Inject constructor(
     }
 
     private fun getApiResponse(data: Any?) {
-        if (data == null) {
+        if (oldFleetModel?.name?.equals(fleetModel?.name) == false) {
+            updateName()
+        } else if (oldFleetModel?.slogan?.equals(fleetModel?.slogan) == false) {
+            updateSlogan()
+        } else if (oldFleetModel?.url?.equals(fleetModel?.url) == false) {
+            updateUrl()
+        } else if (oldFleetModel?.tags?.equals(fleetModel?.tags) == false) {
+            updateTags()
+        } else if (oldFleetModel?.serviceIds?.equals(fleetModel?.serviceIds) == false) {
+            updateServiceIds()
+        } else {
+            hideProgress()
+            if (isProgressVisible) {
+                isAllDataUpdateAvailable.value = true
+            }
+        }
+        
+        /*if (data == null) {
             hideProgress()
         } else {
             when (data) {
@@ -321,6 +364,6 @@ class FleetsDetailViewModel @Inject constructor(
                     hideProgress()
                 }
             }
-        }
+        }*/
     }
 }

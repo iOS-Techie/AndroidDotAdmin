@@ -37,18 +37,20 @@
                 tools:text="Vendor"
                 android:gravity="top"
                 android:textSize="@dimen/_5sdp"
-                android:paddingVertical="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_5sdp"
                 android:paddingHorizontal="@dimen/_6sdp"
                 android:textAppearance="@style/CommonTextSemiBold"
+                app:layout_constraintEnd_toStartOf="@id/view_line_first"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <View
                 android:id="@+id/view_line_first"
                 android:layout_width="1dp"
-                android:layout_height="@dimen/_6sdp"
+                android:layout_height="0dp"
                 android:background="@color/line_divider"
-                app:layout_constraintStart_toEndOf="@id/tv_create_fleet_title"
+                app:layout_constraintStart_toStartOf="@+id/view_line_vertical_divider"
+                app:layout_constraintEnd_toEndOf="@+id/view_line_vertical_divider"
                 app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
 
@@ -58,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:textSize="@dimen/_4sdp"
+                android:visibility="gone"
                 android:textAppearance="@style/CommonTextRegular"
                 android:paddingHorizontal="@dimen/_5sdp"
                 app:layout_constraintStart_toEndOf="@id/view_line_first"
@@ -69,6 +72,7 @@
                 android:layout_width="1dp"
                 android:layout_height="@dimen/_6sdp"
                 android:background="@color/line_divider"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@id/tv_fleet_created_date"
                 app:layout_constraintTop_toTopOf="@id/tv_create_fleet_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_create_fleet_title"/>
@@ -137,16 +141,15 @@
                 android:id="@+id/rl_brand_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_6sdp"
-                android:layout_marginBottom="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginStart="@dimen/_7sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_line_divider">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_brand_logo"
-                    android:layout_width="@dimen/_45sdp"
-                    android:layout_height="@dimen/_45sdp"
+                    android:layout_width="@dimen/_42sdp"
+                    android:layout_height="@dimen/_42sdp"
                     app:cardCornerRadius="@dimen/_5sdp"
                     app:cardElevation="0dp"
                     app:cardBackgroundColor="@android:color/transparent">
@@ -206,6 +209,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:background="@color/line_divider"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rl_brand_logo" />
@@ -216,6 +220,7 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:clickable="true"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/_3sdp"
                 android:layout_marginEnd="@dimen/_7sdp"
                 app:layout_constraintEnd_toStartOf="@id/view_line_check_box"
@@ -260,6 +265,7 @@
                 android:layout_height="0dp"
                 android:background="@color/line_divider"
                 android:layout_marginVertical="@dimen/_1sdp"
+                android:visibility="gone"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/view_line_vertical_divider"
@@ -274,6 +280,7 @@
                 android:layout_marginStart="@dimen/_6sdp"
                 android:focusable="true"
                 android:clickable="true"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@id/view_line_check_box"
                 app:layout_constraintTop_toTopOf="@id/cl_check_fill"
                 app:layout_constraintBottom_toBottomOf="@+id/cl_check_fill">
@@ -316,16 +323,17 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:background="@color/line_divider"
-                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_check_fill" />
+                app:layout_constraintTop_toBottomOf="@id/layout_url" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_service_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_6sdp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
@@ -335,7 +343,7 @@
                 layout="@layout/layout_common_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 app:layout_constraintEnd_toStartOf="@id/layout_slogan"
                 app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
@@ -345,7 +353,7 @@
                 layout="@layout/layout_common_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 app:layout_constraintStart_toEndOf="@id/layout_name"
@@ -359,6 +367,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@id/layout_slogan"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_line_divider"
@@ -368,21 +377,19 @@
                 layout="@layout/layout_common_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 app:layout_constraintEnd_toStartOf="@id/layout_address"
                 app:layout_constraintStart_toEndOf="@id/view_line_vertical_divider"
-                app:layout_constraintTop_toBottomOf="@id/layout_name"
-                app:layout_constraintBottom_toBottomOf="@id/layout_tags"/>
+                app:layout_constraintTop_toBottomOf="@id/layout_name" />
 
             <include android:id="@+id/layout_address"
                 layout="@layout/layout_common_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
-                app:layout_constraintBottom_toBottomOf="@id/layout_tags"
                 app:layout_constraintEnd_toStartOf="@id/layout_tags"
                 app:layout_constraintStart_toEndOf="@id/layout_url"
                 app:layout_constraintTop_toBottomOf="@id/layout_name"/>
@@ -391,7 +398,7 @@
                 android:id="@+id/view_address"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@id/layout_address"
                 app:layout_constraintTop_toTopOf="@id/layout_address"
                 app:layout_constraintBottom_toBottomOf="@id/layout_address"/>

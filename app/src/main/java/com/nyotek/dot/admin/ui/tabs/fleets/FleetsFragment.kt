@@ -1,5 +1,6 @@
 package com.nyotek.dot.admin.ui.tabs.fleets
 
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -17,6 +18,7 @@ import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.extension.addOnTextChangedListener
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
+import com.nyotek.dot.admin.common.extension.editTextFocusNext
 import com.nyotek.dot.admin.common.extension.getLngValue
 import com.nyotek.dot.admin.common.extension.getTagLists
 import com.nyotek.dot.admin.common.extension.navigateSafeNew
@@ -33,6 +35,7 @@ import com.nyotek.dot.admin.models.responses.ActiveInActiveFilter
 import com.nyotek.dot.admin.models.responses.FleetData
 import com.nyotek.dot.admin.models.responses.RegionDataItem
 import com.nyotek.dot.admin.models.responses.SpinnerData
+import com.nyotek.dot.admin.ui.tabs.fleets.detail.NSFleetServiceListRecycleAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,7 +44,8 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
     private val viewModel by viewModels<FleetsViewModel>()
     private var fleetRecycleAdapter: NSFleetManagementRecycleAdapter? = null
     private val brandLogoHelper: BrandLogoHelper = BrandLogoHelper(this, callback = this)
-
+    private var serviceHorizontalAdapter: NSFleetServiceListRecycleAdapter? = null
+    
     companion object {
         fun newInstance() = FleetsFragment()
     }
@@ -194,11 +198,22 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
 
                         stringResource.apply {
                             tvCreateFleetTitle.text = createFleet
-                            tvFleetActive.text = inActive
+                            tvFleetActive.text = active
                             tvSave.text = create
                             tvCancel.text = cancel
                             layoutRegion.tvCommonTitle.text = selectRegion
+                            layoutName.edtValue.hint = enterName
+                            layoutSlogan.edtValue.hint = enterSlogan
+                            layoutUrl.edtValue.hint = enterUrl
                         }
+                        
+                        layoutName.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+                        layoutSlogan.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                        layoutName.edtValue.editTextFocusNext(layoutSlogan.edtValue)
+                        layoutSlogan.edtValue.editTextFocusNext(layoutUrl.edtValue)
+                        layoutUrl.edtValue.editTextFocusNext(layoutTags.edtValue)
+                        layoutUrl.edtValue.setLines(1)
+                        
 
                         switchService.rotation(languageConfig.isLanguageRtl())
                         brandLogoHelper.initView(activity, ivBrandLogo, tvSizeTitle)
@@ -211,8 +226,8 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
                                 cbFill.isChecked
                             )
                         }
-
-                        NSServiceConfig.setFleetDetail(
+                        
+                        serviceHorizontalAdapter = NSServiceConfig.setFleetDetail(
                             requireActivity(),
                             layoutName,
                             layoutUrl,
@@ -227,6 +242,15 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
                             colorResources,
                             viewModel
                         )
+                        
+                        val baseServiceList = viewModel.colorResources.themeHelper.getServiceResponse()?.data?: arrayListOf()
+                        baseServiceList.forEach { service ->
+                            if (service.serviceId == NSThemeHelper.SERVICE_ID) {
+                                service.isSelected = true
+                            }
+                        }
+                        
+                        serviceHorizontalAdapter?.setData(baseServiceList)
 
                         var isActiveFleet = false
                         switchService.setOnClickListener {
@@ -270,18 +294,17 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
                         }
 
                         tvSave.setOnClickListener {
-                            dialog.dismiss()
                             val tags = layoutTags.edtValue.text.toString()
                             createCompanyRequest.tags = tags.getTagLists()
 
                             val url = layoutUrl.edtValue.text.toString()
                             createCompanyRequest.url = url
 
-                            if (layoutName.edtValue.toString().isEmpty()) {
+                            if (layoutName.edtValue.text.toString().isEmpty()) {
                                 showError(stringResource.pleaseEnterName)
                                 return@setOnClickListener
-                            } else if (layoutSlogan.edtValue.toString().isEmpty()) {
-                                showError(stringResource.pleaseEnterName)
+                            } else if (layoutSlogan.edtValue.text.toString().isEmpty()) {
+                                showError(stringResource.pleaseEnterSlogan)
                                 return@setOnClickListener
                             } else if (createCompanyRequest.logo?.isEmpty() == true) {
                                 showError(stringResource.logoCanNotEmpty)
@@ -290,8 +313,12 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
                                 showError(stringResource.regionCanNotBeEmpty)
                                 return@setOnClickListener
                             } else {
-
-                                createCompanyRequest.serviceIds.add(NSThemeHelper.SERVICE_ID)
+                                dialog.dismiss()
+                                val list = serviceHorizontalAdapter?.getData()?.filter { it.isSelected }?.mapNotNull { it.serviceId }?: arrayListOf()
+                                val serviceList: List<String> = list
+                                
+                                //createCompanyRequest.serviceIds.add(NSThemeHelper.SERVICE_ID)
+                                createCompanyRequest.serviceIds.addAll(serviceList)
                                 createCompanyRequest.logoScale = if (cbFill.isChecked) NSConstants.FILL else NSConstants.FIT
                                 createCompanyRequest.isActive = isActiveFleet
                                 createCompanyRequest.name = name
@@ -315,7 +342,7 @@ class FleetsFragment : BaseFragment<NsFragmentFleetsBinding>(), NSFileUploadCall
                 val idList = list.map { it.iso2!! } as MutableList<String>
                 val spinnerList = SpinnerData(idList, titleList)
 
-                bind.layoutRegion.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, colorResources, spinnerTitleId, isHideFirstPosition = true, placeholderName = "") { selectedId ->
+                bind.layoutRegion.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, colorResources, spinnerTitleId, isHideFirstPosition = true, placeholderName = stringResource.selectRegion) { selectedId ->
                     if (spinnerTitleId != selectedId) {
                         spinnerTitleId = selectedId
                         callback.invoke(selectedId?:"")

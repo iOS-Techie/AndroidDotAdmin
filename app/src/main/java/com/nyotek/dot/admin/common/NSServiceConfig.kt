@@ -30,7 +30,7 @@ object NSServiceConfig {
         tvEditTitle: TextView,
         rlBrandLogo: RelativeLayout,
         rvServiceList: RecyclerView,
-        colorResources: ColorResources, baseViewModel: BaseViewModel
+        colorResources: ColorResources, baseViewModel: BaseViewModel, isLocalLanguageApiCall: Boolean = false, isEdit: Boolean = false
     ): NSFleetServiceListRecycleAdapter {
         val stringResource = colorResources.getStringResource()
         stringResource.apply {
@@ -45,7 +45,7 @@ object NSServiceConfig {
             layoutTags.edtValue.gravity = Gravity.START
             tvFill.text = fill
             tvFit.text = fit
-            tvEditTitle.text = edit
+            tvEditTitle.text = selectImage
 
             colorResources.setCardBackground(
                 rlBrandLogo,
@@ -61,7 +61,7 @@ object NSServiceConfig {
             rvServiceList,
             layoutName,
             layoutSlogan,
-            colorResources, baseViewModel
+            colorResources, baseViewModel, isLocalLanguageApiCall
         )
     }
 
@@ -70,21 +70,23 @@ object NSServiceConfig {
         rvServiceList: RecyclerView,
         layoutName: LayoutCommonTextBinding,
         layoutSlogan: LayoutCommonTextBinding,
-        colorResources: ColorResources, baseViewModel: BaseViewModel
+        colorResources: ColorResources, baseViewModel: BaseViewModel,isLocalLanguageApiCall: Boolean = false
     ): NSFleetServiceListRecycleAdapter {
         rvServiceList.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         val serviceHorizontalAdapter =
             NSFleetServiceListRecycleAdapter(activity, colorResources = colorResources) { serviceId, isChecked ->
-                if (isChecked) {
-                    baseViewModel.getLocalLanguages(serviceId) {
+                if (isLocalLanguageApiCall) {
+                    if (isChecked) {
+                        baseViewModel.getLocalLanguages(serviceId) {
+                            layoutName.rvLanguageTitle.refreshAdapter()
+                            layoutSlogan.rvLanguageTitle.refreshAdapter()
+                        }
+                    } else {
+                        colorResources.themeHelper.removeMapLocalLanguage(serviceId)
                         layoutName.rvLanguageTitle.refreshAdapter()
                         layoutSlogan.rvLanguageTitle.refreshAdapter()
                     }
-                } else {
-                    colorResources.themeHelper.removeMapLocalLanguage(serviceId)
-                    layoutName.rvLanguageTitle.refreshAdapter()
-                    layoutSlogan.rvLanguageTitle.refreshAdapter()
                 }
             }
         rvServiceList.adapter = serviceHorizontalAdapter

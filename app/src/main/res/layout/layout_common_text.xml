@@ -23,6 +23,7 @@
             android:fontFamily="@font/archivo_regular"
             android:textSize="@dimen/_5sdp"
             android:lines="1"
+            android:maxLines="1"
             android:textAlignment="viewStart"
             android:imeOptions="actionNext"
             android:paddingHorizontal="@dimen/_6sdp"
@@ -56,11 +57,12 @@
 
     <com.nyotek.dot.admin.widgets.NSCommonRecycleView
         android:id="@+id/rv_language_title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginStart="@dimen/_6sdp"
         android:visibility="gone"
+        app:layout_constrainedWidth="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/layout_language_title_item_text"
         app:layout_constraintStart_toEndOf="@id/rl_title"
