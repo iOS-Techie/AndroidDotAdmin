@@ -38,8 +38,12 @@ class NSPrimaryTextView : AppCompatTextView {
     private fun init() {
         setTextColor(colorResources.getPrimaryColor())
         when (id) {
-             R.id.tv_cancel_service, R.id.tv_cancel_app, R.id.tv_cancel -> {
+             R.id.tv_cancel_service, R.id.tv_cancel -> {
                 colorResources.setBlankBackground(this, 5f, 1, colorResources.getPrimaryColor())
+            }
+            R.id.tv_cancel_app -> {
+                setTextColor(colorResources.getGrayTextColor())
+                colorResources.setBlankBackground(this, 5f, 1, colorResources.getBorderColor())
             }
             R.id.tv_modify -> {
                 colorResources.setBlankBackground(this, 5f, 1, colorResources.getPrimaryColor())

@@ -27,6 +27,7 @@ import com.nyotek.dot.admin.models.requests.NSLanguageLocaleRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageRequest
 import com.nyotek.dot.admin.models.requests.NSLoginRequest
 import com.nyotek.dot.admin.models.requests.NSRefreshTokenRequest
+import com.nyotek.dot.admin.models.requests.NSSearchEmployeeRequest
 import com.nyotek.dot.admin.models.requests.NSSearchMobileRequest
 import com.nyotek.dot.admin.models.requests.NSSearchUserRequest
 import com.nyotek.dot.admin.models.requests.NSServiceCapabilitiesRequest
@@ -78,6 +79,7 @@ import com.nyotek.dot.admin.models.responses.NSVehicleBlankDataResponse
 import com.nyotek.dot.admin.models.responses.NSVehicleDetailResponse
 import com.nyotek.dot.admin.models.responses.NSVehicleResponse
 import com.nyotek.dot.admin.models.responses.RegionResponse
+import com.nyotek.dot.admin.models.responses.SearchEmployeeResponse
 import com.nyotek.dot.admin.models.responses.VendorDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -228,7 +230,11 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun addEmployee(vendorRequest: NSAddEmployeeRequest): Response<NSEmployeeAddDeleteBlankDataResponse> {
-        return baseMainUrl.addEmployee(vendorRequest)
+        return baseMainUrl.addEmployee(vendorRequest.vendorId?:"", vendorRequest)
+    }
+    
+    suspend fun searchEmployee(vendorId: String, request: NSSearchEmployeeRequest): Response<SearchEmployeeResponse> {
+        return baseMainUrl.searchEmployee(vendorId, request)
     }
 
     suspend fun employeeDelete(vendorRequest: NSEmployeeRequest): Response<NSEmployeeAddDeleteBlankDataResponse> {
@@ -297,6 +303,10 @@ class RemoteDataSource @Inject constructor(
 
     suspend fun setLocal(languageRequest: NSLanguageLocaleRequest): Response<NSErrorResponse> {
         return baseMainUrl.setLocal(languageRequest)
+    }
+    
+    suspend fun getUserDetail(userId: String): Response<NSUserDetailResponse> {
+        return baseMainUrl.getUserDetail(userId)
     }
 
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/

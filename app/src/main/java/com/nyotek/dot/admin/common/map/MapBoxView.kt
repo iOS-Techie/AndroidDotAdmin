@@ -26,8 +26,11 @@ import com.mapbox.maps.extension.style.layers.generated.symbolLayer
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.maps.extension.style.sources.getSource
+import com.mapbox.maps.plugin.animation.MapAnimationOptions
 import com.mapbox.maps.plugin.animation.MapAnimationOptions.Companion.mapAnimationOptions
 import com.mapbox.maps.plugin.animation.camera
+import com.mapbox.maps.plugin.animation.easeTo
+import com.mapbox.maps.plugin.animation.flyTo
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.viewannotation.ViewAnnotationManager
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
@@ -57,7 +60,7 @@ import javax.inject.Inject
 import kotlin.math.abs
 
 @ActivityScoped
-class MapBoxView @Inject constructor(@ActivityContext private val context: Context, private val colorResources: ColorResources, private val languageConfig: NSLanguageConfig) {
+class MapBoxView @Inject constructor(@ActivityContext private val context: Context, private val colorResources: ColorResources, private val languageConfig: NSLanguageConfig, private val isMapPopUpDisplay: Boolean = true) {
 
     private var fleetDataItem: FleetDataItem? = null
     private var viewAnnotationManager: ViewAnnotationManager? = null
@@ -146,6 +149,18 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
             }
         }
     }
+    
+    fun goToMapPositionFromDriveId(driverId: String, zoom: Double = 13.0, pitch: Double = 10.0) {
+        for (data in fleetDataItem?.features ?: arrayListOf()) {
+            if (data.properties?.driverId.equals(driverId)) {
+                moveCameraWithAnimation(
+                    Point.fromLngLat(
+                        data.properties?.longitude ?: 0.0, data.properties?.latitude ?: 0.0
+                    ), zoom, pitch
+                )
+            }
+        }
+    }
 
     fun goToDispatchMapPosition(list: List<FeaturesItem>?, zoom: Double = 17.0, pitch: Double = 10.0) {
         if (list.isValidList()) {
@@ -169,6 +184,33 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
             .build()
         // set camera position
         map?.setCamera(cameraPosition)
+    }
+    
+    private fun moveCameraWithAnimation(point: Point, zoom: Double = 13.0, pitch: Double = 10.0) {
+        val lastCameraPosition = map?.cameraState
+        
+        val targetCameraPosition = CameraOptions.Builder()
+            .center(point)
+            .zoom(zoom)
+            .pitch(pitch)
+            .build()
+        
+        map?.easeTo(
+            CameraOptions.Builder()
+                .center(lastCameraPosition?.center)
+                .zoom(lastCameraPosition?.zoom ?: 0.0)
+                .pitch(lastCameraPosition?.pitch ?: 0.0)
+                .build(),
+            MapAnimationOptions.Builder()
+                .duration(1000L)
+                .build()
+        )
+        
+        map?.flyTo(
+            targetCameraPosition,
+            MapAnimationOptions.Builder()
+                .duration(1000L)
+                .build())
     }
 
     fun getMapView(): MapView? {
@@ -214,12 +256,8 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
                     iconSize(1.0)
                 }
                 styleMap?.addLayer(stretchLayer)
-
+                
                 map?.addOnMapClickListener { point ->
-//                    android.os.Handler(Looper.getMainLooper()).postDelayed( {
-//                        moveCamera(point, 14.0, 10.0)
-//                    }, 3000)
-                    //moveCamera(point, 14.0, 10.0)
                     map?.queryRenderedFeatures(
                         RenderedQueryGeometry(map!!.pixelForCoordinate(point)),
                         RenderedQueryOptions(listOf(NSConstants.LAYER_ID), null)
@@ -410,6 +448,8 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
             }
         }
 
-        callDialogMap()
+        if (isMapPopUpDisplay) {
+            callDialogMap()
+        }
     }
 }

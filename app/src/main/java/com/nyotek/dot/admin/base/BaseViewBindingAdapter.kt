@@ -1,5 +1,6 @@
 package com.nyotek.dot.admin.base
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,11 @@ open class BaseViewBindingAdapter<T : ViewBinding, D> @Inject constructor(
     fun clearData() {
         data.clear()
     }
+    
+    @SuppressLint("NotifyDataSetChanged")
+    fun notifyData() {
+        notifyDataSetChanged()
+    }
 
     fun updateSingleData(model: D, position: Int) {
         data[position] = model
@@ -33,7 +39,12 @@ open class BaseViewBindingAdapter<T : ViewBinding, D> @Inject constructor(
 
     fun setData(newData: List<D>) {
         data = newData.toMutableList()
-        notifyDataSetChanged()
+        notifyData()
+    }
+    
+    fun addData(newData: D) {
+        data.add(newData)
+        notifyItemInserted(data.size - 1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

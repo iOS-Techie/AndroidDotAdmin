@@ -160,5 +160,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.mapbox.maps:android:10.16.0")
     implementation("org.greenrobot:eventbus:3.3.1")
+    implementation("com.googlecode.libphonenumber:libphonenumber:8.13.0")
     implementation(project(":imagepicker"))
 }

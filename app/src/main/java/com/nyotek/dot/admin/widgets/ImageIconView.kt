@@ -56,6 +56,10 @@ class ImageIconView : AppCompatImageView {
                 R.id.iv_driver_img, R.id.iv_model_img -> {
                     colorResources.setCardBackground(this, getRadius(100f), 0, colorResources.getBackgroundColor(), colorResources.getBackgroundColor())
                 }
+                R.id.iv_delete_employee -> {
+                    colorResources.setCardBackground(this, getRadius(3f), 0, colorResources.getErrorColor(), colorResources.getErrorColor())
+                    setColorFilter(colorResources.getWhiteColor())
+                }
                 else -> {
                     setColorFilter(colorResources.getPrimaryColor())
                 }

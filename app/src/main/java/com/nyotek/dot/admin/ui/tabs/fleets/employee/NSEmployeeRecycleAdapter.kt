@@ -2,6 +2,7 @@ package com.nyotek.dot.admin.ui.tabs.fleets.employee
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
 import com.nyotek.dot.admin.common.extension.getMapValue
+import com.nyotek.dot.admin.common.extension.setCoilCircle
 import com.nyotek.dot.admin.common.extension.switchEnableDisable
 import com.nyotek.dot.admin.databinding.LayoutEmployeeListBinding
 import com.nyotek.dot.admin.models.responses.EmployeeDataItem
@@ -23,9 +24,13 @@ class NSEmployeeRecycleAdapter(
     onBind = { binding, response, _, position, _ ->
         with(binding) {
             response.apply {
-                employeeUI.setAdapter(binding, response.isEmployeeSelected)
-                tvDescription.getMapValue(jobMap[response.titleId]?.name?: hashMapOf())
-                tvEmployeeTitle.text = response.userId
+                employeeUI.setAdapter(binding, response.isEmployeeSelected, response)
+                if (jobMap[response.titleId]?.name.isNullOrEmpty()) {
+                    tvStatus.text = "-"
+                } else {
+                    tvStatus.getMapValue(jobMap[response.titleId]?.name ?: hashMapOf())
+                }
+                
                 switchService.switchEnableDisable(isActive)
 
                 switchService.setOnClickListener {
@@ -43,7 +48,7 @@ class NSEmployeeRecycleAdapter(
                 }
 
                 clEmployeeItem.setOnClickListener {
-                    branchItemSelect.invoke(response.vendorId?:"")
+                    branchItemSelect.invoke(response.userId?:"")
                 }
             }
         }

@@ -27,6 +27,7 @@ import com.nyotek.dot.admin.models.requests.NSLanguageLocaleRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageRequest
 import com.nyotek.dot.admin.models.requests.NSLoginRequest
 import com.nyotek.dot.admin.models.requests.NSRefreshTokenRequest
+import com.nyotek.dot.admin.models.requests.NSSearchEmployeeRequest
 import com.nyotek.dot.admin.models.requests.NSSearchMobileRequest
 import com.nyotek.dot.admin.models.requests.NSSearchUserRequest
 import com.nyotek.dot.admin.models.requests.NSServiceCapabilitiesRequest
@@ -78,6 +79,7 @@ import com.nyotek.dot.admin.models.responses.NSVehicleBlankDataResponse
 import com.nyotek.dot.admin.models.responses.NSVehicleDetailResponse
 import com.nyotek.dot.admin.models.responses.NSVehicleResponse
 import com.nyotek.dot.admin.models.responses.RegionResponse
+import com.nyotek.dot.admin.models.responses.SearchEmployeeResponse
 import com.nyotek.dot.admin.models.responses.VendorDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -148,6 +150,9 @@ interface NSApiInterface {
 
     @POST("user/me/locale")
     suspend fun setLocal(@Body languageRequest: NSLanguageLocaleRequest): retrofit2.Response<NSErrorResponse>
+    
+    @GET("admin/user/{userid}")
+    suspend fun getUserDetail(@Path("userid") userId: String): retrofit2.Response<NSUserDetailResponse>
 
     /*Fleet List*/
     @GET("companies/admin/list_companies_by_service_id")
@@ -222,8 +227,11 @@ interface NSApiInterface {
     @PATCH("employees/enable_employee")
     suspend fun enableEmployee(@Body vendorRequest: NSEmployeeRequest): retrofit2.Response<NSEmployeeBlankDataResponse>
 
-    @POST("employees/add_employee")
-    suspend fun addEmployee(@Body vendorRequest: NSAddEmployeeRequest): retrofit2.Response<NSEmployeeAddDeleteBlankDataResponse>
+    @POST("employees/add_employee/{vendor_id}")
+    suspend fun addEmployee(@Path("vendor_id") vendorId: String, @Body vendorRequest: NSAddEmployeeRequest): retrofit2.Response<NSEmployeeAddDeleteBlankDataResponse>
+    
+    @POST("search_invite/{vendor_id}")
+    suspend fun searchEmployee(@Path("vendor_id") vendorId: String, @Body request: NSSearchEmployeeRequest): retrofit2.Response<SearchEmployeeResponse>
 
     @HTTP(method = "DELETE", path = "employees/remove_employee", hasBody = true)
     suspend fun employeeDelete(@Body vendorRequest: NSEmployeeRequest): retrofit2.Response<NSEmployeeAddDeleteBlankDataResponse>
@@ -308,7 +316,7 @@ interface NSApiInterface {
     @POST("/vehicle")
     suspend fun createVehicle(@Body request: NSVehicleRequest): retrofit2.Response<ResponseBody>
 
-    @GET("vehicle/fleet/{fleet_id}")
+    @GET("fleets/vehicle/f/{fleet_id}")
     suspend fun vehicleList(@Path("fleet_id") id: String): retrofit2.Response<NSVehicleResponse>
 
     @GET("driver/{driver_id}/fleet/{fleet_id}/vehicle")

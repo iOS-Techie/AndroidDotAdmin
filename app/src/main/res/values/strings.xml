@@ -16,4 +16,5 @@
     <string name="search_hint" tools:ignore="MissingTranslation">Search</string>
     <string name="something_went_wrong" tools:ignore="MissingTranslation">Something Went to Wrong</string>
     <string name="slash">/</string>
+    <string name="dash">-</string>
 </resources>

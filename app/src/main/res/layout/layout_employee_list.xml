@@ -21,22 +21,79 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_icon"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                app:cardElevation="0dp"
+                android:padding="@dimen/_1sdp"
+                app:cardCornerRadius="@dimen/_100sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/description"/>
+
+            </androidx.cardview.widget.CardView>
+
+
             <com.nyotek.dot.admin.widgets.NSPrimaryTextView
                 android:id="@+id/tv_employee_title"
                 style="@style/LayoutWidthHeightZeroWrap"
                 android:gravity="start"
                 android:lines="1"
-                android:paddingStart="0dp"
+                android:text="@string/dash"
+                android:paddingStart="@dimen/_5sdp"
                 android:paddingEnd="@dimen/_4sdp"
                 android:textAppearance="@style/CommonTextMedium"
                 android:textSize="@dimen/_5sdp"
                 android:textAlignment="viewStart"
                 app:layout_constraintBottom_toTopOf="@id/tv_description"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/card_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
                 tools:text="Employee 01" />
+
+            <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
+                android:id="@+id/tv_description"
+                style="@style/LayoutWidthHeightZeroWrap"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:gravity="start"
+                android:lines="1"
+                android:text="@string/dash"
+                android:paddingStart="@dimen/_5sdp"
+                android:paddingEnd="@dimen/_5sdp"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/CommonTextRegular"
+                android:textSize="@dimen/_4sdp"
+                app:layout_constraintBottom_toTopOf="@id/tv_status"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/card_icon"
+                app:layout_constraintTop_toBottomOf="@id/tv_employee_title"
+                tools:text="654 658 579 143" />
+
+            <com.nyotek.dot.admin.widgets.NSGrayTextView
+                android:id="@+id/tv_status"
+                style="@style/LayoutWidthHeightZeroWrap"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:gravity="start"
+                android:lines="1"
+                android:text="@string/dash"
+                android:paddingStart="@dimen/_5sdp"
+                android:paddingEnd="@dimen/_5sdp"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/CommonTextMedium"
+                android:textSize="@dimen/_4sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/card_icon"
+                app:layout_constraintTop_toBottomOf="@id/tv_description"
+                tools:text="654 658 579 143" />
 
             <com.nyotek.dot.admin.widgets.NSWhiteTextView
                 android:id="@+id/tv_add_address"
@@ -53,22 +110,7 @@
                 app:layout_constraintStart_toEndOf="@id/tv_employee_title"
                 app:layout_constraintTop_toTopOf="@id/tv_employee_title" />
 
-            <com.nyotek.dot.admin.widgets.NSPrimaryLightTextView
-                android:id="@+id/tv_description"
-                style="@style/LayoutWidthHeightZeroWrap"
-                android:layout_marginTop="@dimen/_2sdp"
-                android:gravity="start"
-                android:lines="1"
-                android:paddingStart="0dp"
-                android:paddingEnd="@dimen/_5sdp"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/CommonTextRegular"
-                android:textSize="@dimen/_4sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_employee_title"
-                tools:text="654 658 579 143" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

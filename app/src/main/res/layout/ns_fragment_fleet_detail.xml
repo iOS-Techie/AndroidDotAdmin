@@ -398,8 +398,8 @@
                 android:id="@+id/view_address"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@id/layout_address"
+                app:layout_constraintStart_toStartOf="@id/layout_address"
+                app:layout_constraintEnd_toEndOf="@id/layout_address"
                 app:layout_constraintTop_toTopOf="@id/layout_address"
                 app:layout_constraintBottom_toBottomOf="@id/layout_address"/>
 

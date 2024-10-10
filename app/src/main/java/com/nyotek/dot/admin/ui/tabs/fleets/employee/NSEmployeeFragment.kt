@@ -3,7 +3,9 @@ package com.nyotek.dot.admin.ui.tabs.fleets.employee
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -11,6 +13,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
+import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
+import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseFragment
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
@@ -22,13 +27,13 @@ import com.nyotek.dot.admin.common.extension.addOnTextChangedListener
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
 import com.nyotek.dot.admin.common.extension.getLngValue
 import com.nyotek.dot.admin.common.extension.invisible
-import com.nyotek.dot.admin.common.extension.notifyAdapter
+import com.nyotek.dot.admin.common.extension.isValidList
 import com.nyotek.dot.admin.common.extension.setPlaceholderAdapter
-import com.nyotek.dot.admin.common.extension.setVisibility
 import com.nyotek.dot.admin.common.extension.setupWithAdapter
 import com.nyotek.dot.admin.common.extension.visible
 import com.nyotek.dot.admin.common.map.MapBoxView
 import com.nyotek.dot.admin.databinding.LayoutInviteEmployeeBinding
+import com.nyotek.dot.admin.databinding.LayoutInviteUserItemBinding
 import com.nyotek.dot.admin.databinding.NsFragmentEmployeeBinding
 import com.nyotek.dot.admin.location.NSLocationManager
 import com.nyotek.dot.admin.models.responses.EmployeeDataItem
@@ -52,12 +57,14 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
         ViewModelProvider(this)[NSUserViewModel::class.java]
     }
 
-    private var userSearchAdapter: NSEmployeeUserSearchRecycleAdapter? = null
+    private var userAdapter: NSEmployeeUserSearchRecycleAdapter? = null
     private var isFragmentLoad = false
     private var addEmployeeDialog: AlertDialog? = null
     private var empAdapter: NSEmployeeRecycleAdapter? = null
     private var mapBoxView: MapBoxView? = null
-
+    private var addEmployeeList: MutableList<String> = arrayListOf()
+    var util: PhoneNumberUtil? = null
+    
     @Inject
     lateinit var locationManager: NSLocationManager
 
@@ -76,15 +83,15 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ): NsFragmentEmployeeBinding {
-        mapBoxView = MapBoxView(requireContext(), viewModel.colorResources, viewModel.languageConfig)
+        mapBoxView = MapBoxView(requireContext(), viewModel.colorResources, viewModel.languageConfig, false)
         return NsFragmentEmployeeBinding.inflate(inflater, container, false)
     }
 
     override fun setupViews() {
         super.setupViews()
-        themeUI = EmployeeUI(binding, viewModel.colorResources, viewModel.languageConfig)
+        themeUI = EmployeeUI(binding, viewModel)
         isFragmentLoad = false
 
         initUI()
@@ -122,7 +129,7 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                     viewLifecycleOwner
                 ) { searchList ->
                     searchUserList = searchList
-                    userSearchAdapter?.setData(searchUserList)
+//                    userAdapter?.setData(searchUserList)
                 }
 
                 isFleetDetailAvailable.observe(
@@ -162,6 +169,10 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
 
     private fun initUI() {
         binding.apply {
+            if (util == null) {
+                util = PhoneNumberUtil.getInstance()
+            }
+            
             initCreateVendor()
             getCurrentLocation()
         }
@@ -172,7 +183,7 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
             viewModel.apply {
                 stringResource.apply {
                     tvEmployeeTitle.text = employees
-                    tvAddEmployee.text = addEmployee
+                    tvAddEmployee.text = add
                 }
             }
         }
@@ -217,16 +228,31 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                     }, { vendorId, userId, isEnable ->
                         employeeSwitch(vendorId, userId, isEnable)
                     }, { vendorId ->
-                        mapBoxView?.goToMapPosition(vendorId)
+                        mapBoxView?.goToMapPositionFromDriveId(vendorId)
                     })
                     setupWithAdapter(empAdapter!!)
                     isNestedScrollingEnabled = false
                     empAdapter?.setJob(viewModel.jobTitleMap)
-                    EmployeeHelper.setEmployeeList(list)
+                    
+                    val mList: MutableList<EmployeeDataItem> = arrayListOf()
+                    mList.addAll(list.filter { !it.isDeleted })
+                    EmployeeHelper.setEmployeeList(mList)
                     empAdapter?.setData(EmployeeHelper.getEmployeeList())
+                    
+                    moveCameraOnFirstUser()
                 }
             }
         }
+    }
+    
+    private fun moveCameraOnFirstUser() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (EmployeeHelper.getEmployeeList().isValidList()) {
+                if (!EmployeeHelper.getEmployeeList()[0].vendorId.isNullOrEmpty()) {
+                    mapBoxView?.goToMapPositionFromDriveId(EmployeeHelper.getEmployeeList()[0].userId ?: "")
+                }
+            }
+        }, 1000)
     }
 
     private fun employeeSwitch(vendorId: String, userId: String, isEnable: Boolean) {
@@ -284,15 +310,18 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                 binding.apply {
                     viewModel.apply {
                         stringResource.apply {
-                            layoutUser.edtValue.setText("")
-                            tvSendInvite.text = add
+                            val addUserWithPlus = "+ $adduser"
+                            tvAddEmployee.text = addUserWithPlus
+                            tvSendInvite.text = invite
                             tvCancelApp.text = cancel
                             tvInviteEmployeeTitle.text = addEmployee
-                            layoutUser.tvCommonTitle.text = user
-                            layoutUser.edtValue.hint = searchUser
                             tvRoleNameTitle.text = employeeRole
+                            tvUserDetailTitle.text = userDetails
                         }
-
+                        
+                        addEmployeeList.clear()
+                        addEmployeeList.add("")
+                        
                         var selectedTitleId: String? = null
                         val nameList: MutableList<String> = jobTitleList.map { getLngValue(it.name) }.toMutableList()
                         val idList: MutableList<String> = jobTitleList.map { it.id ?: "" }.toMutableList()
@@ -308,43 +337,62 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                                 selectedTitleId = selectedId
                             }
                         }
-
-                        setUserManagementAdapter(binding)
-
-                        layoutUser.edtValue.addOnTextChangedListener(
-                            afterTextChanged = { s ->
-                                clUserList.setVisibility(s.toString().isNotEmpty())
-                                if ((s ?: "").isEmpty()) {
-                                    userSearchAdapter?.setData(arrayListOf())
+                        
+                        addLayouts(binding, true, addEmployeeList.size - 1)
+                        
+                        tvAddEmployee.setOnClickListener {
+                            if (addEmployeeList.isEmpty()) {
+                                addEmployeeList.add("")
+                                addLayouts(binding, true, addEmployeeList.size - 1)
+                            } else if (addEmployeeList.any { it.length < 12 || !it.contains("+")}) {
+                                showError(colorResources.getStringResource().enterValidPhoneNumber)
+                            } else {
+                                var isAllValid = true
+                                for (data in addEmployeeList) {
+                                    val lastPart = data.takeLast(10)
+                                    val firstPart = data.take(data.length - 10)
+                                    val phoneNumber = PhoneNumber().setCountryCode(
+                                        firstPart.replace("+", "").toInt()).setNationalNumber(lastPart.toLong())
+                                    //val phoneNumber = util?.parse(lastPart, firstPart)
+                                    if (phoneNumber == null || util?.isValidNumber(phoneNumber) == false) {
+                                        isAllValid = false
+                                    }
+                                }
+                                
+                                if (isAllValid) {
+                                    addEmployeeList.add("")
+                                    addLayouts(binding, false, addEmployeeList.size - 1)
                                 } else {
-                                    userManagementViewModel.search(s.toString(), false)
+                                    showError(colorResources.getStringResource().enterValidPhoneNumber)
                                 }
                             }
-                        )
-
+                        }
+                        
                         ivCloseEmployee.setOnClickListener {
                             addEmployeeDialog?.dismiss()
-                            layoutUser.edtValue.setText("")
                         }
 
                         tvCancelApp.setOnClickListener {
                             addEmployeeDialog?.dismiss()
-                            layoutUser.edtValue.setText("")
                         }
 
                         tvSendInvite.setOnClickListener {
                             val vendorIdValue = vendorId
-                            val userId: String =
-                                searchUserList.find { it.isEmployeeSelected }?.id ?: ""
+                            val userId: String = searchUserList.find { it.isEmployeeSelected }?.id ?: ""
 
                             if (selectedTitleId?.isNotEmpty() == true) {
-                                if (userId.isNotEmpty()) {
+                                if (addEmployeeList.isNotEmpty()) {
                                     NSUtilities.showProgressBar(progress, addEmployeeDialog, colorResources)
                                     employeeAdd(
                                         vendorIdValue ?: "",
-                                        userId,
+                                        addEmployeeList,
                                         selectedTitleId ?: ""
-                                    )
+                                    ) { isShowError ->
+                                        if (isShowError) {
+                                            showError(colorResources.getStringResource().enterValidPhoneNumber)
+                                        }
+                                        NSUtilities.hideProgressBar(progress, addEmployeeDialog, colorResources)
+                                    }
                                 } else {
                                     showError(stringResource.pleaseSelectUser)
                                 }
@@ -357,20 +405,32 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
             }
         }
     }
-
-    /**
-     * Set employee user search adapter
-     *
-     */
-    private fun setUserManagementAdapter(inviteEmployeeBinding: LayoutInviteEmployeeBinding) {
-        with(inviteEmployeeBinding) {
-            with(rvUserList) {
-                userSearchAdapter = NSEmployeeUserSearchRecycleAdapter {
-                        notifyAdapter(userSearchAdapter!!)
-                    }
-                setupWithAdapter(userSearchAdapter!!)
-                isNestedScrollingEnabled = false
+    
+    private fun addLayouts(inviteEmployeeBinding: LayoutInviteEmployeeBinding, isRemoveAllViews: Boolean, index: Int) {
+        inviteEmployeeBinding.apply {
+            if (isRemoveAllViews) {
+                llEmployeeView.removeAllViews()
             }
+            
+            val itemView = LayoutInflater.from(activity).inflate(R.layout.layout_invite_user_item, llEmployeeView, false)
+            val bind = LayoutInviteUserItemBinding.bind(itemView)
+            themeUI.setAddEmployeeAdapter(bind)
+            bind.layoutUser.edtValue.inputType = InputType.TYPE_CLASS_PHONE
+            
+            // Set the click listener for the remove button
+            bind.ivDeleteEmployee.setOnClickListener {
+                llEmployeeView.removeView(itemView)
+                addEmployeeList.removeAt(index)
+            }
+            
+            bind.layoutUser.edtValue.addOnTextChangedListener(
+                onTextChanged = { text, _, _, _ ->
+                    val string: String = text.toString()
+                    addEmployeeList[index] = string
+                }
+            )
+            
+            llEmployeeView.addView(itemView)
         }
     }
 

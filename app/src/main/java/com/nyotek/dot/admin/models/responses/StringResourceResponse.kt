@@ -299,4 +299,8 @@ class StringResourceResponse {
 	val firstNameNotBeEmpty   : String get() = map["first_name_not_be_empty"] ?: ""
 	val lastNameNotBeEmpty   : String get() = map["last_name_not_be_empty"] ?: ""
 	val selectDob   : String get() = map["select_dob"] ?: ""
+	val adduser   : String get() = map["add_user"] ?: ""
+	val searchByPhoneNumber   : String get() = map["search_by_phone_number"] ?: "Search by phone number"
+	val enterValidPhoneNumber   : String get() = map["phone_number_valid"] ?: "The Last User Phone Number is invalid. Please enter a valid phone number"
+	val invite   : String get() = map["invite"] ?: "Invite"
 }

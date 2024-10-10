@@ -21,7 +21,7 @@ fun ImageView.setCoil(url: String?, exScale: String?, corners: Float = 4f) {
 
 fun ImageView.setCoilCircle(url: String?) {
     load(url) {
-        scale(Scale.FILL).error(R.drawable.ic_place_holder_img).placeholder(R.drawable.ic_place_holder_progress)
+        scale(Scale.FILL).error(R.drawable.ic_place_holder_home).placeholder(R.drawable.ic_place_holder_progress)
         memoryCachePolicy(CachePolicy.ENABLED)
         diskCachePolicy(CachePolicy.ENABLED)
         transformations(CircleCropTransformation())

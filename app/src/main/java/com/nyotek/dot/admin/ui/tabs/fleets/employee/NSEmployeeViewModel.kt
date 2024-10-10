@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.nyotek.dot.admin.base.BaseViewModel
-import com.nyotek.dot.admin.common.NSApplication
 import com.nyotek.dot.admin.common.NSLanguageConfig
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
 import com.nyotek.dot.admin.common.extension.isValidList
@@ -17,7 +16,8 @@ import com.nyotek.dot.admin.models.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeListRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeRequest
 import com.nyotek.dot.admin.models.requests.NSFleetDriverRequest
-import com.nyotek.dot.admin.models.requests.NSFleetRequest
+import com.nyotek.dot.admin.models.requests.NSSearchEmployeeData
+import com.nyotek.dot.admin.models.requests.NSSearchEmployeeRequest
 import com.nyotek.dot.admin.models.responses.EmployeeDataItem
 import com.nyotek.dot.admin.models.responses.FleetData
 import com.nyotek.dot.admin.models.responses.FleetDataItem
@@ -28,9 +28,14 @@ import com.nyotek.dot.admin.models.responses.NSDriverVehicleDetailResponse
 import com.nyotek.dot.admin.models.responses.NSEmployeeResponse
 import com.nyotek.dot.admin.models.responses.NSListJobTitleResponse
 import com.nyotek.dot.admin.models.responses.NSUserDetail
+import com.nyotek.dot.admin.models.responses.NSUserDetailResponse
+import com.nyotek.dot.admin.models.responses.SearchEmployeeData
+import com.nyotek.dot.admin.models.responses.SearchEmployeeResponse
 import com.nyotek.dot.admin.models.responses.VehicleData
 import com.nyotek.dot.admin.models.responses.VehicleDataItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -107,6 +112,8 @@ class NSEmployeeViewModel @Inject constructor(
                             jobTitleList.clear()
                         }
 
+                        colorResources.themeHelper.setJobRoleTypeList(serviceId, data.jobTitleList)
+                        
                         val tempJobTitleList: MutableList<JobListDataItem> = arrayListOf()
                         tempJobTitleList.addAll(data.jobTitleList)
 
@@ -245,19 +252,76 @@ class NSEmployeeViewModel @Inject constructor(
         }
     }
 
-    fun employeeAdd(vendorId: String, userId: String, titleId: String) = viewModelScope.launch {
-        employeeAddApi(vendorId, userId, titleId)
+    fun employeeAdd(vendorId: String, userIdList: MutableList<String>, titleId: String, callback: (Boolean) -> Unit) = viewModelScope.launch {
+        employeeAddApi(vendorId, userIdList, titleId, callback)
     }
 
-    private suspend fun employeeAddApi(vendorId: String, userId: String, titleId: String) {
+    private suspend fun employeeAddApi(vendorId: String, userIdList: MutableList<String>, titleId: String, callback: (Boolean) -> Unit) {
         showProgress()
-        performApiCalls({ repository.remote.addEmployee(NSAddEmployeeRequest(vendorId, userId, titleId)) }
-        ) { _, isSuccess ->
+        val list: MutableList<NSSearchEmployeeData> = arrayListOf()
+        
+        for (ids in userIdList) {
+            list.add(NSSearchEmployeeData(ids))
+        }
+        val searchRequest = NSSearchEmployeeRequest(list, titleId)
+        
+        performApiCalls({
+            repository.remote.searchEmployee(vendorId, searchRequest)
+        }) { responses, isSuccess ->
             if (isSuccess) {
-                getEmployeeList(vendorId)
+                val model = responses[0] as SearchEmployeeResponse?
+                if (model != null) {
+                    if ((model.data?.size?:0) >= userIdList.size) {
+                        employeeAddApiSetup(vendorId, model.data?: arrayListOf(), titleId, callback)
+                    } else {
+                        callback.invoke(true)
+                    }
+                } else {
+                    callback.invoke(true)
+                    hideProgress()
+                }
             } else {
+                callback.invoke(false)
                 hideProgress()
             }
+        }
+    }
+    
+    private fun employeeAddApiSetup(vendorId: String, userIdList: MutableList<SearchEmployeeData>, titleId: String, callback: (Boolean) -> Unit) = viewModelScope.launch {
+        employeeAddSetupApi(vendorId, userIdList, titleId, callback)
+    }
+    
+    private suspend fun employeeAddSetupApi(vendorId: String, userIdList: MutableList<SearchEmployeeData>, titleId: String, callback: (Boolean) -> Unit) {
+        showProgress()
+        val results = mutableListOf<Boolean>()
+        
+        for (data in userIdList) {
+            if (!data.data?.id.isNullOrEmpty()) {
+                performApiCalls({
+                    repository.remote.addEmployee(
+                        NSAddEmployeeRequest(
+                            vendorId,
+                            data.data?.id,
+                            titleId
+                        )
+                    )
+                }) { _, isSuccess ->
+                    results.add(isSuccess)
+                    handleResults(results.size, userIdList.size, callback)
+                }
+            } else {
+                results.add(false)
+                handleResults(results.size, userIdList.size, callback)
+            }
+        }
+    }
+    
+    private fun handleResults(resultSize: Int, idSize: Int, callback: (Boolean) -> Unit) {
+        if (resultSize >= idSize) {
+            getEmployeeList(vendorId)
+        } else {
+            callback.invoke(false)
+            hideProgress()
         }
     }
 
@@ -359,6 +423,26 @@ class NSEmployeeViewModel @Inject constructor(
         } else {
             vehicleDataObserve.postValue(VehicleData())
             hideProgress()
+        }
+    }
+    
+    fun getUserDetail(userId: String, callback: (NSUserDetailResponse?) -> Unit) = viewModelScope.launch {
+        getUserDetailApi(userId, callback)
+    }
+    
+    private suspend fun getUserDetailApi(userId: String, callback: (NSUserDetailResponse?) -> Unit) {
+        if (colorResources.themeHelper.getUserDetail(userId) != null) {
+            callback.invoke(colorResources.themeHelper.getUserDetail(userId))
+        } else {
+            performApiCalls({ repository.remote.getUserDetail(userId) },
+                isShowError = false) { responses, isSuccess ->
+                if (isSuccess) {
+                    val userDetail = responses[0] as NSUserDetailResponse?
+                    callback.invoke(userDetail)
+                } else {
+                    callback.invoke(null)
+                }
+            }
         }
     }
 }

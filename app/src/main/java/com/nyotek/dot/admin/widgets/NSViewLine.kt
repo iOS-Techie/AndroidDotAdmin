@@ -58,6 +58,9 @@ class NSViewLine : View {
             R.id.view_line_side -> {
                 colorResources.setBackground(this, colorResources.getPrimaryColor())
             }
+            R.id.view_line_left -> {
+                colorResources.setBackgroundTint(this, colorResources.getPrimaryColor())
+            }
             else -> {
                 colorResources.setBackground(this, colorResources.getBorderColor())
             }

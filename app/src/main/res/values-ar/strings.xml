@@ -14,4 +14,5 @@
     <string name="please_turn_on_gps">يرجى تشغيل GPS</string>
     <string name="description">Description</string>
     <string name="slash">/</string>
+    <string name="dash">-</string>
 </resources>

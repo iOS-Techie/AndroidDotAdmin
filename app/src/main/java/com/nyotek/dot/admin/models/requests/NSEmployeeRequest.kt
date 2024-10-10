@@ -42,3 +42,18 @@ data class NSFleetDriverRequest (
 	@field:SerializedName("driver_ids")
 	val driverIds: List<String>? = arrayListOf()
 )
+
+data class NSSearchEmployeeRequest(
+	
+	@field:SerializedName("users")
+	val users: MutableList<NSSearchEmployeeData>? = null,
+	
+	@field:SerializedName("role_id")
+	val roleId: String? = null
+)
+
+data class NSSearchEmployeeData(
+	
+	@field:SerializedName("mobile")
+	val mobile: String? = null
+)

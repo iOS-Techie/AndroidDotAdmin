@@ -1,7 +1,6 @@
 package com.nyotek.dot.admin.common
 
 import com.nyotek.dot.admin.common.extension.isValidList
-import com.nyotek.dot.admin.helper.StoreHelper
 import com.nyotek.dot.admin.models.responses.BootStrapData
 import com.nyotek.dot.admin.models.responses.CapabilitiesDataItem
 import com.nyotek.dot.admin.models.responses.JobListDataItem
@@ -9,6 +8,7 @@ import com.nyotek.dot.admin.models.responses.LanguageSelectModel
 import com.nyotek.dot.admin.models.responses.NSGetServiceListResponse
 import com.nyotek.dot.admin.models.responses.NSGetThemeData
 import com.nyotek.dot.admin.models.responses.NSMainDetailUser
+import com.nyotek.dot.admin.models.responses.NSUserDetailResponse
 import com.nyotek.dot.admin.models.responses.ServiceCapabilitiesDataItem
 import com.nyotek.dot.admin.models.responses.VendorDetailResponse
 
@@ -25,9 +25,11 @@ object NSThemeHelper{
     private var capabilities: MutableList<CapabilitiesDataItem> = arrayListOf()
     private var localMapLanguageList: HashMap<String, MutableList<LanguageSelectModel>> = hashMapOf()
     private var capabilityItemList: HashMap<String, ServiceCapabilitiesDataItem?> = hashMapOf()
+    private var userDetailList: HashMap<String, NSUserDetailResponse?> = hashMapOf()
     private var serviceResponse: NSGetServiceListResponse? = null
     private var vendorDetailResponse: HashMap<String, VendorDetailResponse?> = hashMapOf()
     private var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
+    private var jobTitleMapList: HashMap<String, MutableList<JobListDataItem>> = hashMapOf()
     private var userDetail: NSMainDetailUser? = null
     private var bootStrapData: BootStrapData? = null
     
@@ -110,6 +112,14 @@ object NSThemeHelper{
     fun setCapabilityItemList(serviceId: String, item: ServiceCapabilitiesDataItem?) {
         capabilityItemList[serviceId] = item
     }
+    
+    fun getUserDetail(userId: String): NSUserDetailResponse? {
+        return userDetailList[userId]
+    }
+    
+    fun setUserDetail(userId: String, item: NSUserDetailResponse?) {
+        userDetailList[userId] = item
+    }
 
     fun setServiceResponse(response: NSGetServiceListResponse?) {
         serviceResponse = response
@@ -133,6 +143,12 @@ object NSThemeHelper{
 
     fun setJobRoleType(filter: HashMap<String, JobListDataItem>) {
         jobTitleMap = filter
+    }
+    
+    fun getJobRolesTypesList(serviceId: String): MutableList<JobListDataItem> = jobTitleMapList[serviceId]?: arrayListOf()
+    
+    fun setJobRoleTypeList(serviceId: String, jobs: MutableList<JobListDataItem>) {
+        jobTitleMapList[serviceId] = jobs
     }
 
     fun setUserDetail(user: NSMainDetailUser?) {
