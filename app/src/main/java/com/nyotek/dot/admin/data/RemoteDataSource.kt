@@ -216,6 +216,10 @@ class RemoteDataSource @Inject constructor(
     suspend fun getListOfJobTitle(serviceId: String): Response<NSListJobTitleResponse> {
         return baseMainUrl.getListOfJobTitle(serviceId)
     }
+    
+    suspend fun getListOfRoles(): Response<NSListJobTitleResponse> {
+        return baseMainUrl.getListOfRoles()
+    }
 
     suspend fun getListEmployees(employeeRequest: NSEmployeeListRequest): Response<NSEmployeeResponse> {
         return baseMainUrl.getListEmployees(employeeRequest)
@@ -386,7 +390,7 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun vehicleList(id: String): Response<NSVehicleResponse> {
-        return baseFleetUrl.vehicleList(id)
+        return baseFleetUrl.getFleetVehicleList(id)
     }
 
     suspend fun getAssignVehicleByDriver(id: String, fleetId: String): Response<NSAssignVehicleDriverResponse> {
@@ -394,11 +398,11 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun disableVehicle(vendorRequest: NSVehicleEnableDisableRequest): Response<NSVehicleBlankDataResponse> {
-        return baseFleetUrl.disableVehicle(vendorRequest)
+        return baseFleetUrl.disableVehicle(vendorRequest.vehicleId?:"", vendorRequest)
     }
 
     suspend fun enableVehicle(vendorRequest: NSVehicleEnableDisableRequest): Response<NSVehicleBlankDataResponse> {
-        return baseFleetUrl.enableVehicle(vendorRequest)
+        return baseFleetUrl.enableVehicle(vendorRequest.vehicleId?:"", vendorRequest)
     }
 
     suspend fun vehicleUpdateImage(vendorRequest: NSVehicleUpdateImageRequest): Response<NSVehicleBlankDataResponse> {

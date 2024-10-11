@@ -1,14 +1,15 @@
 package com.nyotek.dot.admin.ui.tabs.fleets.employee
 
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
+import com.nyotek.dot.admin.common.NSDataStorePreferences
+import com.nyotek.dot.admin.common.component.AppModule_ProvideDataStoreRepositoryFactory
 import com.nyotek.dot.admin.common.extension.getMapValue
-import com.nyotek.dot.admin.common.extension.setCoilCircle
 import com.nyotek.dot.admin.common.extension.switchEnableDisable
 import com.nyotek.dot.admin.databinding.LayoutEmployeeListBinding
 import com.nyotek.dot.admin.models.responses.EmployeeDataItem
 import com.nyotek.dot.admin.models.responses.JobListDataItem
 
-private var jobMap: HashMap<String, JobListDataItem> = hashMapOf()
+private var roleList: MutableList<JobListDataItem> = arrayListOf()
 
 class NSEmployeeRecycleAdapter(
     private val employeeUI: EmployeeUI,
@@ -25,10 +26,11 @@ class NSEmployeeRecycleAdapter(
         with(binding) {
             response.apply {
                 employeeUI.setAdapter(binding, response.isEmployeeSelected, response)
-                if (jobMap[response.titleId]?.name.isNullOrEmpty()) {
+                val roleName = roleList.find { it.id == response.titleId }?.name
+                if (roleName.isNullOrEmpty()) {
                     tvStatus.text = "-"
                 } else {
-                    tvStatus.getMapValue(jobMap[response.titleId]?.name ?: hashMapOf())
+                    tvStatus.getMapValue(roleName)
                 }
                 
                 switchService.switchEnableDisable(isActive)
@@ -54,7 +56,7 @@ class NSEmployeeRecycleAdapter(
         }
     }
 ) {
-    fun setJob(map: HashMap<String, JobListDataItem>) {
-        jobMap = map
+    fun setRole(list: MutableList<JobListDataItem>) {
+        roleList = list
     }
 }

@@ -8,6 +8,7 @@ import android.os.Looper
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -27,6 +28,7 @@ import com.nyotek.dot.admin.common.extension.addOnTextChangedListener
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
 import com.nyotek.dot.admin.common.extension.getLngValue
 import com.nyotek.dot.admin.common.extension.invisible
+import com.nyotek.dot.admin.common.extension.isValidInput
 import com.nyotek.dot.admin.common.extension.isValidList
 import com.nyotek.dot.admin.common.extension.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.extension.setupWithAdapter
@@ -205,7 +207,7 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
         binding.apply {
             viewModel.apply {
                 srlRefresh.setOnRefreshListener {
-                    getJobTitleList(false, vendorModel?.serviceIds ?: arrayListOf())
+                    getJobTitleList(false)
                 }
 
                 tvAddEmployee.setOnClickListener {
@@ -232,10 +234,10 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                     })
                     setupWithAdapter(empAdapter!!)
                     isNestedScrollingEnabled = false
-                    empAdapter?.setJob(viewModel.jobTitleMap)
+                    empAdapter?.setRole(viewModel.jobTitleList)
                     
                     val mList: MutableList<EmployeeDataItem> = arrayListOf()
-                    mList.addAll(list.filter { !it.isDeleted })
+                    mList.addAll(list.filter { !it.isDeleted }.sortedBy { it.userId })
                     EmployeeHelper.setEmployeeList(mList)
                     empAdapter?.setData(EmployeeHelper.getEmployeeList())
                     
@@ -347,19 +349,7 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                             } else if (addEmployeeList.any { it.length < 12 || !it.contains("+")}) {
                                 showError(colorResources.getStringResource().enterValidPhoneNumber)
                             } else {
-                                var isAllValid = true
-                                for (data in addEmployeeList) {
-                                    val lastPart = data.takeLast(10)
-                                    val firstPart = data.take(data.length - 10)
-                                    val phoneNumber = PhoneNumber().setCountryCode(
-                                        firstPart.replace("+", "").toInt()).setNationalNumber(lastPart.toLong())
-                                    //val phoneNumber = util?.parse(lastPart, firstPart)
-                                    if (phoneNumber == null || util?.isValidNumber(phoneNumber) == false) {
-                                        isAllValid = false
-                                    }
-                                }
-                                
-                                if (isAllValid) {
+                                if (isValidPhoneNumbers()) {
                                     addEmployeeList.add("")
                                     addLayouts(binding, false, addEmployeeList.size - 1)
                                 } else {
@@ -378,20 +368,31 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
 
                         tvSendInvite.setOnClickListener {
                             val vendorIdValue = vendorId
-                            val userId: String = searchUserList.find { it.isEmployeeSelected }?.id ?: ""
-
+                           
                             if (selectedTitleId?.isNotEmpty() == true) {
                                 if (addEmployeeList.isNotEmpty()) {
-                                    NSUtilities.showProgressBar(progress, addEmployeeDialog, colorResources)
-                                    employeeAdd(
-                                        vendorIdValue ?: "",
-                                        addEmployeeList,
-                                        selectedTitleId ?: ""
-                                    ) { isShowError ->
-                                        if (isShowError) {
-                                            showError(colorResources.getStringResource().enterValidPhoneNumber)
+                                    if (isValidPhoneNumbers()) {
+                                        NSUtilities.showProgressBar(
+                                            progress,
+                                            addEmployeeDialog,
+                                            colorResources
+                                        )
+                                        employeeAdd(
+                                            vendorIdValue ?: "",
+                                            addEmployeeList,
+                                            selectedTitleId ?: ""
+                                        ) { isShowError ->
+                                            if (isShowError) {
+                                                showError(colorResources.getStringResource().enterValidPhoneNumber)
+                                            }
+                                            NSUtilities.hideProgressBar(
+                                                progress,
+                                                addEmployeeDialog,
+                                                colorResources
+                                            )
                                         }
-                                        NSUtilities.hideProgressBar(progress, addEmployeeDialog, colorResources)
+                                    } else {
+                                        showError(colorResources.getStringResource().enterValidPhoneNumber)
                                     }
                                 } else {
                                     showError(stringResource.pleaseSelectUser)
@@ -406,6 +407,27 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
         }
     }
     
+    private fun isValidPhoneNumbers(): Boolean {
+        var isAllValid = true
+        for (data in addEmployeeList) {
+            if (isValidInput(data)) {
+                val lastPart = data.takeLast(10)
+                val firstPart = data.take(data.length - 10)
+                
+                val phoneNumber = PhoneNumber().setCountryCode(
+                    firstPart.replace("+", "").toInt()
+                ).setNationalNumber(lastPart.toLong())
+                if (phoneNumber == null || util?.isValidNumber(phoneNumber) == false) {
+                    isAllValid = false
+                }
+            } else {
+                isAllValid = false
+            }
+        }
+        
+        return isAllValid
+    }
+    
     private fun addLayouts(inviteEmployeeBinding: LayoutInviteEmployeeBinding, isRemoveAllViews: Boolean, index: Int) {
         inviteEmployeeBinding.apply {
             if (isRemoveAllViews) {
@@ -416,6 +438,7 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
             val bind = LayoutInviteUserItemBinding.bind(itemView)
             themeUI.setAddEmployeeAdapter(bind)
             bind.layoutUser.edtValue.inputType = InputType.TYPE_CLASS_PHONE
+            bind.layoutUser.edtValue.imeOptions = EditorInfo.IME_ACTION_DONE
             
             // Set the click listener for the remove button
             bind.ivDeleteEmployee.setOnClickListener {

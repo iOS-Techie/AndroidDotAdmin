@@ -21,7 +21,6 @@ import com.github.drjacky.imagepicker.ImagePicker
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
-import com.nyotek.dot.admin.common.extension.visible
 import com.nyotek.dot.admin.ui.common.UserUploadViewModel
 
 class BrandLogoHelper(fragment: Fragment, private val callback: NSFileUploadCallback) {
@@ -140,6 +139,6 @@ class BrandLogoHelper(fragment: Fragment, private val callback: NSFileUploadCall
     private fun setWidthHeightOnImage(bitmap: Bitmap) {
         val size = "${bitmap.width}X${bitmap.height}"
         tvTextSizeImage?.text = size
-        tvTextSizeImage?.visible()
+       // tvTextSizeImage?.visible()
     }
 }

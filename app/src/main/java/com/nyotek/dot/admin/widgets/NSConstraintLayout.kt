@@ -52,7 +52,7 @@ class NSConstraintLayout : ConstraintLayout {
                 colorResources.setBackground(this)
             }
             R.id.cl_brand_logo -> {
-                colorResources.setCardBackground(this, 10f, 2, colorResources.getBackgroundColor(), colorResources.getBorderColor())
+                colorResources.setCardBackground(this, 10f, 1, colorResources.getBackgroundColor(), colorResources.getBorderColor())
             }
             R.id.cl_left_with_bg -> {
                 colorResources.setBackground(this, colorResources.getPrimaryColor())

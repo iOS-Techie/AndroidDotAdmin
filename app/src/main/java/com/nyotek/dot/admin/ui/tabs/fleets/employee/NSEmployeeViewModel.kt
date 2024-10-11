@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.nyotek.dot.admin.base.BaseViewModel
+import com.nyotek.dot.admin.common.NSDataStorePreferences
 import com.nyotek.dot.admin.common.NSLanguageConfig
 import com.nyotek.dot.admin.common.NSSingleLiveEvent
-import com.nyotek.dot.admin.common.extension.isValidList
 import com.nyotek.dot.admin.common.utils.ColorResources
 import com.nyotek.dot.admin.data.Repository
 import com.nyotek.dot.admin.models.requests.NSAddEmployeeRequest
@@ -34,8 +34,6 @@ import com.nyotek.dot.admin.models.responses.SearchEmployeeResponse
 import com.nyotek.dot.admin.models.responses.VehicleData
 import com.nyotek.dot.admin.models.responses.VehicleDataItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,13 +41,13 @@ import javax.inject.Inject
 class NSEmployeeViewModel @Inject constructor(
     private val repository: Repository,
     val languageConfig: NSLanguageConfig,
+    val dataStoreRepository: NSDataStorePreferences,
     colorResources: ColorResources,
     application: Application
 ) : BaseViewModel(repository, languageConfig.dataStorePreference, colorResources, application) {
     var selectedPosition: Int = -1
     var employeeList: MutableList<EmployeeDataItem> = arrayListOf()
     var jobTitleList: MutableList<JobListDataItem> = arrayListOf()
-    var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
     var isEmployeeListAvailable = NSSingleLiveEvent<MutableList<EmployeeDataItem>>()
     var isFleetDetailAvailable = NSSingleLiveEvent<FleetDataItem>()
     var vehicleDataObserve = NSSingleLiveEvent<VehicleData>()
@@ -74,7 +72,7 @@ class NSEmployeeViewModel @Inject constructor(
         if (!strVendorDetail.isNullOrEmpty()) {
             vendorModel = gson.fromJson(strVendorDetail, FleetData::class.java)
             vendorId = vendorModel?.vendorId
-            getJobTitleList(true, vendorModel?.serviceIds?: arrayListOf())
+            getJobTitleList(true)
         }
     }
 
@@ -92,61 +90,36 @@ class NSEmployeeViewModel @Inject constructor(
         }
     }
 
-    fun getJobTitleList(isShowProgress: Boolean, serviceIdList: MutableList<String> = arrayListOf()) = viewModelScope.launch {
-        getJobTitleListApi(isShowProgress, serviceIdList)
+    fun getJobTitleList(isShowProgress: Boolean) = viewModelScope.launch {
+        getJobTitleListApi(isShowProgress)
     }
 
-    private suspend fun getJobTitleListApi(isShowProgress: Boolean, serviceIdList: MutableList<String> = arrayListOf()) {
+    private suspend fun getJobTitleListApi(isShowProgress: Boolean) {
         if (isShowProgress) showProgress()
-
-        if (serviceIdList.isValidList()) {
-            val serviceId = serviceIdList[0]
-
-            performApiCalls(
-                { repository.remote.getListOfJobTitle(serviceId)}
-            ) { response, isSuccess ->
-                if (isSuccess) {
-                    val data = response[0] as NSListJobTitleResponse?
-                    if (data is NSListJobTitleResponse) {
-                        if (vendorModel?.serviceIds?.size == serviceIdList.size) {
-                            jobTitleList.clear()
-                        }
-
-                        colorResources.themeHelper.setJobRoleTypeList(serviceId, data.jobTitleList)
-                        
-                        val tempJobTitleList: MutableList<JobListDataItem> = arrayListOf()
-                        tempJobTitleList.addAll(data.jobTitleList)
-
-                        for (jobData in tempJobTitleList) {
-                            jobTitleList.add(jobData)
-                            jobTitleMap[jobData.id!!] = jobData
-                        }
-                        serviceIdList.remove(serviceIdList[0])
-                        getJobTitleList(isShowProgress, serviceIdList)
-                    } else {
-                        hideProgress()
-                    }
+        performApiCalls(
+            { repository.remote.getListOfRoles()}
+        ) { response, isSuccess ->
+            if (isSuccess) {
+                val data = response[0] as NSListJobTitleResponse?
+                if (data is NSListJobTitleResponse) {
+                    jobTitleList.clear()
+                    jobTitleList.addAll(data.jobTitleList?: arrayListOf())
+                    colorResources.themeHelper.setJobRoleTypes(jobTitleList)
+                    getEmployeeList(vendorId)
                 } else {
                     hideProgress()
                 }
-            }
-        } else {
-            if (jobTitleList.isValidList()) {
-                colorResources.themeHelper.setJobRoleType(jobTitleMap)
-                getEmployeeList(vendorId)
             } else {
                 hideProgress()
             }
         }
     }
 
-    fun getEmployeeWithRole(isShowProgress: Boolean, serviceList: MutableList<String>, vendorId: String?) {
-        val jobMap = colorResources.themeHelper.getJobRolesTypes()
-        if (jobMap.isEmpty()) {
-            getJobTitleList(isShowProgress, serviceList)
+    fun getEmployeeWithRole(isShowProgress: Boolean, vendorId: String?) {
+        val jobRoleList = colorResources.themeHelper.getJobRolesTypes()
+        if (jobRoleList.isEmpty()) {
+            getJobTitleList(isShowProgress)
         } else {
-            jobTitleMap.clear()
-            jobTitleMap.putAll(jobMap)
             getEmployeeList(vendorId)
         }
     }
@@ -261,7 +234,9 @@ class NSEmployeeViewModel @Inject constructor(
         val list: MutableList<NSSearchEmployeeData> = arrayListOf()
         
         for (ids in userIdList) {
-            list.add(NSSearchEmployeeData(ids))
+            if (list.find { it.mobile == ids } == null) {
+                list.add(NSSearchEmployeeData(ids))
+            }
         }
         val searchRequest = NSSearchEmployeeRequest(list, titleId)
         

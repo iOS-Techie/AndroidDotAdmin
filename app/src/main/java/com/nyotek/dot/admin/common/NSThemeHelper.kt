@@ -28,7 +28,7 @@ object NSThemeHelper{
     private var userDetailList: HashMap<String, NSUserDetailResponse?> = hashMapOf()
     private var serviceResponse: NSGetServiceListResponse? = null
     private var vendorDetailResponse: HashMap<String, VendorDetailResponse?> = hashMapOf()
-    private var jobTitleMap: HashMap<String, JobListDataItem> = hashMapOf()
+    private var jobTitleList: MutableList<JobListDataItem> = arrayListOf()
     private var jobTitleMapList: HashMap<String, MutableList<JobListDataItem>> = hashMapOf()
     private var userDetail: NSMainDetailUser? = null
     private var bootStrapData: BootStrapData? = null
@@ -139,10 +139,10 @@ object NSThemeHelper{
         return vendorDetailResponse[vendorId]
     }
 
-    fun getJobRolesTypes(): HashMap<String, JobListDataItem> = jobTitleMap
+    fun getJobRolesTypes(): MutableList<JobListDataItem> = jobTitleList
 
-    fun setJobRoleType(filter: HashMap<String, JobListDataItem>) {
-        jobTitleMap = filter
+    fun setJobRoleTypes(filter: MutableList<JobListDataItem>) {
+        jobTitleList = filter
     }
     
     fun getJobRolesTypesList(serviceId: String): MutableList<JobListDataItem> = jobTitleMapList[serviceId]?: arrayListOf()

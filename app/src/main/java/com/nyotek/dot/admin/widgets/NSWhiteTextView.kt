@@ -77,7 +77,7 @@ class NSWhiteTextView : AppCompatTextView {
                 colorResources.setBackgroundTint(this, colorResources.getErrorColor())
             }
             R.id.tv_edit_title -> {
-                colorResources.setBackground(this, Color.parseColor("#88B2B2B2"))
+                colorResources.setBackground(this, Color.parseColor("#CCB2B2B2"))
             }
         }
     }

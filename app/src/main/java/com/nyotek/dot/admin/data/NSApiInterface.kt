@@ -217,6 +217,9 @@ interface NSApiInterface {
 
     @GET("employees/list_job_titles")
     suspend fun getListOfJobTitle(@Header("X-SERVICE-ID") serviceId: String): retrofit2.Response<NSListJobTitleResponse>
+    
+    @GET("roles/system")
+    suspend fun getListOfRoles(): retrofit2.Response<NSListJobTitleResponse>
 
     @POST("employees/list_employees")
     suspend fun getListEmployees(@Body employeeRequest: NSEmployeeListRequest): retrofit2.Response<NSEmployeeResponse>
@@ -270,10 +273,10 @@ interface NSApiInterface {
     @POST("locations/geojson/drivers")
     suspend fun getFleetDriverLocation(@Body request: NSFleetDriverRequest): retrofit2.Response<FleetLocationResponse>
 
-    @GET("location/geojson/driver/{driver_id}")
+    @GET("locations/geojson/driver/{driver_id}")
     suspend fun getDriverLocation(@Path("driver_id") driverId: String): retrofit2.Response<FleetLocationResponse>
 
-    @GET("location/history/geojson/ref/{dispatch_id}")
+    @GET("locations/history/geojson/ref/{dispatch_id}")
     suspend fun getLocationHistoryDispatch(@Path("dispatch_id") dispatchId: String): retrofit2.Response<FleetLocationResponse>
 
     @GET("dispatch/request/{dispatch_id}")
@@ -313,37 +316,37 @@ interface NSApiInterface {
     @DELETE("fleets/servicemanagement/{service_id}/f/{fleet_id}")
     suspend fun deleteAssignedServiceFleets(@Path("service_id") serviceId: String, @Path("fleet_id") fleetId: String): retrofit2.Response<ResponseBody>
 
-    @POST("/vehicle")
+    @POST("fleets/vehicle")
     suspend fun createVehicle(@Body request: NSVehicleRequest): retrofit2.Response<ResponseBody>
 
     @GET("fleets/vehicle/f/{fleet_id}")
-    suspend fun vehicleList(@Path("fleet_id") id: String): retrofit2.Response<NSVehicleResponse>
+    suspend fun getFleetVehicleList(@Path("fleet_id") id: String): retrofit2.Response<NSVehicleResponse>
 
-    @GET("driver/{driver_id}/fleet/{fleet_id}/vehicle")
+    @GET("fleets/vehicle/assign/{driver_id}/f/{fleet_id}")
     suspend fun getAssignVehicleByDriver(@Path("driver_id") id: String, @Path("fleet_id") fleetId: String): retrofit2.Response<NSAssignVehicleDriverResponse>
 
-    @PATCH("vehicle/admin/disable")
-    suspend fun disableVehicle(@Body vendorRequest: NSVehicleEnableDisableRequest): retrofit2.Response<NSVehicleBlankDataResponse>
+    @PATCH("fleets/vehicle/{vehicle_id}/disable")
+    suspend fun disableVehicle(@Path("vehicle_id") id: String, @Body vendorRequest: NSVehicleEnableDisableRequest): retrofit2.Response<NSVehicleBlankDataResponse>
 
-    @PATCH("vehicle/admin/enable")
-    suspend fun enableVehicle(@Body vendorRequest: NSVehicleEnableDisableRequest): retrofit2.Response<NSVehicleBlankDataResponse>
+    @PATCH("fleets/vehicle/{vehicle_id}/enable")
+    suspend fun enableVehicle(@Path("vehicle_id") id: String, @Body vendorRequest: NSVehicleEnableDisableRequest): retrofit2.Response<NSVehicleBlankDataResponse>
 
-    @PATCH("vehicle/image")
+    @PATCH("fleets/vehicle/image")
     suspend fun vehicleUpdateImage(@Body vendorRequest: NSVehicleUpdateImageRequest): retrofit2.Response<NSVehicleBlankDataResponse>
 
-    @PATCH("vehicle/additional-note")
+    @PATCH("fleets/vehicle/additional-note")
     suspend fun updateVehicleNotes(@Body vendorRequest: NSVehicleNotesRequest): retrofit2.Response<NSVehicleBlankDataResponse>
 
-    @PATCH("vehicle/capability")
+    @PATCH("fleets/vehicle/capability")
     suspend fun updateVehicleCapability(@Body request: NSUpdateCapabilitiesRequest): retrofit2.Response<NSVehicleBlankDataResponse>
 
-    @GET("driver/vehicle/{vehicle_id}")
+    @GET("vehicle/assign/{vehicle_id}")
     suspend fun getVehicleDetail(@Path("vehicle_id") id: String): retrofit2.Response<NSVehicleDetailResponse>
 
-    @GET("vehicle/{vehicle_id}")
+    @GET("fleets/vehicle/{vehicle_id}")
     suspend fun getDriverVehicleDetail(@Path("vehicle_id") id: String): retrofit2.Response<NSDriverVehicleDetailResponse>
 
-    @POST("driver/vehicle")
+    @POST("fleets/vehicle/assign")
     suspend fun assignVehicle(@Body request: NSAssignVehicleRequest): retrofit2.Response<NSVehicleAssignBlankDataResponse>
 
     @POST("driver/vehicle")

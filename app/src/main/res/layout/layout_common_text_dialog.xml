@@ -29,6 +29,7 @@
             android:textAlignment="viewStart"
             android:imeOptions="actionNext"
             android:paddingHorizontal="@dimen/_6sdp"
+            android:importantForAutofill="noExcludeDescendants"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

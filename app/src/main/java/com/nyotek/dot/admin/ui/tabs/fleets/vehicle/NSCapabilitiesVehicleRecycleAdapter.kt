@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nyotek.dot.admin.base.BaseViewModel
 import com.nyotek.dot.admin.common.extension.getMapValue
 import com.nyotek.dot.admin.common.extension.notifyAdapter
+import com.nyotek.dot.admin.common.extension.setVisibility
 import com.nyotek.dot.admin.databinding.LayoutCapabilitiesVehicleBinding
 import com.nyotek.dot.admin.databinding.LayoutCapabilitiesVehicleSmallBinding
 import com.nyotek.dot.admin.models.responses.CapabilitiesDataItem
@@ -17,7 +18,8 @@ import com.nyotek.dot.admin.models.responses.CapabilitiesDataItem
 class NSCapabilitiesVehicleRecycleAdapter(
     private val vehicleModel: BaseViewModel,
     private val callback: ((CapabilitiesDataItem, Boolean) -> Unit),
-    private val isSmallLayout: Boolean
+    private val isSmallLayout: Boolean,
+    private val isShowActiveDot: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val itemList: MutableList<CapabilitiesDataItem> = arrayListOf()
     private var selectedList: MutableList<String> = arrayListOf()
@@ -88,7 +90,7 @@ class NSCapabilitiesVehicleRecycleAdapter(
     private fun setLayoutData(viewStatus: View, response: CapabilitiesDataItem, tvTitle: TextView, cbCapability: CheckBox, clCapabilities: ConstraintLayout) {
         vehicleModel.colorResources.setCardBackground(viewStatus, 100f, 0, if (response.isActive) vehicleModel.colorResources.getGreenColor() else vehicleModel.colorResources.getGrayColor())
         tvTitle.getMapValue(response.label)
-
+        viewStatus.setVisibility(isShowActiveDot)
         if (selectedList.contains(response.id)) {
             cbCapability.isChecked = true
         }

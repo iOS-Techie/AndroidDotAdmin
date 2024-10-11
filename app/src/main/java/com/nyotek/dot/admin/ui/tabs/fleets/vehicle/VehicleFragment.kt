@@ -16,6 +16,8 @@ import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
 import com.nyotek.dot.admin.common.extension.formatText
 import com.nyotek.dot.admin.common.extension.gone
+import com.nyotek.dot.admin.common.extension.isValidList
+import com.nyotek.dot.admin.common.extension.setCoil
 import com.nyotek.dot.admin.common.extension.setCoilCircle
 import com.nyotek.dot.admin.common.extension.setupWithAdapter
 import com.nyotek.dot.admin.common.extension.visible
@@ -210,6 +212,7 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
                             layoutNotes.tvCommonTitle.text = additionalNote
                             tvCreate.text = if (isCreate) create else update
                             tvCancel.text = cancel
+                            layoutLogo.tvEditTitle.text = selectImage
 
                             layoutRegistrationNo.edtValue.formatText()
                             layoutRegistrationNo.edtValue.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
@@ -230,14 +233,15 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
                                 layoutNotes.edtValue.setText(additionalNote)
                                 layoutModel.edtValue.setText(model)
                                 layoutLoadCapacity.edtValue.setText(loadCapacity)
-                                layoutLogo.ivBrandLogo.setCoilCircle(url = vehicleImg)
+                                layoutLogo.ivBrandLogo.setCoil(url = vehicleImg)
                             }
                         }
 
                         tvCancel.setOnClickListener {
                             dialog.dismiss()
                         }
-
+                        
+                        brandLogoHelper.initView(activity, layoutLogo.ivBrandLogo, tvSizeTitle)
                         layoutLogo.clBrandLogo.setOnClickListener {
                             brandLogoHelper.openImagePicker(activity, layoutLogo.ivBrandLogo, null, true,
                                 isFill = true
@@ -246,7 +250,9 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
 
                         var selectedCapabilities: MutableList<String> = arrayListOf()
                         getCapabilities(false, null) {
-                            NSUtilities.setCapability(activity, viewModel, false, layoutCapability, it, dataItem) { capabilities ->
+                            val tempList = it.filter { it.isActive }
+                            val activeCapabilities = if (tempList.isValidList()) tempList.toMutableList() else arrayListOf()
+                            NSUtilities.setCapability(activity, viewModel, false, isShowActiveDot = false, layoutCapability, activeCapabilities, dataItem) { capabilities ->
                                 selectedCapabilities = capabilities
                             }
                         }

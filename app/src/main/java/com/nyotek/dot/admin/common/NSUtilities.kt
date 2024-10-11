@@ -226,7 +226,7 @@ object NSUtilities {
     fun setCapability(
         activity: Activity,
         viewModel: BaseViewModel,
-        isSmallLayout: Boolean,
+        isSmallLayout: Boolean,isShowActiveDot: Boolean = true,
         layoutCapability: LayoutRecycleViewBinding,
         capabilities: MutableList<CapabilitiesDataItem>,
         dataItem: VehicleDataItem? = null,
@@ -243,7 +243,7 @@ object NSUtilities {
                 model.id?.let { selectedCapabilities.add(it) }
             }
             callback.invoke(selectedCapabilities)
-        }, isSmallLayout)
+        }, isSmallLayout, isShowActiveDot)
 
         layoutCapability.rvCommonView.adapter = capabilityAdapter
         capabilityAdapter.updateData(capabilities, dataItem?.capabilities ?: arrayListOf())

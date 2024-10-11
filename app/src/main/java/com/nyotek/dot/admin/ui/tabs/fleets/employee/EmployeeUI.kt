@@ -1,8 +1,9 @@
 package com.nyotek.dot.admin.ui.tabs.fleets.employee
 
-import com.mapbox.maps.extension.style.expressions.dsl.generated.color
 import com.nyotek.dot.admin.common.extension.rotation
 import com.nyotek.dot.admin.common.extension.setCoilCircle
+import com.nyotek.dot.admin.common.extension.setVisibility
+import com.nyotek.dot.admin.common.extension.setVisibilityIn
 import com.nyotek.dot.admin.databinding.LayoutEmployeeListBinding
 import com.nyotek.dot.admin.databinding.LayoutInviteUserItemBinding
 import com.nyotek.dot.admin.databinding.NsFragmentEmployeeBinding
@@ -37,11 +38,13 @@ class EmployeeUI @Inject constructor(private val binding: NsFragmentEmployeeBind
                 cardIcon.setCardBackgroundColor(colorResources.getGrayColor())
                 
                 if (!response.userId.isNullOrEmpty()) {
+                    ivDelete.setVisibilityIn(colorResources.themeHelper.getUserDetail()?.id != response.userId)
                     viewModel.getUserDetail(response.userId) {
                         val model = it?.data?.social
                         val firstLastName = if (model != null) "${model.firstName} ${model.lastName}" else "-"
                         tvEmployeeTitle.text = firstLastName
-                        tvDescription.text = if(it?.data?.mobile.isNullOrEmpty()) "-" else it?.data?.mobile?:"-"
+                        tvDescription.text = if(it?.data?.mobile.isNullOrEmpty()) "" else it?.data?.mobile?:""
+                        tvDescription.setVisibility(!it?.data?.mobile.isNullOrEmpty())
                         ivIcon.setCoilCircle(model?.profilePicUrl)
                     }
                 }

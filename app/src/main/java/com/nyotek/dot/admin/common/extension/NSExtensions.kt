@@ -925,7 +925,9 @@ fun Spinner.setPlaceholderAdapter(
     this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val selectedItem = if (position >= 0) items.id[position] else null
-            onItemSelectedListener?.invoke(selectedItem)
+            if (selectedItem != "-1") {
+                onItemSelectedListener?.invoke(selectedItem)
+            }
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -1086,4 +1088,20 @@ fun EditText.formatText(isFirstLetterCapital: Boolean = false) {
     }
 
     addTextChangedListener(textWatcher)
+}
+
+fun isValidInput(input: String): Boolean {
+    // Regular expression to check for digits and the '+' symbol
+    val regex = Regex("^[0-9+]+$")
+    return regex.matches(input)
+}
+
+fun getSpinnerData(id: MutableList<String>, title: MutableList<String>, placeholderName: String): SpinnerData {
+    if (!id.isValidList()) {
+        id.add("-1")
+        title.add(placeholderName)
+        return SpinnerData(id, title)
+    } else {
+        return SpinnerData(id, title)
+    }
 }

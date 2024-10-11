@@ -112,7 +112,8 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
 
                 switchService.switchEnableDisable(vehicleDataItem?.isActive == true)
                 switchService.rotation(viewModel.languageConfig.isLanguageRtl())
-
+                layoutLogo.tvEditTitle.text = colorResources.getStringResource().selectImage
+                
                 getCapabilities(
                     true,
                     isApiDataCheck = false
@@ -135,14 +136,16 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
     private fun setCapabilityList(capabilityList: MutableList<CapabilitiesDataItem>) {
         binding.apply {
             viewModel.apply {
+                val tempList = capabilityList.filter { it.isActive }
+                val activeCapabilities = if (tempList.isValidList()) tempList.toMutableList() else arrayListOf()
                 NSUtilities.setCapability(
                     activity,
-                    viewModel, true,
+                    viewModel, true, isShowActiveDot = false,
                     layoutCapability,
-                    capabilityList,
+                    activeCapabilities,
                     vehicleDataItem
                 ) {
-                    updateCapabilityParameter(it, capabilityList, object : NSVehicleEditCallback {
+                    updateCapabilityParameter(it, activeCapabilities, object : NSVehicleEditCallback {
                         override fun onVehicle(vehicleData: VehicleDataItem) {
 
                         }
@@ -157,11 +160,7 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
             viewModel.apply {
                 driverId = response.driverId
                 //Get Employee List with Role
-                employeeViewModel.getEmployeeWithRole(
-                    false,
-                    fleetModel?.serviceIds ?: arrayListOf(),
-                    vehicleDataItem?.refId
-                )
+                employeeViewModel.getEmployeeWithRole(false, vehicleDataItem?.refId)
             }
         }
     }
@@ -250,7 +249,7 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
             }
             val empResponse = employeeList.find { it.userId == viewModel.driverId }
             tvUserTitle.text = viewModel.driverId ?: ""
-            tvStatus.text = getLngValue(employeeViewModel.jobTitleMap[empResponse?.titleId]?.name)
+            tvStatus.text = getLngValue(employeeViewModel.jobTitleList.find { it.id == empResponse?.titleId }?.name)
 
             idList = employeeList.map { it.userId ?: "" }.toMutableList()
             val spinnerPosition = idList.indexOf(viewModel.driverId)
