@@ -9,10 +9,20 @@
         android:layout_width="@dimen/_139sdp"
         android:layout_height="wrap_content"
         android:background="@drawable/white_round_12"
+        android:layout_marginVertical="@dimen/_20sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
+        <com.nyotek.dot.admin.widgets.NSViewLine
+            android:id="@+id/view_line_left"
+            android:layout_width="@dimen/_1sdp"
+            android:layout_height="@dimen/_8sdp"
+            android:background="@drawable/half_left_white"
+            app:layout_constraintBottom_toTopOf="@id/view_line"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.nyotek.dot.admin.widgets.NSPrimaryTextView
             android:id="@+id/tv_invite_employee_title"
@@ -25,7 +35,7 @@
             android:textSize="@dimen/_5sdp"
             tools:text="Invite Employee"
             app:layout_constraintEnd_toStartOf="@id/iv_close_employee"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view_line_left"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -106,7 +116,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+                <com.nyotek.dot.admin.widgets.NSGrayTextView
                     android:id="@+id/tv_role_name_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,102 +124,107 @@
                     android:alpha="0.5"
                     android:background="@color/white"
                     android:fontFamily="@font/archivo_medium"
-                    android:textSize="@dimen/_5sdp"
+                    android:textSize="@dimen/_4sdp"
                     tools:text="Select Platform" />
             </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/rl_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_6sdp"
-            android:layout_marginTop="@dimen/_3sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_employee_role">
-
-            <include android:id="@+id/layout_user"
-                layout="@layout/layout_common_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
-            <com.nyotek.dot.admin.widgets.ImageIconView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/ic_search"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:layout_marginEnd="@dimen/_4sdp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.nyotek.dot.admin.widgets.NSConstraintLayout
-            android:id="@+id/cl_user_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginHorizontal="@dimen/_6sdp"
-            android:layout_marginTop="@dimen/_3sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rl_search">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_user_list"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:clipToPadding="false"/>
-
-        </com.nyotek.dot.admin.widgets.NSConstraintLayout>
-
         <View
-            android:id="@+id/view_line_second"
+            android:id="@+id/view_line_employee_role"
             android:layout_width="0dp"
             android:layout_height="0.6dp"
-            android:layout_marginTop="@dimen/_4sdp"
             android:background="@color/line_divider"
+            android:layout_marginTop="@dimen/_4sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_user_list" />
+            app:layout_constraintTop_toBottomOf="@id/cl_employee_role" />
+
+        <com.nyotek.dot.admin.widgets.NSPrimaryTextView
+            android:id="@+id/tv_user_detail_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:gravity="start"
+            android:textSize="@dimen/_6sdp"
+            android:paddingHorizontal="@dimen/_6sdp"
+            app:layout_constraintEnd_toStartOf="@id/tv_add_employee"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_add_employee"
+            app:layout_constraintBottom_toBottomOf="@id/tv_add_employee"/>
 
         <com.nyotek.dot.admin.widgets.NSWhiteTextView
-            android:id="@+id/tv_send_invite"
+            android:id="@+id/tv_add_employee"
             android:layout_width="wrap_content"
             android:minWidth="@dimen/_25sdp"
-            android:layout_height="@dimen/_12sdp"
-            android:layout_marginStart="@dimen/_6sdp"
-            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_height="@dimen/_11sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginBottom="@dimen/_6sdp"
             android:gravity="center"
             android:textSize="@dimen/_5sdp"
             android:paddingHorizontal="@dimen/_5sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_cancel_app"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_line_employee_role" />
+
+        <View
+            android:id="@+id/view_line_user_detail"
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="@color/line_divider"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view_line_second" />
+            app:layout_constraintTop_toBottomOf="@id/tv_add_employee" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsv_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_6sdp"
+            app:layout_constraintTop_toBottomOf="@id/view_line_user_detail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:id="@+id/ll_employee_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+        </androidx.core.widget.NestedScrollView>
 
         <com.nyotek.dot.admin.widgets.NSPrimaryTextView
             android:id="@+id/tv_cancel_app"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_12sdp"
             android:minWidth="@dimen/_25sdp"
-            android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_6sdp"
-            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
             android:layout_marginBottom="@dimen/_6sdp"
             android:gravity="center"
             android:textSize="@dimen/_5sdp"
             tools:text="Cancel"
             android:paddingHorizontal="@dimen/_5sdp"
+            app:layout_constraintEnd_toStartOf="@id/tv_send_invite"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_send_invite"
-            app:layout_constraintTop_toBottomOf="@id/view_line_second" />
+            app:layout_constraintTop_toBottomOf="@id/nsv_scroll" />
+
+        <com.nyotek.dot.admin.widgets.NSWhiteTextView
+            android:id="@+id/tv_send_invite"
+            android:layout_width="wrap_content"
+            android:minWidth="@dimen/_25sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:gravity="center"
+            android:textSize="@dimen/_5sdp"
+            android:paddingHorizontal="@dimen/_5sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nsv_scroll" />
 
         <ProgressBar
             android:id="@+id/progress"

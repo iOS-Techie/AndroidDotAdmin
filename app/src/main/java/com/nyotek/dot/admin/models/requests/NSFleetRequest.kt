@@ -68,6 +68,15 @@ data class NSFleetUpdateTagsRequest(
 	val tags: List<String> = arrayListOf()
 )
 
+data class NSFleetAddRemoveTagsRequest(
+	
+	@field:SerializedName("vendor_id")
+	val vendorId: String? = null,
+	
+	@field:SerializedName("tag")
+	val tag: String? = null
+)
+
 data class NSFleetUrlUpdateRequest(
 
 	@field:SerializedName("vendor_id")

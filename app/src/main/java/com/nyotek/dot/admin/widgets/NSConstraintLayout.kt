@@ -52,7 +52,7 @@ class NSConstraintLayout : ConstraintLayout {
                 colorResources.setBackground(this)
             }
             R.id.cl_brand_logo -> {
-                colorResources.setCardBackground(this, 10f, 2, colorResources.getBackgroundColor(), colorResources.getBorderColor())
+                colorResources.setCardBackground(this, 10f, 1, colorResources.getBackgroundColor(), colorResources.getBorderColor())
             }
             R.id.cl_left_with_bg -> {
                 colorResources.setBackground(this, colorResources.getPrimaryColor())
@@ -81,7 +81,7 @@ class NSConstraintLayout : ConstraintLayout {
             R.id.cl_address -> {
                 colorResources.setCardBackground(this, 6f, 1, colorResources.getSecondaryColor(), colorResources.getSecondaryDarkColor())
             }
-            R.id.cl_border_bg, R.id.cl_user_list, R.id.cl_dispatch_view -> {
+            R.id.cl_border_bg, R.id.cl_dispatch_view -> {
                 colorResources.setCardBackground(this, 10f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
             }
             R.id.cl_dispatch_border_bg -> {
@@ -98,6 +98,9 @@ class NSConstraintLayout : ConstraintLayout {
             }
             R.id.cl_track -> {
                 colorResources.setCardBackground(this, getRadius(100f), 1, colorResources.getWhiteColor(), colorResources.getPrimaryColor())
+            }
+            R.id.cl_top_create_fleet -> {
+                colorResources.setCardBackground(this, 0f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
             }
         }
     }

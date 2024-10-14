@@ -12,6 +12,8 @@ class VehicleDetailUI @Inject constructor(private val activity: Activity, privat
 
     init {
         binding.apply {
+            colorResources.setCardBackground(clVehicleItem, 10f, 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
+            tvStatus.gone()
             setTextViews()
         }
     }

@@ -18,9 +18,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.drjacky.imagepicker.ImagePicker
+import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
-import com.nyotek.dot.admin.common.extension.visible
 import com.nyotek.dot.admin.ui.common.UserUploadViewModel
 
 class BrandLogoHelper(fragment: Fragment, private val callback: NSFileUploadCallback) {
@@ -64,6 +64,7 @@ class BrandLogoHelper(fragment: Fragment, private val callback: NSFileUploadCall
         this.activity = activity
         ivBrandLogo = imageView
         tvTextSizeImage = tvTextSize
+        ivBrandLogo?.setImageResource(R.drawable.ic_place_holder_img_second)
     }
 
     fun logoFillFit(cbFill: CheckBox?,clCheckFill: ConstraintLayout?, cbFit: CheckBox?, clCheckFit: ConstraintLayout?, url: String?) {
@@ -138,6 +139,6 @@ class BrandLogoHelper(fragment: Fragment, private val callback: NSFileUploadCall
     private fun setWidthHeightOnImage(bitmap: Bitmap) {
         val size = "${bitmap.width}X${bitmap.height}"
         tvTextSizeImage?.text = size
-        tvTextSizeImage?.visible()
+       // tvTextSizeImage?.visible()
     }
 }

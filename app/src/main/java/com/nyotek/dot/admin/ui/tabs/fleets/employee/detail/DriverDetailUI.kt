@@ -16,6 +16,7 @@ class DriverDetailUI @Inject constructor(private val binding: NsFragmentDriverDe
 
     init {
         binding.apply {
+            colorResources.setCardBackground(clDriverItem, 10f, 1, colorResources.getWhiteColor(),colorResources.getBorderColor())
             setTextViews()
         }
     }

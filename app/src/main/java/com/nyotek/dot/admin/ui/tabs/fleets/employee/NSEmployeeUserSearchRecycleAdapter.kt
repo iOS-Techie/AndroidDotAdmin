@@ -1,33 +1,39 @@
 package com.nyotek.dot.admin.ui.tabs.fleets.employee
 
+import android.app.Activity
 import com.nyotek.dot.admin.base.BaseViewBindingAdapter
-import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
-import com.nyotek.dot.admin.common.extension.setVisibility
-import com.nyotek.dot.admin.databinding.LayoutEmployeeSearchUserBinding
-import com.nyotek.dot.admin.models.responses.NSUserDetail
+import com.nyotek.dot.admin.common.NSUtilities
+import com.nyotek.dot.admin.databinding.LayoutInviteUserItemBinding
 
-private var selectedId: String? = ""
 
-class NSEmployeeUserSearchRecycleAdapter(callback: () -> Unit) : BaseViewBindingAdapter<LayoutEmployeeSearchUserBinding, NSUserDetail>(
+class NSEmployeeUserSearchRecycleAdapter(activity: Activity, themeUI: EmployeeUI, callback: (Int) -> Unit) : BaseViewBindingAdapter<LayoutInviteUserItemBinding, String>(
 
     bindingInflater = { inflater, parent, attachToParent ->
-        LayoutEmployeeSearchUserBinding.inflate(inflater, parent, attachToParent)
+        LayoutInviteUserItemBinding.inflate(inflater, parent, attachToParent)
     },
 
-    onBind = { binding, response, _, _, _ ->
+    onBind = { binding, response, _, position, _ ->
         with(binding) {
             response.apply {
-                if (selectedId == null || response.id != selectedId ) {
-                    response.isEmployeeSelected = false
+                themeUI.setAddEmployeeAdapter(binding)
+                
+                ivDeleteEmployee.setOnClickListener {
+                    callback.invoke(position)
                 }
-                ivCorrect.setVisibility(response.isEmployeeSelected)
-                tvItemTitle.text = response.username
-
-                clItemSelect.setSafeOnClickListener {
+                
+                layoutUser.edtValue.setOnFocusChangeListener { v, hasFocus ->
+                    if (hasFocus) {
+                        NSUtilities.showKeyboard(activity, layoutUser.edtValue)
+                    } else {
+                        NSUtilities.hideKeyboard(activity, layoutUser.edtValue)
+                    }
+                }
+                
+                /*clItemSelect.setSafeOnClickListener {
                     selectedId = response.id
                     response.isEmployeeSelected = !response.isEmployeeSelected
                     callback.invoke()
-                }
+                }*/
             }
         }
     }

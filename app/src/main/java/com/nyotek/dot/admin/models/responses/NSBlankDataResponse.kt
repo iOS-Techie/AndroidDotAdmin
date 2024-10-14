@@ -59,3 +59,4 @@ data class NSVehicleAssignBlankDataResponse(
     @Expose
     var errors: String? = null
 )
+

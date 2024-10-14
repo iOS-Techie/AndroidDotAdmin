@@ -3,12 +3,15 @@ package com.nyotek.dot.admin.common
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.CountDownTimer
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.gson.Gson
@@ -223,7 +226,7 @@ object NSUtilities {
     fun setCapability(
         activity: Activity,
         viewModel: BaseViewModel,
-        isSmallLayout: Boolean,
+        isSmallLayout: Boolean,isShowActiveDot: Boolean = true,
         layoutCapability: LayoutRecycleViewBinding,
         capabilities: MutableList<CapabilitiesDataItem>,
         dataItem: VehicleDataItem? = null,
@@ -240,7 +243,7 @@ object NSUtilities {
                 model.id?.let { selectedCapabilities.add(it) }
             }
             callback.invoke(selectedCapabilities)
-        }, isSmallLayout)
+        }, isSmallLayout, isShowActiveDot)
 
         layoutCapability.rvCommonView.adapter = capabilityAdapter
         capabilityAdapter.updateData(capabilities, dataItem?.capabilities ?: arrayListOf())
@@ -356,5 +359,21 @@ object NSUtilities {
         }
 
         return writer.toString()
+    }
+    
+    fun showKeyboard(activity: Activity, editText: EditText) {
+        editText.requestFocus()
+        val mgr = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        @Suppress("DEPRECATION")
+        mgr!!.showSoftInput(editText, InputMethodManager.SHOW_FORCED)
+    }
+    
+    fun hideKeyboard(activity: Activity, editText: EditText) {
+        val inputManager =
+            activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(
+            editText.windowToken,
+            0
+        )
     }
 }

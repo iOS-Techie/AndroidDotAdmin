@@ -13,6 +13,7 @@ import com.nyotek.dot.admin.models.requests.NSEditAddressRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeEditRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeListRequest
 import com.nyotek.dot.admin.models.requests.NSEmployeeRequest
+import com.nyotek.dot.admin.models.requests.NSFleetAddRemoveTagsRequest
 import com.nyotek.dot.admin.models.requests.NSFleetDriverRequest
 import com.nyotek.dot.admin.models.requests.NSFleetLogoScaleRequest
 import com.nyotek.dot.admin.models.requests.NSFleetLogoUpdateRequest
@@ -26,6 +27,7 @@ import com.nyotek.dot.admin.models.requests.NSLanguageLocaleRequest
 import com.nyotek.dot.admin.models.requests.NSLanguageRequest
 import com.nyotek.dot.admin.models.requests.NSLoginRequest
 import com.nyotek.dot.admin.models.requests.NSRefreshTokenRequest
+import com.nyotek.dot.admin.models.requests.NSSearchEmployeeRequest
 import com.nyotek.dot.admin.models.requests.NSSearchMobileRequest
 import com.nyotek.dot.admin.models.requests.NSSearchUserRequest
 import com.nyotek.dot.admin.models.requests.NSServiceCapabilitiesRequest
@@ -77,11 +79,11 @@ import com.nyotek.dot.admin.models.responses.NSVehicleBlankDataResponse
 import com.nyotek.dot.admin.models.responses.NSVehicleDetailResponse
 import com.nyotek.dot.admin.models.responses.NSVehicleResponse
 import com.nyotek.dot.admin.models.responses.RegionResponse
+import com.nyotek.dot.admin.models.responses.SearchEmployeeResponse
 import com.nyotek.dot.admin.models.responses.VendorDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Path
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -186,6 +188,14 @@ class RemoteDataSource @Inject constructor(
     suspend fun updateFleetTags(vendorTagUpdateRequest: NSFleetUpdateTagsRequest): Response<NSFleetBlankDataResponse> {
         return baseMainUrl.updateFleetTags(vendorTagUpdateRequest)
     }
+    
+    suspend fun addFleetTags(vendorTagUpdateRequest: NSFleetAddRemoveTagsRequest): Response<NSFleetBlankDataResponse> {
+        return baseMainUrl.addFleetTags(vendorTagUpdateRequest)
+    }
+    
+    suspend fun removeFleetTags(vendorTagUpdateRequest: NSFleetAddRemoveTagsRequest): Response<NSFleetBlankDataResponse> {
+        return baseMainUrl.removeFleetTags(vendorTagUpdateRequest)
+    }
 
     suspend fun getFleetDetails(vendorRequest: NSFleetRequest): Response<FleetSingleResponse> {
         return baseMainUrl.getFleetDetails(vendorRequest)
@@ -206,6 +216,10 @@ class RemoteDataSource @Inject constructor(
     suspend fun getListOfJobTitle(serviceId: String): Response<NSListJobTitleResponse> {
         return baseMainUrl.getListOfJobTitle(serviceId)
     }
+    
+    suspend fun getListOfRoles(): Response<NSListJobTitleResponse> {
+        return baseMainUrl.getListOfRoles()
+    }
 
     suspend fun getListEmployees(employeeRequest: NSEmployeeListRequest): Response<NSEmployeeResponse> {
         return baseMainUrl.getListEmployees(employeeRequest)
@@ -220,7 +234,11 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun addEmployee(vendorRequest: NSAddEmployeeRequest): Response<NSEmployeeAddDeleteBlankDataResponse> {
-        return baseMainUrl.addEmployee(vendorRequest)
+        return baseMainUrl.addEmployee(vendorRequest.vendorId?:"", vendorRequest)
+    }
+    
+    suspend fun searchEmployee(vendorId: String, request: NSSearchEmployeeRequest): Response<SearchEmployeeResponse> {
+        return baseMainUrl.searchEmployee(vendorId, request)
     }
 
     suspend fun employeeDelete(vendorRequest: NSEmployeeRequest): Response<NSEmployeeAddDeleteBlankDataResponse> {
@@ -289,6 +307,10 @@ class RemoteDataSource @Inject constructor(
 
     suspend fun setLocal(languageRequest: NSLanguageLocaleRequest): Response<NSErrorResponse> {
         return baseMainUrl.setLocal(languageRequest)
+    }
+    
+    suspend fun getUserDetail(userId: String): Response<NSUserDetailResponse> {
+        return baseMainUrl.getUserDetail(userId)
     }
 
     /*----------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -368,7 +390,7 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun vehicleList(id: String): Response<NSVehicleResponse> {
-        return baseFleetUrl.vehicleList(id)
+        return baseFleetUrl.getFleetVehicleList(id)
     }
 
     suspend fun getAssignVehicleByDriver(id: String, fleetId: String): Response<NSAssignVehicleDriverResponse> {
@@ -376,11 +398,11 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun disableVehicle(vendorRequest: NSVehicleEnableDisableRequest): Response<NSVehicleBlankDataResponse> {
-        return baseFleetUrl.disableVehicle(vendorRequest)
+        return baseFleetUrl.disableVehicle(vendorRequest.vehicleId?:"", vendorRequest)
     }
 
     suspend fun enableVehicle(vendorRequest: NSVehicleEnableDisableRequest): Response<NSVehicleBlankDataResponse> {
-        return baseFleetUrl.enableVehicle(vendorRequest)
+        return baseFleetUrl.enableVehicle(vendorRequest.vehicleId?:"", vendorRequest)
     }
 
     suspend fun vehicleUpdateImage(vendorRequest: NSVehicleUpdateImageRequest): Response<NSVehicleBlankDataResponse> {

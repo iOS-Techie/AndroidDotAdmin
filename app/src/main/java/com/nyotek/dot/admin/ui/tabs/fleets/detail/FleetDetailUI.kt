@@ -18,7 +18,7 @@ class FleetDetailUI @Inject constructor(private val binding: NsFragmentFleetDeta
         binding.apply {
             colorResources.apply {
                 getStringResource().apply {
-                    tvCreateFleetTitle.text = fleet
+                    tvCreateFleetTitle.text = fleets
                     tvSave.text = save
                     tvCancel.text = cancel
 

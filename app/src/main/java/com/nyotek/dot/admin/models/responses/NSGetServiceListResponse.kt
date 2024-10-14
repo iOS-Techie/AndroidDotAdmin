@@ -41,4 +41,6 @@ data class NSGetServiceListData(
 
 	@field:SerializedName("logo_url")
 	val logoUrl: String? = null
-)
+) {
+	var isSelected: Boolean = false
+}

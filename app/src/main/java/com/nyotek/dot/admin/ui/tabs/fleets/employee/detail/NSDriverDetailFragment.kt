@@ -13,9 +13,12 @@ import androidx.navigation.fragment.findNavController
 import com.nyotek.dot.admin.base.BaseFragment
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.event.EventHelper
 import com.nyotek.dot.admin.common.extension.getLngValue
 import com.nyotek.dot.admin.common.extension.getMapValue
+import com.nyotek.dot.admin.common.extension.getSpinnerData
 import com.nyotek.dot.admin.common.extension.gone
+import com.nyotek.dot.admin.common.extension.setCoil
 import com.nyotek.dot.admin.common.extension.setCoilCircle
 import com.nyotek.dot.admin.common.extension.setPlaceholderAdapter
 import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
@@ -46,7 +49,8 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
     private lateinit var themeUI: DriverDetailUI
     private var mapBoxView: MapBoxView? = null
     private var isDriverMapLoad: Boolean = false
-
+    val eventViewModel = EventHelper.getEventViewModel()
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackPressedHandler()
@@ -56,7 +60,7 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
         inflater: LayoutInflater,
         container: ViewGroup?
     ): NsFragmentDriverDetailBinding {
-        mapBoxView = MapBoxView(requireContext(), viewModel.colorResources, viewModel.languageConfig)
+        mapBoxView = MapBoxView(requireContext(), viewModel.colorResources, viewModel.languageConfig, false)
         return NsFragmentDriverDetailBinding.inflate(inflater, container, false)
     }
 
@@ -88,6 +92,10 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
                     viewLifecycleOwner
                 ) {
                     setDriverVehicleDetail(it)
+                }
+                
+                eventViewModel.refreshEvent.observe(viewLifecycleOwner) {
+                    mapBoxView?.refreshMapView(3, binding.mapFragmentDriver)
                 }
             }
         }
@@ -202,7 +210,7 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
             viewModel.apply {
 
                 val isVisible = vehicleData?.manufacturer?.isNotEmpty() == true
-                viewLineTextSub.setVisibilityIn(isVisible)
+                //viewLineTextSub.setVisibilityIn(isVisible)
                 clDriverItem.setVisibility(isVisible)
                 Handler(Looper.getMainLooper()).post {
                     tvUserTitle.visible()
@@ -210,7 +218,7 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
                 }
 
                 vehicleData?.apply {
-                    icDriverImg.setCoilCircle(url = vehicleImg)
+                    icDriverImg.setCoil(url = vehicleImg)
                     tvUserTitle.text = manufacturer?:""
                     tvStatus.text = model?:""
                     updateVehicle(vehicleData)
@@ -221,7 +229,10 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
                         Handler(Looper.getMainLooper()).post {
                             if (!isDriverMapLoad) {
                                 isDriverMapLoad = true
-                                mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver, it)
+                                mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver, it, key = 3)
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    mapBoxView?.goToMapPositionFromDriveId(employeeDataItem?.userId!!)
+                                }, 200)
                             } else {
                                 mapBoxView?.goToDispatchMapPosition(it?.features)
                             }
@@ -239,9 +250,13 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
                     var spinnerTitleId: String? = id
                     val titleList = vehicleDataList.map { "${it.manufacturer} ${it.model}" } as MutableList<String>
                     val idList = vehicleDataList.map { it.id!! } as MutableList<String>
-                    val spinnerList = SpinnerData(idList, titleList)
-
-                    spinner.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, colorResources, id, isHideFirstPosition = true, placeholderName = stringResource.selectVehicle) { selectedId ->
+                    
+                    val strings = viewModel.colorResources.getStringResource()
+                    val assignVehicleTitle = "${strings.assign} ${strings.vehicle}"
+                    val noAssignedVehicleAvailable = "${strings.no} ${strings.assigned} ${strings.vehicle}"
+                    val spinnerList = getSpinnerData(idList, titleList, noAssignedVehicleAvailable)
+                    
+                    spinner.spinnerAppSelect.setPlaceholderAdapter(spinnerList, activity, colorResources, id, isHideFirstPosition = true, placeholderName = assignVehicleTitle) { selectedId ->
                         if (spinnerTitleId != selectedId && selectedId?.isNotEmpty() == true) {
                             spinnerTitleId = selectedId
                             if (spinnerTitleId?.isNotEmpty() == true) {

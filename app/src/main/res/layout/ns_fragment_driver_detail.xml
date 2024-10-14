@@ -127,20 +127,11 @@
                     android:id="@+id/cl_vehicle_detail_sub_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="@dimen/_4sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-
-                    <include
-                        android:id="@+id/spinner_role"
-                        layout="@layout/layout_common_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginHorizontal="@dimen/_4sdp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <include
                         android:id="@+id/spinner"
@@ -151,14 +142,25 @@
                         android:layout_marginHorizontal="@dimen/_4sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/spinner_role" />
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <include
+                        android:id="@+id/spinner_role"
+                        layout="@layout/layout_common_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cl_driver_item" />
 
                     <com.nyotek.dot.admin.widgets.NSViewLine
                         android:id="@+id/view_line_text_sub"
                         android:layout_width="match_parent"
                         android:layout_height="0.6dp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:visibility="invisible"
+                        android:visibility="gone"
                         app:layout_constraintTop_toBottomOf="@id/spinner"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
@@ -168,6 +170,8 @@
                         style="@style/LayoutWidthHeightZeroWrap"
                         android:layout_height="@dimen/_25sdp"
                         android:paddingHorizontal="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/view_line_text_sub">

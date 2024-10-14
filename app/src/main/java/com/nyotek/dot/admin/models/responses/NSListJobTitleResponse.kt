@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class NSListJobTitleResponse(
 
 	@field:SerializedName("data")
-	val jobTitleList: MutableList<JobListDataItem> = arrayListOf()
+	val jobTitleList: MutableList<JobListDataItem>? = arrayListOf()
 )
 
 data class JobListDataItem(

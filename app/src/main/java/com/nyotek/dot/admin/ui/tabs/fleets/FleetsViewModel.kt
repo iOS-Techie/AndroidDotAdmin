@@ -31,10 +31,12 @@ class FleetsViewModel @Inject constructor(
 
     fun getFleetList(isShowProgress: Boolean) {
         if (isShowProgress) showProgress()
-        getFleetList { fleets ->
-            getLocalLanguages {
-                hideProgress()
-                fleetList.postValue(fleets)
+        getBaseServiceList(!isShowProgress) {
+            getFleetList { fleets ->
+                getLocalLanguages {
+                    hideProgress()
+                    fleetList.postValue(fleets)
+                }
             }
         }
     }

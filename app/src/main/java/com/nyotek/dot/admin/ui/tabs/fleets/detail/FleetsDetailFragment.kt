@@ -2,7 +2,6 @@ package com.nyotek.dot.admin.ui.tabs.fleets.detail
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,12 +20,10 @@ import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.NSViewPagerAdapter
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.extension.getTagLists
-import com.nyotek.dot.admin.common.extension.getTags
 import com.nyotek.dot.admin.common.extension.gone
 import com.nyotek.dot.admin.common.extension.invisible
 import com.nyotek.dot.admin.common.extension.navigateSafeNew
 import com.nyotek.dot.admin.common.extension.rotation
-import com.nyotek.dot.admin.common.extension.setPager
 import com.nyotek.dot.admin.common.extension.setSafeOnClickListener
 import com.nyotek.dot.admin.common.extension.showToast
 import com.nyotek.dot.admin.common.extension.status
@@ -52,7 +49,8 @@ class FleetsDetailFragment : BaseFragment<NsFragmentFleetDetailBinding>(), NSFil
     private var pager: NSViewPagerAdapter? = null
     private var employeeFragment: NSEmployeeFragment? = null
     private var vehicleFragment: VehicleFragment? = null
-
+    private var serviceHorizontalAdapter: NSFleetServiceListRecycleAdapter? = null
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackPressedHandler()
@@ -120,7 +118,7 @@ class FleetsDetailFragment : BaseFragment<NsFragmentFleetDetailBinding>(), NSFil
     private fun setFleetDetailBox() {
         binding.apply {
             viewModel.apply {
-                NSServiceConfig.setFleetDetail(
+                serviceHorizontalAdapter = NSServiceConfig.setFleetDetail(
                     requireActivity(),
                     layoutName,
                     layoutUrl,
@@ -172,6 +170,15 @@ class FleetsDetailFragment : BaseFragment<NsFragmentFleetDetailBinding>(), NSFil
                     tvFleetCreatedDate.text = getCreatedDate(created)
                     tvFleetActive.status(isActive)
                     switchService.switchEnableDisable(isActive)
+                    
+                    /*val baseServiceList = viewModel.colorResources.themeHelper.getServiceResponse()?.data?: arrayListOf()
+                    baseServiceList.forEach { service ->
+                        if (fleetModel.serviceIds.contains(service.serviceId)) {
+                            service.isSelected = true
+                        }
+                    }
+                    serviceHorizontalAdapter?.setData(baseServiceList)*/
+                    tvEditTitle.text = stringResource.selectImage
 
                     brandLogoHelper.setBrandLogo(
                         false,
@@ -185,11 +192,11 @@ class FleetsDetailFragment : BaseFragment<NsFragmentFleetDetailBinding>(), NSFil
                     cbFit.isChecked = !scale
 
                     //Tags
-                    layoutTags.edtValue.apply {
+                   /* layoutTags.edtValue.apply {
                         gravity = Gravity.START
                         hint = stringResource.enterTag
                         setText(tags.getTags())
-                    }
+                    }*/
 
                     NSUtilities.setLanguageText(layoutUrl.edtValue, viewModel.fleetModel, true)
                     layoutUrl.edtValue.setText(url)
@@ -254,9 +261,14 @@ class FleetsDetailFragment : BaseFragment<NsFragmentFleetDetailBinding>(), NSFil
                 setEditTextFocusChange(layoutName.edtValue, 0)
                 setEditTextFocusChange(layoutSlogan.edtValue, 1)
                 setEditTextFocusChange(layoutUrl.edtValue, 2)
-                setEditTextFocusChange(layoutTags.edtValue, 3)
+                //setEditTextFocusChange(layoutTags.edtValue, 3)
 
                 tvSave.setSafeOnClickListener {
+                    /*val list = serviceHorizontalAdapter?.getData()?.filter { it.isSelected }?.mapNotNull { it.serviceId }?: arrayListOf()
+                    val serviceList: List<String> = list
+                    fleetModel?.serviceIds?.clear()
+                    fleetModel?.serviceIds?.addAll(serviceList)*/
+                    
                     updateServiceIds()
                 }
             }
@@ -306,15 +318,14 @@ class FleetsDetailFragment : BaseFragment<NsFragmentFleetDetailBinding>(), NSFil
             editText.onFocusChangeListener =
                 View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
-                        updatePosition = position
-                        updateData(updatePosition)
+                        focusChangeOnUpdateData(position)
                     }
                     manageFocus(name = hasFocus)
                 }
         }
     }
 
-    private fun updateData(position: Int) {
+    private fun focusChangeOnUpdateData(position: Int) {
         when (position) {
             0 -> {
                 viewModel.updateName()
@@ -395,6 +406,7 @@ class FleetsDetailFragment : BaseFragment<NsFragmentFleetDetailBinding>(), NSFil
             fleetLogoUpdateRequest.logo = url
             fleetModel?.logo = url
             urlToUpload = url
+            binding.tvEditTitle.text = if (url.isEmpty()) stringResource.selectImage else stringResource.edit
             updateFleetLogo()
         }
     }

@@ -101,6 +101,10 @@ class ColorResources @Inject constructor(val themeHelper: NSThemeHelper) {
     fun getTabSecondaryColor(): Int {
         return getColor(resourceData.tabSecondary)
     }
+    
+    fun getGrayTextColor(): Int {
+        return Color.parseColor("#5B5E68")
+    }
 
     fun getHintColorStateGray(): ColorStateList {
         with(resourceData) {

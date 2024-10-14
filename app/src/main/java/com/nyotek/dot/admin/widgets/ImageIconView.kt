@@ -45,16 +45,16 @@ class ImageIconView : AppCompatImageView {
                 R.id.iv_delete -> {
                     setColorFilter(colorResources.getErrorColor())
                 }
-                R.id.iv_edit_brand_logo -> {
-                    colorResources.setCardBackground(this, getRadius(5f), 0, colorResources.getPrimaryColor())
-                    setColorFilter(colorResources.getWhiteColor())
-                }
                 R.id.ic_driver_detail_user -> {
                     colorResources.setCardBackground(this, getRadius(5f), 1, colorResources.getWhiteColor(), colorResources.getBorderColor())
 
                 }
                 R.id.iv_driver_img, R.id.iv_model_img -> {
                     colorResources.setCardBackground(this, getRadius(100f), 0, colorResources.getBackgroundColor(), colorResources.getBackgroundColor())
+                }
+                R.id.iv_delete_employee -> {
+                    colorResources.setCardBackground(this, getRadius(3f), 0, colorResources.getErrorColor(), colorResources.getErrorColor())
+                    setColorFilter(colorResources.getWhiteColor())
                 }
                 else -> {
                     setColorFilter(colorResources.getPrimaryColor())

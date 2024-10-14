@@ -1,6 +1,7 @@
 package com.nyotek.dot.admin.widgets
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import com.nyotek.dot.admin.R
@@ -74,6 +75,9 @@ class NSWhiteTextView : AppCompatTextView {
             }
             R.id.tv_order_cancel -> {
                 colorResources.setBackgroundTint(this, colorResources.getErrorColor())
+            }
+            R.id.tv_edit_title -> {
+                colorResources.setBackground(this, Color.parseColor("#CCB2B2B2"))
             }
         }
     }
