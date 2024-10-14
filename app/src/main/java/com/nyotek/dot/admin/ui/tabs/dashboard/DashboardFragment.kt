@@ -11,7 +11,6 @@ import com.mapbox.maps.MapView
 import com.nyotek.dot.admin.base.BaseFragment
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSDateTimeHelper
-import com.nyotek.dot.admin.common.NSOnMapResetEvent
 import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSPermissionHelper
 import com.nyotek.dot.admin.common.NSRequestCodes
@@ -129,7 +128,7 @@ class DashboardFragment : BaseFragment<NsFragmentDashboardTabBinding>(), NSMapDr
         if (mapView != null) {
             mapBoxView?.initMapView(
                 requireContext(), mapView!!,
-                fleetData, mapCallback = this
+                fleetData, mapCallback = this, key = 0
             )
         }
     }
@@ -147,6 +146,11 @@ class DashboardFragment : BaseFragment<NsFragmentDashboardTabBinding>(), NSMapDr
 
     override fun onResume() {
         super.onResume()
+        if (mapBoxView?.getMapView(0) != null) {
+            binding.mapView.removeAllViews()
+            mapView = mapBoxView?.getMapView(0)!!
+            binding.mapView.addView(mapView!!)
+        }
         eventRegister(true)
     }
 
@@ -208,7 +212,7 @@ class DashboardFragment : BaseFragment<NsFragmentDashboardTabBinding>(), NSMapDr
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
     fun onMapReset(@Suppress("UNUSED_PARAMETER") event: NSOnMapResetEvent) {
         binding.mapView.removeAllViews()
         mapView = MapView(requireContext())
@@ -220,7 +224,7 @@ class DashboardFragment : BaseFragment<NsFragmentDashboardTabBinding>(), NSMapDr
             mapView!!,
             viewModel.tempFleetDataItem?:FleetDataItem()
         )
-    }
+    }*/
 
     override fun onDriverMap(driverId: String, isDialogDismiss: Boolean) {
         viewModel.apply {

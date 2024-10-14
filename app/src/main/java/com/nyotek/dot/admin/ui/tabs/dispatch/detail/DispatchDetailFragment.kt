@@ -13,6 +13,7 @@ import com.nyotek.dot.admin.base.BaseFragment
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSOrderCancelEvent
 import com.nyotek.dot.admin.common.adapter.DriverSpinnerAdapter
+import com.nyotek.dot.admin.common.event.EventHelper
 import com.nyotek.dot.admin.common.extension.getMapValue
 import com.nyotek.dot.admin.common.extension.glideNormal
 import com.nyotek.dot.admin.common.extension.gone
@@ -48,7 +49,8 @@ class DispatchDetailFragment : BaseFragment<NsFragmentDispatchDetailBinding>() {
     private val viewModel by viewModels<DispatchDetailViewModel>()
     private var mapBoxView: MapBoxView? = null
     private lateinit var themeUI: DispatchDetailUI
-
+    val eventViewModel = EventHelper.getEventViewModel()
+    
     @Inject
     lateinit var locationManager: NSLocationManager
 
@@ -122,6 +124,10 @@ class DispatchDetailFragment : BaseFragment<NsFragmentDispatchDetailBinding>() {
                 DispatchHelper.setCancelled(true)
                 getDispatchDetail()
             }
+            
+            eventViewModel.refreshEvent.observe(viewLifecycleOwner) {
+                mapBoxView?.refreshMapView(1, binding.mapFragmentEmployee)
+            }
         }
     }
 
@@ -153,7 +159,7 @@ class DispatchDetailFragment : BaseFragment<NsFragmentDispatchDetailBinding>() {
             mapBoxView?.initMapView(
                 requireContext(),
                 binding.mapFragmentEmployee,
-                viewModel.currentMapFleetData
+                viewModel.currentMapFleetData, key = 1
             )
         }
         mapBoxView?.goToDispatchMapPosition(viewModel.currentMapFleetData?.features)

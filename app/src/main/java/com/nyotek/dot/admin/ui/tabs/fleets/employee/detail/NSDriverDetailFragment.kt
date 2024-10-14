@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.nyotek.dot.admin.base.BaseFragment
 import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
+import com.nyotek.dot.admin.common.event.EventHelper
 import com.nyotek.dot.admin.common.extension.getLngValue
 import com.nyotek.dot.admin.common.extension.getMapValue
 import com.nyotek.dot.admin.common.extension.getSpinnerData
@@ -48,7 +49,8 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
     private lateinit var themeUI: DriverDetailUI
     private var mapBoxView: MapBoxView? = null
     private var isDriverMapLoad: Boolean = false
-
+    val eventViewModel = EventHelper.getEventViewModel()
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackPressedHandler()
@@ -90,6 +92,10 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
                     viewLifecycleOwner
                 ) {
                     setDriverVehicleDetail(it)
+                }
+                
+                eventViewModel.refreshEvent.observe(viewLifecycleOwner) {
+                    mapBoxView?.refreshMapView(3, binding.mapFragmentDriver)
                 }
             }
         }
@@ -223,7 +229,7 @@ class NSDriverDetailFragment : BaseFragment<NsFragmentDriverDetailBinding>() {
                         Handler(Looper.getMainLooper()).post {
                             if (!isDriverMapLoad) {
                                 isDriverMapLoad = true
-                                mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver, it)
+                                mapBoxView?.initMapView(requireContext(), binding.mapFragmentDriver, it, key = 3)
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     mapBoxView?.goToMapPositionFromDriveId(employeeDataItem?.userId!!)
                                 }, 200)

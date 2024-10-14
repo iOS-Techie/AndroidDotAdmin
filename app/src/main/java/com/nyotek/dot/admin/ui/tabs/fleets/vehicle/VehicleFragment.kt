@@ -13,6 +13,7 @@ import com.nyotek.dot.admin.common.NSAddress
 import com.nyotek.dot.admin.common.NSConstants
 import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
+import com.nyotek.dot.admin.common.event.EventHelper
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
 import com.nyotek.dot.admin.common.extension.formatText
 import com.nyotek.dot.admin.common.extension.gone
@@ -41,7 +42,8 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
     private val brandLogoHelper: BrandLogoHelper = BrandLogoHelper(this, callback = this)
     private lateinit var themeUI: VehicleUI
     private var callback: ((Bundle?) -> Unit)? = null
-
+    val eventViewModel = EventHelper.getEventViewModel()
+    
     companion object {
         fun newInstance(bundle: Bundle?, callback: ((Bundle?) -> Unit)?) = VehicleFragment().apply {
             arguments = bundle
@@ -59,7 +61,7 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
 
     override fun setupViews() {
         super.setupViews()
-        mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, FleetDataItem())
+        mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, FleetDataItem(), key = 4)
     }
 
     override fun loadFragment(bundle: Bundle?) {
@@ -95,7 +97,9 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
         super.observeViewModel()
         with(viewModel) {
             with(binding) {
-
+                eventViewModel.refreshEvent.observe(viewLifecycleOwner) {
+                    mapBoxView?.refreshMapView(4, binding.mapFragmentVehicle)
+                }
             }
         }
     }
@@ -169,6 +173,7 @@ class VehicleFragment : BaseFragment<NsFragmentVehicleBinding>(), NSFileUploadCa
                 NSConstants.VEHICLE_DETAIL_KEY to Gson().toJson(response),
                 NSConstants.FLEET_DETAIL_KEY to strVehicleDetail
             )
+            
             callback?.invoke(bundle)
             /*fleetManagementFragmentChangeCallback?.setFragment(
                 this@NSVehicleFragment.javaClass.simpleName,

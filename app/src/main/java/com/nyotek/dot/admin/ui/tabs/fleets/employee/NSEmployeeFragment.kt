@@ -24,6 +24,7 @@ import com.nyotek.dot.admin.common.NSPermissionEvent
 import com.nyotek.dot.admin.common.NSPermissionHelper
 import com.nyotek.dot.admin.common.NSRequestCodes
 import com.nyotek.dot.admin.common.NSUtilities
+import com.nyotek.dot.admin.common.event.EventHelper
 import com.nyotek.dot.admin.common.extension.addOnTextChangedListener
 import com.nyotek.dot.admin.common.extension.buildAlertDialog
 import com.nyotek.dot.admin.common.extension.getLngValue
@@ -54,7 +55,8 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
     private val viewModel by viewModels<NSEmployeeViewModel>()
     private lateinit var themeUI: EmployeeUI
     private var isEmployeeMapLoad: Boolean = false
-
+    val eventViewModel = EventHelper.getEventViewModel()
+    
     private val userManagementViewModel: NSUserViewModel by lazy {
         ViewModelProvider(this)[NSUserViewModel::class.java]
     }
@@ -143,7 +145,7 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                         mapBoxView?.initMapView(
                             requireContext(),
                             binding.mapFragmentEmployee,
-                            fleetData
+                            fleetData, key = 2
                         )
                     } else {
                         mapBoxView?.updateMapData(
@@ -152,6 +154,10 @@ class NSEmployeeFragment : BaseFragment<NsFragmentEmployeeBinding>() {
                         )
                     }
                 }
+            }
+            
+            eventViewModel.refreshEvent.observe(viewLifecycleOwner) {
+                mapBoxView?.refreshMapView(5, binding.mapFragmentEmployee)
             }
         }
     }

@@ -73,6 +73,7 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
     private var mapView: MapView? = null
     private var callback: NSMapDriverClickCallback? = null
     private var isDialogDisplay: Boolean = false
+    private var mapList: HashMap<Int, MapView> = hashMapOf()
 
     init {
         ResourceOptionsManager.getDefault(context, BuildConfig.MAPBOX_ACCESS_TOKEN).update {
@@ -81,14 +82,23 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun initMapView(context: Context, frameLayout: FrameLayout, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null) {
+    fun initMapView(context: Context, frameLayout: FrameLayout, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null, key: Int) {
+        clearMap()
         fleetDataItem = fleetData
         callback = mapCallback
         mapView?.removeAllViews()
         val view = MapView(context)
         frameLayout.removeAllViews()
         frameLayout.addView(view)
-        mapView = view
+        
+        if (mapList[key] == null) {
+            mapList[key] = view
+            mapView = view
+        } else {
+            mapView = mapList[key]
+        }
+        
+        
         view.layoutDirection = View.LAYOUT_DIRECTION_LTR
 
         mapView?.setOnTouchListener { viewMap, _ ->
@@ -101,13 +111,27 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
         initAddMarker(context, mapStyle)
         initStyleMap()
     }
-
-    fun initMapView(context: Context, view: MapView, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null) {
+    
+    @SuppressLint("ClickableViewAccessibility")
+    fun initMapView(context: Context, view: MapView, fleetData: FleetDataItem?, mapStyle: String = Style.MAPBOX_STREETS, mapCallback: NSMapDriverClickCallback? = null, key: Int) {
         fleetDataItem = fleetData
         callback = mapCallback
-        mapView = view
+        
+        if (mapList[key] == null) {
+            mapList[key] = view
+            mapView = view
+        } else {
+            mapView = mapList[key]
+        }
+        
+        //mapView = view
         view.layoutDirection = View.LAYOUT_DIRECTION_LTR
         map = view.getMapboxMap()
+        
+        mapView?.setOnTouchListener { viewMap, _ ->
+            viewMap.parent.requestDisallowInterceptTouchEvent(true)
+            false
+        }
         viewAnnotationManager = view.viewAnnotationManager
         initAddMarker(context, mapStyle)
         initStyleMap()
@@ -202,19 +226,27 @@ class MapBoxView @Inject constructor(@ActivityContext private val context: Conte
                 .pitch(lastCameraPosition?.pitch ?: 0.0)
                 .build(),
             MapAnimationOptions.Builder()
-                .duration(1000L)
+                .duration(500L)
                 .build()
         )
         
         map?.flyTo(
             targetCameraPosition,
             MapAnimationOptions.Builder()
-                .duration(1000L)
+                .duration(500L)
                 .build())
     }
 
-    fun getMapView(): MapView? {
-        return mapView
+    fun getMapView(key: Int): MapView? {
+        return mapList[key]
+    }
+    
+    fun refreshMapView(key: Int, view: FrameLayout) {
+        if (getMapView(key) != null) {
+            view.removeAllViews()
+            val mapView = getMapView(key)!!
+            view.addView(mapView)
+        }
     }
 
     fun clearMap() {

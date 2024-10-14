@@ -18,6 +18,7 @@ import com.nyotek.dot.admin.common.NSUtilities
 import com.nyotek.dot.admin.common.OnTextUpdateHelper
 import com.nyotek.dot.admin.common.callbacks.NSFileUploadCallback
 import com.nyotek.dot.admin.common.callbacks.NSVehicleEditCallback
+import com.nyotek.dot.admin.common.event.EventHelper
 import com.nyotek.dot.admin.common.extension.getLngValue
 import com.nyotek.dot.admin.common.extension.invisible
 import com.nyotek.dot.admin.common.extension.isValidList
@@ -54,7 +55,8 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
     private val brandLogoHelper: BrandLogoHelper = BrandLogoHelper(this, callback = this)
     private lateinit var themeUI: VehicleDetailUI
     private var isDriverMapLoad: Boolean = false
-
+    private val eventViewModel = EventHelper.getEventViewModel()
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackPressedHandler()
@@ -64,20 +66,19 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
         inflater: LayoutInflater,
         container: ViewGroup?
     ): NsFragmentVehicleDetailBinding {
-        mapBoxView = MapBoxView(requireContext(), viewModel.colorResources, viewModel.languageConfig)
+        mapBoxView = MapBoxView(requireContext(), viewModel.colorResources, viewModel.languageConfig, false)
         return NsFragmentVehicleDetailBinding.inflate(inflater, container, false)
     }
 
     override fun setupViews() {
         super.setupViews()
         themeUI = VehicleDetailUI(activity, binding, viewModel.colorResources)
-        mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, FleetDataItem())
         binding.clMap.visible()
 
         arguments?.let {
             viewModel.apply {
                 getVehicleDetail(it.getString(NSConstants.VEHICLE_DETAIL_KEY), it.getString(NSConstants.FLEET_DETAIL_KEY))
-                initCreateVendor()
+                initVehicleDetail()
                 setListener()
             }
         }
@@ -87,7 +88,7 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
         super.observeViewModel()
         observeBaseViewModel(viewModel)
         observeBaseViewModel(employeeViewModel)
-
+        
         with(employeeViewModel) {
             isEmployeeListAvailable.observe(
                 viewLifecycleOwner
@@ -95,10 +96,14 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
                 employeeList = list
                 setUpdateDriverList(list)
             }
+            
+            eventViewModel.refreshEvent.observe(viewLifecycleOwner) {
+                mapBoxView?.refreshMapView(5, binding.mapFragmentVehicle)
+            }
         }
     }
 
-    private fun initCreateVendor(isApiCall: Boolean = true) {
+    private fun initVehicleDetail(isApiCall: Boolean = true) {
         binding.apply {
             viewModel.apply {
                 tvVehicleActive.status(vehicleDataItem?.isActive == true)
@@ -114,20 +119,15 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
                 switchService.rotation(viewModel.languageConfig.isLanguageRtl())
                 layoutLogo.tvEditTitle.text = colorResources.getStringResource().selectImage
                 
-                getCapabilities(
-                    true,
-                    isApiDataCheck = false
-                ) {
+                getCapabilities(true, isApiDataCheck = false) {
                     setCapabilityList(it)
                 }
 
                 if (isApiCall) {
                     //Get Vehicle Detail
-                    viewModel.apply {
-                        vehicleDataItem?.id?.let { getVehicleDetail(it, true) { vehicleData ->
-                            setVehicleDetail(vehicleData)
-                        } }
-                    }
+                    vehicleDataItem?.id?.let { getVehicleDetail(it, true) { vehicleData ->
+                        setVehicleDetail(vehicleData)
+                    } }
                 }
             }
         }
@@ -229,17 +229,22 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
             var idList: MutableList<String> = employeeList.map { it.userId ?: "" }.toMutableList()
 
             val spinnerList = SpinnerData(idList, nameList)
-            spinner.spinnerAppSelect.setPlaceholderAdapter(
-                spinnerList,
-                activity, viewModel.colorResources,
-                viewModel.driverId,
-                isHideFirstPosition = true,
-                placeholderName = stringResource.selectDriver
-            ) { selectedId ->
-                if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
-                    viewModel.apply {
-                        viewModel.driverId = selectedId
-                        assignVehicleToDriver(false, vehicleDataItem?.capabilities?: arrayListOf())
+            if (spinner.spinnerAppSelect.adapter == null) {
+                spinner.spinnerAppSelect.setPlaceholderAdapter(
+                    spinnerList,
+                    activity, viewModel.colorResources,
+                    "",
+                    isHideFirstPosition = true,
+                    placeholderName = stringResource.selectDriver
+                ) { selectedId ->
+                    if (selectedId != viewModel.driverId && selectedId?.isNotEmpty() == true) {
+                        viewModel.apply {
+                            viewModel.driverId = selectedId
+                            assignVehicleToDriver(
+                                false,
+                                vehicleDataItem?.capabilities ?: arrayListOf()
+                            )
+                        }
                     }
                 }
             }
@@ -249,25 +254,27 @@ class NSVehicleDetailFragment : BaseFragment<NsFragmentVehicleDetailBinding>(),
             }
             val empResponse = employeeList.find { it.userId == viewModel.driverId }
             tvUserTitle.text = viewModel.driverId ?: ""
-            tvStatus.text = getLngValue(employeeViewModel.jobTitleList.find { it.id == empResponse?.titleId }?.name)
+            tvStatus.text = getLngValue(viewModel.colorResources.themeHelper.getJobRolesTypes().find { it.id == empResponse?.titleId }?.name)
 
             idList = employeeList.map { it.userId ?: "" }.toMutableList()
             val spinnerPosition = idList.indexOf(viewModel.driverId)
             val isVisible = spinnerPosition != -1
             clVehicleItem.setVisibility(isVisible)
-            viewLineTextSub.setVisibilityIn(isVisible)
+            //viewLineTextSub.setVisibilityIn(isVisible)
 
             if (viewModel.driverId?.isNotEmpty() == true && idList.isValidList() && spinnerPosition >= 0) {
                 employeeViewModel.getDriverLocation(viewModel.driverId) {
                     if (!isDriverMapLoad) {
                         isDriverMapLoad = true
-                        mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, it)
+                        mapBoxView?.clearMap()
+                        mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, it, key = 5)
+                        mapBoxView?.goToMapPositionFromDriveId(viewModel.driverId!!)
                     } else {
-                        mapBoxView?.goToDispatchMapPosition(it?.features)
+                        mapBoxView?.goToMapPositionFromDriveId(viewModel.driverId!!)
                     }
                 }
             } else {
-                mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, FleetDataItem())
+                mapBoxView?.initMapView(requireContext(), binding.mapFragmentVehicle, FleetDataItem(), key = 5)
             }
         }
     }

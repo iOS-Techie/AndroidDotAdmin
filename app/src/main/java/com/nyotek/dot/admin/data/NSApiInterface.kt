@@ -340,7 +340,7 @@ interface NSApiInterface {
     @PATCH("fleets/vehicle/capability")
     suspend fun updateVehicleCapability(@Body request: NSUpdateCapabilitiesRequest): retrofit2.Response<NSVehicleBlankDataResponse>
 
-    @GET("vehicle/assign/{vehicle_id}")
+    @GET("fleets/vehicle/assign/{vehicle_id}")
     suspend fun getVehicleDetail(@Path("vehicle_id") id: String): retrofit2.Response<NSVehicleDetailResponse>
 
     @GET("fleets/vehicle/{vehicle_id}")

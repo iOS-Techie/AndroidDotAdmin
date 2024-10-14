@@ -9,6 +9,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.nyotek.dot.admin.R
 import com.nyotek.dot.admin.base.BaseFragment
+import com.nyotek.dot.admin.common.event.EventHelper
 import com.nyotek.dot.admin.databinding.FragmentFleetsTabBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +19,8 @@ class FleetsTabFragment : BaseFragment<FragmentFleetsTabBinding>() {
     private var isLoadFragment: Boolean = false
     private var drawerSelectedItemId = R.id.fleets
     private var navHost: NavHostFragment? = null
-
+    val eventViewModel = EventHelper.getEventViewModel()
+    
     companion object {
         fun newInstance() = FleetsTabFragment()
     }
@@ -59,5 +61,10 @@ class FleetsTabFragment : BaseFragment<FragmentFleetsTabBinding>() {
                findNavController().popBackStack()
             }
         })
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        eventViewModel.resumeEvent(true)
     }
 }

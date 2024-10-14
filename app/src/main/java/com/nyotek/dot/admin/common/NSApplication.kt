@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
+import com.nyotek.dot.admin.common.event.EventHelper
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -17,6 +18,7 @@ class NSApplication: Application() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         initInstance()
+        EventHelper.init()
         nsLanguageConfig.init(applicationContext)
        // NSLanguageConfig().init(applicationContext)
         DeviceDetailUtils.generateUUIDDeviceId()
